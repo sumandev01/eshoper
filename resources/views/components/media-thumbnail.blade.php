@@ -10,7 +10,7 @@
     'class' => '',
     'id' => '',
     'image_preview_class' => '',
-    'fit_content' => 'width: fit-content;',
+    'fit_content' => 'fit-content;',
     'width' => '100px',
     'height' => '100px',
 ])
@@ -25,14 +25,14 @@
     @endif
 
     <div id="media-preview-{{ $target_id }}" class="mb-2 rounded p-2 bg-white {{ $class }} {{ $image_preview_class }}"
-        style="min-height: 100px; {{ $fit_content ?? '' }};">
+        style="min-height: 100px; width: {{ $fit_content ?? '' }};">
 
         {{-- English: Check if the image is not the default placeholder --}}
         @if ($existing_image && !str_contains($existing_image, 'default.webp'))
-            {{-- <div class="preview-image-wrapper position-relative {{ $image_preview_class }}" id="item-{{ $target_id }}-preview"
+            <div class="preview-image-wrapper position-relative {{ $image_preview_class }}" id="item-{{ $target_id }}-preview"
                 style="width: {{ $width }}; height: {{ $height }};">
                 <img src="{{ $existing_image }}" class="rounded bg-white imagePreviewSingle">
-            </div> --}}
+            </div>
         @else
             {{-- English: Default design when no image is selected --}}
             <div class="no-image-placeholder border rounded d-flex align-items-center justify-content-center bg-white imagePreviewSingle">

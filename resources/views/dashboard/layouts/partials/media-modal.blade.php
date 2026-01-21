@@ -138,7 +138,7 @@
                 e.preventDefault();
                 currentTargetId = $(this).data('target-id');
                 
-                // লিমিট চেক করার অংশ
+                // Check limit before opening modal and stop if exceeded
                 const limit = parseInt($(this).data('limit')) || 5; 
                 const currentImagesCount = $(`#media-preview-${currentTargetId}`).find('.gallery-item').length;
 
@@ -299,7 +299,7 @@
                         tempSelectedMedia.splice(index, 1);
                         $(this).removeClass('selected-media-border');
                     } else {
-                        // চেক করা হচ্ছে নতুন সিলেকশন প্লাস আগের গুলো লিমিট ক্রস করছে কি না
+                        // Check limit before adding new selection and stop if exceeded
                         if ((currentInPreviewCount + tempSelectedMedia.length) >= limit) {
                             Swal.fire({
                                 icon: 'warning',
@@ -340,15 +340,11 @@
                         if (currentInGallery < limit) {
                             if (previewContainer.find(`[data-media-id="${media.id}"]`).length === 0) {
                                 previewContainer.append(`
-                                    <div class="preview-image-wrapper position-relative gallery-item" 
-                                        data-media-id="${media.id}" 
-                                        data-target="${currentTargetId}" 
-                                        style="width: 80px; height: 80px; margin: 5px;">
-                                        <span class="remove-image-btn bg-danger text-white rounded-circle position-absolute" 
-                                            style="top:-5px; right:-5px; cursor:pointer; width:20px; height:20px; text-align:center; line-height:18px;">&times;</span>
-                                        <img src="${media.src}" class="rounded bg-white w-100 h-100" style="object-fit: cover; border:1px solid #ddd;">
-                                        <input type="hidden" name="${baseInputName}[]" value="${media.id}">
-                                    </div>
+                                <div class="col-md-3 col-sm-4 col-6 position-relative gallery-item p-0" data-media-id="${media.id}" data-target="${currentTargetId}">
+                                    <span class="remove-image-btn bg-danger text-white rounded-circle position-absolute" style="top:5px; right:5px; cursor:pointer; width:20px; height:20px; text-align:center; line-height:18px;">&times;</span>
+                                    <img src="${media.src}" class="rounded w-100 galleryItemImg" >
+                                    <input type="hidden" name="${baseInputName}[]" value="${media.id}">
+                                </div>
                                 `);
                             }
                         }
@@ -359,7 +355,7 @@
 
             // 8. Remove image from main page preview
             $(document).on('click', '.remove-image-btn', function() {
-                const wrapper = $(this).closest('.preview-image-wrapper');
+                const wrapper = $(this).closest('.preview-image-wrapper, .gallery-item');
                 const targetId = wrapper.data('target');
                 const mediaId = wrapper.data('media-id');
 

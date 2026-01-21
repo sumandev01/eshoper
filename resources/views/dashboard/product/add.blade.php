@@ -21,9 +21,9 @@
                         <h5 class="card-title">Product Information</h5>
                     </div>
                     <div class="card-body">
-                        <x-input name="name" label="Product Name" type="text" placeholder="Enter product name" :required="true" :maxlength="50" :value="$item->name ?? ''" />
+                        <x-input name="name" label="Product Name" type="text" placeholder="Enter product name" :required="false" :maxlength="50" :value="$item->name ?? ''" />
 
-                        <x-input name="slug" label="Product Slug" type="text" placeholder="enter-product-slug" :required="true" :maxlength="50" :value="$item->slug ?? ''" />
+                        <x-input name="slug" label="Product Slug" type="text" placeholder="enter-product-slug" :required="false" :maxlength="50" :value="$item->slug ?? ''" />
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
@@ -34,9 +34,9 @@
                             </div>
                         </div>
 
-                        <x-textarea  name="short_description"  label="Short Description" :editor="false" :value="$item->short_description ?? ''" placeholder="Write something..." maxlength="200" :wordcount="true" rows="5" :required="true"/>
+                        <x-textarea  name="short_description"  label="Short Description" :editor="false" :value="$item->short_description ?? ''" placeholder="Write something..." maxlength="200" :wordcount="true" rows="5" :required="false"/>
 
-                        <x-textarea  name="description"  label="Description" :editor="true" :value="$item->description ?? ''" placeholder="Write something..." maxlength="200" :wordcount="true" rows="5" :required="true"/>
+                        <x-textarea  name="description"  label="Description" :editor="true" :value="$item->description ?? ''" placeholder="Write something..." maxlength="200" :wordcount="true" rows="5" :required="false"/>
 
                         <div class="mb-3">
                             <label class="form-label">Long Description</label>
@@ -74,7 +74,7 @@
                         <h5 class="card-title">Gallery</h5>
                     </div>
                     <div class="card-body">
-                        <x-media-gallery name="galleries" :required="false" limit="10"/>
+                        <x-media-gallery name="galleries" :required="false" limit="10" button_class="mt-2"/>
                     </div>
                 </div>
             </div>
@@ -86,7 +86,7 @@
                         <h5 class="card-title">Organization</h5>
                     </div>
                     <div class="card-body">
-                        <x-select name="category_id" id="category_id" label="Category" :options="$categories" placeholder="Select Category" :required="true" />
+                        <x-select name="category_id" id="category_id" label="Category" :options="$categories" placeholder="Select Category" :required="false" />
                         <x-select name="subcategory_id" id="sub_category_id" label="Subcategory" :options="$subCategories ??[]" placeholder="Select Subcategory" />
                         <x-select name="brand_id" id="brand_id" label="Brand" :options="$brands ??[]" placeholder="Select Brand" />
                         <div class="mb-3">
@@ -104,7 +104,7 @@
                         <h5 class="card-title">Product Image</h5>
                     </div>
                     <div class="card-body text-center">
-                        <x-media-thumbnail name="image" image_preview_class="product_thumbnail" fit_content="100%" :required="true"/>
+                        <x-media-thumbnail name="image" image_preview_class="product_thumbnail" fit_content="100%" :required="false"/>
                     </div>
                 </div>
 
@@ -126,9 +126,10 @@
 @push('styles')
     <style>
         .product_thumbnail{
-            border: 2px solid #dee2e6 !important;
+            /* border: 2px solid #dee2e6 !important; */
             padding: 10px !important;
-            margin-bottom: 15px !important;
+            /* margin-bottom: 25px !important; */
+            padding: 0 !important;
         }
         .product_thumbnail .preview-image-wrapper{
             display: block !important;
@@ -136,10 +137,12 @@
         .product_thumbnail img.imagePreviewSingle,
         .product_thumbnail .no-image-placeholder {
             width: 100% !important;
-            height: 300px !important;
-            object-fit: contain !important;
-            margin: 0 auto !important;
-            border: 0 !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            margin-bottom: 30px !important;
+            border: 2px solid #dee2e6 !important;
+            aspect-ratio: 4/3 !important;
+            padding: 0 !important;
         }
         .product_thumbnail .defaultImagePlaceholder i{
             font-size: 50px !important;
@@ -151,7 +154,8 @@
 @endpush
 @push('scripts')
 <script>
-    // ইমেজ সিলেক্ট করলে সাথে সাথে প্রিভিউ দেখার জন্য
+document.addEventListener("DOMContentLoaded", function() {
+    // Image Preview Functionality for Single Image Upload (Input ID: imageInput, Preview ID: previewImage)
     $('#imageInput').change(function(){
         let reader = new FileReader();
         reader.onload = (e) => { 
@@ -159,5 +163,10 @@
         }
         reader.readAsDataURL(this.files[0]); 
     });
+
+    // Adjust margin for product thumbnail form group
+    $('.product_thumbnail').closest('.form-group').addClass('mb-0');
+
+});
 </script>
 @endpush

@@ -92,7 +92,7 @@ class MediaController extends Controller
 
     public function getGalleryAjax()
     {
-        $allMedia = Media::latest('id')->paginate(12);
+        $allMedia = Media::latest('id')->paginate(24);
         return view('dashboard.media.partials.gallery_list', compact('allMedia'))->render();
         // return response()->json($allMedia);
     }

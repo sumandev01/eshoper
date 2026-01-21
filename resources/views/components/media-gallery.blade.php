@@ -1,37 +1,44 @@
 @props([
-    'label' => 'Gallery Images',
+    'label' => '',
     'target_id' => 'gallery_2',
     'input_name' => 'product_galleries',
     'existing_media' => collect(),
     'thumbnail_source' => null,
     'limit' => 5, // Just added this limit prop
+    'required' => false,
+    'button_label' => 'Select Images',
+    'button_class' => '',
 ])
 
 <div class="form-group">
-    <label class="form-label font-weight-bold">{{ $label }}</label>
+    @if($label)
+        <label class="form-label font-weight-bold">{{ $label }}@if($required) <span class="text-danger">*</span> @endif</label>
+    @endif
 
-    <div id="media-preview-{{ $target_id }}" class="mb-2 d-flex flex-wrap p-2 bg-white rounded border border-light"
-        style="min-height: 50px; gap: 5px;">
-
+    {{-- <div id="media-preview-{{ $target_id }}" class="row mb-2 d-flex flex-wrap p-2 bg-white rounded border border-light"
+        style="min-height: 50px; gap: 5px;"> --}}
+    <div id="media-preview-{{ $target_id }}" class="row">
         @php
             // Get existing media IDs as comma separated string
             $existingIds = $existing_media->pluck('id')->implode(',');
         @endphp
 
         @forelse($existing_media as $media)
-            <div class="preview-image-wrapper position-relative gallery-item" data-id="{{ $media->id }}"
+            <div class="col-md-3 col-sm-4 col-6 position-relative gallery-item" data-id="{{ $media->id }}"
                 id="item-{{ $target_id }}-{{ $media->id }}">
                 <span class="remove-oldImage-btn"
                     onclick="removeMediaFromGallery('{{ $media->id }}', '{{ $target_id }}')">&times;</span>
-                <img src="{{ Storage::url($media->src) }}" class="rounded bg-white imagePreviewMultiple">
+                <img src="{{ Storage::url($media->src) }}" class="rounded w-100 galleryItemImg">
             </div>
         @empty
             {{-- Default placeholder when no data exists --}}
-            <div class="no-image-placeholder border rounded d-flex align-items-center justify-content-center bg-white imagePreviewSingle">
+            <div class="col-md-3 col-sm-4 col-6 no-image-placeholder">
+            <div class=" border rounded d-flex align-items-center justify-content-center bg-white imagePreviewSingle">
                 <div class="text-center text-muted">
                     <i class="mdi mdi-image-multiple-outline fs-2"></i>
                     <div style="font-size: 10px;">No Gallery</div>
                 </div>
+            </div>
             </div>
         @endforelse
     </div>
@@ -44,9 +51,9 @@
     <input type="hidden" name="{{ $input_name }}_deleted" id="media-input-{{ $target_id }}-deleted"
         value="">
 
-    <button type="button" class="btn btn-info btn-sm open-media-picker" data-target-id="{{ $target_id }}"
+    <button type="button" class="btn btn-info btn-sm open-media-picker {{ $button_class }}" data-target-id="{{ $target_id }}"
         data-multiple="true" data-limit="{{ $limit }}"> {{-- Added data-limit --}}
-        <i class="mdi mdi-image-multiple"></i> Select {{ $label }}
+        <i class="mdi mdi-image-multiple"></i> {{ $button_label }}
     </button>
 </div>
 
