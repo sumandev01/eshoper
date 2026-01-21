@@ -1,0 +1,17 @@
+.imagePreviewSingle,
+.imagePreviewMultiple {
+    width: 150px;
+    height: 100px;
+    display: block;
+    object-fit: contain;
+    border: 2px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.preview-image-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.page-link:focus {
+    box-shadow: none;
+}
