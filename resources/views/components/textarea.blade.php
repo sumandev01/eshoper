@@ -21,7 +21,6 @@
             </div>
         @endif
 
-        {{-- Error message for Editor --}}
         @error($name)
             <span class="text-danger mt-2 d-block">{{ $errors->first($name) }}</span>
         @enderror
@@ -31,6 +30,7 @@
             <style>
                 .ql-toolbar.ql-snow { border-radius: 5px 5px 0 0; border: 1px solid #ced4da; }
                 .ql-container.ql-snow { border-radius: 0 0 5px 5px; border: 1px solid #ced4da; }
+                .limit-reached { color: red !important; font-weight: bold; }
             </style>
         @endpush
 
@@ -54,20 +54,40 @@
                     placeholder: '{{ $placeholder }}'
                 });
 
+                const limit = {{ $maxlength ?? 0 }};
+                const hiddenInput = document.getElementById('hidden-{{ $name }}');
+                const display = document.getElementById('count-{{ $name }}');
+
+                // Initial count
+                if(display) { display.innerText = quill.getText().trim().length; }
+
+                quill.on('text-change', function(delta, oldDelta, source) {
+                    let text = quill.getText().trim();
+                    let length = text.length;
+
+                    // Maxlength logic
+                    if (limit > 0 && length > limit) {
+                        quill.deleteText(limit, length); // লিমিটের পরের টুকু ডিলিট করে দিবে
+                        length = limit;
+                    }
+
+                    hiddenInput.value = quill.root.innerHTML;
+                    
+                    if(display) { 
+                        display.innerText = length;
+                        if(limit > 0 && length >= limit) {
+                            display.classList.add('limit-reached');
+                        } else {
+                            display.classList.remove('limit-reached');
+                        }
+                    }
+                });
+
                 window.insertImageToQuill_{{ str_replace('-', '_', $name) }} = function(imageUrl) {
                     const range = quill.getSelection(true);
                     quill.insertEmbed(range.index, 'image', imageUrl, Quill.Sources.USER);
                     quill.setSelection(range.index + 1);
                 };
-
-                const hiddenInput = document.getElementById('hidden-{{ $name }}');
-                const display = document.getElementById('count-{{ $name }}');
-
-                quill.on('text-change', function() {
-                    hiddenInput.value = quill.root.innerHTML;
-                    const length = quill.getText().trim().length;
-                    if(display) { display.innerText = length; }
-                });
             });
         </script>
         @endpush
@@ -90,7 +110,6 @@
             </div>
         @endif
 
-        {{-- Error message for Textarea --}}
         @error($name)
             <span class="text-danger mt-2 d-block">{{ $errors->first($name) }}</span>
         @enderror

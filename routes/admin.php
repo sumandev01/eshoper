@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductInventory;
+use App\Http\Controllers\Admin\ProductInventoryController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TagController;
@@ -24,17 +25,13 @@ Route::prefix('admin')->group(function () {
         Route::get('/media//{id}/edit', 'edit')->name('admin.media.edit');
         Route::put('/media/{id}', 'update')->name('admin.media.update');
         Route::delete('/media/{id}', 'destroy')->name('admin.media.destroy');
-        Route::get('/media/tabpanel', 'tabpanel')->name('admin.media.tabpanel');
+
         Route::get('/media/get-gallery-ajax', 'getGalleryAjax')->name('admin.media.getGalleryAjax');
         Route::post('/media/ajax-store', 'ajaxStore')->name('admin.media.ajaxStore');
-
-        
-        Route::post('/media/product-store', 'productStore')->name('admin.media.productStore');
     });
 
     Route::controller(CategoryController::class)->group(function () {
         Route::get('/categories', 'index')->name('category.index');
-        // Route::get('/categories/add', 'add')->name('category.add');
         Route::post('/categories', 'store')->name('category.store');
         Route::get('/categories/{category}/edit', 'edit')->name('category.edit');
         Route::put('/categories/{category}', 'update')->name('category.update');
@@ -47,7 +44,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/sub-categories/{subCategory}/edit', 'edit')->name('sub-category.edit');
         Route::put('/sub-categories/{subCategory}', 'update')->name('sub-category.update');
         Route::delete('/sub-categories/{subCategory}', 'destroy')->name('sub-category.destroy');
-        Route::get('/get-sub-categories/{category_id}', 'getSubCategories')->name('sub-category.getSubCategories');
+
+        Route::get('/sub-categories/api', 'subCategoryApi')->name('getAllSubCategory');
     });
 
     Route::controller(BrandController::class)->group(function () {
@@ -85,18 +83,19 @@ Route::prefix('admin')->group(function () {
     Route::controller(ProductController::class)->group(function () {
         Route::get('/products', 'index')->name('product.index');
         Route::get('/products/add', 'add')->name('product.add');
+        Route::get('/products/{product}/view', 'view')->name('product.view');
         Route::post('/products', 'store')->name('product.store');
         Route::get('/products/{product}/edit', 'edit')->name('product.edit');
         Route::put('/products/{product}', 'update')->name('product.update');
         Route::delete('/products/{product}', 'destroy')->name('product.destroy');
     });
 
-    Route::controller(ProductInventory::class)->group(function () {
-        Route::get('/product/{product}/inventories', 'index')->name('product-inventory.index');
-        Route::get('/product/inventories/add', 'add')->name('product-inventory.add');
-        Route::post('/product/inventories', 'store')->name('product-inventory.store');
-        Route::get('/product/inventories/{productInventory}/edit', 'edit')->name('product-inventory.edit');
-        Route::put('/product/inventories/{productInventory}', 'update')->name('product-inventory.update');
-        Route::delete('/product/inventories/{productInventory}', 'destroy')->name('product-inventory.destroy');
+    Route::controller(ProductInventoryController::class)->group(function () {
+        Route::get('/products/{product}/inventories', 'index')->name('inventory.index');
+        Route::get('/products/inventories/add', 'add')->name('inventory.add');
+        Route::post('/products/inventories', 'store')->name('inventory.store');
+        Route::get('/products/inventories/{productInventory}/edit', 'edit')->name('inventory.edit');
+        Route::put('/products/inventories/{productInventory}', 'update')->name('inventory.update');
+        Route::delete('/products/inventories/{productInventory}', 'destroy')->name('inventory.destroy');
     });
 });

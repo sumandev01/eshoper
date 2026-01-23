@@ -57,20 +57,26 @@ class SubCategoryController extends Controller
         }
     }
 
-    public function getSubCategories($categoryId)
-    {
-        $subCategories = SubCategory::where('category_id', $categoryId)->get(['id', 'name']);
+    // public function getSubCategories($categoryId)
+    // {
+    //     $subCategories = SubCategory::where('category_id', $categoryId)->get(['id', 'name']);
 
-        if ($subCategories->isEmpty()) {
-            return response()->json([]);
-        }
+    //     if ($subCategories->isEmpty()) {
+    //         return response()->json([]);
+    //     }
 
-        return response()->json($subCategories);
-    }
+    //     return response()->json($subCategories);
+    // }
 
     public function destroy(SubCategory $subCategory)
     {
         $subCategory->delete();
         return redirect()->route('sub-category.index')->with('success', 'SubCategory deleted successfully');
+    }
+
+    public function subCategoryApi()
+    {
+        $subCategories = SubCategory::get(['id', 'name', 'category_id']);
+        return response()->json($subCategories);
     }
 }

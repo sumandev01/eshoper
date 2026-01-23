@@ -23,6 +23,8 @@ class Input extends Component
         public ?string $id = null,
         public ?string $class = null,
         public ?string $maxlength = null,
+        public ?bool $inputGroup = false,
+        public ?string $inputGroupText = null,
     )
     {
         //

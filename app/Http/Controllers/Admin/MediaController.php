@@ -84,12 +84,6 @@ class MediaController extends Controller
         }
     }
 
-    public function tabpanel()
-    {
-        $allMedia = Media::latest('id')->get();
-        return view('dashboard.media.tabpanel', compact('allMedia'));
-    }
-
     public function getGalleryAjax()
     {
         $allMedia = Media::latest('id')->paginate(24);
@@ -117,10 +111,5 @@ class MediaController extends Controller
         }
 
         return response()->json(['success' => false, 'message' => 'Failed to upload media. Ensure files are under 2MB.']);
-    }
-    public function productStore(Request $request)
-    {
-        dd($request->all());
-        // Handle product store logic here
     }
 }

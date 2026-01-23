@@ -29,8 +29,7 @@
 
         {{-- English: Check if the image is not the default placeholder --}}
         @if ($existing_image && !str_contains($existing_image, 'default.webp'))
-            <div class="preview-image-wrapper position-relative {{ $image_preview_class }}" id="item-{{ $target_id }}-preview"
-                style="width: {{ $width }}; height: {{ $height }};">
+            <div class="preview-image-wrapper position-relative gallery-item" id="item-{{ $target_id }}-preview">
                 <img src="{{ $existing_image }}" class="rounded bg-white imagePreviewSingle">
             </div>
         @else

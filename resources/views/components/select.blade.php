@@ -1,25 +1,27 @@
+@php
+    $id = $id ?? $name;
+@endphp
+
 <div class="form-group mb-3">
     @if ($label)
-        <label for="{{ $id ?? $name }}" class="form-label font-weight-bold">
+        <label for="{{ $id }}" class="form-label font-weight-bold">
             {{ $label }} @if($required) <span class="text-danger">*</span> @endif
         </label>
     @endif
 
     <select 
         name="{{ $name }}" 
-        id="{{ $id ?? $name }}" 
+        id="{{ $id }}" 
         class="form-select {{ $class ?? '' }} @error($name) is-invalid @enderror"
         {{ $required ? 'required' : '' }}
         {{ $multiple ? 'multiple' : '' }}
         {{ $disabled ? 'disabled' : '' }}
-        {{-- Values ​​from the database are being stored here. --}}
         data-selected-value="{{ $value }}"
     >
         @if ($placeholder)
             <option value="" selected disabled>{{ $placeholder }}</option>
         @endif
 
-        {{-- If the option is passed directly (e.g., $categories) --}}
         @if(!empty($options))
             @foreach($options as $key => $option)
                 @php
@@ -39,72 +41,6 @@
         <span class="text-danger mt-2 d-block">{{ $message }}</span>
     @enderror
 </div>
-
-@push('scripts')
-<script>
-    // Functions should be global and defined only once.
-    if (typeof fetchDynamicSubCategories !== 'function') {
-        function fetchDynamicSubCategories(parentId, targetSelectId, currentSelectedValue = null) {
-            const targetSelect = document.getElementById(targetSelectId);
-            if (!targetSelect || !parentId) return;
-
-            targetSelect.innerHTML = '<option value="" selected disabled>Loading...</option>';
-
-            // Route to fetch dynamic sub-categories
-            let fetchUrl = "{{ route('sub-category.getSubCategories', ':id') }}".replace(':id', parentId);
-
-            fetch(fetchUrl)
-                .then(response => {
-                    if (!response.ok) throw new Error('Data not found');
-                    return response.json();
-                })
-                .then(data => {
-                    targetSelect.innerHTML = '<option value="" selected disabled>Select Sub Category</option>';
-                    
-                    data.forEach(item => {
-                        let option = document.createElement('option');
-                        option.value = item.id;
-                        option.text = item.name;
-                        
-                        // Matching selected value (String comparison safest)
-                        if (currentSelectedValue && String(item.id) === String(currentSelectedValue)) {
-                            option.selected = true;
-                        }
-                        targetSelect.add(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    targetSelect.innerHTML = '<option value="" selected disabled>Error Loading Data</option>';
-                });
-        }
-    }
-
-    // Handling dynamic sub-category loading
-    (function() {
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryDropdown = document.getElementById('category_id');
-            const subCategoryDropdown = document.getElementById('sub_category_id');
-
-            if (categoryDropdown && subCategoryDropdown) {
-                // 1. For edit mode: As soon as the page loads
-                const savedParentId = categoryDropdown.value;
-                const savedSubId = subCategoryDropdown.getAttribute('data-selected-value');
-
-                if (savedParentId) {
-                    fetchDynamicSubCategories(savedParentId, 'sub_category_id', savedSubId);
-                }
-
-                // 2. If the user changes the main category
-                categoryDropdown.addEventListener('change', function() {
-                    fetchDynamicSubCategories(this.value, 'sub_category_id');
-                });
-            }
-        });
-    })();
-</script>
-@endpush
-
 
 
 

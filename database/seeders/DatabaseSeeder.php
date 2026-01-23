@@ -22,7 +22,8 @@ class DatabaseSeeder extends Seeder
             ColorSeeder::class,
             SizeSeeder::class,
             BrandSeeder::class,
-            TagSeeder::class
+            TagSeeder::class,
+            ProductSeeder::class,
         ]);
 
         User::factory()->create([

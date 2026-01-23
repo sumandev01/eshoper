@@ -52,4 +52,10 @@ class CategoryController extends Controller
         $category->delete();
         return redirect()->route('category.index')->with('success', 'Category deleted successfully');
     }
+
+    public function categoryApi()
+    {
+        $categories = Category::get(['id', 'name'])->toArray();
+        return response()->json($categories);
+    }
 }

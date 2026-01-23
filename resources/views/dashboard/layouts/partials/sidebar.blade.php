@@ -21,7 +21,7 @@
             </a>
         </li>
         <li class="nav-item {{ request()->routeIs('admin.media*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#media_menu" aria-expanded="false"
+            <a class="nav-link" data-bs-toggle="collapse" href="#media_menu" aria-expanded="{{ request()->routeIs('admin.media*') ? 'true' : 'false' }}"
                 aria-controls="media_menu">
                 <span class="menu-title">Media</span>
                 <i class="menu-arrow"></i>
@@ -40,8 +40,8 @@
                 </ul>
             </div>
         </li>
-        <li class="nav-item {{ request()->routeIs('category*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#ui-catManagement" aria-expanded="false"
+        <li class="nav-item {{ request()->routeIs('category*', 'sub-category*', 'brand*', 'size*', 'color*', 'tag*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#ui-catManagement" aria-expanded="{{ request()->routeIs('category*', 'sub-category*', 'brand*', 'size*', 'color*', 'tag*') ? 'true' : 'false' }}"
                 aria-controls="ui-catManagement">
                 <span class="menu-title">Catalog Management</span>
                 <i class="menu-arrow"></i>
@@ -77,18 +77,19 @@
                 </ul>
             </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#products" aria-expanded="false" aria-controls="products">
+        <li class="nav-item {{ request()->routeIs('product*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#products" aria-expanded="{{ request()->routeIs('product*') ? 'true' : 'false' }}" aria-controls="ui-products">
                 <span class="menu-title">Products</span>
-                <i class="mdi mdi-contacts menu-icon"></i>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-package-variant-closed menu-icon"></i>
             </a>
-            <div class="collapse" id="products">
+            <div class="collapse {{ request()->routeIs('product*') ? 'show' : '' }}" id="products">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/icons/font-awesome.html">All Products</a>
+                        <a class="nav-link {{ request()->routeIs('product.index') ? 'active' : '' }}" href="{{ route('product.index') }}">All Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('product.add') }}">Add Product</a>
+                        <a class="nav-link {{ request()->routeIs('product.add') ? 'active' : '' }}" href="{{ route('product.add') }}">Add Product</a>
                     </li>
                 </ul>
             </div>

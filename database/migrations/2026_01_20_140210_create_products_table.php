@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('sku')->unique();
             $table->float('price');
-            $table->float('buy_price')->default(0);
-            $table->float('discount')->default(0);
+            $table->float('buy_price')->nullable()->default(0);
+            $table->float('discount')->nullable()->default(0);
+            $table->float('tax')->nullable()->default(0);
             $table->float('stock')->default(0);
             $table->integer('rating')->default(0);
             $table->integer('views')->default(0);
