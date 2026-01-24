@@ -25,6 +25,7 @@ class ProductInventoryController extends Controller
     {
         $dataToUpdate = [
             'media_id' => $request->media_id,
+            'price' => $request->price ?? 0,
         ];
         
         if($request->filled('price')){
@@ -48,16 +49,45 @@ class ProductInventoryController extends Controller
         } else {
             // If it's a new record, set the stock value
             $productInventory->stock = $stockValue;
-            if(!$request->filled('price')){
-                $productInventory->price = 0;
-            }
+            
             $productInventory->save();
         }
+
+        $totalStock = ProductInventory::where('product_id', $request->product_id)->sum('stock');
+        Product::where('id', $request->product_id)->update(['stock' => $totalStock]);
 
         if ($productInventory) {
             return redirect()->back()->with('success', 'Product inventory added successfully.');
         } else {
             return redirect()->back()->with('error', 'Failed to add product inventory.');
         }
+    }
+
+    public function update(ProductInventoryRequest $request, ProductInventory $inventory)
+    {
+        if($inventory->product_id == $request->product_id){
+            $inventory->update([
+                'price' => $request->price,
+                'stock' => $request->stock,
+                'media_id' => $request->media_id,
+            ]);
+            $totalStock = ProductInventory::where('product_id', $request->product_id)->sum('stock');
+            Product::where('id', $request->product_id)->update(['stock' => $totalStock]);
+            
+            return redirect()->back()->with('success', 'Product inventory updated successfully.');
+        }
+        return redirect()->back()->with('error', 'Failed to update product inventory.');
+    }
+
+    public function destroy(ProductInventory $productInventory)
+    {
+        $productId = $productInventory->product_id;
+        $productInventory->delete();
+
+        // Recalculate total stock after deletion
+        $totalStock = ProductInventory::where('product_id', $productId)->sum('stock');
+        Product::where('id', $productId)->update(['stock' => $totalStock]);
+
+        return redirect()->back()->with('success', 'Product inventory deleted successfully.');
     }
 }

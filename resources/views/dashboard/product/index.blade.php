@@ -5,12 +5,7 @@
         <!-- Page Header -->
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box d-flex align-items-center justify-content-between mb-4">
-                    <h4 class="mb-0">Product List</h4>
-                    <a href="{{ route('product.add') }}" class="btn btn-primary">
-                        <i class="mdi mdi-plus me-1"></i> Add New Product
-                    </a>
-                </div>
+
             </div>
         </div>
 
@@ -18,9 +13,19 @@
         <div class="row">
             <div class="col-12">
                 <div class="card shadow-sm border-0">
-                    <div class="card-body">
+                    <div class="card-header py-4">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0">Product List</h4>
+                            <a href="{{ route('product.add') }}" class="btn btn-primary">
+                                <i class="mdi mdi-plus me-1"></i>
+                                <span>Add New Product</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body pt-3">
                         <div class="table-responsive">
-                            <table id="productTable" class="table table-hover table-bordered table-centered align-middle table-nowrap mb-0">
+                            <table id="productTable"
+                                class="table table-hover table-bordered table-centered align-middle table-nowrap mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 50px;">Sl</th>
@@ -48,14 +53,17 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                <p class="mb-0 fw-medium">{{ $product->details->category->name ?? 'N/A' }}</p>
-                                                <small class="text-muted">{{ $product->details->brand->name ?? 'No Brand' }}</small>
+                                                <p class="mb-0 fw-medium">{{ $product->details->category->name ?? 'N/A' }}
+                                                </p>
+                                                <small
+                                                    class="text-muted">{{ $product->details->brand->name ?? 'No Brand' }}</small>
                                             </td>
                                             <td>
                                                 <div class="fw-bold text-dark">৳{{ number_format($product->discount, 2) }}
                                                 </div>
                                                 @if ($product->discount > 0)
-                                                    <del class="text-muted small">৳{{ number_format($product->price, 2) }}</del>
+                                                    <del
+                                                        class="text-muted small">৳{{ number_format($product->price, 2) }}</del>
                                                 @endif
                                             </td>
                                             <td>
@@ -63,7 +71,8 @@
                                                     <span class="text-success fw-bold">{{ $product->stock }}</span>
                                                 @elseif($product->stock > 0)
                                                     <span class="text-warning fw-bold">{{ $product->stock }}
-                                                        (Low)</span>
+                                                        (Low)
+                                                    </span>
                                                 @else
                                                     <span class="text-danger fw-bold">Out of Stock</span>
                                                 @endif
@@ -87,15 +96,10 @@
                                                         class="btn btn-sm btn-outline-info" title="Edit">
                                                         <i class="mdi mdi-square-edit-outline"></i>
                                                     </a>
-                                                    <form action="{{ route('product.destroy', $product->id) }}"
-                                                        method="POST" class="d-inline delete-form">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="button"
-                                                            class="btn btn-sm btn-outline-danger deleteBtn" title="Delete">
-                                                            <i class="mdi mdi-delete"></i>
-                                                        </button>
-                                                    </form>
+                                                    <a href="{{ route('product.destroy', $product->id) }}"
+                                                        class="btn btn-danger btn-sm deleteBtn">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>

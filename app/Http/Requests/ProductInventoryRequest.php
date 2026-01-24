@@ -16,9 +16,21 @@ class ProductInventoryRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        if ($this->has('main_thumb')) {
+        // Determine media_id from various possible inputs and set it in the request data
+        $mediaId = $this->input('main_thumb') ?? $this->input('inventory_media');
+        // If media_id is still not found, check for dynamically named inputs
+        if(!$mediaId){
+            foreach ($this->all() as $key => $value) {
+                if (str_starts_with($key, 'inventory_media_')) {
+                    $mediaId = $value;
+                    break;
+                }
+            }
+        }
+        // If media_id is found, set it in the request data
+        if ($mediaId) {
             $this->merge([
-                'media_id' => $this->input('main_thumb'),
+                'media_id' => $mediaId,
             ]);
         }
     }
@@ -30,12 +42,12 @@ class ProductInventoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $productId = $this->method() === 'POST' ? 'required|exists:products,id' : 'required|exists:products,id';
-        $size_id = $this->method() === 'POST' ? 'required' : 'required';
-        $color_id = $this->method() === 'POST' ? 'required' : 'required';
-        $price = $this->method() === 'POST' ? 'nullable|numeric|min:0' : 'nullable|numeric|min:0';
-        $stock = $this->method() === 'POST' ? 'required|integer|min:0' : 'required|integer|min:0';
-        $media_id = $this->method() === 'POST' ? 'nullable' : 'nullable';
+        $productId = $this->method() === 'PUT' ? 'required|exists:products,id' : 'required|exists:products,id';
+        $size_id = $this->method() === 'PUT' ? 'nullable|exists:sizes,id' : 'required|exists:sizes,id';
+        $color_id = $this->method() === 'PUT' ? 'nullable|exists:colors,id' : 'required|exists:colors,id';
+        $price = $this->method() === 'PUT' ? 'nullable|numeric|min:0' : 'nullable|numeric|min:0';
+        $stock = $this->method() === 'PUT' ? 'required|integer|min:0' : 'required|integer|min:0';
+        $media_id = $this->method() === 'PUT' ? 'nullable|exists:media,id' : 'nullable|exists:media,id';
 
         return [
             'product_id' => $productId,

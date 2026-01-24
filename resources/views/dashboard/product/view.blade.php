@@ -145,20 +145,20 @@
                 <div class="card mb-4 shadow-sm border-0">
                     <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                         <h5 class="card-title mb-0">Inventory & Variations</h5>
-                        <a href="" class="btn btn-sm btn-soft-primary">
+                        <a href="{{ route('inventory.index', $product->id) }}" class="btn btn-sm btn-soft-primary">
                             <i class="mdi mdi-cog-outline me-1"></i> Manage Inventory
                         </a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table table-centered table-nowrap mb-0 align-middle">
+                            <table class="table table-centered table-bordered table-hover table-nowrap mb-0 align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>Variant (Size/Color)</th>
+                                        <th>Size</th>
+                                        <th>Color</th>
                                         <th>Image</th>
                                         <th>Price</th>
                                         <th>Stock</th>
-                                        <th class="text-end">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -166,13 +166,14 @@
                                         <tr>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <!-- Color Circle -->
-                                                    <div class="me-2"
-                                                        style="background-color: {{ $inv->color->color_code ?? '#eee' }}; border: 1px solid #ddd; width: 20px; height: 20px; border-radius: 50%;"
-                                                        title="{{ $inv->color->name ?? '' }}"></div>
                                                     <!-- Size Name -->
                                                     <span class="fw-medium">{{ $inv->size->name ?? 'Default' }}</span>
                                                 </div>
+                                            </td>
+                                            <td>
+                                                <div class="me-2"
+                                                        style="background-color: {{ $inv->color->color_code ?? '#eee' }}; border: 1px solid #ddd; width: 20px; height: 20px; border-radius: 50%;"
+                                                        title="{{ $inv->color->name ?? '' }}"></div>
                                             </td>
                                             <td>
                                                 <img src="{{ $inv->thumbnail }}" alt="Variant Image"
@@ -190,16 +191,10 @@
                                                     <span class="badge bg-danger-subtle text-danger">Out of Stock</span>
                                                 @endif
                                             </td>
-                                            <td class="text-end">
-                                                <a href="" class="btn btn-sm btn-outline-info"
-                                                    title="Edit Inventory">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                </a>
-                                            </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="text-center py-3 text-muted">No variants available
+                                            <td colspan="5" class="text-center py-3 text-muted">No variants available
                                                 for this product.</td>
                                         </tr>
                                     @endforelse
@@ -283,6 +278,7 @@
             </div>
         </div>
     </div>
+    @include('dashboard.product.inventory.edit-modal')
 @endsection
 
 @push('styles')

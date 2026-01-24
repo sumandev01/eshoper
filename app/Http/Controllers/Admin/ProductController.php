@@ -83,4 +83,13 @@ class ProductController extends Controller
         }
         return redirect()->back()->with('error', 'Failed to update product. Please try again.');
     }
+
+    public function destroy(Product $product)
+    {
+        $product->delete();
+        if ($product) {
+            return redirect()->back()->with('success', 'Product deleted successfully.');
+        }
+        return redirect()->back()->with('error', 'Failed to delete product. Please try again.');
+    }
 }

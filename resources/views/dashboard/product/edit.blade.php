@@ -5,8 +5,11 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-title-box d-flex align-products-center justify-content-between">
-                    <h4 class="mb-0">Add New Product</h4>
-                    <a href="{{ route('product.index') }}" class="btn btn-secondary btn-sm">Back to List</a>
+                    <h4 class="mb-0">Edit Product</h4>
+                    <a href="{{ route('product.index') }}" class="btn btn-primary btn-sm">
+                        <i class="mdi mdi-arrow-left me-1"></i>
+                        <span>Back to List</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -163,10 +166,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <button type="submit" class="btn btn-primary w-100 mb-2">
-                                <i class="mdi mdi-content-save me-1"></i> Save Product
-                            </button>
-                            <button type="reset" class="btn btn-outline-danger w-100">
-                                Reset Form
+                                <i class="mdi mdi-content-save me-1"></i> Update Product
                             </button>
                         </div>
                     </div>
