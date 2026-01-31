@@ -24,11 +24,8 @@ class DatabaseSeeder extends Seeder
             BrandSeeder::class,
             TagSeeder::class,
             ProductSeeder::class,
-        ]);
-
-        User::factory()->create([
-            'name' => 'Suman Dev',
-            'email' => 'sumondav444@gmailcom',
+            RoleSeeder::class,
+            UserSeeder::class
         ]);
     }
 }

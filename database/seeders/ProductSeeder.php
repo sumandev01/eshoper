@@ -12,7 +12,6 @@ use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Support\Str;
 use App\Models\ProductDetails;
-use App\Models\ProductGallery;
 use App\Models\ProductInventory;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -57,13 +56,7 @@ class ProductSeeder extends Seeder
             ]);
 
             // 3. Create product galleries
-            $allMedia = Media::limit(3)->pluck('id');
-            foreach ($allMedia as $mediaId) {
-                ProductGallery::create([
-                    'product_id' => $product->id,
-                    'media_id'   => $mediaId,
-                ]);
-            }
+            
 
             // 4. Product Tags (Many-to-Many)
             $tags = Tag::limit(2)->get();
