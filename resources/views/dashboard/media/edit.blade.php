@@ -24,7 +24,7 @@
                         </div>
 
                         <div class="mt-4 border-top pt-3">
-                            <p class="mb-2"><strong>Name:</strong> <span class="text-muted">{{ $media->name }}</span>
+                            <p class="mb-2"><strong>Name:</strong> <span class="text-muted">{{ $media->file_name }}</span>
                             </p>
                             <p class="mb-2"><strong>File Size:</strong> <span class="text-muted">
                                 @if ($media->size < 1000000)

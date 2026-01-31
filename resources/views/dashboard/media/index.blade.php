@@ -51,7 +51,7 @@
                             </div>
 
                             <div class="mt-2 text-left px-2">
-                                <h6 class="text-truncate mb-1" title="Sample-image-name.jpg">{{ $media->name }}</h6>
+                                <h6 class="text-truncate mb-1" title="Sample-image-name.jpg">{{ $media->file_name }}</h6>
                                 <small class="text-muted">
                                     @if ($media->size < 1000000)
                                         {{-- 1024 * 1024 Bytes = 1 MB --}}

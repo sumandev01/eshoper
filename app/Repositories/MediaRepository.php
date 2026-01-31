@@ -38,22 +38,69 @@ class MediaRepository
         ]);
     }
 
+    // public function updateByRequest(array $data, Media $media): Media
+    // {
+    //     $basename = $data['name'];
+    //     $newName = $basename;
+    //     $count = 1;
+    //     // Ensure the new name is unique
+    //     while (Media::where('name', $newName)->where('id', '!=', $media->id)->exists()) {
+    //         $newName = $basename . ' ' . $count;
+    //         $count++;
+    //     }
+    //     $data['name'] = $newName;
+    //     $media->update([
+    //         'name' => $data['name'],
+    //         'alt_text' => $data['alt_text'],
+    //         'description' => $data['description'] ?? null,
+    //     ]);
+    //     return $media;
+    // }
+
     public function updateByRequest(array $data, Media $media): Media
     {
-        $basename = $data['name'];
+        // Step 1: Get the base name from input
+        $basename = $data['name']; // Example: "Suman Profile"
         $newName = $basename;
         $count = 1;
-        // Ensure the new name is unique
+
+        // Step 2: Ensure the display name (name) is unique in the database
+        // This will make it "Suman Profile 1", "Suman Profile 2", etc.
         while (Media::where('name', $newName)->where('id', '!=', $media->id)->exists()) {
             $newName = $basename . ' ' . $count;
             $count++;
         }
-        $data['name'] = $newName;
+
+        // Step 3: Prepare for physical file renaming
+        $oldPath = $media->src;
+        $extension = pathinfo($oldPath, PATHINFO_EXTENSION);
+        $directory = dirname($oldPath);
+
+        // Create a slugged version of the unique display name
+        // Example: "Suman Profile 1" becomes "suman-profile-1.png"
+        $sluggedName = Str::slug($newName);
+        $newFileNameOnly = $sluggedName . '.' . $extension;
+
+        // Construct the full new path
+        $newPath = ($directory === '.' || $directory === '/') ? $newFileNameOnly : $directory . '/' . $newFileNameOnly;
+
+        // Step 4: Physically rename the file in storage
+        if (Storage::disk('public')->exists($oldPath)) {
+            // Only move if the path has actually changed
+            if ($oldPath !== $newPath) {
+                Storage::disk('public')->move($oldPath, $newPath);
+            }
+        }
+
+        // Step 5: Update the database record with everything
         $media->update([
-            'name' => $data['name'],
-            'alt_text' => $data['alt_text'],
-            'description' => $data['description'] ?? null,
+            'name' => $newName, // Saves: Suman Profile 1
+            'file_name' => $newFileNameOnly, // Saves: suman-profile-1.png
+            'src' => $newPath, // Saves: path/to/suman-profile-1.png
+            'alt_text' => $data['alt_text'] ?? $newName,
+            'description' => $data['description'] ?? $media->description,
         ]);
+
         return $media;
     }
     /**

@@ -7,6 +7,7 @@ use App\Repositories\MediaRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Media;
+use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
@@ -76,12 +77,18 @@ class MediaController extends Controller
 
     public function destroy(Media $id)
     {
+
+        if ($id->src && Storage::disk('public')->exists($id->src)) {
+            Storage::disk('public')->delete($id->src);
+        }
+
         $deleted = $id->delete();
+
         if ($deleted) {
             return redirect()->route('admin.media')->with('success', 'Media deleted successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Failed to delete media.');
         }
+
+        return redirect()->back()->with('error', 'Failed to delete media.');
     }
 
     public function getGalleryAjax()
