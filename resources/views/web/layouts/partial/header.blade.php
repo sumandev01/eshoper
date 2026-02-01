@@ -1,3 +1,7 @@
+@php
+    $user = auth('web')->user();
+@endphp
+
 <div class="container-fluid">
     <div class="row bg-secondary py-2 px-xl-5">
         <div class="col-lg-6 d-none d-lg-block">
@@ -121,8 +125,22 @@
                         <a href="contact.html" class="nav-item nav-link">Contact</a>
                     </div>
                     <div class="navbar-nav ml-auto py-0">
-                        <a href="" class="nav-item nav-link">Login</a>
-                        <a href="" class="nav-item nav-link">Register</a>
+                        @if ($user)
+                            <div class="d-flex justify-items-center align-items-center">
+                                @if ($user->media_id>0)
+                                    <img src="{{ $user->profile }}"
+                                    style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; padding: 2px" alt="">
+                                @else
+                                    <img src="{{ asset('user.png') }}"
+                                    style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; padding: 2px" alt="">
+                                @endif
+                                <a href="" class="nav-item nav-link">{{ $user->name }}</a>
+                            </div>
+                            <a href="{{ route('logout') }}" class="nav-item nav-link">Logout</a>
+                        @else
+                            <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+                            <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
+                        @endif
                     </div>
                 </div>
             </nav>

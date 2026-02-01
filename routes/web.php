@@ -15,8 +15,13 @@ Route::controller(WebController::class)->group(function () {
 });
 
 Route::controller(AuthController::class)->group(function () {
-    Route::get('/login', 'login')->name('login');
-    Route::get('/register', 'register')->name('register');
+    Route::middleware('guest')->group(function () {
+        Route::get('/login', 'login')->name('login');
+        Route::post('/login', 'loginRequest')->name('loginRequest');
+        Route::get('/register', 'register')->name('register');
+        Route::post('/register', 'registerRequest')->name('registerRequest');
+    });
+    Route::get('/logout', 'logout')->name('logout')->middleware('auth');
 });
 
 @include 'admin.php';

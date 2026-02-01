@@ -1,76 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Purple Admin</title>
-    <!-- Layout styles -->
-    <link rel="stylesheet" href="{{ asset('auth/css/style.css') }}">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="{{ asset('auth/images/favicon.png') }}" />
-</head>
-
-<body>
-    <div class="container-scroller">
-        <div class="container-fluid page-body-wrapper full-page-wrapper">
-            <div class="content-wrapper d-flex align-items-center auth">
-                <div class="row flex-grow">
-                    <div class="col-lg-4 mx-auto">
-                        <div class="auth-form-light text-left p-5">
-                            <div class="brand-logo">
-                                <img src="{{ asset('auth/images/logo.svg') }}" alt="images/logo.svg">
+@extends('auth.layouts.app')
+@section('content')
+    <div class="wpo-login-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <form class="wpo-accountWrapper" action="{{ route('registerRequest') }}" method="POST">
+                        @csrf
+                        <div class="wpo-accountInfo">
+                            <div class="wpo-accountInfoHeader">
+                                <a href="index.html"><img src="{{ asset('auth/images/logo-2.svg') }}"
+                                        alt=""></a>
+                                <a class="wpo-accountBtn" href="{{ route('login') }}">
+                                    <span class="">Log in</span>
+                                </a>
                             </div>
-                            <h4>New here?</h4>
-                            <h6 class="font-weight-light">Signing up is easy. It only takes a few steps</h6>
-                            <form class="pt-3">
-                                <div class="form-group">
-                                    <input type="text" class="form-control form-control-lg"
-                                        id="exampleInputUsername1" placeholder="Username">
-                                </div>
-                                <div class="form-group">
-                                    <input type="email" class="form-control form-control-lg" id="exampleInputEmail1"
-                                        placeholder="Email">
-                                </div>
-                                <div class="form-group">
-                                    <select class="form-select form-select-lg" id="exampleFormControlSelect2">
-                                        <option>Country</option>
-                                        <option>United States of America</option>
-                                        <option>United Kingdom</option>
-                                        <option>India</option>
-                                        <option>Germany</option>
-                                        <option>Argentina</option>
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <input type="password" class="form-control form-control-lg"
-                                        id="exampleInputPassword1" placeholder="Password">
-                                </div>
-                                <div class="mb-4">
-                                    <div class="form-check">
-                                        <label class="form-check-label text-muted">
-                                            <input type="checkbox" class="form-check-input"> I agree to all Terms &
-                                            Conditions </label>
-                                    </div>
-                                </div>
-                                <div class="mt-3 d-grid gap-2">
-                                    <a class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
-                                        href="../../index.html">SIGN UP</a>
-                                </div>
-                                <div class="text-center mt-4 font-weight-light"> Already have an account?
-                                    <a href="{{ route('login') }}" class="text-primary">Login</a>
-                                </div>
-                                <div class="text-center mt-4 font-weight-light"> Back to Home? 
-                                    <a href="{{ route('root') }}" class="text-primary">Click</a>
-                                </div>
-                            </form>
+                            <div class="image">
+                                <img src="{{ asset('auth/images/login.svg') }}" alt="">
+                            </div>
+                            <div class="back-home">
+                                <a class="wpo-accountBtn" href="{{ route('root') }}">
+                                    <span class="">Back To Home</span>
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                        <div class="wpo-accountForm form-style">
+                            <div class="fromTitle">
+                                <h2>Signup</h2>
+                                <p>Sign into your pages account</p>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-12 mb-3">
+                                    <label for="name">Full Name</label>
+                                    <input type="text" id="name" name="name" placeholder="Your name here.." value="{{ old('name') }}">
+                                    @error('name')
+                                        <span class="text-danger mb-2">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 mb-3">
+                                    <label>Email</label>
+                                    <input type="text" id="email" name="email" placeholder="Your email here.." value="{{ old('email') }}">
+                                    @error('email')
+                                        <span class="text-danger mb-2">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 mb-3">
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input class="pwd2" type="password" placeholder="Your password here.." name="password">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default reveal3" type="button"><i
+                                                    class="ti-eye"></i></button>
+                                        </span>
+                                    </div>
+                                    @error('password')
+                                        <span class="text-danger mb-2">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12 mb-3">
+                                    <div class="form-group">
+                                        <label>Confirm Password</label>
+                                        <input class="pwd3" type="password" placeholder="Your password here.." name="password_confirmation">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default reveal2" type="button"><i
+                                                    class="ti-eye"></i></button>
+                                        </span>
+                                    </div>
+                                    @error('password_confirmation')
+                                        <span class="text-danger mb-2">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-12">
+                                    <button type="submit" class="wpo-accountBtn">Signup</button>
+                                </div>
+                            </div>
+
+                            <p class="subText">Sign into your pages account <a href="{{ route('login') }}">Login</a></p>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-</body>
-
-</html>
+@endsection
