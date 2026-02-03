@@ -11,17 +11,22 @@ class Category extends Model
 {
     protected $guarded = ['id'];
 
+    public function products()
+    {
+        return $this->hasMany(ProductDetails::class);
+    }
+
+    public function subCategories()
+    {
+        return $this->hasMany(SubCategory::class);
+    }
+
     public function media()
     {
         return $this->belongsTo(Media::class);
     }
 
-    public function galleries()
-    {
-        return $this->belongsToMany(Media::class, 'category_galleries', 'category_id', 'media_id');
-    }
-
-    public function thumbnail(): Attribute
+    public function image(): Attribute
     {
         $url = asset('default.webp');
         if ($this->media && $this->media->src) {
@@ -29,22 +34,6 @@ class Category extends Model
         }
         return Attribute::make(
             get: fn() => $url,
-        );
-    }
-
-    protected function galleryUrls(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                // Check if galleries relation is loaded and not empty
-                if ($this->galleries->isNotEmpty()) {
-                    return $this->galleries->map(function ($media) {
-                        return $media->src ? Storage::url($media->src) : asset('default.webp');
-                    });
-                }
-                // Return empty collection or default image in array if no gallery exists
-                return [];
-            },
         );
     }
 

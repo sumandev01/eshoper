@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(WebController::class)->group(function () {
     Route::get('/', 'root')->name('root');
     Route::get('/shop', 'shop')->name('shop');
-    Route::get('/product', 'product')->name('product');
+    Route::get('/product/{slug}', 'product')->name('product');
     Route::get('/cart', 'cart')->name('cart');
     Route::get('/checkout', 'checkout')->name('checkout');
     Route::get('/contact', 'contact')->name('contact');

@@ -59,6 +59,16 @@ class Product extends Model
         return $this->hasOne(ProductDetails::class);
     }
 
+    public function colors()
+    {
+        return $this->belongsToMany(Color::class, 'product_inventories', 'product_id', 'color_id')->distinct();
+    }
+
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class, 'product_inventories', 'product_id', 'size_id')->distinct();
+    }
+
     protected static function boot()
     {
         parent::boot();

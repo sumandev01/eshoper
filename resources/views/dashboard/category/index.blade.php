@@ -26,7 +26,7 @@
                                     <td class="text-center">
                                         <img class="img-fluid"
                                             style=" border-radius: 0; object-fit: contain; aspect-ratio: 4 / 4; background-color: #fff; border: 1px solid #ccc;"
-                                            src="{{ $Category->thumbnail }}" alt="{{ $Category->alt }}">
+                                            src="{{ $Category->image }}" alt="{{ $Category->alt }}">
                                     </td>
                                     <td class="text-end">
                                         <a href="{{ route('category.edit', $Category?->id) }}" class="btn btn-info btn-sm">

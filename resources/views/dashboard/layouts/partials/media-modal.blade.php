@@ -50,13 +50,20 @@
                                 <form id="ajax-upload-form">
                                     @csrf
                                     <input type="hidden" name="user_id" value="{{ auth()?->id() }}">
+                                    
                                     <div id="drop-area" class="border-dashed py-5 text-center"
-                                        style="cursor: pointer; background: #fafafa; border: 2px dashed #ccc;">
-                                        <i class="mdi mdi-cloud-upload text-primary" style="font-size: 40px;"></i>
-                                        <p>Click here</p>
+                                        style="background: #fafafa; border: 2px dashed #ccc; position: relative;">
+                                        
+                                        <div id="click-trigger" style="cursor: pointer; display: inline-block;">
+                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 40px;"></i>
+                                            <p class="mb-0">Click here</p>
+                                        </div>
+                                        <p class="text-muted mt-2" style="font-size: 12px;">or drag and drop images anywhere in this box</p>
+
                                         <input type="file" name="files[]" id="file-input" multiple hidden
                                             accept="image/*">
                                     </div>
+
                                     <div id="error-container" class="mt-2"></div>
                                     <div class="row mt-3" id="tabpanel-image-preview-container"></div>
                                     <div class="text-right mt-3 pb-3">
@@ -112,7 +119,7 @@
         let currentTargetId = null;
         let isMultiple = false;
         let tempSelectedMedia = [];
-        let uploadFilesContainer = new DataTransfer(); // Container to store files for upload
+        let uploadFilesContainer = new DataTransfer(); 
 
         function adjustGridSystem() {
             if (isMultiple === true) {
@@ -138,7 +145,6 @@
                 e.preventDefault();
                 currentTargetId = $(this).data('target-id');
                 
-                // Check limit before opening modal and stop if exceeded
                 const limit = parseInt($(this).data('limit')) || 5; 
                 const currentImagesCount = $(`#media-preview-${currentTargetId}`).find('.gallery-item').length;
 
@@ -170,14 +176,41 @@
                 refreshGallery();
             });
 
-            // 2. Upload Section: Drop Area Click
-            $(document).on('click', '#drop-area', function(e) {
-                if (e.target !== document.getElementById('file-input')) {
-                    $('#file-input').click();
-                }
+            // 2. Upload Section: Only Trigger click on #click-trigger
+            $(document).on('click', '#click-trigger', function(e) {
+                $('#file-input').click();
             });
 
-            // 3. Upload Section: File Selection and Preview
+            // 3. Drag and Drop Logic for #drop-area
+            const dropArea = document.getElementById('drop-area');
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(dropArea).css({'border-color': '#b66dff', 'background': '#f3eaff'});
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(dropArea).css({'border-color': '#ccc', 'background': '#fafafa'});
+                }, false);
+            });
+
+            dropArea.addEventListener('drop', (e) => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    // এটি ইনপুটে ফাইল সেট করবে এবং চেইঞ্জ ইভেন্ট ট্রিগার করবে
+                    document.getElementById('file-input').files = files;
+                    $('#file-input').trigger('change');
+                }
+            }, false);
+
+            // 4. Upload Section: File Selection and Preview
             $('#file-input').on('change', function() {
                 const files = this.files;
                 const previewZone = $('#tabpanel-image-preview-container');
@@ -228,7 +261,7 @@
             });
             
 
-            // 4. Upload Section: Remove file from preview
+            // 5. Upload Section: Remove file from preview
             $(document).on('click', '.remove-upload-img', function() {
                 const parent = $(this).closest('.upload-preview-item');
                 const fileName = parent.data('filename');
@@ -243,7 +276,7 @@
                 parent.remove();
             });
 
-            // 5. Upload files via AJAX
+            // 6. Upload files via AJAX
             $('#ajax-upload-form').on('submit', function(e) {
                 e.preventDefault();
                 if (uploadFilesContainer.files.length === 0) return alert('Select files first!');
@@ -268,8 +301,7 @@
                         uploadFilesContainer = new DataTransfer();
                         btn.prop('disabled', false).text('Upload All');
 
-                        bootstrap.Tab.getInstance(document.querySelector('#gallery-tab'))
-                    .show();
+                        bootstrap.Tab.getInstance(document.querySelector('#gallery-tab')).show();
                         refreshGallery();
                     },
                     error: function() {
@@ -279,7 +311,7 @@
                 });
             });
 
-            // 6. Logic to select image from Gallery
+            // 7. Logic to select image from Gallery
             $(document).on('click', '.select-this-media', function() {
                 const mediaId = $(this).data('id');
                 const mediaSrc = $(this).data('src');
@@ -299,7 +331,6 @@
                         tempSelectedMedia.splice(index, 1);
                         $(this).removeClass('selected-media-border');
                     } else {
-                        // Check limit before adding new selection and stop if exceeded
                         if ((currentInPreviewCount + tempSelectedMedia.length) >= limit) {
                             Swal.fire({
                                 icon: 'warning',
@@ -315,7 +346,7 @@
                 }
             });
 
-            // 7. Confirm Selection (Display preview on main page)
+            // 8. Confirm Selection (Display preview on main page)
             $('.confirm-selection-btn').on('click', function() {
                 if (tempSelectedMedia.length === 0) return alert('Please select an image!');
 
@@ -336,7 +367,6 @@
 
                     tempSelectedMedia.forEach(media => {
                         let currentInGallery = previewContainer.find('.gallery-item').length;
-                        
                         if (currentInGallery < limit) {
                             if (previewContainer.find(`[data-media-id="${media.id}"]`).length === 0) {
                                 previewContainer.append(`
@@ -353,7 +383,7 @@
                 bootstrap.Modal.getInstance(document.getElementById('mediaPickerModal')).hide();
             });
 
-            // 8. Remove image from main page preview
+            // 9. Remove image from main page preview
             $(document).on('click', '.remove-image-btn', function() {
                 const wrapper = $(this).closest('.preview-image-wrapper, .gallery-item');
                 const targetId = wrapper.data('target');

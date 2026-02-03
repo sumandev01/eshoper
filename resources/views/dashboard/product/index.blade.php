@@ -59,11 +59,11 @@
                                                     class="text-muted">{{ $product->details->brand->name ?? 'No Brand' }}</small>
                                             </td>
                                             <td>
-                                                <div class="fw-bold text-dark">৳{{ number_format($product->discount, 2) }}
-                                                </div>
                                                 @if ($product->discount > 0)
-                                                    <del
-                                                        class="text-muted small">৳{{ number_format($product->price, 2) }}</del>
+                                                    <div class="fw-bold text-dark">৳{{ number_format($product->discount, 2) }}</div>
+                                                    <del class="text-muted small">৳{{ number_format($product->price, 2) }}</del>
+                                                @else
+                                                    <div class="fw-bold text-dark">৳{{ number_format($product->price, 2) }}</div>
                                                 @endif
                                             </td>
                                             <td>

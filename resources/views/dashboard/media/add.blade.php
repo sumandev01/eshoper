@@ -16,11 +16,17 @@
                         <p class="card-description"> You can upload multiple images at once. </p>
                         <input type="hidden" name="user_id" value="{{ auth()?->id() }}">
                         <div id="drop-area" class="border-dashed py-5 text-center"
-                            style="cursor: pointer; background: #fafafa; border: 2px dashed #ccc;">
-                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 40px;"></i>
-                            <p>Click here</p>
-                            <input type="file" name="files[]" id="file-input" multiple hidden accept="image/*">
-                        </div>
+                                        style="background: #fafafa; border: 2px dashed #ccc; position: relative;">
+                                        
+                                        <div id="click-trigger" style="cursor: pointer; display: inline-block;">
+                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 40px;"></i>
+                                            <p class="mb-0">Click here</p>
+                                        </div>
+                                        <p class="text-muted mt-2" style="font-size: 12px;">or drag and drop images anywhere in this box</p>
+
+                                        <input type="file" name="files[]" id="file-input" multiple hidden
+                                            accept="image/*">
+                                    </div>
                         <div id="error-container" class="mt-2"></div>
                         <div class="row mt-3" id="tabpanel-image-preview-container"></div>
                     </div>

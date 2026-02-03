@@ -21,7 +21,7 @@
 
                         <x-input label="Slug" name="slug" type="text" value="{{ $category?->slug }}" :required='false' placeholder="Enter category slug" />
 
-                        <x-media-thumbnail label="Image" input_name="media_id" :existing_image="$category->thumbnail" :existing_id="$category->media_id" />
+                        <x-media-thumbnail label="Image" input_name="media_id" :existing_image="$category->image" :existing_id="$category->media_id" />
 
                     </div>
                     <div class="card-footer pb-4 pt-3">

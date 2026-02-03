@@ -27,6 +27,7 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('web/css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     @stack('style')
 </head>
 
@@ -58,6 +59,7 @@
     <!-- Template Javascript -->
     <script src="{{ asset('web/js/main.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/sweetalert2.all.min.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script>
         // GLOBAL TOAST FUNCTION
         function showToast(type, message) {

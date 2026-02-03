@@ -34,12 +34,12 @@
                             <x-input name="name" label="Product Name" type="text" placeholder="Enter product name"
                                 :required="false" :maxlength="100" :value="$item->name ?? ''" />
 
-                            <x-input name="slug" label="Product Slug" type="text" placeholder="enter-product-slug"
+                            <x-input name="slug" type="hidden" placeholder="enter-product-slug"
                                 :required="false" :maxlength="100" :value="$item->slug ?? ''" />
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <x-input name="sku" type="text" placeholder="SKU-12345" label="Product SKU"
+                                    <x-input name="sku" type="text" placeholder="12345" label="Product SKU"
                                         :value="$item->sku ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">

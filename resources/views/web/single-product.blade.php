@@ -43,7 +43,7 @@
             </div>
 
             <div class="col-lg-7 pb-5">
-                <h3 class="font-weight-semi-bold">Colorful Stylish Shirt</h3>
+                <h3 class="font-weight-semi-bold">{{ $product->name }}</h3>
                 <div class="d-flex mb-3">
                     <div class="text-primary mr-2">
                         <small class="fas fa-star"></small>
@@ -54,11 +54,15 @@
                     </div>
                     <small class="pt-1">(50 Reviews)</small>
                 </div>
-                <h3 class="font-weight-semi-bold mb-4">$150.00</h3>
-                <p class="mb-4">Volup erat ipsum diam elitr rebum et dolor. Est nonumy elitr erat diam stet sit clita ea.
-                    Sanc invidunt ipsum et, labore clita lorem magna lorem ut. Erat lorem duo dolor no sea nonumy. Accus
-                    labore stet, est lorem sit diam sea et justo, amet at lorem et eirmod ipsum diam et rebum kasd rebum.
-                </p>
+                <div class="d-flex align-items-end mb-4">
+                    @if ($product->discount > 0)
+                        <h3 class="font-weight-semi-bold mb-0">৳{{ $product->discount }}</h3>
+                        <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳{{ $product->price }}</del></h4>
+                    @else
+                        <h3 class="font-weight-semi-bold">৳{{ $product->price }}</h3>
+                    @endif
+                </div>
+                <p class="mb-4">{{ $product->details->shortDescription }}</p>
                 <div class="d-flex mb-3">
                     <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
                     <form>
@@ -109,6 +113,14 @@
                         </div>
                     </form>
                 </div>
+                <div class="d-flex pt-2">
+                    <p class="text-dark font-weight-medium mb-0 mr-2">Quantity:</p>
+                    @if ($product->stock > 0)
+                        <p class="badge bg-success-subtle text-success">{{ $product->stock}} In Stock</p>
+                    @else
+                        <p class="badge bg-danger-subtle text-danger">Out of Stock</p>
+                    @endif
+                </div>
                 <div class="d-flex align-items-center mb-4 pt-2">
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
@@ -124,6 +136,28 @@
                         </div>
                     </div>
                     <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+                </div>
+                <div class="d-flex pt-2">
+                    <p class="text-dark font-weight-medium mb-0 mr-2">Category:</p>
+                    <span>{{ $product->details->category->name ?? 'N/A' }}</span>
+                </div>
+                <div class="d-flex pt-2">
+                    <p class="text-dark font-weight-medium mb-0 mr-2">Sub Category:</p>
+                    <span>{{ $product->details->subCategory->name ?? 'N/A' }}</span>
+                </div>
+                <div class="d-flex pt-2">
+                    <p class="text-dark font-weight-medium mb-0 mr-2">Brand:</p>
+                    <span>{{ $product->details->brand->name ?? 'N/A' }}</span>
+                </div>
+                <div class="d-flex pt-2">
+                    <p class="text-dark font-weight-medium mb-0 mr-2">SKU:</p>
+                    <span>{{ $product->sku ?? 'N/A' }}</span>
+                </div>
+                <div class="d-flex pt-2">
+                    <p class="text-dark font-weight-medium mb-0 mr-2">Tags:</p>
+                    <div class="d-inline-flex">
+                        <span>tags 1</span>
+                    </div>
                 </div>
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
@@ -154,61 +188,11 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
                         <h4 class="mb-3">Product Description</h4>
-                        <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt
-                            duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur
-                            invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet
-                            rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam
-                            consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam,
-                            ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr
-                            sanctus eirmod takimata dolor ea invidunt.</p>
-                        <p>Dolore magna est eirmod sanctus dolor, amet diam et eirmod et ipsum. Amet dolore tempor
-                            consetetur sed lorem dolor sit lorem tempor. Gubergren amet amet labore sadipscing clita clita
-                            diam clita. Sea amet et sed ipsum lorem elitr et, amet et labore voluptua sit rebum. Ea erat sed
-                            et diam takimata sed justo. Magna takimata justo et amet magna et.</p>
+                        {!! $product->details->description ?? 'No description available.' !!}
                     </div>
                     <div class="tab-pane fade" id="tab-pane-2">
                         <h4 class="mb-3">Additional Information</h4>
-                        <p>Eos no lorem eirmod diam diam, eos elitr et gubergren diam sea. Consetetur vero aliquyam invidunt
-                            duo dolores et duo sit. Vero diam ea vero et dolore rebum, dolor rebum eirmod consetetur
-                            invidunt sed sed et, lorem duo et eos elitr, sadipscing kasd ipsum rebum diam. Dolore diam stet
-                            rebum sed tempor kasd eirmod. Takimata kasd ipsum accusam sadipscing, eos dolores sit no ut diam
-                            consetetur duo justo est, sit sanctus diam tempor aliquyam eirmod nonumy rebum dolor accusam,
-                            ipsum kasd eos consetetur at sit rebum, diam kasd invidunt tempor lorem, ipsum lorem elitr
-                            sanctus eirmod takimata dolor ea invidunt.</p>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="col-md-6">
-                                <ul class="list-group list-group-flush">
-                                    <li class="list-group-item px-0">
-                                        Sit erat duo lorem duo ea consetetur, et eirmod takimata.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Amet kasd gubergren sit sanctus et lorem eos sadipscing at.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Duo amet accusam eirmod nonumy stet et et stet eirmod.
-                                    </li>
-                                    <li class="list-group-item px-0">
-                                        Takimata ea clita labore amet ipsum erat justo voluptua. Nonumy.
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
+                        {!! $product->details->information ?? 'No specifications provided.' !!}
                     </div>
                     <div class="tab-pane fade" id="tab-pane-3">
                         <div class="row">
