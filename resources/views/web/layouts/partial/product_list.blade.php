@@ -36,7 +36,7 @@
                 <p class="mb-0">Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of
                     {{ $products->total() }} results</p>
             </div>
-            <div class="mx-auto" id="pagination-links">
+            <div class="mx-auto" id="pagination-links" aria-label="Page navigation">
                 {{ $products->links('pagination::bootstrap-4') }}
             </div>
         </div>

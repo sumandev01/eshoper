@@ -38,7 +38,7 @@ class Product extends Model
 
     public function inventories()
     {
-        return $this->hasMany(ProductInventory::class)->latest('id');
+        return $this->hasMany(ProductInventory::class)->orderBy('size_id', 'desc');
     }
 
     public function thumbnail(): Attribute
@@ -67,6 +67,11 @@ class Product extends Model
     public function sizes()
     {
         return $this->belongsToMany(Size::class, 'product_inventories', 'product_id', 'size_id')->distinct();
+    }
+
+    public function categories()
+    {
+        return $this->belongsToMany(Category::class, 'product_details', 'product_id', 'category_id')->distinct();
     }
 
     protected static function boot()

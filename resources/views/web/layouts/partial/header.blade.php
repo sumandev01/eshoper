@@ -78,7 +78,7 @@
             </a>
             <nav class="collapse {{ Request::is('/') ? 'show' : 'position-absolute' }} navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0"
                 id="navbar-vertical"
-                style="{{ Request::is('/') ? '' : 'width: calc(100% - 30px); z-index: 1; background: rgba(255, 255, 255, 1);' }}">
+                style="{{ Request::is('/') ? '' : 'width: calc(100% - 30px); z-index: 999; background: rgba(255, 255, 255, 1);' }}">
                 <div class="navbar-nav w-100" style="{{ request()->routeIs('root') ? 'height: 410px' : '' }}">
                     @foreach ($categories as $category)
                         <div class="nav-item dropdown">

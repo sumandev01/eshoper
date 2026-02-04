@@ -54,7 +54,7 @@
                     </div>
                     <small class="pt-1">(50 Reviews)</small>
                 </div>
-                <div class="d-flex align-items-end mb-4">
+                <div class="d-flex align-items-end mb-4" id="price-container">
                     @if ($product->discount > 0)
                         <h3 class="font-weight-semi-bold mb-0">৳{{ $product->discount }}</h3>
                         <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳{{ $product->price }}</del></h4>
@@ -63,79 +63,65 @@
                     @endif
                 </div>
                 <p class="mb-4">{{ $product->details->shortDescription }}</p>
+                @if ($sizes && $sizes->count() > 0)
                 <div class="d-flex mb-3">
                     <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
-                    <form>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="size-1" name="size">
-                            <label class="custom-control-label" for="size-1">XS</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="size-2" name="size">
-                            <label class="custom-control-label" for="size-2">S</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="size-3" name="size">
-                            <label class="custom-control-label" for="size-3">M</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="size-4" name="size">
-                            <label class="custom-control-label" for="size-4">L</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="size-5" name="size">
-                            <label class="custom-control-label" for="size-5">XL</label>
-                        </div>
+                    <form id="size-form">
+                        @foreach ($sizes->sortByDesc('name') ?? [] as $size)
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input size-input" id="size-{{ $size->id }}"
+                                    name="size" value="{{ $size->id }}">
+                                <label class="custom-control-label"
+                                    for="size-{{ $size->id }}">{{ $size->name }}</label>
+                            </div>
+                        @endforeach
                     </form>
                 </div>
+                @endif
+                @if ($colors && $colors->count() > 0)
                 <div class="d-flex mb-4">
                     <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
-                    <form>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="color-1" name="color">
-                            <label class="custom-control-label" for="color-1">Black</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="color-2" name="color">
-                            <label class="custom-control-label" for="color-2">White</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="color-3" name="color">
-                            <label class="custom-control-label" for="color-3">Red</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="color-4" name="color">
-                            <label class="custom-control-label" for="color-4">Blue</label>
-                        </div>
-                        <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="color-5" name="color">
-                            <label class="custom-control-label" for="color-5">Green</label>
-                        </div>
+                    <form id="color-form">
+                        @foreach ($colors ?? [] as $color)
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input color-input"
+                                    id="color-{{ $color->id }}" name="color" value="{{ $color->id }}" disabled>
+                                <label class="custom-control-label"
+                                    for="color-{{ $color->id }}">{{ $color->name }}</label>
+                            </div>
+                        @endforeach
                     </form>
                 </div>
-                <div class="d-flex pt-2">
+                @endif
+                <div class="d-flex pt-2 mb-4">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Quantity:</p>
-                    @if ($product->stock > 0)
-                        <p class="badge bg-success-subtle text-success">{{ $product->stock}} In Stock</p>
-                    @else
-                        <p class="badge bg-danger-subtle text-danger">Out of Stock</p>
-                    @endif
+                    <span id="variant-stock-display">
+                        @if ($product->stock > 0)
+                            <span class="text-success fw-bold">{{ $product->stock }} In Stock (Total)</span>
+                        @else
+                            <span class="text-danger fw-bold">Out of Stock</span>
+                        @endif
+                    </span>
                 </div>
                 <div class="d-flex align-items-center mb-4 pt-2">
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
-                            <button class="btn btn-primary btn-minus">
+                            <button type="button" class="btn btn-primary btn-minus" disabled>
                                 <i class="fa fa-minus"></i>
                             </button>
                         </div>
-                        <input type="text" class="form-control bg-secondary text-center" value="1">
+                        <input type="text" id="product-quantity" class="form-control bg-secondary text-center"
+                            value="1" min="1" disabled>
                         <div class="input-group-btn">
-                            <button class="btn btn-primary btn-plus">
+                            <button type="button" class="btn btn-primary btn-plus" disabled>
                                 <i class="fa fa-plus"></i>
                             </button>
                         </div>
                     </div>
-                    <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
+                    <button id="add-to-cart-btn" class="btn btn-primary px-3 d-flex align-items-center" disabled>
+                        <i class="fa fa-shopping-cart"></i>
+                        <span class="ml-3">Add To Cart</span>
+                    </button>
                 </div>
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Category:</p>
@@ -156,7 +142,7 @@
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Tags:</p>
                     <div class="d-inline-flex">
-                        <span>tags 1</span>
+                        {{ $tags->pluck('name')->implode(', ') ?? 'N/A' }}
                     </div>
                 </div>
                 <div class="d-flex pt-2">
@@ -199,8 +185,8 @@
                             <div class="col-md-6">
                                 <h4 class="mb-4">1 review for "Colorful Stylish Shirt"</h4>
                                 <div class="media mb-4">
-                                    <img src="{{ asset('web/img/user.jpg') }}" alt="Image" class="img-fluid mr-3 mt-1"
-                                        style="width: 45px;">
+                                    <img src="{{ asset('web/img/user.jpg') }}" alt="Image"
+                                        class="img-fluid mr-3 mt-1" style="width: 45px;">
                                     <div class="media-body">
                                         <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
                                         <div class="text-primary mb-2">
@@ -359,3 +345,265 @@
     </div>
     <!-- Products End -->
 @endsection
+@push('script')
+    <script>
+        $(document).ready(function() {
+            let currentStock = parseInt("{{ $product->stock }}") || 0;
+            const productId = "{{ $product->id }}";
+
+            // Check if the product has variants
+            const hasVariants = $('.size-input').length > 0 && $('.color-input').length > 0;
+
+            if (!hasVariants) {
+                if (currentStock > 0) {
+                    $('#add-to-cart-btn').prop('disabled', false);
+                    $('#product-quantity').prop('disabled', false);
+                    $('.btn-plus, .btn-minus').prop('disabled', false);
+                } else {
+                    $('#add-to-cart-btn').prop('disabled', true);
+                    $('#product-quantity').prop('disabled', true);
+                    $('.btn-plus, .btn-minus').prop('disabled', true);
+                }
+            }
+
+            // when size is selected
+            $('.size-input').on('change', function() {
+                let sizeId = $(this).val();
+                let colorInputs = $('.color-input');
+                let stockDisplay = $('#variant-stock-display');
+
+                $('.btn-plus, .btn-minus').prop('disabled', true);
+                $('#product-quantity').prop('disabled', true);
+
+                stockDisplay.html('<span class="text-muted fw-bold">Please select color</span>');
+
+                // Reset colors
+                colorInputs.prop('checked', false).prop('disabled', true);
+                colorInputs.closest('.custom-control').css('opacity', '0.4');
+                $('#add-to-cart-btn').prop('disabled', true);
+
+                $.ajax({
+                    url: "{{ route('getAvailableColors') }}",
+                    method: 'GET',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: productId,
+                        size_id: sizeId
+                    },
+                    success: function(response) {
+
+                        if (response.availableColors.length > 0) {
+                            colorInputs.each(function() {
+                                // DB theke asa id ke Number e convert korlam
+                                let currentInputColorId = Number($(this).val());
+
+                                // Check if this color id exists in the response array
+                                let isAvailable = response.availableColors.some(
+                                    function(id) {
+                                        return Number(id) === currentInputColorId;
+                                    });
+
+                                if (isAvailable) {
+                                    $(this).prop('disabled', false);
+                                    $(this).closest('.custom-control').css('opacity',
+                                        '1');
+                                }
+                            });
+                        }
+                    },
+                    error: function(err) {
+                        console.log("Error logic:", err);
+                    }
+                });
+            });
+
+            $('.color-input').on('change', function() {
+                let sizeId = $('.size-input:checked').val();
+                let colorId = $(this).val();
+                let priceContainer = $('#price-container');
+
+                const originalPrice = "{{ $product->price }}";
+                const originalDiscountedPrice = "{{ $product->discounted_price }}";
+
+
+                let cartBtn = $('#add-to-cart-btn');
+                let stockDisplay = $('#variant-stock-display');
+                let qtyInput = $('#product-quantity');
+
+                if (sizeId && colorId) {
+                    stockDisplay.html('<span class="text-muted fw-bold">Checking stock...</span>');
+                    $.ajax({
+                        url: "{{ route('checkStock') }}",
+                        method: 'GET',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            product_id: productId,
+                            size_id: sizeId,
+                            color_id: colorId
+                        },
+                        success: function(response) {
+                            currentStock = parseInt(response.stock);
+                            qtyInput.val(1);
+
+                            if (currentStock > 0) {
+                                $('.btn-plus, .btn-minus').prop('disabled', false);
+                                $('#product-quantity').prop('disabled', false);
+                            } else {
+                                $('.btn-plus, .btn-minus').prop('disabled', true);
+                                $('#product-quantity').prop('disabled', true);
+                            }
+
+                            if (response.price && response.price > 0) {
+                                let newPriceHtml = '<h3 class="font-weight-semi-bold mb-0">৳' +
+                                    response.price + '</h3>';
+                                if (originalPrice > response.price) {
+                                    newPriceHtml +=
+                                        '<h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳' +
+                                        originalPrice + '</del></h4>';
+                                }
+
+                                priceContainer.html(newPriceHtml);
+                            } else {
+                                let defaultPriceHtml = '';
+                                if (originalDiscountedPrice > 0) {
+                                    defaultPriceHtml =
+                                        '<h3 class="font-weight-semi-bold mb-0">৳' +
+                                        originalDiscountedPrice + '</h3>' +
+                                        '<h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳' +
+                                        originalPrice + '</del></h4>';
+                                } else {
+                                    defaultPriceHtml =
+                                        '<h3 class="font-weight-semi-bold mb-0">৳' +
+                                        originalPrice + '</h3>';
+                                }
+
+                                priceContainer.html(defaultPriceHtml);
+                            }
+
+                            if (currentStock > 0) {
+                                stockDisplay.html('<span class="text-success fw-bold"> ' +
+                                    currentStock + ' In Stock</span>');
+                                cartBtn.prop('disabled', false);
+                                qtyInput.attr('max', currentStock);
+                            } else {
+                                stockDisplay.html(
+                                    '<span class="text-danger fw-bold">Out of Stock</span>'
+                                );
+                                cartBtn.prop('disabled', true);
+                                qtyInput.attr('max', 0);
+                            }
+                        }
+                    });
+                }
+            });
+
+            $('.btn-plus').off('click').on('click', function() {
+                let qtyInput = $('#product-quantity');
+                let currentVal = parseInt(qtyInput.val());
+
+                if (currentVal < currentStock) {
+                    qtyInput.val(currentVal + 1);
+                } else {
+                    showToast('error', 'Sorry, only ' + currentStock + ' available in stock');
+                    qtyInput.val(currentStock);
+                }
+            });
+
+            $('.btn-minus').off('click').on('click', function() {
+                let qtyInput = $('#product-quantity');
+                let currentVal = parseInt(qtyInput.val());
+
+                if (currentVal > 1) {
+                    qtyInput.val(currentVal - 1);
+                }
+            });
+
+            $('#product-quantity').on('keyup change', function() {
+                let val = parseInt($(this).val());
+                if (val > currentStock) {
+                    showToast('error', 'Sorry, only ' + currentStock + ' available in stock');
+                    $(this).val(currentStock);
+                }
+
+                if (val < 1 || isNaN(val)) {
+                    $(this).val(1);
+                }
+            });
+
+            $('#add-to-cart-btn').on('click', function(e) {
+                e.preventDefault();
+                let sizeId = $('.size-input:checked').val() || null;
+                let colorId = $('.color-input:checked').val() || null;
+                let quantity = $('#product-quantity').val();
+                let productId = "{{ $product->id }}";
+
+                if (!hasVariants) {
+                    if ($('.size-input').length > 0 && !sizeId) {
+                        showToast('error', 'Please select a size');
+                        return;
+                    }
+
+                    if ($('.color-input').length > 0 && !colorId) {
+                        showToast('error', 'Please select a color');
+                        return;
+                    }
+                }
+
+                // Console log the cart item data
+                // console.log("--- Cart Item Data ---");
+                // console.log("Product ID:", productId);
+                // console.log("Size ID:", sizeId);
+                // console.log("Color ID:", colorId);
+                // console.log("Quantity:", quantity);
+                let cartBtn = $(this);
+                cartBtn.prop('disabled', true);
+                cartBtn.html(
+                    '<i class="spinner-border spinner-border-sm me-3" role="status" aria-hidden="true"></i> <span class="ml-3">Add To Cart</span>'
+                );
+
+                $.ajax({
+                    url: "{{ route('addToCart') }}",
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: productId,
+                        size_id: sizeId,
+                        color_id: colorId,
+                        quantity: quantity
+                    },
+                    success: function(response) {
+                        console.log("Server Response:", response);
+                        cartBtn.prop('disabled', false).html(
+                            '<i class="fa fa-shopping-cart me-3" aria-hidden="true"></i> <span class="ml-3">Go To Cart</span>'
+                        );
+                        if (response.status == 'success') {
+                            showToast('success', response.message);
+
+                            if ($('#cart-count').length) {
+                                $('#cart-count').text(response.cartCount);
+                            } else {
+                                showToast('error', response.message || 'Something went wrong!');
+                            }
+                        }
+                    },
+                    error: function(xhr) {
+                        cartBtn.prop('disabled', false).html(
+                            '<i class="fa fa-shopping-cart me-3" aria-hidden="true"></i> <span class="ml-3">Go To Cart</span>'
+                        );
+
+                        if (xhr.status === 401) {
+                            showToast('error', 'Please login first to add products to cart.');
+                            setTimeout(function() {
+                                window.location.href = "{{ route('login') }}";
+                            }, 1500);
+                        } else {
+                            showToast('error', xhr.responseJSON.message ||
+                                'Something went wrong!');
+                        }
+                    }
+                });
+
+            });
+        });
+    </script>
+@endpush

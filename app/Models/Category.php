@@ -26,6 +26,11 @@ class Category extends Model
         return $this->belongsTo(Media::class);
     }
 
+    public function categories()
+    {
+        return $this->belongsToMany(Product::class, 'product_details', 'category_id', 'product_id')->distinct();
+    }
+
     public function image(): Attribute
     {
         $url = asset('default.webp');

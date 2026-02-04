@@ -14,10 +14,15 @@ class ProductInventoryController extends Controller
 {
     public function index($product)
     {
-        $inventories = ProductInventory::latest('id')->where('product_id', $product)->get();
+        $inventories = ProductInventory::where('product_id', $product)
+            ->join('sizes', 'product_inventories.size_id', '=', 'sizes.id')
+            ->select('product_inventories.*')
+            ->orderBy('sizes.name', 'desc')
+            ->with(['size', 'color', 'media'])
+            ->get();
         $product = Product::get()->where('id', $product)->first();
-        $sizes = Size::latest('id')->get();
-        $colors = Color::latest('id')->get();
+        $sizes = Size::orderBy('name', 'desc')->get();
+        $colors = Color::orderBy('name', 'asc')->get();
         return view('dashboard.product.inventory.index', compact('product', 'sizes', 'colors', 'inventories'));
     }
 
@@ -27,8 +32,8 @@ class ProductInventoryController extends Controller
             'media_id' => $request->media_id,
             'price' => $request->price ?? 0,
         ];
-        
-        if($request->filled('price')){
+
+        if ($request->filled('price')) {
             $dataToUpdate['price'] = $request->price;
         };
 
@@ -43,13 +48,13 @@ class ProductInventoryController extends Controller
 
         $stockValue = $request->stock ?? 0;
 
-        if(!$productInventory->wasRecentlyCreated){
+        if (!$productInventory->wasRecentlyCreated) {
             // If the record already exists, increment the stock
             $productInventory->increment('stock', $stockValue);
         } else {
             // If it's a new record, set the stock value
             $productInventory->stock = $stockValue;
-            
+
             $productInventory->save();
         }
 
@@ -65,7 +70,7 @@ class ProductInventoryController extends Controller
 
     public function update(ProductInventoryRequest $request, ProductInventory $inventory)
     {
-        if($inventory->product_id == $request->product_id){
+        if ($inventory->product_id == $request->product_id) {
             $inventory->update([
                 'price' => $request->price,
                 'stock' => $request->stock,
@@ -73,7 +78,7 @@ class ProductInventoryController extends Controller
             ]);
             $totalStock = ProductInventory::where('product_id', $request->product_id)->sum('stock');
             Product::where('id', $request->product_id)->update(['stock' => $totalStock]);
-            
+
             return redirect()->back()->with('success', 'Product inventory updated successfully.');
         }
         return redirect()->back()->with('error', 'Failed to update product inventory.');

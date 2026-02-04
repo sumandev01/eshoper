@@ -8,7 +8,10 @@ Route::controller(WebController::class)->group(function () {
     Route::get('/', 'root')->name('root');
     Route::get('/shop', 'shop')->name('shop');
     Route::get('/product/{slug}', 'product')->name('product');
+    Route::get('/check-available-color', 'getAvailableColors')->name('getAvailableColors');
+    Route::get('/check-product-stock', 'checkStock')->name('checkStock');
     Route::get('/cart', 'cart')->name('cart');
+    Route::POST('/add-to-cart', 'addToCart')->name('addToCart');
     Route::get('/checkout', 'checkout')->name('checkout');
     Route::get('/contact', 'contact')->name('contact');
     Route::get('/about', 'about')->name('about');
