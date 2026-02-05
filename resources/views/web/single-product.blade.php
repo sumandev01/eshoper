@@ -19,19 +19,17 @@
         <div class="row px-xl-5">
             <div class="col-lg-5 pb-5">
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
-                    <div class="carousel-inner border">
+                    <div class="carousel-inner border" id="carousel-images-container">
                         <div class="carousel-item active">
-                            <img class="w-100 h-100" src="{{ asset('web/img/product-1.jpg') }}" alt="Image">
+                            <img id="main-image-preview" class="w-100 h-100" src="{{ $product->thumbnail }}"
+                                style="aspect-ratio: 1/1; object-fit: contain;" alt="Image">
                         </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="{{ asset('web/img/product-2.jpg') }}" alt="Image">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="{{ asset('web/img/product-3.jpg') }}" alt="Image">
-                        </div>
-                        <div class="carousel-item">
-                            <img class="w-100 h-100" src="{{ asset('web/img/product-4.jpg') }}" alt="Image">
-                        </div>
+                        @foreach ($product->galleries as $gallery)
+                            <div class="carousel-item">
+                                <img class="w-100 h-100" src="{{ Storage::url($gallery->src) }}"
+                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="Image">
+                            </div>
+                        @endforeach
                     </div>
                     <a class="carousel-control-prev" href="#product-carousel" data-slide="prev">
                         <i class="fa fa-2x fa-angle-left text-dark"></i>
@@ -64,34 +62,35 @@
                 </div>
                 <p class="mb-4">{{ $product->details->shortDescription }}</p>
                 @if ($sizes && $sizes->count() > 0)
-                <div class="d-flex mb-3">
-                    <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
-                    <form id="size-form">
-                        @foreach ($sizes->sortByDesc('name') ?? [] as $size)
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input size-input" id="size-{{ $size->id }}"
-                                    name="size" value="{{ $size->id }}">
-                                <label class="custom-control-label"
-                                    for="size-{{ $size->id }}">{{ $size->name }}</label>
-                            </div>
-                        @endforeach
-                    </form>
-                </div>
+                    <div class="d-flex mb-3">
+                        <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
+                        <form id="main-size-form">
+                            @foreach ($sizes->sortByDesc('name') ?? [] as $size)
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input variable-size-input"
+                                        id="size-{{ $size->id }}" name="size" value="{{ $size->id }}">
+                                    <label class="custom-control-label"
+                                        for="size-{{ $size->id }}">{{ $size->name }}</label>
+                                </div>
+                            @endforeach
+                        </form>
+                    </div>
                 @endif
                 @if ($colors && $colors->count() > 0)
-                <div class="d-flex mb-4">
-                    <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
-                    <form id="color-form">
-                        @foreach ($colors ?? [] as $color)
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input color-input"
-                                    id="color-{{ $color->id }}" name="color" value="{{ $color->id }}" disabled>
-                                <label class="custom-control-label"
-                                    for="color-{{ $color->id }}">{{ $color->name }}</label>
-                            </div>
-                        @endforeach
-                    </form>
-                </div>
+                    <div class="d-flex mb-4">
+                        <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
+                        <form id="main-color-form">
+                            @foreach ($colors ?? [] as $color)
+                                <div class="custom-control custom-radio custom-control-inline">
+                                    <input type="radio" class="custom-control-input variable-color-input"
+                                        id="color-{{ $color->id }}" name="color" value="{{ $color->id }}"
+                                        disabled>
+                                    <label class="custom-control-label"
+                                        for="color-{{ $color->id }}">{{ $color->name }}</label>
+                                </div>
+                            @endforeach
+                        </form>
+                    </div>
                 @endif
                 <div class="d-flex pt-2 mb-4">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Quantity:</p>
@@ -249,96 +248,32 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel related-carousel">
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{{ asset('web/img/product-1.jpg') }}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                    @foreach ($relatedProducts ?? [] as $item)
+                        <div class="card product-item border-0">
+                            <div
+                                class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                <img class="img-fluid w-100" src="{{ $item->thumbnail }}"
+                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item->name }}">
+                            </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <h6 class="text-truncate mb-3" title="{{ $item->name }}">{{ Str::limit($item->name, 30, '...') }}</h6>
+                                <div class="d-flex justify-content-center">
+                                    @if ($item->discount > 0)
+                                        <h6>৳{{ $item->discount }}</h6>
+                                        <h6 class="text-muted ml-2"><del>৳{{ $item->price }}</del></h6>
+                                    @else
+                                        <h6>৳{{ $item->price }}</h6>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                                <a href="" class="btn btn-sm text-dark p-0"><i
+                                        class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                <a href="" class="btn btn-sm text-dark p-0"><i
+                                        class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
                             </div>
                         </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{{ asset('web/img/product-2.jpg') }}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{{ asset('web/img/product-3.jpg') }}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{{ asset('web/img/product-4.jpg') }}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
-                    <div class="card product-item border-0">
-                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            <img class="img-fluid w-100" src="{{ asset('web/img/product-5.jpg') }}" alt="">
-                        </div>
-                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                            <div class="d-flex justify-content-center">
-                                <h6>$123.00</h6>
-                                <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                            </div>
-                        </div>
-                        <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                            <a href="" class="btn btn-sm text-dark p-0"><i
-                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -348,11 +283,16 @@
 @push('script')
     <script>
         $(document).ready(function() {
+            const sizeInputs = $('#main-size-form .variable-size-input');
+            const colorInputs = $('#main-color-form .variable-color-input');
             let currentStock = parseInt("{{ $product->stock }}") || 0;
             const productId = "{{ $product->id }}";
 
             // Check if the product has variants
-            const hasVariants = $('.size-input').length > 0 && $('.color-input').length > 0;
+            const hasVariants = $('.variable-size-input').length > 0 && $('.variable-color-input').length > 0;
+
+            const orginalGalley = $('#carousel-images-container').html();
+            const orginalControls = $('.carouse-control-prev, .carouse-control-next');
 
             if (!hasVariants) {
                 if (currentStock > 0) {
@@ -367,9 +307,9 @@
             }
 
             // when size is selected
-            $('.size-input').on('change', function() {
+            sizeInputs.on('change', function() {
                 let sizeId = $(this).val();
-                let colorInputs = $('.color-input');
+                let colorInputs = $('.variable-color-input');
                 let stockDisplay = $('#variant-stock-display');
 
                 $('.btn-plus, .btn-minus').prop('disabled', true);
@@ -417,8 +357,8 @@
                 });
             });
 
-            $('.color-input').on('change', function() {
-                let sizeId = $('.size-input:checked').val();
+            colorInputs.on('change', function() {
+                let sizeId = $('.variable-size-input:checked').val();
                 let colorId = $(this).val();
                 let priceContainer = $('#price-container');
 
@@ -444,6 +384,25 @@
                         success: function(response) {
                             currentStock = parseInt(response.stock);
                             qtyInput.val(1);
+
+                            if (response.image && response.image !== '') {
+                                $('#carousel-images-container').empty();
+
+                                let imageHtml = '';
+                                imageHtml += '<div class="carousel-item active">';
+                                imageHtml += '<img class="w-100 h-100" src="' + response.image +
+                                    '" style="aspect-ratio: 1/1; object-fit: contain;" alt="Image">';
+                                imageHtml += '</div>';
+
+                                $('.carousel-control-prev, .carousel-control-next').hide();
+
+                                $('#carousel-images-container').append(imageHtml);
+                            } else {
+                                $('#carousel-images-container').html(orginalGalley);
+                                $('.carouse-control-prev, .carouse-control-next').show();
+
+                                $('#product-carousel').carousel(0);
+                            }
 
                             if (currentStock > 0) {
                                 $('.btn-plus, .btn-minus').prop('disabled', false);
@@ -532,29 +491,29 @@
 
             $('#add-to-cart-btn').on('click', function(e) {
                 e.preventDefault();
-                let sizeId = $('.size-input:checked').val() || null;
-                let colorId = $('.color-input:checked').val() || null;
+                let sizeId = $('.variable-size-input:checked').val() || null;
+                let colorId = $('.variable-color-input:checked').val() || null;
                 let quantity = $('#product-quantity').val();
                 let productId = "{{ $product->id }}";
 
                 if (!hasVariants) {
-                    if ($('.size-input').length > 0 && !sizeId) {
+                    if ($('.variable-size-input').length > 0 && !sizeId) {
                         showToast('error', 'Please select a size');
                         return;
                     }
 
-                    if ($('.color-input').length > 0 && !colorId) {
+                    if ($('.variable-color-input').length > 0 && !colorId) {
                         showToast('error', 'Please select a color');
                         return;
                     }
                 }
 
                 // Console log the cart item data
-                // console.log("--- Cart Item Data ---");
-                // console.log("Product ID:", productId);
-                // console.log("Size ID:", sizeId);
-                // console.log("Color ID:", colorId);
-                // console.log("Quantity:", quantity);
+                console.log("--- Cart Item Data ---");
+                console.log("Product ID:", productId);
+                console.log("Size ID:", sizeId);
+                console.log("Color ID:", colorId);
+                console.log("Quantity:", quantity);
                 let cartBtn = $(this);
                 cartBtn.prop('disabled', true);
                 cartBtn.html(

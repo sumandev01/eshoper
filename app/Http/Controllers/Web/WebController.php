@@ -12,6 +12,7 @@ use App\Services\ProductFilterService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class WebController extends Controller
 {
@@ -26,12 +27,10 @@ class WebController extends Controller
     {
         // Get all products based on filters
         $products = $filterService->filter($request);
-
         // Return only partial view if request is AJAX request from shop page filter section
         if ($request->ajax()) {
             return view('web.layouts.partial.product_list', compact('products'))->render();
         }
-
         // Get shop sidebar data for filtering products based on filters applied on shop page
         $shopSidebarData = $filterService->shopSidebar();
         // Default full page load
@@ -44,7 +43,18 @@ class WebController extends Controller
         $sizes = $product->sizes;
         $colors = $product->colors;
         $tags = $product->tags;
-        return view('web.single-product', compact('product', 'sizes', 'colors', 'tags'));
+        $categoryId = $product->details->category_id ?? null;
+        $relatedProducts = Product::where('id', '!=', $product->id)
+        ->when($categoryId, function($query) use ($categoryId) {
+            return $query->whereHas('details', function ($q) use ($categoryId) {
+                $q->where('category_id', $categoryId);
+            });
+        })->inRandomOrder()->limit(8)->get();
+        if ($relatedProducts->isEmpty()) {
+            $relatedProducts = Product::where('id', '!=', $product->id)->inRandomOrder()->limit(8)->get();
+        }
+
+        return view('web.single-product', compact('product', 'sizes', 'colors', 'tags', 'relatedProducts'));
     }
 
     public function getAvailableColors(Request $request)
@@ -54,7 +64,7 @@ class WebController extends Controller
             ->where('product_id', $request->product_id)
             ->where('size_id', $request->size_id)
             ->where('stock', '>', 0)
-            ->pluck('color_id') // Color ID gulo nilam
+            ->pluck('color_id') // Color IDs of available colors
             ->toArray();
 
         return response()->json([
@@ -69,15 +79,22 @@ class WebController extends Controller
             ->where('color_id', $request->color_id)
             ->first();
 
+        $mediaUrl = '';
+        if ($variant && $variant->media && $variant->media->src) {
+            $mediaUrl = Storage::url($variant->media->src);
+        }
+
         if ($variant) {
             return response()->json([
                 'stock' => $variant->stock,
-                'price' => $variant->price
+                'price' => $variant->price,
+                'image' => $mediaUrl,
             ]);
         }
         return response()->json([
             'stock' => 0,
-            'price' => 0
+            'price' => 0,
+            'image' => '',
         ]);
     }
 
