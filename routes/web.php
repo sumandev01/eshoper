@@ -6,10 +6,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(WebController::class)->group(function () {
     Route::get('/', 'root')->name('root');
-    Route::get('/shop', 'shop')->name('shop');
-    Route::get('/product/{slug}', 'product')->name('product');
+    Route::get('/products', 'products')->name('products');
+    Route::get('/product/{slug}', 'productDetails')->name('productDetails');
+    Route::POST('/get-color-by-size', 'getColorBySize')->name('getColorBySize');
     Route::get('/check-available-color', 'getAvailableColors')->name('getAvailableColors');
-    Route::get('/check-product-stock', 'checkStock')->name('checkStock');
+
+    Route::get('/search', 'search')->name('check.stock');
+
+
+
+    Route::get('/get-signle-product-variant', 'getSignleProductVariantBySizeId')->name('getSignleProductVariantBySizeId');
     Route::get('/cart', 'cart')->name('cart');
     Route::POST('/add-to-cart', 'addToCart')->name('addToCart');
     Route::get('/checkout', 'checkout')->name('checkout');

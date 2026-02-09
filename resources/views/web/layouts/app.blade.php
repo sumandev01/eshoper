@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,14 +13,15 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
     <link href="{{ asset('web/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
-    
+
     <!-- sweetalert2 -->
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/sweetalert2.min.css') }}">
 
@@ -60,6 +60,14 @@
     <script src="{{ asset('web/js/main.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/sweetalert2.all.min.js') }}"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script src="{{ asset('web/js/addCart.js') }}"></script>
+    <script>
+        window.LaravelData = {
+            route_getColorBySize: "{{ route('getColorBySize') }}",
+            route_addToCart: "{{ route('addToCart') }}",
+            csrf_token: "{{ csrf_token() }}"
+        };
+    </script>
     <script>
         // GLOBAL TOAST FUNCTION
         function showToast(type, message) {

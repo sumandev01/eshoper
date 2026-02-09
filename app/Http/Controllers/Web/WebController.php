@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductInventory;
 use App\Models\Size;
 use App\Services\ProductFilterService;
+use App\Services\ProductWebService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,14 +17,21 @@ use Illuminate\Support\Facades\Storage;
 
 class WebController extends Controller
 {
+    private $webService;
+
+    public function __construct(ProductWebService $webService)
+    {
+        $this->webService = $webService;
+    }
     public function root()
     {
-        $products = Product::latest('id')->get();
+        $products = Product::latest('id')->where('status', 1)->get();
+        $latestProducts = $products->take(8);
         $categories = Category::latest('id')->withCount('products')->get();
-        return view('web.index', compact('products', 'categories'));
+        return view('web.index', compact('products', 'latestProducts', 'categories'));
     }
 
-    public function shop(Request $request, ProductFilterService $filterService)
+    public function products(Request $request, ProductFilterService $filterService)
     {
         // Get all products based on filters
         $products = $filterService->filter($request);
@@ -34,68 +42,46 @@ class WebController extends Controller
         // Get shop sidebar data for filtering products based on filters applied on shop page
         $shopSidebarData = $filterService->shopSidebar();
         // Default full page load
-        return view('web.shop', compact('products'), $shopSidebarData);
+        return view('web.products', compact('products'), $shopSidebarData);
     }
 
-    public function product($slug)
+    public function productDetails($slug)
     {
-        $product = Product::where('slug', $slug)->first();
-        $sizes = $product->sizes;
-        $colors = $product->colors;
-        $tags = $product->tags;
-        $categoryId = $product->details->category_id ?? null;
-        $relatedProducts = Product::where('id', '!=', $product->id)
-        ->when($categoryId, function($query) use ($categoryId) {
-            return $query->whereHas('details', function ($q) use ($categoryId) {
-                $q->where('category_id', $categoryId);
-            });
-        })->inRandomOrder()->limit(8)->get();
-        if ($relatedProducts->isEmpty()) {
-            $relatedProducts = Product::where('id', '!=', $product->id)->inRandomOrder()->limit(8)->get();
-        }
+        // Make sure the product exists or not
+        $product = Product::with(['sizes', 'colors', 'tags', 'details'])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-        return view('web.single-product', compact('product', 'sizes', 'colors', 'tags', 'relatedProducts'));
+        // Related products by category and random products
+        $relatedProducts = $this->webService->getRelatedProductsSinglePage($product);
+
+        // Return view
+        return view('web.single-product', [
+            'product'         => $product,
+            'sizes'           => $product->sizes,
+            'colors'          => $product->colors,
+            'tags'            => $product->tags,
+            'relatedProducts' => $relatedProducts
+        ]);
     }
 
+    public function getColorBySize(Request $request)
+    {
+        $colors = $this->webService->getColorsBySize($request);
+        return response()->json([
+            'colors' => $colors
+        ]);
+    }
+
+    // Filters available colors based on the selected size. For single product page.
     public function getAvailableColors(Request $request)
     {
-        // Inventory table theke data ana hocche
-        $availableColors = ProductInventory::query()
-            ->where('product_id', $request->product_id)
-            ->where('size_id', $request->size_id)
-            ->where('stock', '>', 0)
-            ->pluck('color_id') // Color IDs of available colors
-            ->toArray();
-
-        return response()->json([
-            'availableColors' => $availableColors
-        ]);
+        return $this->webService->singleProductGetColorBySize($request);
     }
 
-    public function checkStock(Request $request)
+    public function getSignleProductVariantBySizeId(Request $request)
     {
-        $variant = ProductInventory::where('product_id', $request->product_id)
-            ->where('size_id', $request->size_id)
-            ->where('color_id', $request->color_id)
-            ->first();
-
-        $mediaUrl = '';
-        if ($variant && $variant->media && $variant->media->src) {
-            $mediaUrl = Storage::url($variant->media->src);
-        }
-
-        if ($variant) {
-            return response()->json([
-                'stock' => $variant->stock,
-                'price' => $variant->price,
-                'image' => $mediaUrl,
-            ]);
-        }
-        return response()->json([
-            'stock' => 0,
-            'price' => 0,
-            'image' => '',
-        ]);
+        return $this->webService->singleProductGetVariantDetails($request);
     }
 
     public function cart()
@@ -105,15 +91,15 @@ class WebController extends Controller
 
     public function addToCart(Request $request)
     {
-        if(!Auth::check()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Please login to add to cart'
-            ], 401);
-        }
+        // if(!Auth::check()) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Please login to add to cart'
+        //     ], 401);
+        // }
         return response()->json([
             'status' => 'success',
-            'message' => 'Data received successfully',
+            'message' => 'Add to cart',
             'data' => $request->all()
         ]);
     }

@@ -19,7 +19,7 @@ class ProductInventoryRequest extends FormRequest
         // Determine media_id from various possible inputs and set it in the request data
         $mediaId = $this->input('main_thumb') ?? $this->input('inventory_media');
         // If media_id is still not found, check for dynamically named inputs
-        if(!$mediaId){
+        if (!$mediaId) {
             foreach ($this->all() as $key => $value) {
                 if (str_starts_with($key, 'inventory_media_')) {
                     $mediaId = $value;
@@ -42,20 +42,16 @@ class ProductInventoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $productId = $this->method() === 'PUT' ? 'required|exists:products,id' : 'required|exists:products,id';
-        $size_id = $this->method() === 'PUT' ? 'nullable|exists:sizes,id' : 'required|exists:sizes,id';
-        $color_id = $this->method() === 'PUT' ? 'nullable|exists:colors,id' : 'required|exists:colors,id';
-        $price = $this->method() === 'PUT' ? 'nullable|numeric|min:0' : 'nullable|numeric|min:0';
-        $stock = $this->method() === 'PUT' ? 'required|integer|min:0' : 'required|integer|min:0';
-        $media_id = $this->method() === 'PUT' ? 'nullable|exists:media,id' : 'nullable|exists:media,id';
+        $isUpdate = $this->isMethod('PUT') || $this->isMethod('PATCH');
 
         return [
-            'product_id' => $productId,
-            'size_id' => $size_id,
-            'color_id' => $color_id,
-            'price' => $price,
-            'stock' => $stock,
-            'media_id' => $media_id
+            'product_id' => 'required|exists:products,id',
+            'size_id'    => $isUpdate ? 'nullable|exists:sizes,id' : 'required|exists:sizes,id',
+            'color_id'   => $isUpdate ? 'nullable|exists:colors,id' : 'required|exists:colors,id',
+            'price'      => 'nullable|numeric|min:0',
+            'discount'   => 'nullable|numeric|min:0',
+            'stock'      => 'required|integer|min:0',
+            'media_id'   => 'nullable|exists:media,id'
         ];
     }
 

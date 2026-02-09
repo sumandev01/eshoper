@@ -35,7 +35,7 @@
                                         <th>SL</th>
                                         <th>Size</th>
                                         <th class="text-center">Color</th>
-                                        <th>Price</th>
+                                        <th>Price/ <br> Discount</th>
                                         <th class="text-center">Image</th>
                                         <th>Stock</th>
                                         <th class="text-end">Action</th>
@@ -51,7 +51,30 @@
                                                     style="background-color: {{ $item->color->color_code }}; border: 2px solid #ccc; width: 30px; height: 30px; border-radius: 50%;">
                                                 </div>
                                             </td>
-                                            <td class="fw-bold text-primary">৳{{ number_format($item->price, 2) }}</td>
+                                            <td class="fw-bold text-primary">
+                                                <div class="price-container">
+                                                    @php
+                                                        $displayDiscount =
+                                                            $item->use_main_discount == 1
+                                                                ? $item->product->discount
+                                                                : $item->discount;
+                                                        $displayPrice =
+                                                            $item->use_main_price == 1
+                                                                ? $item->product->price
+                                                                : $item->price;
+                                                    @endphp
+
+                                                    @if (!is_null($displayDiscount) && $displayDiscount > 0)
+                                                        <span
+                                                            style="color: gray; text-decoration: line-through;">৳{{ $displayPrice }}</span>
+                                                        <br>
+                                                        <span
+                                                            style="font-weight: bold; color: red;">৳{{ $displayDiscount }}</span>
+                                                    @else
+                                                        <span style="font-weight: bold;">&#2547;{{ $displayPrice }}</span>
+                                                    @endif
+                                                </div>
+                                            </td>
                                             <td class="text-center">
                                                 <img class="img-fluid"
                                                     style=" border-radius: 0; object-fit: contain; aspect-ratio: 4 / 4; background-color: #fff; border: 1px solid #ccc;"
@@ -100,16 +123,32 @@
                                     <x-select label="Color" name="color_id" :options="$colors" option_label="name"
                                         option_value="id" placeholder="Select color" :required="true" />
                                 </div>
-                                <div class="col-md-6">
-                                    <x-input label="Price" name="price" type="number" step="0.01"
-                                        placeholder="Enter price" :required='false' />
+                                <div class="col-md-12 checkBox mb-4">
+                                    <x-input id="variant_price" label="Price" name="price" type="number" step="0.01"
+                                        placeholder="Enter price" :required='true' />
+                                    <div class="check-box mt-2">
+                                        <input class="form-check-input" id="use_main_price" name="use_main_price"
+                                            type="checkbox">
+                                        <label for="use_main_price" style="cursor: pointer;">Default price</label>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-12 checkBox mb-4">
+                                    <x-input id="variant_discount" label="Discount Price" name="discount" type="number"
+                                        step="0.01" placeholder="Enter discount" :required='true' />
+                                    <div class="check-box mt-2">
+                                        <input class="form-check-input" id="use_main_discount" name="use_main_discount"
+                                            type="checkbox">
+                                        <label for="use_main_discount" style="cursor: pointer;">Default discount
+                                            price</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
                                     <x-input label="Quantity" name="stock" type="number"
                                         placeholder="Enter stock quantity" :required='true' />
                                 </div>
                             </div>
-                            <x-media-thumbnail label="Image" target_id="main_thumb" input_name="media_id" />
+                            <x-media-thumbnail label="Image" target_id="main_thumb" input_name="media_id"
+                                required="true" />
                         </div>
                         <div class="card-footer py-4">
                             <button type="submit" class="btn btn-primary">
@@ -124,16 +163,92 @@
     </div>
     @include('dashboard.product.inventory.edit-modal')
 @endsection
-
+@push('styles')
+    <style>
+        .checkBox .form-group {
+            margin-bottom: 0 !important;
+        }
+    </style>
+@endpush
 @push('scripts')
     <script>
         $(document).ready(function() {
+            const PriceInput = document.getElementById('variant_price');
+            const priceCheckBox = document.getElementById('use_main_price');
+            const DiscountInput = document.getElementById('variant_discount');
+            const discountCheckBox = document.getElementById('use_main_discount');
             $('#inventoryTable').DataTable({
                 "pageLength": 10,
                 "language": {
                     "searchPlaceholder": "Search inventory...",
                     "sSearch": ""
                 }
+            });
+
+            function togglePriceInput() {
+                if (priceCheckBox.checked) {
+                    PriceInput.value = '';
+                    PriceInput.readOnly = true;
+                    PriceInput.removeAttribute('required');
+                    PriceInput.style.backgroundColor = "#e9ecef";
+                } else {
+                    PriceInput.readOnly = false;
+                    PriceInput.setAttribute('required', 'required');
+                    PriceInput.style.backgroundColor = "#fff";
+                }
+            }
+
+            function toggleDiscountInput() {
+                if (discountCheckBox.checked) {
+                    DiscountInput.value = '';
+                    DiscountInput.readOnly = true;
+                    DiscountInput.removeAttribute('required');
+                    DiscountInput.style.backgroundColor = "#e9ecef";
+                } else {
+                    DiscountInput.disabled = false;
+                    DiscountInput.setAttribute('required', 'required');
+                    DiscountInput.style.backgroundColor = "#fff";
+                }
+            }
+
+            priceCheckBox.addEventListener('change', togglePriceInput);
+            discountCheckBox.addEventListener('change', toggleDiscountInput);
+
+            togglePriceInput();
+            toggleDiscountInput();
+        });
+
+        $(document).ready(function() {
+            function handleEditToggle(checkbox, inputId) {
+                const input = document.getElementById(inputId);
+                if (checkbox.checked) {
+                    input.value = '';
+                    input.readOnly = true;
+                    input.style.backgroundColor = "#e9ecef";
+                } else {
+                    input.readOnly = false;
+                    input.style.backgroundColor = "#fff";
+                }
+            }
+
+            $('.edit-price-check').each(function() {
+                const id = $(this).data('id');
+                handleEditToggle(this, 'edit_price_' + id);
+            });
+
+            $('.edit-discount-check').each(function() {
+                const id = $(this).data('id');
+                handleEditToggle(this, 'edit_discount_' + id);
+            });
+
+            $(document).on('change', '.edit-price-check', function() {
+                const id = $(this).data('id');
+                handleEditToggle(this, 'edit_price_' + id);
+            });
+
+            $(document).on('change', '.edit-discount-check', function() {
+                const id = $(this).data('id');
+                handleEditToggle(this, 'edit_discount_' + id);
             });
         });
     </script>

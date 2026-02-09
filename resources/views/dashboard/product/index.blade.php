@@ -88,6 +88,10 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="btn-group">
+                                                    <a href="{{ route('inventory.index', $product->id) }}"
+                                                        class="btn btn-sm btn-outline-secondary" title="View">
+                                                        <i class="mdi mdi-cog-outline me-1"></i>
+                                                    </a>
                                                     <a href="{{ route('product.view', $product->id) }}"
                                                         class="btn btn-sm btn-outline-secondary" title="View">
                                                         <i class="mdi mdi-eye"></i>
@@ -96,10 +100,10 @@
                                                         class="btn btn-sm btn-outline-info" title="Edit">
                                                         <i class="mdi mdi-square-edit-outline"></i>
                                                     </a>
-                                                    <a href="{{ route('product.destroy', $product->id) }}"
+                                                    {{-- <a href="{{ route('product.destroy', $product->id) }}"
                                                         class="btn btn-danger btn-sm deleteBtn">
                                                         <i class="mdi mdi-delete"></i>
-                                                    </a>
+                                                    </a> --}}
                                                 </div>
                                             </td>
                                         </tr>

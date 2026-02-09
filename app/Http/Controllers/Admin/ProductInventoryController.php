@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductInventory;
 use App\Models\Size;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ProductInventoryController extends Controller
 {
@@ -28,51 +29,66 @@ class ProductInventoryController extends Controller
 
     public function store(ProductInventoryRequest $request)
     {
-        $dataToUpdate = [
-            'media_id' => $request->media_id,
-            'price' => $request->price ?? 0,
-        ];
+        try {
+            return DB::transaction(function () use ($request) {
 
-        if ($request->filled('price')) {
-            $dataToUpdate['price'] = $request->price;
-        };
+                $useMainPrice = $request->use_main_price === 'on' ? 1 : 0;
+                $useMainDiscount = $request->use_main_discount === 'on' ? 1 : 0;
 
-        $productInventory = ProductInventory::updateOrCreate(
-            [
-                'product_id' => $request->product_id,
-                'size_id' => $request->size_id,
-                'color_id' => $request->color_id,
-            ],
-            $dataToUpdate
-        );
+                $finalPrice = ($useMainPrice === 1) ? null : $request->price;
+                $finalDiscount = ($useMainDiscount === 1) ? null : $request->discount;
 
-        $stockValue = $request->stock ?? 0;
+                $dataToUpdate = [
+                    'media_id'          => $request->media_id,
+                    'price'             => $finalPrice,
+                    'discount'          => $finalDiscount,
+                    'use_main_price'    => $useMainPrice,
+                    'use_main_discount' => $useMainDiscount,
+                ];
 
-        if (!$productInventory->wasRecentlyCreated) {
-            // If the record already exists, increment the stock
-            $productInventory->increment('stock', $stockValue);
-        } else {
-            // If it's a new record, set the stock value
-            $productInventory->stock = $stockValue;
+                $productInventory = ProductInventory::updateOrCreate(
+                    [
+                        'product_id' => $request->product_id,
+                        'size_id'    => $request->size_id,
+                        'color_id'   => $request->color_id,
+                    ],
+                    $dataToUpdate
+                );
 
-            $productInventory->save();
-        }
+                $stockValue = $request->stock ?? 0;
+                if (!$productInventory->wasRecentlyCreated) {
+                    $productInventory->increment('stock', $stockValue);
+                } else {
+                    $productInventory->stock = $stockValue;
+                    $productInventory->save();
+                }
 
-        $totalStock = ProductInventory::where('product_id', $request->product_id)->sum('stock');
-        Product::where('id', $request->product_id)->update(['stock' => $totalStock]);
+                $totalStock = ProductInventory::where('product_id', $request->product_id)->sum('stock');
+                Product::where('id', $request->product_id)->update(['stock' => $totalStock]);
 
-        if ($productInventory) {
-            return redirect()->back()->with('success', 'Product inventory added successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Failed to add product inventory.');
+                return redirect()->back()->with('success', 'Product inventory added successfully.');
+            });
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Something went wrong: ' . $e->getMessage());
         }
     }
 
     public function update(ProductInventoryRequest $request, ProductInventory $inventory)
     {
         if ($inventory->product_id == $request->product_id) {
+            $product = Product::findOrFail($request->product_id);
+
+            $useMainPrice = $request->has('use_main_price') ? 1 : 0;
+            $useMainDiscount = $request->has('use_main_discount') ? 1 : 0;
+
+            $finalPrice = ($useMainPrice === 1) ? null : $request->price;
+            $finalDiscount = ($useMainDiscount === 1) ? null : $request->discount;
+
             $inventory->update([
-                'price' => $request->price,
+                'price' => $finalPrice,
+                'discount' => $finalDiscount,
+                'use_main_price' => $useMainPrice,
+                'use_main_discount' => $useMainDiscount,
                 'stock' => $request->stock,
                 'media_id' => $request->media_id,
             ]);

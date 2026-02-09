@@ -1,6 +1,5 @@
 @extends('web.layouts.app')
 @section('content')
-    <!-- Page Header Start -->
     <div class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">Shop Detail</h1>
@@ -11,10 +10,6 @@
             </div>
         </div>
     </div>
-    <!-- Page Header End -->
-
-
-    <!-- Shop Detail Start -->
     <div class="container-fluid py-5">
         <div class="row px-xl-5">
             <div class="col-lg-5 pb-5">
@@ -53,14 +48,28 @@
                     <small class="pt-1">(50 Reviews)</small>
                 </div>
                 <div class="d-flex align-items-end mb-4" id="price-container">
-                    @if ($product->discount > 0)
-                        <h3 class="font-weight-semi-bold mb-0">৳{{ $product->discount }}</h3>
-                        <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳{{ $product->price }}</del></h4>
-                    @else
-                        <h3 class="font-weight-semi-bold">৳{{ $product->price }}</h3>
+                    @php
+                        $mainPrice = $product->price;
+                        $discountPrice = $product->discount;
+
+                        if (isset($productInventory)) {
+                            $mainPrice = $productInventory->user_main_price == 1 ? $product->price : $productInventory->price;
+                            $discountPrice = $productInventory->user_main_discount == 1 ? $product->discount : $productInventory->discount;
+                        }
+                    @endphp
+
+                    @if (($discountPrice ?? 0) > 0)
+                        <h3 class="font-weight-semi-bold mb-0 product_main_price">৳{{ $discountPrice }}</h3>
+                        @if (($mainPrice ?? 0) > 0)
+                            <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳{{ $mainPrice }}</del></h4>
+                        @endif
+                    @elseif(($mainPrice ?? 0) > 0)
+                        <h3 class="font-weight-semi-bold product_main_price">৳{{ $mainPrice }}</h3>
                     @endif
                 </div>
+
                 <p class="mb-4">{{ $product->details->shortDescription }}</p>
+
                 @if ($sizes && $sizes->count() > 0)
                     <div class="d-flex mb-3">
                         <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
@@ -76,32 +85,29 @@
                         </form>
                     </div>
                 @endif
+
                 @if ($colors && $colors->count() > 0)
                     <div class="d-flex mb-4">
                         <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
-                        <form id="main-color-form">
-                            @foreach ($colors ?? [] as $color)
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input variable-color-input"
-                                        id="color-{{ $color->id }}" name="color" value="{{ $color->id }}"
-                                        disabled>
-                                    <label class="custom-control-label"
-                                        for="color-{{ $color->id }}">{{ $color->name }}</label>
-                                </div>
-                            @endforeach
+                        <form id="main-color-form" class="d-flex flex-wrap">
+                            <span id="color-selection-message" class="text-muted small">Please select a size to see
+                                available colors</span>
+                            <div id="dynamic-colors-container" class="d-flex"></div>
                         </form>
                     </div>
                 @endif
+
                 <div class="d-flex pt-2 mb-4">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Quantity:</p>
                     <span id="variant-stock-display">
                         @if ($product->stock > 0)
-                            <span class="text-success fw-bold">{{ $product->stock }} In Stock (Total)</span>
+                            <span class="text-success fw-bold product_stock">{{ $product->stock }} In Stock (Total)</span>
                         @else
                             <span class="text-danger fw-bold">Out of Stock</span>
                         @endif
                     </span>
                 </div>
+
                 <div class="d-flex align-items-center mb-4 pt-2">
                     <div class="input-group quantity mr-3" style="width: 130px;">
                         <div class="input-group-btn">
@@ -122,6 +128,7 @@
                         <span class="ml-3">Add To Cart</span>
                     </button>
                 </div>
+
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Category:</p>
                     <span>{{ $product->details->category->name ?? 'N/A' }}</span>
@@ -147,18 +154,10 @@
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
                     <div class="d-inline-flex">
-                        <a class="text-dark px-2" href="">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a class="text-dark px-2" href="">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a class="text-dark px-2" href="">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
-                        <a class="text-dark px-2" href="">
-                            <i class="fab fa-pinterest"></i>
-                        </a>
+                        <a class="text-dark px-2" href=""><i class="fab fa-facebook-f"></i></a>
+                        <a class="text-dark px-2" href=""><i class="fab fa-twitter"></i></a>
+                        <a class="text-dark px-2" href=""><i class="fab fa-linkedin-in"></i></a>
+                        <a class="text-dark px-2" href=""><i class="fab fa-pinterest"></i></a>
                     </div>
                 </div>
             </div>
@@ -237,9 +236,6 @@
             </div>
         </div>
     </div>
-    <!-- Shop Detail End -->
-
-
     <!-- Products Start -->
     <div class="container-fluid py-5">
         <div class="text-center mb-4">
@@ -249,14 +245,35 @@
             <div class="col">
                 <div class="owl-carousel related-carousel">
                     @foreach ($relatedProducts ?? [] as $item)
-                        <div class="card product-item border-0">
+                        <div class="card product-item border-0 product-card" data-product-id="{{ $item->id }}">
                             <div
                                 class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                                 <img class="img-fluid w-100" src="{{ $item->thumbnail }}"
                                     style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item->name }}">
+                                @if ($item->inventories->count() > 0)
+                                    <div class="varient-product position-absolute d-flex justify-content-between bg-white"
+                                        style="bottom: 0; left: 0; width: 100%;">
+                                        {{-- Size dropdown --}}
+                                        <select class="form-control form-control-md shop-size-selector"
+                                            style="width: 100px">
+                                            <option value="" disabled>Size</option>
+                                            @foreach ($item->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
+                                                <option value="{{ $inv->size_id }}" {{ $index == 0 ? 'selected' : '' }}>
+                                                    {{ $inv->size->name ?? 'N/A' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        {{-- Color dropdown --}}
+                                        <select class="form-control form-control-md shop-color-selector"
+                                            style="width: 100px">
+                                            <option value="">Color</option>
+                                        </select>
+                                    </div>
+                                @endif
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3" title="{{ $item->name }}">{{ Str::limit($item->name, 30, '...') }}</h6>
+                                <h6 class="text-truncate mb-3" title="{{ $item->name }}">
+                                    {{ Str::limit($item->name, 30, '...') }}</h6>
                                 <div class="d-flex justify-content-center">
                                     @if ($item->discount > 0)
                                         <h6>৳{{ $item->discount }}</h6>
@@ -267,9 +284,9 @@
                                 </div>
                             </div>
                             <div class="card-footer d-flex justify-content-between bg-light border">
-                                <a href="" class="btn btn-sm text-dark p-0"><i
+                                <a href="{{ route('productDetails', $item->slug) }}" class="btn btn-sm text-dark p-0"><i
                                         class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                                <a href="" class="btn btn-sm text-dark p-0"><i
+                                <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart" data-product-id="{{ $item->id }}"><i
                                         class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
                             </div>
                         </div>
@@ -280,245 +297,169 @@
     </div>
     <!-- Products End -->
 @endsection
+
 @push('script')
     <script>
         $(document).ready(function() {
             const sizeInputs = $('#main-size-form .variable-size-input');
-            const colorInputs = $('#main-color-form .variable-color-input');
-            let currentStock = parseInt("{{ $product->stock }}") || 0;
+            const hasVariants = sizeInputs.length > 0;
             const productId = "{{ $product->id }}";
-
-            // Check if the product has variants
-            const hasVariants = $('.variable-size-input').length > 0 && $('.variable-color-input').length > 0;
-
+            let currentStock = parseInt("{{ $product->stock }}") || 0;
+            let selectInventoryId = null;
             const orginalGalley = $('#carousel-images-container').html();
-            const orginalControls = $('.carouse-control-prev, .carouse-control-next');
 
-            if (!hasVariants) {
-                if (currentStock > 0) {
-                    $('#add-to-cart-btn').prop('disabled', false);
-                    $('#product-quantity').prop('disabled', false);
-                    $('.btn-plus, .btn-minus').prop('disabled', false);
-                } else {
-                    $('#add-to-cart-btn').prop('disabled', true);
-                    $('#product-quantity').prop('disabled', true);
-                    $('.btn-plus, .btn-minus').prop('disabled', true);
-                }
+            function toggleCartControls(enable) {
+                $('#add-to-cart-btn, #product-quantity, .btn-plus, .btn-minus').prop('disabled', !enable);
             }
 
-            // when size is selected
+            if (!hasVariants && currentStock > 0) {
+                toggleCartControls(true);
+            } else {
+                toggleCartControls(false);
+            }
+
+            // Size Change
             sizeInputs.on('change', function() {
                 let sizeId = $(this).val();
-                let colorInputs = $('.variable-color-input');
                 let stockDisplay = $('#variant-stock-display');
+                let colorContainer = $('#dynamic-colors-container');
+                let colorMessage = $('#color-selection-message');
 
-                $('.btn-plus, .btn-minus').prop('disabled', true);
-                $('#product-quantity').prop('disabled', true);
-
+                colorContainer.empty();
+                colorMessage.show().text('Loading available colors...');
+                toggleCartControls(false);
                 stockDisplay.html('<span class="text-muted fw-bold">Please select color</span>');
-
-                // Reset colors
-                colorInputs.prop('checked', false).prop('disabled', true);
-                colorInputs.closest('.custom-control').css('opacity', '0.4');
-                $('#add-to-cart-btn').prop('disabled', true);
 
                 $.ajax({
                     url: "{{ route('getAvailableColors') }}",
                     method: 'GET',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        product_id: productId,
-                        size_id: sizeId
-                    },
+                    data: { product_id: productId, size_id: sizeId },
                     success: function(response) {
-
+                        colorMessage.hide();
                         if (response.availableColors.length > 0) {
-                            colorInputs.each(function() {
-                                // DB theke asa id ke Number e convert korlam
-                                let currentInputColorId = Number($(this).val());
-
-                                // Check if this color id exists in the response array
-                                let isAvailable = response.availableColors.some(
-                                    function(id) {
-                                        return Number(id) === currentInputColorId;
-                                    });
-
-                                if (isAvailable) {
-                                    $(this).prop('disabled', false);
-                                    $(this).closest('.custom-control').css('opacity',
-                                        '1');
-                                }
+                            let colorHtml = '';
+                            response.availableColors.forEach(function(color) {
+                                colorHtml += `
+                                    <div class="custom-control custom-radio custom-control-inline">
+                                        <input type="radio" class="custom-control-input variable-color-input"
+                                            id="color-${color.id}" name="color" value="${color.id}">
+                                        <label class="custom-control-label" for="color-${color.id}">${color.name}</label>
+                                    </div>`;
                             });
+                            colorContainer.html(colorHtml);
+                        } else {
+                            colorMessage.show().text('No colors available').addClass('text-danger');
                         }
-                    },
-                    error: function(err) {
-                        console.log("Error logic:", err);
                     }
                 });
             });
 
-            colorInputs.on('change', function() {
+            // Color Change
+            $(document).on('change', '.variable-color-input', function() {
                 let sizeId = $('.variable-size-input:checked').val();
                 let colorId = $(this).val();
                 let priceContainer = $('#price-container');
-
-                const originalPrice = "{{ $product->price }}";
-                const originalDiscountedPrice = "{{ $product->discounted_price }}";
-
-
-                let cartBtn = $('#add-to-cart-btn');
                 let stockDisplay = $('#variant-stock-display');
                 let qtyInput = $('#product-quantity');
 
                 if (sizeId && colorId) {
                     stockDisplay.html('<span class="text-muted fw-bold">Checking stock...</span>');
                     $.ajax({
-                        url: "{{ route('checkStock') }}",
+                        url: "{{ route('getSignleProductVariantBySizeId') }}",
                         method: 'GET',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                            product_id: productId,
-                            size_id: sizeId,
-                            color_id: colorId
-                        },
+                        data: { product_id: productId, size_id: sizeId, color_id: colorId },
                         success: function(response) {
                             currentStock = parseInt(response.stock);
                             qtyInput.val(1);
+                            selectInventoryId = response.inventory_id;
 
-                            if (response.image && response.image !== '') {
-                                $('#carousel-images-container').empty();
-
-                                let imageHtml = '';
-                                imageHtml += '<div class="carousel-item active">';
-                                imageHtml += '<img class="w-100 h-100" src="' + response.image +
-                                    '" style="aspect-ratio: 1/1; object-fit: contain;" alt="Image">';
-                                imageHtml += '</div>';
-
+                            if (response.image) {
+                                $('#carousel-images-container').html(
+                                    `<div class="carousel-item active"><img class="w-100 h-100" src="${response.image}" style="aspect-ratio:1/1; object-fit:contain;"></div>`
+                                );
                                 $('.carousel-control-prev, .carousel-control-next').hide();
-
-                                $('#carousel-images-container').append(imageHtml);
                             } else {
                                 $('#carousel-images-container').html(orginalGalley);
-                                $('.carouse-control-prev, .carouse-control-next').show();
-
-                                $('#product-carousel').carousel(0);
+                                $('.carousel-control-prev, .carousel-control-next').show();
                             }
 
                             if (currentStock > 0) {
-                                $('.btn-plus, .btn-minus').prop('disabled', false);
-                                $('#product-quantity').prop('disabled', false);
-                            } else {
-                                $('.btn-plus, .btn-minus').prop('disabled', true);
-                                $('#product-quantity').prop('disabled', true);
-                            }
-
-                            if (response.price && response.price > 0) {
-                                let newPriceHtml = '<h3 class="font-weight-semi-bold mb-0">৳' +
-                                    response.price + '</h3>';
-                                if (originalPrice > response.price) {
-                                    newPriceHtml +=
-                                        '<h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳' +
-                                        originalPrice + '</del></h4>';
-                                }
-
-                                priceContainer.html(newPriceHtml);
-                            } else {
-                                let defaultPriceHtml = '';
-                                if (originalDiscountedPrice > 0) {
-                                    defaultPriceHtml =
-                                        '<h3 class="font-weight-semi-bold mb-0">৳' +
-                                        originalDiscountedPrice + '</h3>' +
-                                        '<h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳' +
-                                        originalPrice + '</del></h4>';
-                                } else {
-                                    defaultPriceHtml =
-                                        '<h3 class="font-weight-semi-bold mb-0">৳' +
-                                        originalPrice + '</h3>';
-                                }
-
-                                priceContainer.html(defaultPriceHtml);
-                            }
-
-                            if (currentStock > 0) {
-                                stockDisplay.html('<span class="text-success fw-bold"> ' +
-                                    currentStock + ' In Stock</span>');
-                                cartBtn.prop('disabled', false);
+                                toggleCartControls(true);
                                 qtyInput.attr('max', currentStock);
+                                stockDisplay.html(`<span class="text-success fw-bold">${currentStock} In Stock</span>`);
                             } else {
-                                stockDisplay.html(
-                                    '<span class="text-danger fw-bold">Out of Stock</span>'
-                                );
-                                cartBtn.prop('disabled', true);
-                                qtyInput.attr('max', 0);
+                                toggleCartControls(false);
+                                stockDisplay.html('<span class="text-danger fw-bold">Out of Stock</span>');
                             }
+
+                            // Price update...
+                            let finalPrice = (response.use_main_price == 1 || !response.price) ? response.product_price : response.price;
+                            let finalDiscount = (response.use_main_discount == 1 || !response.discount) ? response.product_discount : response.discount;
+                            let priceHtml = finalDiscount > 0 ? `<h3 class="font-weight-semi-bold mb-0 product_main_price">৳${finalDiscount}</h3><h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳${finalPrice}</del></h4>` : `<h3 class="font-weight-semi-bold product_main_price">৳${finalPrice}</h3>`;
+                            priceContainer.html(priceHtml);
                         }
                     });
                 }
             });
 
-            $('.btn-plus').off('click').on('click', function() {
+            // Quantity Check Function
+            function checkStockLimit(targetValue) {
                 let qtyInput = $('#product-quantity');
-                let currentVal = parseInt(qtyInput.val());
-
-                if (currentVal < currentStock) {
-                    qtyInput.val(currentVal + 1);
-                } else {
-                    showToast('error', 'Sorry, only ' + currentStock + ' available in stock');
+                if (parseInt(targetValue) > currentStock) {
+                    showToast('error', 'Available stock is only ' + currentStock);
                     qtyInput.val(currentStock);
+                    return false;
                 }
+                return true;
+            }
+
+            // Plus Button
+            $('.btn-plus').on('click', function() {
+                let qtyInput = $('#product-quantity');
+                let nextVal = parseInt(qtyInput.val()) + 1;
+                checkStockLimit(nextVal);
             });
 
-            $('.btn-minus').off('click').on('click', function() {
+            // Minus Button
+            $('.btn-minus').on('click', function() {
                 let qtyInput = $('#product-quantity');
                 let currentVal = parseInt(qtyInput.val());
+                if (currentVal > 1) qtyInput.val(currentVal - 1);
+            });
 
-                if (currentVal > 1) {
-                    qtyInput.val(currentVal - 1);
+            // Input field manual change check
+            $('#product-quantity').on('change keyup', function() {
+                let val = $(this).val();
+                if (val !== '') {
+                    checkStockLimit(val);
                 }
             });
 
-            $('#product-quantity').on('keyup change', function() {
-                let val = parseInt($(this).val());
-                if (val > currentStock) {
-                    showToast('error', 'Sorry, only ' + currentStock + ' available in stock');
-                    $(this).val(currentStock);
-                }
-
-                if (val < 1 || isNaN(val)) {
-                    $(this).val(1);
-                }
-            });
-
+            // Add To Cart
             $('#add-to-cart-btn').on('click', function(e) {
                 e.preventDefault();
-                let sizeId = $('.variable-size-input:checked').val() || null;
-                let colorId = $('.variable-color-input:checked').val() || null;
-                let quantity = $('#product-quantity').val();
-                let productId = "{{ $product->id }}";
+                let quantity = parseInt($('#product-quantity').val());
 
-                if (!hasVariants) {
-                    if ($('.variable-size-input').length > 0 && !sizeId) {
-                        showToast('error', 'Please select a size');
-                        return;
-                    }
-
-                    if ($('.variable-color-input').length > 0 && !colorId) {
-                        showToast('error', 'Please select a color');
-                        return;
-                    }
+                if (quantity > currentStock) {
+                    showToast('error', 'You cannot add more than available stock.');
+                    return;
                 }
 
-                // Console log the cart item data
-                console.log("--- Cart Item Data ---");
-                console.log("Product ID:", productId);
-                console.log("Size ID:", sizeId);
-                console.log("Color ID:", colorId);
-                console.log("Quantity:", quantity);
+                // ... rest of your existing ajax call ...
+                let hasSize = $('.variable-size-input').length > 0;
+                let hasColor = $('.variable-color-input').length > 0;
+                let sizeId = hasSize ? $('.variable-size-input:checked').val() : null;
+                let colorId = hasColor ? $('.variable-color-input:checked').val() : null;
+                let productMainPriceText = $('.product_main_price').first().text();
+                let productMainPrice = parseFloat(productMainPriceText.replace('৳', ''));
+
+                if ((hasSize && !sizeId) || (hasColor && !colorId)) {
+                    showToast('error', 'Please select a size and color');
+                    return;
+                }
+
                 let cartBtn = $(this);
-                cartBtn.prop('disabled', true);
-                cartBtn.html(
-                    '<i class="spinner-border spinner-border-sm me-3" role="status" aria-hidden="true"></i> <span class="ml-3">Add To Cart</span>'
-                );
+                cartBtn.prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Adding...');
 
                 $.ajax({
                     url: "{{ route('addToCart') }}",
@@ -528,40 +469,22 @@
                         product_id: productId,
                         size_id: sizeId,
                         color_id: colorId,
-                        quantity: quantity
+                        quantity: quantity,
+                        price: productMainPrice,
+                        inventory_id: selectInventoryId
                     },
                     success: function(response) {
-                        console.log("Server Response:", response);
-                        cartBtn.prop('disabled', false).html(
-                            '<i class="fa fa-shopping-cart me-3" aria-hidden="true"></i> <span class="ml-3">Go To Cart</span>'
-                        );
+                        cartBtn.prop('disabled', false).html('<i class="fa fa-shopping-cart"></i> Add To Cart');
                         if (response.status == 'success') {
                             showToast('success', response.message);
-
-                            if ($('#cart-count').length) {
-                                $('#cart-count').text(response.cartCount);
-                            } else {
-                                showToast('error', response.message || 'Something went wrong!');
-                            }
+                            $('#cart-count').text(response.cartCount);
                         }
                     },
                     error: function(xhr) {
-                        cartBtn.prop('disabled', false).html(
-                            '<i class="fa fa-shopping-cart me-3" aria-hidden="true"></i> <span class="ml-3">Go To Cart</span>'
-                        );
-
-                        if (xhr.status === 401) {
-                            showToast('error', 'Please login first to add products to cart.');
-                            setTimeout(function() {
-                                window.location.href = "{{ route('login') }}";
-                            }, 1500);
-                        } else {
-                            showToast('error', xhr.responseJSON.message ||
-                                'Something went wrong!');
-                        }
+                        cartBtn.prop('disabled', false).html('<i class="fa fa-shopping-cart"></i> Add To Cart');
+                        alert(xhr.status === 401 ? 'Please login first' : 'Something went wrong');
                     }
                 });
-
             });
         });
     </script>

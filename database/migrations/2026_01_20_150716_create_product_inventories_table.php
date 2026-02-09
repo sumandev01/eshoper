@@ -22,6 +22,9 @@ return new class extends Migration
             $table->foreignIdFor(Color::class)->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Media::class)->nullable()->constrained()->onDelete('set null');
             $table->float('price')->nullable();
+            $table->float('discount')->nullable();
+            $table->tinyInteger('use_main_price')->default(1);
+            $table->tinyInteger('use_main_discount')->default(1);
             $table->integer('stock')->default(0);
             $table->timestamps();
         });

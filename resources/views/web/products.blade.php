@@ -170,7 +170,7 @@
                 if (sizes.length > 0) queryData.sizes = sizes;
 
                 $.ajax({
-                    url: "{{ route('shop') }}",
+                    url: "{{ route('products') }}",
                     method: "GET",
                     data: queryData,
                     beforeSend: function() {
@@ -180,6 +180,8 @@
                         // Show the new products and make them fully visible
                         $('#product-data-container').html(response);
                         $('#product-data-container').css('opacity', '1');
+
+                        initProductVariants('#product-data-container');
 
                         // 1. Create an empty object to store active filters
                         let activeParams = {};

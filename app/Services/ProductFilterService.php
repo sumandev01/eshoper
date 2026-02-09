@@ -16,10 +16,22 @@ class ProductFilterService
         $productsQuery = Product::where('status', 1);
         // Price filter (Remove $ or commas from input before query)
         if ($request->filled('min_price') && $request->filled('max_price')) {
-            $min = str_replace(['৳', '$', ','], '', $request->min_price);
-            $max = str_replace(['৳', '$', ','], '', $request->max_price);
-            $productsQuery->whereBetween('price', [$min, $max]);
+            $min = (float) str_replace(['৳', '$', ','], '', $request->min_price);
+            $max = (float) str_replace(['৳', '$', ','], '', $request->max_price);
+
+            $productsQuery->whereRaw("
+                (
+                    CASE 
+                        WHEN discount IS NOT NULL 
+                            AND discount > 0 
+                            AND discount < price
+                        THEN discount
+                        ELSE price
+                    END
+                ) BETWEEN ? AND ?
+            ", [$min, $max]);
         }
+
 
         // Color filter (Support multiple colors using whereIn)
         if ($request->filled('colors')) {
@@ -38,7 +50,7 @@ class ProductFilterService
         // Category filter
         if ($request->filled('categories')) {
             $productsQuery->whereHas('categories', function ($q) use ($request) {
-                $q->where('category_id', $request->categories);
+                $q->whereIn('category_id', (array) $request->categories);
             });
         }
 

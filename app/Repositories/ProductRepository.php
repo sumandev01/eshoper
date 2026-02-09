@@ -29,7 +29,6 @@ class ProductRepository
 
     public function storeByRequest($request)
     {
-        // dd($request->all());
         $product = Product::create([
             'name' => $request->name,
             'slug' => $request->slug,
@@ -56,16 +55,6 @@ class ProductRepository
             'meta_title' => $request->meta_title,
             'meta_description' => $request->meta_description,
         ]);
-
-
-        // ProductInventory::create([
-        //     'product_id' => $product->id,
-        //     'size_id' => $request->size_id,
-        //     'color_id' => $request->color_id,
-        //     'media_id' => $request->media_id,
-        //     'price' => $request->price,
-        //     'stock' => $request->stock,
-        // ]);
 
         if ($request->has('product_galleries')) {
             foreach ($request->product_galleries as $gallery) {
