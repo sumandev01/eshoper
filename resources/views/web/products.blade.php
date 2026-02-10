@@ -1,12 +1,14 @@
 @extends('web.layouts.app')
 @section('content')
-    <div class="container-fluid bg-secondary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 150px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Our Shop</h1>
-            <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0">Shop</p>
+    <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col col-xs-12">
+                <div class="wpo-breadcumb-wrap">
+                    <ol class="wpo-breadcumb-wrap">
+                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
+                        <li>Products</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
@@ -18,9 +20,11 @@
                     <div class="px-2">
                         <div id="price-range-slider" class="mb-3"></div>
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <input type="text" id="min-price" class="form-control form-control-sm text-center mr-2" readonly>
+                            <input type="text" id="min-price" class="form-control form-control-sm text-center mr-2"
+                                readonly>
                             <span class="text-muted">-</span>
-                            <input type="text" id="max-price" class="form-control form-control-sm text-center ml-2" readonly>
+                            <input type="text" id="max-price" class="form-control form-control-sm text-center ml-2"
+                                readonly>
                         </div>
                     </div>
                 </div>
@@ -32,8 +36,11 @@
                         @foreach ($categoryQuery ?? [] as $category)
                             <div
                                 class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-2">
-                                <input type="checkbox" class="custom-control-input category-checkbox" name="categories[]" id="category-{{ $category->id }}" value="{{ $category->id }}" {{ in_array($category->id, (array) request('categories')) ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="category-{{ $category->id }}">{{ $category->name }}</label>
+                                <input type="checkbox" class="custom-control-input category-checkbox" name="categories[]"
+                                    id="category-{{ $category->id }}" value="{{ $category->id }}"
+                                    {{ in_array($category->id, (array) request('categories')) ? 'checked' : '' }}>
+                                <label class="custom-control-label"
+                                    for="category-{{ $category->id }}">{{ $category->name }}</label>
                                 <span class="badge border font-weight-normal">{{ $category->categories_count }}</span>
                             </div>
                         @endforeach
@@ -47,8 +54,11 @@
                         @foreach ($colorQuery ?? [] as $color)
                             <div
                                 class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-2">
-                                <input type="checkbox" class="custom-control-input color-checkbox" name="colors[]" id="color-{{ $color->id }}" value="{{ $color->id }}" {{ in_array($color->id, (array) request('colors')) ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="color-{{ $color->id }}">{{ $color->name }}</label>
+                                <input type="checkbox" class="custom-control-input color-checkbox" name="colors[]"
+                                    id="color-{{ $color->id }}" value="{{ $color->id }}"
+                                    {{ in_array($color->id, (array) request('colors')) ? 'checked' : '' }}>
+                                <label class="custom-control-label"
+                                    for="color-{{ $color->id }}">{{ $color->name }}</label>
                                 <span class="badge border font-weight-normal">{{ $color->colors_count }}</span>
                             </div>
                         @endforeach
@@ -62,8 +72,11 @@
                         @foreach ($sizeQuery ?? [] as $size)
                             <div
                                 class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-2">
-                                <input type="checkbox" class="custom-control-input size-checkbox" name="sizes[]" id="size-{{ $size->id }}" value="{{ $size->id }}" {{ in_array($size->id, (array) request('sizes')) ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="size-{{ $size->id }}">{{ $size->name }}</label>
+                                <input type="checkbox" class="custom-control-input size-checkbox" name="sizes[]"
+                                    id="size-{{ $size->id }}" value="{{ $size->id }}"
+                                    {{ in_array($size->id, (array) request('sizes')) ? 'checked' : '' }}>
+                                <label class="custom-control-label"
+                                    for="size-{{ $size->id }}">{{ $size->name }}</label>
                                 <span class="badge border font-weight-normal">{{ $size->sizes_count }}</span>
                             </div>
                         @endforeach
@@ -108,7 +121,6 @@
         </div>
     </div>
 @endsection
-
 @push('script')
     <script>
         let currentSort = '{{ request('sort', 'latest') }}';
@@ -227,7 +239,9 @@
                         }
 
                         // 7. Update the browser address bar without reloading the page
-                        window.history.pushState({ path: newUrl }, '', newUrl);
+                        window.history.pushState({
+                            path: newUrl
+                        }, '', newUrl);
 
                         // Smoothly scroll up to the product list
                         $('html, body').animate({
@@ -275,8 +289,11 @@
                 $('#triggerId').text('Sort by');
 
                 filterProducts(1);
-                let cleanUrl = window.location.protocol + "//" + window.location.host + window.location .pathname;
-                window.history.pushState({ path: cleanUrl }, '', cleanUrl);
+                let cleanUrl = window.location.protocol + "//" + window.location.host + window.location
+                    .pathname;
+                window.history.pushState({
+                    path: cleanUrl
+                }, '', cleanUrl);
             });
         });
     </script>

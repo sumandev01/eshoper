@@ -18,26 +18,71 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    // public function loginRequest(Request $request)
+    // {
+    //     $request->validate([
+    //         'email' => 'required|email',
+    //         'password' => 'required|min:8'
+    //     ]);
+
+    //     if (Auth::attempt($request->only('email', 'password'))) {
+    //         $user = Auth::user();
+
+    //         if ($user->hasRole(AuthEnums::USER->value)) {
+    //             return redirect()->route('root')->with('success', 'Logged in successfully');
+    //         }
+
+    //         Auth::logout();
+    //         return redirect()->route('login')->with('error', 'Do not have permission');
+    //     }
+
+    //     return redirect()->route('login')->with('error', 'Email or password is incorrect');
+    // }
+
     public function loginRequest(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:8'
-        ]);
+{
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required|min:8'
+    ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
+    if (Auth::attempt($request->only('email', 'password'))) {
+        $user = Auth::user();
 
-            if ($user->hasRole(AuthEnums::USER->value)) {
-                return redirect()->route('root')->with('success', 'Logged in successfully');
+        if ($user->hasRole(AuthEnums::USER->value)) {
+            // যদি AJAX রিকোয়েস্ট হয় (মোডাল থেকে আসলে)
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Logged in successfully'
+                ], 200);
             }
 
-            Auth::logout();
-            return redirect()->route('login')->with('error', 'Do not have permission');
+            return redirect()->route('root')->with('success', 'Logged in successfully');
         }
 
-        return redirect()->route('login')->with('error', 'Email or password is incorrect');
+        Auth::logout();
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Do not have permission'
+            ], 403);
+        }
+
+        return redirect()->route('login')->with('error', 'Do not have permission');
     }
+
+    // লগইন ফেইল হলে
+    if ($request->ajax()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Email or password is incorrect'
+        ], 401);
+    }
+
+    return redirect()->route('login')->with('error', 'Email or password is incorrect');
+}
 
     public function register()
     {

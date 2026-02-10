@@ -53,14 +53,18 @@
                 </div>
             </form>
         </div>
+        @php
+            $user = auth('web')?->user();
+            $cartProducts = $user?->cartItems;
+        @endphp
         <div class="col-lg-3 col-6 text-right">
             <a href="" class="btn border">
                 <i class="fas fa-heart text-primary"></i>
                 <span class="badge">0</span>
             </a>
-            <a href="" class="btn border">
+            <a href="{{ route('cart') }}" class="btn border">
                 <i class="fas fa-shopping-cart text-primary"></i>
-                <span class="badge">0</span>
+                <span class="badge" id="cartCount">{{ $cartProducts?->count() ?? 0 }}</span>
             </a>
         </div>
     </div>
@@ -68,7 +72,7 @@
 <!-- Topbar End -->
 
 <!-- Navbar Start -->
-<div class="container-fluid mb-5">
+<div class="container-fluid mb-4 {{ request()->routeIs('root') ? '' : 'navbarShadow' }}">
     <div class="row border-top px-xl-5">
         <div class="col-lg-3 d-none d-lg-block">
             <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100"
@@ -89,7 +93,8 @@
                                 @endif
                             </a>
                             @if ($category->subCategories->count() > 0)
-                                <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0" style="left: calc(100% + 2px); top: 0;">
+                                <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0"
+                                    style="left: calc(100% + 2px); top: 0;">
                                     @foreach ($category->subCategories as $subCategory)
                                         <a href="" class="nav-link">{{ $subCategory->name }}</a>
                                     @endforeach
@@ -111,10 +116,14 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav mr-auto py-0">
-                        <a href="{{ route('root') }}" class="nav-item nav-link {{ request()->routeIs('root') ? 'active' : '' }}">Home</a>
-                        <a href="{{ route('products') }}" class="nav-item nav-link {{ request()->routeIs('products') ? 'active' : '' }}">Shop</a>
-                        <a href="{{ route('about') }}" class="nav-item nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About</a>
-                        <a href="{{ route('contact') }}" class="nav-item nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                        <a href="{{ route('root') }}"
+                            class="nav-item nav-link {{ request()->routeIs('root') ? 'active' : '' }}">Home</a>
+                        <a href="{{ route('products') }}"
+                            class="nav-item nav-link {{ request()->routeIs('products') ? 'active' : '' }}">Product</a>
+                        <a href="{{ route('about') }}"
+                            class="nav-item nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About</a>
+                        <a href="{{ route('contact') }}"
+                            class="nav-item nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
                     </div>
                     <div class="navbar-nav ml-auto py-0">
                         @if ($user)

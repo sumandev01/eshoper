@@ -1,12 +1,15 @@
 @extends('web.layouts.app')
 @section('content')
-    <div class="container-fluid bg-secondary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Shop Detail</h1>
-            <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0">Shop Detail</p>
+    <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col col-xs-12">
+                <div class="wpo-breadcumb-wrap">
+                    <ol class="wpo-breadcumb-wrap">
+                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
+                        <li><a class="nav-link p-0" href="{{ route('products') }}">Products</a></li>
+                        <li>Single Product</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
@@ -53,8 +56,12 @@
                         $discountPrice = $product->discount;
 
                         if (isset($productInventory)) {
-                            $mainPrice = $productInventory->user_main_price == 1 ? $product->price : $productInventory->price;
-                            $discountPrice = $productInventory->user_main_discount == 1 ? $product->discount : $productInventory->discount;
+                            $mainPrice =
+                                $productInventory->user_main_price == 1 ? $product->price : $productInventory->price;
+                            $discountPrice =
+                                $productInventory->user_main_discount == 1
+                                    ? $product->discount
+                                    : $productInventory->discount;
                         }
                     @endphp
 
@@ -286,7 +293,8 @@
                             <div class="card-footer d-flex justify-content-between bg-light border">
                                 <a href="{{ route('productDetails', $item->slug) }}" class="btn btn-sm text-dark p-0"><i
                                         class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                                <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart" data-product-id="{{ $item->id }}"><i
+                                <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart"
+                                    data-product-id="{{ $item->id }}"><i
                                         class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
                             </div>
                         </div>
@@ -306,7 +314,7 @@
             const productId = "{{ $product->id }}";
             let currentStock = parseInt("{{ $product->stock }}") || 0;
             let selectInventoryId = null;
-            const orginalGalley = $('#carousel-images-container').html();
+            const OrginalThumbnail = "{{ $product->thumbnail }}";
 
             function toggleCartControls(enable) {
                 $('#add-to-cart-btn, #product-quantity, .btn-plus, .btn-minus').prop('disabled', !enable);
@@ -333,7 +341,10 @@
                 $.ajax({
                     url: "{{ route('getAvailableColors') }}",
                     method: 'GET',
-                    data: { product_id: productId, size_id: sizeId },
+                    data: {
+                        product_id: productId,
+                        size_id: sizeId
+                    },
                     success: function(response) {
                         colorMessage.hide();
                         if (response.availableColors.length > 0) {
@@ -348,7 +359,8 @@
                             });
                             colorContainer.html(colorHtml);
                         } else {
-                            colorMessage.show().text('No colors available').addClass('text-danger');
+                            colorMessage.show().text('No colors available').addClass(
+                                'text-danger');
                         }
                     }
                 });
@@ -367,35 +379,44 @@
                     $.ajax({
                         url: "{{ route('getSignleProductVariantBySizeId') }}",
                         method: 'GET',
-                        data: { product_id: productId, size_id: sizeId, color_id: colorId },
+                        data: {
+                            product_id: productId,
+                            size_id: sizeId,
+                            color_id: colorId
+                        },
                         success: function(response) {
                             currentStock = parseInt(response.stock);
                             qtyInput.val(1);
                             selectInventoryId = response.inventory_id;
 
                             if (response.image) {
-                                $('#carousel-images-container').html(
-                                    `<div class="carousel-item active"><img class="w-100 h-100" src="${response.image}" style="aspect-ratio:1/1; object-fit:contain;"></div>`
-                                );
-                                $('.carousel-control-prev, .carousel-control-next').hide();
+                                $('#main-image-preview').attr('src', response.image);
+                                $('#product-carousel').carousel(0);
                             } else {
-                                $('#carousel-images-container').html(orginalGalley);
-                                $('.carousel-control-prev, .carousel-control-next').show();
+                                $('#main-image-preview').attr('src', OrginalThumbnail);
+                                $('#product-carousel').carousel(0);
                             }
 
                             if (currentStock > 0) {
                                 toggleCartControls(true);
                                 qtyInput.attr('max', currentStock);
-                                stockDisplay.html(`<span class="text-success fw-bold">${currentStock} In Stock</span>`);
+                                stockDisplay.html(
+                                    `<span class="text-success fw-bold">${currentStock} In Stock</span>`
+                                    );
                             } else {
                                 toggleCartControls(false);
-                                stockDisplay.html('<span class="text-danger fw-bold">Out of Stock</span>');
+                                stockDisplay.html(
+                                    '<span class="text-danger fw-bold">Out of Stock</span>');
                             }
 
                             // Price update...
-                            let finalPrice = (response.use_main_price == 1 || !response.price) ? response.product_price : response.price;
-                            let finalDiscount = (response.use_main_discount == 1 || !response.discount) ? response.product_discount : response.discount;
-                            let priceHtml = finalDiscount > 0 ? `<h3 class="font-weight-semi-bold mb-0 product_main_price">৳${finalDiscount}</h3><h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳${finalPrice}</del></h4>` : `<h3 class="font-weight-semi-bold product_main_price">৳${finalPrice}</h3>`;
+                            let finalPrice = (response.use_main_price == 1 || !response.price) ?
+                                response.product_price : response.price;
+                            let finalDiscount = (response.use_main_discount == 1 || !response
+                                .discount) ? response.product_discount : response.discount;
+                            let priceHtml = finalDiscount > 0 ?
+                                `<h3 class="font-weight-semi-bold mb-0 product_main_price">৳${finalDiscount}</h3><h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳${finalPrice}</del></h4>` :
+                                `<h3 class="font-weight-semi-bold product_main_price">৳${finalPrice}</h3>`;
                             priceContainer.html(priceHtml);
                         }
                     });
@@ -459,31 +480,33 @@
                 }
 
                 let cartBtn = $(this);
-                cartBtn.prop('disabled', true).html('<i class="spinner-border spinner-border-sm"></i> Adding...');
+                cartBtn.prop('disabled', true).html(
+                    '<i class="spinner-border spinner-border-sm"></i> Adding...');
 
                 $.ajax({
                     url: "{{ route('addToCart') }}",
                     method: 'POST',
                     data: {
-                        _token: '{{ csrf_token() }}',
-                        product_id: productId,
-                        size_id: sizeId,
-                        color_id: colorId,
+                        _token: '{{ csrf_token('addToCart') }}',
+                        productId: productId,
+                        sizeId: sizeId,
+                        colorId: colorId,
                         quantity: quantity,
-                        price: productMainPrice,
-                        inventory_id: selectInventoryId
                     },
                     success: function(response) {
-                        cartBtn.prop('disabled', false).html('<i class="fa fa-shopping-cart"></i> Add To Cart');
+                        cartBtn.prop('disabled', false).html(
+                            '<i class="fa fa-shopping-cart"></i> Add To Cart');
                         if (response.status == 'success') {
                             showToast('success', response.message);
-                            $('#cart-count').text(response.cartCount);
+                            $("#cartCount").text(response.cartCount);
                         }
                     },
                     error: function(xhr) {
                         cartBtn.prop('disabled', false).html('<i class="fa fa-shopping-cart"></i> Add To Cart');
-                        alert(xhr.status === 401 ? 'Please login first' : 'Something went wrong');
-                    }
+                        if (xhr.status === 401) {
+                            $("#loginModal").modal("show");
+                        }
+                    },
                 });
             });
         });

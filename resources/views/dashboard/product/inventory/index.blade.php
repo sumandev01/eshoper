@@ -173,10 +173,45 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            const PriceInput = document.getElementById('variant_price');
-            const priceCheckBox = document.getElementById('use_main_price');
-            const DiscountInput = document.getElementById('variant_discount');
-            const discountCheckBox = document.getElementById('use_main_discount');
+            function togglePriceInput() {
+                const priceInput = $('#variant_price');
+                const priceCheckBox = $('#use_main_price');
+
+                if (priceCheckBox.is(':checked')) {
+                    priceInput.val('');
+                    priceInput.prop('readonly', true);
+                    priceInput.prop('required', false);
+                    priceInput.css('background-color', '#e9ecef');
+                } else {
+                    priceInput.prop('readonly', false);
+                    priceInput.prop('required', true);
+                    priceInput.css('background-color', '#fff');
+                }
+            }
+
+            function toggleDiscountInput() {
+                const discountInput = $('#variant_discount');
+                const discountCheckBox = $('#use_main_discount');
+
+                if (discountCheckBox.is(':checked')) {
+                    discountInput.val('');
+                    discountInput.prop('readonly', true);
+                    discountInput.prop('required', false);
+                    discountInput.css('background-color', '#e9ecef');
+                } else {
+                    discountInput.prop('readonly', false);
+                    discountInput.prop('required', true);
+                    discountInput.css('background-color', '#fff');
+                }
+            }
+
+            $('#use_main_price').on('change', togglePriceInput);
+            $('#use_main_discount').on('change', toggleDiscountInput);
+
+            togglePriceInput();
+            toggleDiscountInput();
+
+            
             $('#inventoryTable').DataTable({
                 "pageLength": 10,
                 "language": {
@@ -185,40 +220,6 @@
                 }
             });
 
-            function togglePriceInput() {
-                if (priceCheckBox.checked) {
-                    PriceInput.value = '';
-                    PriceInput.readOnly = true;
-                    PriceInput.removeAttribute('required');
-                    PriceInput.style.backgroundColor = "#e9ecef";
-                } else {
-                    PriceInput.readOnly = false;
-                    PriceInput.setAttribute('required', 'required');
-                    PriceInput.style.backgroundColor = "#fff";
-                }
-            }
-
-            function toggleDiscountInput() {
-                if (discountCheckBox.checked) {
-                    DiscountInput.value = '';
-                    DiscountInput.readOnly = true;
-                    DiscountInput.removeAttribute('required');
-                    DiscountInput.style.backgroundColor = "#e9ecef";
-                } else {
-                    DiscountInput.disabled = false;
-                    DiscountInput.setAttribute('required', 'required');
-                    DiscountInput.style.backgroundColor = "#fff";
-                }
-            }
-
-            priceCheckBox.addEventListener('change', togglePriceInput);
-            discountCheckBox.addEventListener('change', toggleDiscountInput);
-
-            togglePriceInput();
-            toggleDiscountInput();
-        });
-
-        $(document).ready(function() {
             function handleEditToggle(checkbox, inputId) {
                 const input = document.getElementById(inputId);
                 if (checkbox.checked) {

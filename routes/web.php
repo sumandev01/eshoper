@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\WebController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,12 +14,7 @@ Route::controller(WebController::class)->group(function () {
 
     Route::get('/search', 'search')->name('check.stock');
 
-
-
     Route::get('/get-signle-product-variant', 'getSignleProductVariantBySizeId')->name('getSignleProductVariantBySizeId');
-    Route::get('/cart', 'cart')->name('cart');
-    Route::POST('/add-to-cart', 'addToCart')->name('addToCart');
-    Route::get('/checkout', 'checkout')->name('checkout');
     Route::get('/contact', 'contact')->name('contact');
     Route::get('/about', 'about')->name('about');
 });
@@ -31,6 +27,14 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('/register', 'registerRequest')->name('registerRequest');
     });
     Route::get('/logout', 'logout')->name('logout')->middleware('auth');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::controller(CartController::class)->group(function () {
+        Route::get('/cart', 'cart')->name('cart');
+        Route::POST('/add-to-cart', 'addToCart')->name('addToCart');
+        Route::get('/checkout', 'checkout')->name('checkout');
+    });
 });
 
 @include 'admin.php';

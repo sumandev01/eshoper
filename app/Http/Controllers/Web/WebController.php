@@ -84,31 +84,6 @@ class WebController extends Controller
         return $this->webService->singleProductGetVariantDetails($request);
     }
 
-    public function cart()
-    {
-        return view('web.cart');
-    }
-
-    public function addToCart(Request $request)
-    {
-        // if(!Auth::check()) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Please login to add to cart'
-        //     ], 401);
-        // }
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Add to cart',
-            'data' => $request->all()
-        ]);
-    }
-
-    public function checkout()
-    {
-        return view('web.checkout');
-    }
-
     public function contact()
     {
         return view('web.contact');

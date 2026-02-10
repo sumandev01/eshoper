@@ -1,6 +1,7 @@
 $(document).ready(function () {
+    // ---------- INIT VARIANTS ----------
     initProductVariants();
-    // Load colors based on default size for each product card on page load
+
     $(".product-card").each(function () {
         let sizeElement = $(this).find(".shop-size-selector");
         if (sizeElement.length > 0 && sizeElement.val() !== "") {
@@ -8,19 +9,18 @@ $(document).ready(function () {
         }
     });
 
-    // When size dropdown changes
+    // ---------- EVENTS ----------
     $(document).on("change", ".shop-size-selector", function () {
         fetchColors($(this));
     });
 
-    // When color dropdown changes, update price and UI
     $(document).on("change", ".shop-color-selector", function () {
         updateProductUI($(this));
     });
 
-    // Add to cart logic
     $(document).on("click", ".shop-add-to-cart", function (e) {
         e.preventDefault();
+
         let card = $(this).closest(".product-card");
         let productId = $(this).data("product-id");
         let sizeId = card.find(".shop-size-selector").val();
@@ -34,13 +34,71 @@ $(document).ready(function () {
 
         if (card.find(".shop-size-selector").length > 0) {
             if (!sizeId || !colorId) {
-                showToast("error", "Please select a size and color before adding to cart.");
+                showToast(
+                    "error",
+                    "Please select a size and color before adding to cart.",
+                );
                 return;
             }
         }
+
         addToCart(productId, sizeId, colorId, currentPrice);
     });
+
+    // ---------- PASSWORD TOGGLE ----------
+    $(document).on("click", "#togglePassword", function () {
+        const passwordField = $("#modal_password");
+        const type =
+            passwordField.attr("type") === "password" ? "text" : "password";
+        passwordField.attr("type", type);
+        $(this).toggleClass("fa-eye fa-eye-slash");
+    });
+
+    // ---------- AJAX LOGIN ----------
+    // AJAX Login Logic
+    $(document).on("submit", "#ajaxLoginForm", function (e) {
+        e.preventDefault();
+
+        let formData = $(this).serialize();
+        let submitBtn = $(this).find('button[type="submit"]');
+
+        submitBtn.prop("disabled", true).text("Checking...");
+
+        $.ajax({
+            url: "/login",
+            type: "POST",
+            data: formData,
+            dataType: "json",
+            success: function (response) {
+                $("#loginModal").modal("hide");
+                showToast("success", response.message);
+
+                if (window.pendingCartData) {
+                    const { productId, sizeId, colorId, price } =
+                        window.pendingCartData;
+                    addToCart(productId, sizeId, colorId, price);
+                    window.pendingCartData = null;
+                }
+
+                setTimeout(function () {
+                    location.reload();
+                }, 1000);
+            },
+            error: function (xhr) {
+                submitBtn.prop("disabled", false).text("Login");
+
+                let errorMsg = "Login failed. Please try again.";
+                if (xhr.responseJSON && xhr.responseJSON.message) {
+                    errorMsg = xhr.responseJSON.message;
+                }
+
+                $("#loginError").text(errorMsg).show();
+            },
+        });
+    });
 });
+
+// ---------- HELPER FUNCTIONS ----------
 
 function initProductVariants(context = document) {
     $(context)
@@ -53,7 +111,6 @@ function initProductVariants(context = document) {
         });
 }
 
-// Function to fetch colors and variant data
 function fetchColors(element) {
     let card = element.closest(".product-card");
     let productId = card.attr("data-product-id");
@@ -71,15 +128,16 @@ function fetchColors(element) {
             _token: window.LaravelData.csrf_token,
         },
         success: function (response) {
-            // Store variant data inside the product card
             card.data("variants", response.colors);
 
             let options = '<option value="" disabled>Color</option>';
+
             if (response.colors && response.colors.length > 0) {
                 response.colors.forEach(function (color, index) {
                     let selected = index === 0 ? "selected" : "";
                     options += `<option value="${color.id}" ${selected}>${color.name}</option>`;
                 });
+
                 colorDropdown
                     .html(options)
                     .prop("disabled", false)
@@ -91,13 +149,12 @@ function fetchColors(element) {
                     .trigger("change");
             }
         },
-        error: function (xhr) {
+        error: function () {
             console.error("Color fetch failed");
         },
     });
 }
 
-// Main function to update product UI
 function updateProductUI(element) {
     let card = element.closest(".product-card");
     let colorId = element.val();
@@ -111,29 +168,20 @@ function updateProductUI(element) {
     let basePrice = parseFloat(selected.price);
     let discountPrice = parseFloat(selected.discount_price);
 
-    // Logic:
-    // If discount is 0 or null, or discount price is equal to or greater than base price
-    // then show only the base price
     if (discountPrice > 0 && discountPrice < basePrice) {
-        // Discount exists
         card.find(".variant-price").text("৳" + discountPrice);
         card.find(".main-price")
             .text("৳" + basePrice)
             .removeClass("d-none");
 
-        // Show save amount box
         card.find(".save-amount-box").removeClass("d-none");
         card.find(".save-amount").text("Save ৳" + (basePrice - discountPrice));
     } else {
-        // No discount (0, null, or invalid)
         card.find(".variant-price").text("৳" + basePrice);
         card.find(".main-price").addClass("d-none");
-
-        // Hide save amount box
         card.find(".save-amount-box").addClass("d-none");
     }
 
-    // Stock check
     if (selected.stock <= 0) {
         card.find(".shop-add-to-cart")
             .addClass("disabled")
@@ -147,7 +195,6 @@ function updateProductUI(element) {
     }
 }
 
-// Cart function (will remain the same as before)
 function addToCart(productId, sizeId, colorId, price) {
     $.ajax({
         url: window.LaravelData.route_addToCart,
@@ -162,6 +209,12 @@ function addToCart(productId, sizeId, colorId, price) {
         },
         success: function (response) {
             showToast("success", response.message);
+            $("#cartCount").text(response.cartCount);
+        },
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                $("#loginModal").modal("show");
+            }
         },
     });
 }
