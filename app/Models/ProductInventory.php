@@ -30,6 +30,11 @@ class ProductInventory extends Model
         return $this->belongsTo(Product::class, 'product_id');
     }
 
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     public function thumbnail():Attribute
     {
         $url = asset('default.webp');

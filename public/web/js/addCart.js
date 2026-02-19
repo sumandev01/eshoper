@@ -215,6 +215,7 @@ function addToCart(productId, sizeId, colorId, price) {
             if (xhr.status === 401) {
                 $("#loginModal").modal("show");
             }
+            console.error("Add to cart failed");
         },
     });
 }

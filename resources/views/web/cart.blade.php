@@ -33,9 +33,12 @@
                     <tbody class="">
                         @forelse ($carts ?? [] as $cart)
                         @php
-                            $subTotal = $cart->cart_price * $cart->quantity;
+                            $price = $cart?->cart_price;
+                            $subTotal = 0;
+                            $subTotal = $price * $cart?->quantity;
+                            $productStock = $cart?->product_stock;
                         @endphp
-                            <tr>
+                            <tr data-product-stock="{{ $productStock }}" data-cart-id="{{ $cart?->id }}" data-product-price="{{ $price }}">
                                 <td class="text-left d-flex">
                                     <img src="{{ Storage::url($cart->cart_image) }}" alt="" style="width: 100px;">
                                     <div class="pl-3">
@@ -52,26 +55,28 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="align-middle">৳{{ $cart?->cart_price }}</td>
+                                <td class="align-middle">৳{{ formatBDT($price) }}</td>
                                 <td class="align-middle">
                                     <div class="input-group quantity mx-auto" style="width: 100px;">
                                         <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-minus">
+                                            <button class="btn btn-sm btn-primary btn-minus quantity-btn">
                                                 <i class="fa fa-minus"></i>
                                             </button>
                                         </div>
-                                        <input type="text" name="quantity" class="form-control form-control-sm bg-secondary text-center"
-                                            value="{{ old('quantity', $cart?->quantity) }}">
+                                        <input type="text" name="quantity" class="form-control form-control-sm bg-secondary text-center product-quantity" value="{{ old('quantity', $cart?->quantity) }}">
                                         <div class="input-group-btn">
-                                            <button class="btn btn-sm btn-primary btn-plus">
+                                            <button class="btn btn-sm btn-primary btn-plus quantity-btn">
                                                 <i class="fa fa-plus"></i>
                                             </button>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="align-middle">৳{{ $subTotal }}</td>
-                                <td class="align-middle"><button class="btn btn-sm btn-primary"><i
-                                            class="fa fa-times"></i></button></td>
+                                <td class="align-middle product-subtotal">৳{{ formatBDT($subTotal) }}</td>
+                                <td class="align-middle">
+                                    <button onclick="window.location.href = '{{ route('removeFromCart', $cart->id) }}';" class="btn btn-sm btn-primary">
+                                        <i class="fa fa-times"></i>
+                                    </button>
+                                </td>
                             </tr>
                         @empty
                             <tr>
@@ -82,11 +87,11 @@
                 </table>
             </div>
             <div class="col-lg-4">
-                <form class="mb-5" action="">
+                <form id="coupon-form" class="mb-5">
                     <div class="input-group">
-                        <input type="text" class="form-control p-4" placeholder="Coupon Code">
+                        <input type="text" class="form-control p-4" id="couponCode" placeholder="Coupon Code">
                         <div class="input-group-append">
-                            <button class="btn btn-primary">Apply Coupon</button>
+                            <button type="button" id="couponBtn" class="btn btn-primary">Apply Coupon</button>
                         </div>
                     </div>
                 </form>
@@ -97,7 +102,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium">৳{{ $subTotalPrice }}</h6>
+                            <h6 class="font-weight-medium cart-subtotal">৳{{ formatBDT($subTotalPrice) }}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
@@ -117,3 +122,94 @@
     </div>
     <!-- Cart End -->
 @endsection
+@push('script')
+    <script>
+        $(document).ready(function() {
+            function updateCartSubTotal() {
+                let cartStotal = 0;
+                $('.product-subtotal').each(function() {
+                    let subTotalText = $(this).text().replace(/[^0-9.-]+/g, '');
+                    cartStotal += parseFloat(subTotalText) || 0;
+                });
+                $('.cart-subtotal').text('৳' + cartStotal.toLocaleString('en-IN'));
+            }
+
+            $('.quantity-btn').on('click', function() {
+                const $button = $(this);
+                const $container = $button.closest('.quantity');
+                const $row = $container.closest('tr');
+                const $input = $container.find('.product-quantity');
+                const $productStock = $row.data('product-stock');
+                const $price = $row.data('product-price');
+                const $cartId = $row.data('cart-id');
+
+                let quantity = parseInt($input.val()) || 1;
+
+                if (quantity <= 1) {
+                    quantity = 1;
+                    $input.val('1');
+                }
+
+                if (quantity >= $productStock) {
+                    quantity = $productStock;
+                    showToast("error", "Available stock: " + $productStock);
+                }
+
+                let subTotal = (quantity * $price).toLocaleString('en-IN');
+
+                $row.find('.product-subtotal').text('৳' + subTotal);
+
+                $input.val(quantity);
+
+                updateCartSubTotal();
+
+                $.ajax({
+                    url: '{{ route('updateCart') }}',
+                    type: 'POST',
+                    data: {
+                        cartId: $row.data('cart-id'),
+                        quantity: quantity,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {},
+                    error: function(error) {}
+                });
+            });
+
+            $(document).on('input', '.product-quantity', function() {
+                const $input = $(this);
+                const $container = $input.closest('.quantity');
+                const $row = $container.closest('tr');
+                const $productStock = $row.data('product-stock');
+
+                if ($input.val() > $productStock) {
+                    $input.val($productStock);
+                    showToast("error", "Available stock: " + $productStock);
+                }
+            });
+            
+            $('#couponBtn').on('click', function() {
+                let couponCode = $('#couponCode').val();
+                if(couponCode == null || couponCode == '' || couponCode == undefined || couponCode.length < 5) return;
+                $.ajax({
+                    url: '{{ route('applyCoupon') }}',
+                    type: 'POST',
+                    data: {
+                        couponCode: couponCode,
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function(response) {
+                        if (response.status == 'success') {
+                            showToast('success', response.message);
+                        } else {
+                            showToast('error', response.message);
+                        }
+                    },
+                    error: function(error) {
+                        showToast('error', error.responseJSON.message);
+                    }
+                });
+            });
+        })
+    </script>
+@endpush

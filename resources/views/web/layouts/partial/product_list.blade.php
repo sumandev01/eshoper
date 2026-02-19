@@ -7,7 +7,7 @@
                 <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                     <div class="save-amount-box text-center position-absolute p-0" style="top: 0; right: 0; z-index: 99;">
                         @if ($product->discount > 0 && $product->discount < $product->price)
-                            <p class="save-amount text-success p-2 bg-primary" style="font-size: 13px;">
+                            <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
                                 Save ৳{{ $product->price - $product->discount }}
                             </p>
                         @else

@@ -9,7 +9,7 @@ Route::controller(WebController::class)->group(function () {
     Route::get('/', 'root')->name('root');
     Route::get('/products', 'products')->name('products');
     Route::get('/product/{slug}', 'productDetails')->name('productDetails');
-    Route::POST('/get-color-by-size', 'getColorBySize')->name('getColorBySize');
+    Route::post('/get-color-by-size', 'getColorBySize')->name('getColorBySize');
     Route::get('/check-available-color', 'getAvailableColors')->name('getAvailableColors');
 
     Route::get('/search', 'search')->name('check.stock');
@@ -32,8 +32,11 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware('auth')->group(function () {
     Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'cart')->name('cart');
-        Route::POST('/add-to-cart', 'addToCart')->name('addToCart');
+        Route::post('/add-to-cart', 'addToCart')->name('addToCart');
+        Route::post('/update-cart', 'updateCart')->name('updateCart');
         Route::get('/checkout', 'checkout')->name('checkout');
+        Route::get('/delete-from-cart/{cart}', 'removeFromCart')->name('removeFromCart');
+        Route::post('/coupon', 'applyCoupon')->name('applyCoupon');
     });
 });
 
