@@ -148,7 +148,7 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             <button type="submit" class="btn btn-primary w-100 mb-2">
-                                <i class="mdi mdi-content-save me-1"></i> Save Product
+                                <i class="mdi mdi-content-save me-1"></i> Add Product
                             </button>
                         </div>
                     </div>

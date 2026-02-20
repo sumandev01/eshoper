@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Web\CartController;
+use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\WebController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,9 +35,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/cart', 'cart')->name('cart');
         Route::post('/add-to-cart', 'addToCart')->name('addToCart');
         Route::post('/update-cart', 'updateCart')->name('updateCart');
-        Route::get('/checkout', 'checkout')->name('checkout');
         Route::get('/delete-from-cart/{cart}', 'removeFromCart')->name('removeFromCart');
         Route::post('/coupon', 'applyCoupon')->name('applyCoupon');
+    });
+
+    Route::controller(CheckoutController::class)->group(function () {
+        Route::post('/checkout', 'index')->name('checkout.index');
     });
 });
 

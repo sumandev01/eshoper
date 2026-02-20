@@ -134,25 +134,31 @@ class ProductWebService
     {
         $categoryId = $product->details->category_id ?? null;
 
-        $query = Product::where('id', '!=', $product->id)
-            ->where('status', 1);
+        $related = collect();
 
-        $related = $query->when($categoryId, function ($q) use ($categoryId) {
-            return $q->whereHas('details', function ($detailsQuery) use ($categoryId) {
-                $detailsQuery->where('category_id', $categoryId);
-            });
-        })
-            ->inRandomOrder()
-            ->limit($limit)
-            ->get();
-
-        // if no related products found, get random products
-        if ($related->isEmpty()) {
+        if ($categoryId) {
             $related = Product::where('id', '!=', $product->id)
                 ->where('status', 1)
+                ->whereHas('details', function ($detailsQuery) use ($categoryId) {
+                    $detailsQuery->where('category_id', $categoryId);
+                })
                 ->inRandomOrder()
                 ->limit($limit)
                 ->get();
+        }
+
+        if ($related->count() < $limit) {
+            $remaining = $limit - $related->count();
+
+            $excludedIds = $related->pluck('id')->push($product->id);
+
+            $randomProducts = Product::whereNotIn('id', $excludedIds)
+                ->where('status', 1)
+                ->inRandomOrder()
+                ->limit($remaining)
+                ->get();
+
+            $related = $related->merge($randomProducts);
         }
 
         return $related;

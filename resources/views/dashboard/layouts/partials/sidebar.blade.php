@@ -94,6 +94,23 @@
                 </ul>
             </div>
         </li>
+        <li class="nav-item {{ request()->routeIs('coupon*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#coupon" aria-expanded="{{ request()->routeIs('coupon*') ? 'true' : 'false' }}" aria-controls="coupon">
+                <span class="menu-title">Coupons</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-ticket menu-icon"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('coupon*') ? 'show' : '' }}" id="coupon">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('coupon.index') ? 'active' : '' }}" href="{{ route('coupon.index') }}">All Coupons</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('coupon.add') ? 'active' : '' }}" href="{{ route('coupon.add') }}">Add Coupon</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#forms" aria-expanded="false" aria-controls="forms">
                 <span class="menu-title">Forms</span>

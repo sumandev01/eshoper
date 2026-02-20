@@ -34,6 +34,10 @@
             outline: none ! important;
             box-shadow: none ! important;
         }
+        select:focus {
+            outline-color: #86b7fe ! important;
+            box-shadow: none ! important;
+        }
     </style>
 </head>
 

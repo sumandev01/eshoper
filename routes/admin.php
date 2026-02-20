@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ProductController;
@@ -95,5 +96,14 @@ Route::prefix('admin')->group(function () {
         Route::post('/products/inventories', 'store')->name('inventory.store');
         Route::put('/products/inventories/{inventory}', 'update')->name('inventory.update');
         Route::delete('/products/inventories/{productInventory}', 'destroy')->name('inventory.destroy');
+    });
+
+    Route::controller(CouponController::class)->group(function () {
+        Route::get('/coupons', 'index')->name('coupon.index');
+        Route::get('/coupons/add', 'add')->name('coupon.add');
+        Route::post('/coupons', 'store')->name('coupon.store');
+        Route::get('/coupons/{coupon}/edit', 'edit')->name('coupon.edit');
+        Route::put('/coupons/{coupon}', 'update')->name('coupon.update');
+        Route::delete('/coupons/{coupon}', 'destroy')->name('coupon.destroy');
     });
 });

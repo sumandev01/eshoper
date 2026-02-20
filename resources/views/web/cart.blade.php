@@ -73,7 +73,7 @@
                                 </td>
                                 <td class="align-middle product-subtotal">৳{{ formatBDT($subTotal) }}</td>
                                 <td class="align-middle">
-                                    <button onclick="window.location.href = '{{ route('removeFromCart', $cart->id) }}';" class="btn btn-sm btn-primary">
+                                    <button onclick="window.location.href = '{{ route('removeFromCart', $cart->id) }}';" class="btn btn-sm btn-primary btn-remove">
                                         <i class="fa fa-times"></i>
                                     </button>
                                 </td>
@@ -105,16 +105,20 @@
                             <h6 class="font-weight-medium cart-subtotal">৳{{ formatBDT($subTotalPrice) }}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
+                            <h6 class="font-weight-medium">Discount</h6>
+                            <h6 class="font-weight-medium coupon-discount">0</h6>
                         </div>
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold">$160</h5>
+                            <h5 class="font-weight-bold grand-total">৳{{ formatBDT($subTotalPrice) }}</h5>
                         </div>
-                        <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                        <form action="{{ route('checkout.index') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="couponId" id="CouponId">
+                            <button type="submit" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -124,6 +128,7 @@
 @endsection
 @push('script')
     <script>
+        //let CouponId = null;
         $(document).ready(function() {
             function updateCartSubTotal() {
                 let cartStotal = 0;
@@ -132,6 +137,7 @@
                     cartStotal += parseFloat(subTotalText) || 0;
                 });
                 $('.cart-subtotal').text('৳' + cartStotal.toLocaleString('en-IN'));
+                $('.grand-total').text('৳' + cartStotal.toLocaleString('en-IN'));
             }
 
             $('.quantity-btn').on('click', function() {
@@ -190,17 +196,25 @@
             
             $('#couponBtn').on('click', function() {
                 let couponCode = $('#couponCode').val();
+                let cartSubTotal = parseFloat($('.cart-subtotal').text().replace(/[^0-9.-]+/g, ''));
                 if(couponCode == null || couponCode == '' || couponCode == undefined || couponCode.length < 5) return;
                 $.ajax({
                     url: '{{ route('applyCoupon') }}',
                     type: 'POST',
                     data: {
+                        cartSubTotal: cartSubTotal,
                         couponCode: couponCode,
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
                         if (response.status == 'success') {
                             showToast('success', response.message);
+                            $('.grand-total').text('৳' + response.discountPrice.toLocaleString('en-IN'));
+                            $('.coupon-discount').text('৳' + (cartSubTotal - response.discountPrice).toLocaleString('en-IN'));
+                            $('.quantity-btn').prop('disabled', true);
+                            $('.btn-remove').prop('disabled', true);
+                            $('#couponCode').val('');
+                            $('#CouponId').val(response.couponId);
                         } else {
                             showToast('error', response.message);
                         }

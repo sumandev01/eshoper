@@ -48,6 +48,9 @@
         .wpo-breadcumb-wrap ol li:last-child::after {
             display: none;
         }
+        button:focus {
+            box-shadow: none ! important;
+        }
     </style>
 </head>
 <body>

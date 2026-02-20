@@ -289,7 +289,7 @@
                             <div class="save-amount-box text-center position-absolute p-0"
                                 style="top: 0; right: 0; z-index: 99;">
                                 @if ($latestProduct->discount > 0 && $latestProduct->discount < $latestProduct->price)
-                                    <p class="save-amount text-success p-2 bg-primary" style="font-size: 13px;">
+                                    <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
                                         Save ৳{{ $latestProduct->price - $latestProduct->discount }}
                                     </p>
                                 @else
