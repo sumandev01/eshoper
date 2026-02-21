@@ -86,7 +86,7 @@ class CartController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Coupon is not valid'], 400);
         }
 
-        $hasLimit = $coupon->usage_limit - $coupon->used_count > 0;
+        $hasLimit = ($coupon->usage_limit - $coupon->used_count) > 0;
 
         if (!$hasLimit) {
             return response()->json(['status' => 'error', 'message' => 'Coupon usage limit exceeded'], 400);

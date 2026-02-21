@@ -72,10 +72,14 @@
                                                     {{ $coupon?->expire_date?->format('d M Y, h:i A') ?? 'N/A' }}</p>
                                             </td>
                                             <td>
-                                                @if ($coupon?->status === 1)
+                                                @if ($coupon?->expire_date > now())
+                                                    @if ($coupon?->status === 1)
                                                     <span class="badge bg-success">Active</span>
                                                 @else
                                                     <span class="badge bg-danger">Inactive</span>
+                                                @endif
+                                                @else
+                                                    <span class="badge bg-secondary">Expired</span>
                                                 @endif
                                             </td>
                                             <td>

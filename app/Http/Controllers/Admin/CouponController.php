@@ -51,11 +51,10 @@ class CouponController extends Controller
 
     public function update(Request $request, $coupon){
         $request->validate([
-            'code' => 'required|string|min:5|unique:coupons,code,' . $coupon,
             'amount' => 'required|numeric|min:0',
             'min_order_amount' => 'required|numeric|min:0',
             'usage_limit' => 'required|numeric|min:0',
-            'start_date' => 'required|date|before_or_equal:expire_date|after_or_equal:today',
+            'start_date' => 'required|date|after_or_equal:exists:coupons,'. $coupon,
             'expire_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|numeric|in:0,1',
         ]);
