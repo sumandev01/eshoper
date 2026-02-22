@@ -5,15 +5,7 @@
                 data-product-id="{{ $product->id }}" data-main-price="{{ $product->price }}"
                 data-discount-price="{{ $product->discount }}">
                 <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                    <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
-                        <button class="btn btn-sm bg-white rounded-circle shadow-sm wishlist-btn p-1"
-                            data-product-id="{{ $product->id }}" style="width: 32px; height: 32px; line-height: 1;">
-                            <i class="fas fa-heart"
-                                style="font-size: 13px; color: {{ in_array($product->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
-                        </button>
-                    </div>
-                    <div class="save-amount-box text-center position-absolute p-0"
-                        style="top: 0; right: 0; z-index: 99;">
+                    <div class="save-amount-box text-center position-absolute p-0" style="top: 0; right: 0; z-index: 99;">
                         @if ($product->discount > 0 && $product->discount < $product->price)
                             <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
                                 Save ৳{{ $product->price - $product->discount }}
@@ -61,8 +53,8 @@
                             class="fas fa-eye text-primary mr-1"></i>View
                         Detail</a>
                     <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart"
-                        data-product-id="{{ $product->id }}"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add
-                        To Cart</a>
+                        data-product-id="{{ $product->id }}"><i
+                            class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
                 </div>
             </div>
         </div>

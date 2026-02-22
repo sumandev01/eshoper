@@ -6,7 +6,8 @@
                 <div class="wpo-breadcumb-wrap">
                     <ol class="wpo-breadcumb-wrap">
                         <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li>Products</li>
+                        <li>Sub Category</li>
+                        <li>{{ $subcategory?->name }}</li>
                     </ol>
                 </div>
             </div>
@@ -29,39 +30,25 @@
                     </div>
                 </div>
 
-                {{-- Category Filter --}}
-                <div class="border-bottom mb-3 pb-2">
-                    <h5 class="font-weight-semi-bold mb-4">Select by category</h5>
-                    <form id="category-filter-form">
-                        @foreach ($categoryQuery ?? [] as $category)
-                            <div
-                                class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-2">
-                                <input type="checkbox" class="custom-control-input category-checkbox" name="categories[]"
-                                    id="category-{{ $category?->id }}" value="{{ $category?->id }}"
-                                    {{ in_array($category?->id, (array) request('categories')) ? 'checked' : '' }}>
-                                <label class="custom-control-label"
-                                    for="category-{{ $category?->id }}">{{ $category?->name }}</label>
-                                <span class="badge border font-weight-normal">{{ $category?->categories_count }}</span>
-                            </div>
-                        @endforeach
-                    </form>
-                </div>
-
                 {{-- Color Filter --}}
                 <div class="border-bottom mb-3 pb-2">
                     <h5 class="font-weight-semi-bold mb-4">Select by color</h5>
                     <form id="color-filter-form">
-                        @foreach ($colorQuery ?? [] as $color)
-                            <div
-                                class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-2">
-                                <input type="checkbox" class="custom-control-input color-checkbox" name="colors[]"
-                                    id="color-{{ $color?->id }}" value="{{ $color?->id }}"
-                                    {{ in_array($color?->id, (array) request('colors')) ? 'checked' : '' }}>
-                                <label class="custom-control-label"
-                                    for="color-{{ $color?->id }}">{{ $color?->name }}</label>
-                                <span class="badge border font-weight-normal">{{ $color?->colors_count }}</span>
-                            </div>
-                        @endforeach
+                        @if (count($colorQuery) > 0)
+                            @foreach ($colorQuery as $color)
+                                <div
+                                    class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-2">
+                                    <input type="checkbox" class="custom-control-input color-checkbox" name="colors[]"
+                                        id="color-{{ $color?->id }}" value="{{ $color?->id }}"
+                                        {{ in_array($color?->id, (array) request('colors')) ? 'checked' : '' }}>
+                                    <label class="custom-control-label"
+                                        for="color-{{ $color?->id }}">{{ $color?->name }}</label>
+                                    <span class="badge border font-weight-normal">{{ $color?->colors_count }}</span>
+                                </div>
+                            @endforeach
+                        @else
+                            <p>No colors variants available.</p>
+                        @endif
                     </form>
                 </div>
 
@@ -69,17 +56,21 @@
                 <div class="border-bottom mb-3 pb-2">
                     <h5 class="font-weight-semi-bold mb-4">Select by size</h5>
                     <form id="size-filter-form">
-                        @foreach ($sizeQuery ?? [] as $size)
-                            <div
-                                class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-2">
-                                <input type="checkbox" class="custom-control-input size-checkbox" name="sizes[]"
-                                    id="size-{{ $size?->id }}" value="{{ $size?->id }}"
-                                    {{ in_array($size?->id, (array) request('sizes')) ? 'checked' : '' }}>
-                                <label class="custom-control-label"
-                                    for="size-{{ $size?->id }}">{{ $size?->name }}</label>
-                                <span class="badge border font-weight-normal">{{ $size?->sizes_count }}</span>
-                            </div>
-                        @endforeach
+                        @if (count($sizeQuery) > 0)
+                            @foreach ($sizeQuery as $size)
+                                <div
+                                    class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-2">
+                                    <input type="checkbox" class="custom-control-input size-checkbox" name="sizes[]"
+                                        id="size-{{ $size?->id }}" value="{{ $size?->id }}"
+                                        {{ in_array($size?->id, (array) request('sizes')) ? 'checked' : '' }}>
+                                    <label class="custom-control-label"
+                                        for="size-{{ $size?->id }}">{{ $size?->name }}</label>
+                                    <span class="badge border font-weight-normal">{{ $size?->sizes_count }}</span>
+                                </div>
+                            @endforeach
+                        @else
+                            <p>No sizes variants available.</p>
+                        @endif
                     </form>
                 </div>
 
@@ -115,7 +106,7 @@
                     </div>
                 </div>
                 <div id="product-data-container">
-                    @include('web.layouts.partial.product_list')
+                    @include('web.layouts.partial.category_product_list')
                 </div>
             </div>
         </div>
@@ -182,7 +173,7 @@
                 if (sizes.length > 0) queryData.sizes = sizes;
 
                 $.ajax({
-                    url: "{{ route('products') }}",
+                    url: "{{ route('subcategoryProducts', $subcategory->slug) }}",
                     method: "GET",
                     data: queryData,
                     beforeSend: function() {
@@ -278,27 +269,22 @@
                 $('.category-checkbox, .color-checkbox, .size-checkbox').prop('checked', false);
                 $('#search-product').val('');
 
-                let maxLimit = {{ $maxPrice }};
-                let minLimit = {{ $minPrice }};
-
-                $("#price-range-slider").slider("option", "values", [minLimit, maxLimit]);
-                $("#min-price").val("৳" + minLimit);
+                let maxLimit = {{ \App\Models\Product::max('price') ?? 1000 }};
+                $("#price-range-slider").slider("option", "values", [0, maxLimit]);
+                $("#min-price").val("৳" + 0);
                 $("#max-price").val("৳" + maxLimit);
 
-                // Reset global variables
-                minVal = minLimit;
+                minVal = 0;
                 maxVal = maxLimit;
                 currentSort = 'latest';
                 $('#triggerId').text('Sort by');
 
-                // 6. Update the browser address bar without reloading the page
+                filterProducts(1);
                 let cleanUrl = window.location.protocol + "//" + window.location.host + window.location
                     .pathname;
                 window.history.pushState({
                     path: cleanUrl
                 }, '', cleanUrl);
-
-                filterProducts(1);
             });
         });
     </script>

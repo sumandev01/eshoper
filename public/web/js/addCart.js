@@ -96,6 +96,37 @@ $(document).ready(function () {
             },
         });
     });
+
+    //
+    $(document).on("click", ".wishlist-btn", function () {
+        let $btn = $(this);
+        let $icon = $btn.find("i");
+        let productId = $btn.data("product-id");
+
+        $.ajax({
+            url: window.LaravelData.route_wishlistToggle,
+            method: "POST",
+            data: {
+                product_id: productId,
+                _token: window.LaravelData.csrf_token,
+            },
+            success: function (response) {
+                showToast("success", response.message);
+                if (response.action === "added") {
+                    $icon.css("color", "#e74c3c"); // red
+                } else if (response.action === "removed") {
+                    $icon.css("color", "#ccc"); // grey
+                }
+                $("#wishlistCount").text(response.wishlistCount);
+            },
+            error: function (xhr) {
+                showToast("error", "Wishlist toggle failed");
+                if (xhr.status === 401) {
+                    window.location.href = "{{ route('login') }}";
+                }
+            },
+        });
+    });
 });
 
 // ---------- HELPER FUNCTIONS ----------

@@ -51,6 +51,12 @@
         button:focus {
             box-shadow: none ! important;
         }
+        .wishlist-btn i.active {
+    color: #e74c3c !important;
+}
+.wishlist-btn i {
+    color: #ccc;
+}
     </style>
 </head>
 <body>
@@ -132,6 +138,7 @@
         window.LaravelData = {
             route_getColorBySize: "{{ route('getColorBySize') }}",
             route_addToCart: "{{ route('addToCart') }}",
+            route_wishlistToggle: "{{ route('wishlist.toggle') }}",
             csrf_token: "{{ csrf_token() }}"
         };
     </script>

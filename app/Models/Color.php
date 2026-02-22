@@ -12,4 +12,9 @@ class Color extends Model
     {
         return $this->belongsToMany(Product::class, 'product_inventories', 'color_id', 'product_id')->distinct();
     }
+
+    public function inventories()
+    {
+        return $this->hasMany(ProductInventory::class);
+    }
 }
