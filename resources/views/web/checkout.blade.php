@@ -1,13 +1,16 @@
 @extends('web.layouts.app')
 @section('content')
     <!-- Page Header Start -->
-    <div class="container-fluid bg-secondary mb-5">
-        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Checkout</h1>
-            <div class="d-inline-flex">
-                <p class="m-0"><a href="">Home</a></p>
-                <p class="m-0 px-2">-</p>
-                <p class="m-0">Checkout</p>
+    <div class="container-fluid mb-4">
+        <div class="row">
+            <div class="col col-xs-12">
+                <div class="wpo-breadcumb-wrap">
+                    <ol class="wpo-breadcumb-wrap">
+                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
+                        <li><a class="nav-link p-0" href="{{ route('cart') }}">Cart</a></li>
+                        <li>Checkout</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
@@ -15,7 +18,7 @@
 
 
     <!-- Checkout Start -->
-    <div class="container-fluid pt-5">
+    <div class="container-fluid pt-2">
         <div class="row px-xl-5">
             <div class="col-lg-8">
                 <div class="mb-4">

@@ -118,7 +118,7 @@ class ProductWebService
             'use_main_discount' => $inventory->use_main_discount,
             'product_price' => $product->price,
             'product_discount' => $product->discount,
-            'image' => Storage::url($inventory->media->src) ?? null,
+            'image' => $inventory->media ? Storage::url($inventory->media->src) : null,
         ]);
     }
 

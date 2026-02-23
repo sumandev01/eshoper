@@ -120,10 +120,7 @@ $(document).ready(function () {
                 $("#wishlistCount").text(response.wishlistCount);
             },
             error: function (xhr) {
-                showToast("error", "Wishlist toggle failed");
-                if (xhr.status === 401) {
-                    window.location.href = "{{ route('login') }}";
-                }
+                showToast("error", "Please login to add this to your wishlist.");
             },
         });
     });

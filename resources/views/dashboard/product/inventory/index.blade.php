@@ -15,7 +15,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">Product: {{ $product->name }}</h5>
+                        <h5 class="card-title">Product: {{ $product?->name }}</h5>
                         <p class="card-text">Manage the inventory for this product by adding different size and color
                             variants along with their prices, stock quantities, and images.</p>
                     </div>
@@ -35,9 +35,9 @@
                                         <th>SL</th>
                                         <th>Size</th>
                                         <th class="text-center">Color</th>
-                                        <th>Price/ <br> Discount</th>
+                                        <th class="text-end">Price / <br> Discount</th>
                                         <th class="text-center">Image</th>
-                                        <th>Stock</th>
+                                        <th class="text-end stock-col">Stock</th>
                                         <th class="text-end">Action</th>
                                     </tr>
                                 </thead>
@@ -45,23 +45,23 @@
                                     @forelse ($inventories ?? [] as $key => $item)
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
-                                            <td>{{ $item->size->name ?? 'N/A' }}</td>
+                                            <td>{{ $item?->size?->name ?? 'N/A' }}</td>
                                             <td class="text-center">
                                                 <div class="mx-auto d-block"
-                                                    style="background-color: {{ $item->color->color_code }}; border: 2px solid #ccc; width: 30px; height: 30px; border-radius: 50%;">
+                                                    style="background-color: {{ $item?->color?->color_code }}; border: 2px solid #ccc; width: 30px; height: 30px; border-radius: 50%;">
                                                 </div>
                                             </td>
-                                            <td class="fw-bold text-primary">
+                                            <td class="fw-bold text-primary text-end">
                                                 <div class="price-container">
                                                     @php
                                                         $displayDiscount =
-                                                            $item->use_main_discount == 1
-                                                                ? $item->product->discount
-                                                                : $item->discount;
+                                                            $item?->use_main_discount == 1
+                                                                ? $item?->product?->discount
+                                                                : $item?->discount;
                                                         $displayPrice =
-                                                            $item->use_main_price == 1
-                                                                ? $item->product->price
-                                                                : $item->price;
+                                                            $item?->use_main_price == 1
+                                                                ? $item?->product?->price
+                                                                : $item?->price;
                                                     @endphp
 
                                                     @if (!is_null($displayDiscount) && $displayDiscount > 0)
@@ -78,15 +78,21 @@
                                             <td class="text-center">
                                                 <img class="img-fluid"
                                                     style=" border-radius: 0; object-fit: contain; aspect-ratio: 4 / 4; background-color: #fff; border: 1px solid #ccc;"
-                                                    src="{{ $item->thumbnail }}">
+                                                    src="{{ $item?->thumbnail }}">
                                             </td>
-                                            <td>{{ $item->stock }}</td>
+                                            <td class="text-end">
+                                                @if ($item?->stock > 0)
+                                                    <span>{{ $item?->stock }}</span>
+                                                @else
+                                                    <span class="badge bg-danger fw-bold rounded-pill">Out of Stock</span>
+                                                @endif
+                                            </td>
                                             <td class="text-end">
                                                 <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                                    data-bs-target="#editInventoryModal{{ $item->id }}">
+                                                    data-bs-target="#editInventoryModal{{ $item?->id }}">
                                                     <i class="mdi mdi-square-edit-outline"></i>
                                                 </button>
-                                                <a href="{{ route('inventory.destroy', $item->id) }}"
+                                                <a href="{{ route('inventory.destroy', $item?->id) }}"
                                                     class="btn btn-danger btn-sm deleteBtn">
                                                     <i class="mdi mdi-delete"></i>
                                                 </a>
@@ -113,7 +119,7 @@
                             <h4 class="card-title">Add New Inventory</h4>
                         </div>
                         <div class="card-body px-4 pb-0">
-                            <input type="hidden" name="product_id" value="{{ $product->id }}">
+                            <input type="hidden" name="product_id" value="{{ $product?->id }}">
                             <div class="row">
                                 <div class="col-md-6">
                                     <x-select label="Size" name="size_id" :options="$sizes" option_label="name"
@@ -167,6 +173,10 @@
     <style>
         .checkBox .form-group {
             margin-bottom: 0 !important;
+        }
+        .stock-col {
+            width: 60px;
+            white-space: nowrap;
         }
     </style>
 @endpush

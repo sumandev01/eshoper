@@ -8,7 +8,11 @@ use Illuminate\Http\Request;
 
 class WishlistController extends Controller
 {
-    public function index() {}
+    public function index() {
+        $user = auth('web')->user();
+        $wishlists = $user->wishlists()->with('product')->get();
+        return view('web.wishlist', compact('wishlists'));
+    }
 
     public function wishlistToggle(Request $request)
     {
@@ -49,5 +53,14 @@ class WishlistController extends Controller
             'wishlistCount' => $wishlistCount,
             'message'       => $status === 'added' ? 'Added to wishlist.' : 'Removed from wishlist.'
         ]);
+    }
+
+    public function removeFromWishlist($id)
+    {
+        $wishlistItem = Wishlist::where('id', $id)->first();
+        if ($wishlistItem) {
+            $wishlistItem->delete();
+        }
+        return redirect()->route('wishlist')->with('success', 'Item removed from wishlist.');
     }
 }

@@ -111,6 +111,23 @@
                 </ul>
             </div>
         </li>
+        <li class="nav-item {{ request()->routeIs('slider*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#slider" aria-expanded="{{ request()->routeIs('slider*') ? 'true' : 'false' }}" aria-controls="slider">
+                <span class="menu-title">Sliders</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-ticket menu-icon"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('slider*') ? 'show' : '' }}" id="slider">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('slider.index') ? 'active' : '' }}" href="{{ route('slider.index') }}">All Sliders</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('slider.add') ? 'active' : '' }}" href="{{ route('slider.add') }}">Add Slider</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#forms" aria-expanded="false" aria-controls="forms">
                 <span class="menu-title">Forms</span>

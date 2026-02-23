@@ -17,13 +17,17 @@
 
 
     <!-- Cart Start -->
-    <div class="container-fluid pt-5">
+    <div class="container-fluid">
         <div class="row px-xl-5">
             <div class="col-lg-8 table-responsive mb-5">
+                <h4 class="font-weight-semi-bold mb-2">Your Cart</h4>
+                <p>There are {{ count($carts) }} products in this list</p>
                 <table class="table table-bordered text-center mb-0">
                     <thead class="bg-secondary text-dark">
                         <tr>
-                            <th>Products</th>
+                            <th>Image</th>
+                            <th class="text-left">Products</th>
+                            <th>Stock</th>
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Total</th>
@@ -32,28 +36,48 @@
                     </thead>
                     <tbody class="">
                         @forelse ($carts ?? [] as $cart)
-                        @php
-                            $price = $cart?->cart_price;
-                            $subTotal = 0;
-                            $subTotal = $price * $cart?->quantity;
-                            $productStock = $cart?->product_stock;
-                        @endphp
-                            <tr data-product-stock="{{ $productStock }}" data-cart-id="{{ $cart?->id }}" data-product-price="{{ $price }}">
-                                <td class="text-left d-flex">
-                                    <img src="{{ Storage::url($cart->cart_image) }}" alt="" style="width: 100px;">
-                                    <div class="pl-3">
-                                        <a class="text-dark nav-link px-0" style="text-decoration: none;"
-                                            href="{{ route('productDetails', $cart?->product?->slug) }}"
-                                            title="{{ $cart?->product?->name }}">{{ Str::limit($cart?->product?->name, 30, '...') }}</a>
-                                        <div>
-                                            @if ($cart->size_id)
-                                                <span class="p-1 text-white bg-primary">Size: {{ $cart?->size?->name ?? '' }}</span>
-                                            @endif
-                                            @if ($cart->color_id)
-                                                <span class="p-1 text-white bg-primary">Color: {{ $cart?->color?->name ?? '' }}</span>
-                                            @endif
-                                        </div>
+                            @php
+                                $price = $cart?->cart_price;
+                                $subTotal = 0;
+                                $subTotal = $price * $cart?->quantity;
+                                $productStock = $cart?->product_stock;
+                            @endphp
+                            <tr data-product-stock="{{ $productStock }}" data-cart-id="{{ $cart?->id }}"
+                                data-product-price="{{ $price }}">
+                                <td style="max-width: 100px">
+                                    <img src="{{ Storage::url($cart->cart_image) }}" alt="" style="width: 100px; aspect-ratio: 1/1; object-fit: cover;">
+                                </td>
+                                <td class="text-left">
+                                    <a class="text-dark nav-link px-0" style="text-decoration: none;"
+                                        href="{{ route('productDetails', $cart?->product?->slug) }}"
+                                        title="{{ $cart?->product?->name }}">{{ Str::limit($cart?->product?->name, 30, '...') }}</a>
+                                    <div>
+                                        @if ($cart->size_id)
+                                            <span class="p-1 text-white bg-primary">Size:
+                                                {{ $cart?->size?->name ?? '' }}</span>
+                                        @endif
+                                        @if ($cart->color_id)
+                                            <span class="p-1 text-white bg-primary">Color:
+                                                {{ $cart?->color?->name ?? '' }}</span>
+                                        @endif
                                     </div>
+                                    <div class="d-flex mb-3">
+                                        <div class="text-primary mr-2">
+                                            <small class="fas fa-star"></small>
+                                            <small class="fas fa-star"></small>
+                                            <small class="fas fa-star"></small>
+                                            <small class="fas fa-star-half-alt"></small>
+                                            <small class="far fa-star"></small>
+                                        </div>
+                                        <small class="pt-1">(50 Reviews)</small>
+                                    </div>
+                                </td>
+                                <td class="align-middle">
+                                    @if ($productStock > 0)
+                                        <span class="badge badge-success p-2 rounded">{{ $productStock }}</span>
+                                    @else
+                                        <span class="badge badge-danger p-2 rounded">Out of Stock</span>
+                                    @endif
                                 </td>
                                 <td class="align-middle">৳{{ formatBDT($price) }}</td>
                                 <td class="align-middle">
@@ -63,7 +87,9 @@
                                                 <i class="fa fa-minus"></i>
                                             </button>
                                         </div>
-                                        <input type="text" name="quantity" class="form-control form-control-sm bg-secondary text-center product-quantity" value="{{ old('quantity', $cart?->quantity) }}">
+                                        <input type="text" name="quantity"
+                                            class="form-control form-control-sm bg-secondary text-center product-quantity"
+                                            value="{{ old('quantity', $cart?->quantity) }}">
                                         <div class="input-group-btn">
                                             <button class="btn btn-sm btn-primary btn-plus quantity-btn">
                                                 <i class="fa fa-plus"></i>
@@ -73,21 +99,22 @@
                                 </td>
                                 <td class="align-middle product-subtotal">৳{{ formatBDT($subTotal) }}</td>
                                 <td class="align-middle">
-                                    <button onclick="window.location.href = '{{ route('removeFromCart', $cart->id) }}';" class="btn btn-sm btn-primary btn-remove">
+                                    <button onclick="window.location.href = '{{ route('removeFromCart', $cart->id) }}';"
+                                        class="btn btn-sm btn-primary btn-remove">
                                         <i class="fa fa-times"></i>
                                     </button>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">No Product added to Cart Found</td>
+                                <td colspan="7" class="text-center">No Product added to Cart Found</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
             <div class="col-lg-4">
-                <form id="coupon-form" class="mb-5">
+                <form id="coupon-form" class="mb-4">
                     <div class="input-group">
                         <input type="text" class="form-control p-4" id="couponCode" placeholder="Coupon Code">
                         <div class="input-group-append">
@@ -193,11 +220,12 @@
                     showToast("error", "Available stock: " + $productStock);
                 }
             });
-            
+
             $('#couponBtn').on('click', function() {
                 let couponCode = $('#couponCode').val();
                 let cartSubTotal = parseFloat($('.cart-subtotal').text().replace(/[^0-9.-]+/g, ''));
-                if(couponCode == null || couponCode == '' || couponCode == undefined || couponCode.length < 5) return;
+                if (couponCode == null || couponCode == '' || couponCode == undefined || couponCode.length <
+                    5) return;
                 $.ajax({
                     url: '{{ route('applyCoupon') }}',
                     type: 'POST',
@@ -209,8 +237,10 @@
                     success: function(response) {
                         if (response.status == 'success') {
                             showToast('success', response.message);
-                            $('.grand-total').text('৳' + response.discountPrice.toLocaleString('en-IN'));
-                            $('.coupon-discount').text('৳' + (cartSubTotal - response.discountPrice).toLocaleString('en-IN'));
+                            $('.grand-total').text('৳' + response.discountPrice.toLocaleString(
+                                'en-IN'));
+                            $('.coupon-discount').text('৳' + (cartSubTotal - response
+                                .discountPrice).toLocaleString('en-IN'));
                             $('.quantity-btn').prop('disabled', true);
                             $('.btn-remove').prop('disabled', true);
                             $('#couponCode').val('');

@@ -61,9 +61,7 @@
     </div>
 
     @error($input_name)
-        <span class="invalid-feedback" role="alert">
-            <strong>{{ $message }}</strong>
-        </span>
+        <span class="text-danger mt-2 d-block">{{ $errors->first($input_name) }}</span>
     @enderror
 </div>
 

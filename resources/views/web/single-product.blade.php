@@ -255,6 +255,24 @@
                         <div class="card product-item border-0 product-card" data-product-id="{{ $item->id }}">
                             <div
                                 class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
+                                    <button class="btn btn-sm bg-white rounded-circle shadow-sm wishlist-btn p-1"
+                                        data-product-id="{{ $product->id }}"
+                                        style="width: 32px; height: 32px; line-height: 1;">
+                                        <i class="fas fa-heart"
+                                            style="font-size: 13px; color: {{ in_array($product->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
+                                    </button>
+                                </div>
+                                <div class="save-amount-box text-center position-absolute p-0"
+                                    style="top: 0; right: 0; z-index: 99;">
+                                    @if ($product->discount > 0 && $product->discount < $product->price)
+                                        <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
+                                            Save ৳{{ $product->price - $product->discount }}
+                                        </p>
+                                    @else
+                                        <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
+                                    @endif
+                                </div>
                                 <img class="img-fluid w-100" src="{{ $item->thumbnail }}"
                                     style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item->name }}">
                                 @if ($item->inventories->count() > 0)
@@ -320,7 +338,7 @@
                 $('#add-to-cart-btn, #product-quantity, .btn-plus, .btn-minus').prop('disabled', !enable);
             }
 
-            if (!hasVariants && currentStock > 0) {
+            if (!hasVariants && currentStock >= 0) {
                 toggleCartControls(true);
             } else {
                 toggleCartControls(false);
@@ -385,7 +403,7 @@
                             color_id: colorId
                         },
                         success: function(response) {
-                            currentStock = parseInt(response.stock);
+                            currentStock = parseInt(response.stock) || 0;
                             qtyInput.val(1);
                             selectInventoryId = response.inventory_id;
 
@@ -402,7 +420,7 @@
                                 qtyInput.attr('max', currentStock);
                                 stockDisplay.html(
                                     `<span class="text-success fw-bold">${currentStock} In Stock</span>`
-                                    );
+                                );
                             } else {
                                 toggleCartControls(false);
                                 stockDisplay.html(
@@ -487,7 +505,7 @@
                     url: "{{ route('addToCart') }}",
                     method: 'POST',
                     data: {
-                        _token: '{{ csrf_token('addToCart') }}',
+                        _token: "{{ csrf_token() }}",
                         productId: productId,
                         sizeId: sizeId,
                         colorId: colorId,
@@ -502,7 +520,8 @@
                         }
                     },
                     error: function(xhr) {
-                        cartBtn.prop('disabled', false).html('<i class="fa fa-shopping-cart"></i> Add To Cart');
+                        cartBtn.prop('disabled', false).html(
+                            '<i class="fa fa-shopping-cart"></i> Add To Cart');
                         if (xhr.status === 401) {
                             $("#loginModal").modal("show");
                         }

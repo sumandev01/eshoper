@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ProductInventoryController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\Admin\SliderController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('admin')->group(function () {
@@ -105,5 +106,14 @@ Route::prefix('admin')->group(function () {
         Route::get('/coupons/{coupon}/edit', 'edit')->name('coupon.edit');
         Route::put('/coupons/{coupon}', 'update')->name('coupon.update');
         Route::delete('/coupons/{coupon}', 'destroy')->name('coupon.destroy');
+    });
+
+    Route::controller(SliderController::class)->group(function () {
+        Route::get('/sliders', 'index')->name('slider.index');
+        Route::get('/sliders/add', 'add')->name('slider.add');
+        Route::post('/sliders', 'store')->name('slider.store');
+        Route::get('/sliders/{slider}/edit', 'edit')->name('slider.edit');
+        Route::put('/sliders/{slider}', 'update')->name('slider.update');
+        Route::delete('/sliders/{slider}', 'destroy')->name('slider.destroy');
     });
 });

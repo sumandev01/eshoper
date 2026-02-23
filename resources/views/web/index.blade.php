@@ -286,6 +286,14 @@
                         data-product-id="{{ $latestProduct->id }}" data-main-price="{{ $latestProduct->price }}"
                         data-discount-price="{{ $latestProduct->discount }}">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                            <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
+                                <button class="btn btn-sm bg-white rounded-circle shadow-sm wishlist-btn p-1"
+                                    data-product-id="{{ $latestProduct->id }}"
+                                    style="width: 32px; height: 32px; line-height: 1;">
+                                    <i class="fas fa-heart"
+                                        style="font-size: 13px; color: {{ in_array($latestProduct->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
+                                </button>
+                            </div>
                             <div class="save-amount-box text-center position-absolute p-0"
                                 style="top: 0; right: 0; z-index: 99;">
                                 @if ($latestProduct->discount > 0 && $latestProduct->discount < $latestProduct->price)
@@ -341,7 +349,7 @@
                         </div>
                     </div>
                 </div>
-                @empty
+            @empty
                 <div class="col-md-12">
                     <h3 class="text-center mt-5">No Product Found</h3>
                 </div>
