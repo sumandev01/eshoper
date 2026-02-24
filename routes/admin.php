@@ -115,5 +115,6 @@ Route::prefix('admin')->group(function () {
         Route::get('/sliders/{slider}/edit', 'edit')->name('slider.edit');
         Route::put('/sliders/{slider}', 'update')->name('slider.update');
         Route::delete('/sliders/{slider}', 'destroy')->name('slider.destroy');
+        Route::post('/sliders/reorder', 'reorder')->name('slider.reorder');
     });
 });

@@ -51,13 +51,6 @@
             data-multiple="false">
             <i class="mdi mdi-image"></i> {{ $button_label }}
         </button>
-
-        {{-- Remove button: only visible when there's an actual image --}}
-        {{-- <button type="button" class="btn btn-danger btn-sm" id="remove-btn-{{ $target_id }}"
-            style="{{ ($existing_image && !str_contains($existing_image, 'default.webp')) ? '' : 'display:none;' }}"
-            onclick="handleSingleRemove('{{ $target_id }}')">
-            <i class="mdi mdi-delete"></i> Remove
-        </button> --}}
     </div>
 
     @error($input_name)

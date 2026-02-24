@@ -25,7 +25,7 @@
                 aria-controls="media_menu">
                 <span class="menu-title">Media</span>
                 <i class="menu-arrow"></i>
-                <i class="fa fa-file-photo-o menu-icon"></i>
+                <i class="mdi mdi-image-multiple menu-icon"></i>
             </a>
             <div class="collapse {{ request()->routeIs('admin.media*') ? 'show' : '' }}" id="media_menu">
                 <ul class="nav flex-column sub-menu">
@@ -115,7 +115,7 @@
             <a class="nav-link" data-bs-toggle="collapse" href="#slider" aria-expanded="{{ request()->routeIs('slider*') ? 'true' : 'false' }}" aria-controls="slider">
                 <span class="menu-title">Sliders</span>
                 <i class="menu-arrow"></i>
-                <i class="mdi mdi-ticket menu-icon"></i>
+                <i class="mdi mdi-view-carousel menu-icon"></i>
             </a>
             <div class="collapse {{ request()->routeIs('slider*') ? 'show' : '' }}" id="slider">
                 <ul class="nav flex-column sub-menu">

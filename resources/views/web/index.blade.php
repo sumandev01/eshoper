@@ -36,17 +36,20 @@
     <!-- Categories Start -->
     <div class="container-fluid pt-5">
         <div class="row px-xl-5 pb-3">
-            @foreach (($categories ?? [])->sortByDesc('products_count')->take(8) as $category)
-                <div class="col-lg-3 col-md-3 col-sm-6 pb-1">
-                    <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                        <p class="text-right">{{ $category->products_count }} Products</p>
-                        <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                            <img class="img-fluid" src="{{ $category->image }}" alt="" style="aspect-ratio: 4/3;">
-                        </a>
-                        <h5 class="font-weight-semi-bold m-0">{{ $category->name }}</h5>
-                    </div>
+            <div class="col">
+                <div class="owl-carousel category-carousel">
+                    @foreach (($categories ?? [])->sortByDesc('products_count') as $category)
+                        <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
+                            <p class="text-right">{{ $category?->products_count }} Products</p>
+                            <a href="{{ route('categoryProducts', $category?->slug ?? '#') }}" class="cat-img position-relative overflow-hidden mb-3">
+                                <img class="img-fluid" src="{{ $category?->image }}" alt=""
+                                    style="aspect-ratio: 4/3;">
+                            </a>
+                            <h5 class="font-weight-semi-bold m-0">{{ $category?->name }}</h5>
+                        </div>
+                    @endforeach
                 </div>
-            @endforeach
+            </div>
         </div>
     </div>
     <!-- Categories End -->
@@ -272,8 +275,6 @@
         </div>
     </div>
     <!-- Subscribe End -->
-
-
     <!-- Products Start -->
     <div class="container-fluid pt-5">
         <div class="text-center mb-4">
@@ -283,38 +284,38 @@
             @forelse ($latestProducts ?? [] as $latestProduct)
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                     <div class="card product-item border-0 mb-4 product-card position-relative"
-                        data-product-id="{{ $latestProduct->id }}" data-main-price="{{ $latestProduct->price }}"
-                        data-discount-price="{{ $latestProduct->discount }}">
+                        data-product-id="{{ $latestProduct?->id }}" data-main-price="{{ $latestProduct?->price }}"
+                        data-discount-price="{{ $latestProduct?->discount }}">
                         <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                             <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
                                 <button class="btn btn-sm bg-white rounded-circle shadow-sm wishlist-btn p-1"
-                                    data-product-id="{{ $latestProduct->id }}"
+                                    data-product-id="{{ $latestProduct?->id }}"
                                     style="width: 32px; height: 32px; line-height: 1;">
                                     <i class="fas fa-heart"
-                                        style="font-size: 13px; color: {{ in_array($latestProduct->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
+                                        style="font-size: 13px; color: {{ in_array($latestProduct?->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
                                 </button>
                             </div>
                             <div class="save-amount-box text-center position-absolute p-0"
                                 style="top: 0; right: 0; z-index: 99;">
-                                @if ($latestProduct->discount > 0 && $latestProduct->discount < $latestProduct->price)
+                                @if ($latestProduct?->discount > 0 && $latestProduct?->discount < $latestProduct?->price)
                                     <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                                        Save ৳{{ $latestProduct->price - $latestProduct->discount }}
+                                        Save ৳{{ $latestProduct?->price - $latestProduct?->discount }}
                                     </p>
                                 @else
                                     <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
                                 @endif
                             </div>
-                            <img class="img-fluid w-100" src="{{ $latestProduct->thumbnail }}"
-                                style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $latestProduct->name }}">
-                            @if ($latestProduct->inventories->count() > 0)
+                            <img class="img-fluid w-100" src="{{ $latestProduct?->thumbnail }}"
+                                style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $latestProduct?->name }}">
+                            @if ($latestProduct?->inventories->count() > 0)
                                 <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"
                                     style="bottom: 0; left: 0; width: 100%;">
                                     {{-- Size dropdown --}}
                                     <select class="form-control form-control-md shop-size-selector" style="width: 100px">
                                         <option value="" disabled>Size</option>
-                                        @foreach ($latestProduct->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
-                                            <option value="{{ $inv->size_id }}" {{ $index == 0 ? 'selected' : '' }}>
-                                                {{ $inv->size->name ?? 'N/A' }}
+                                        @foreach ($latestProduct?->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
+                                            <option value="{{ $inv?->size_id }}" {{ $index == 0 ? 'selected' : '' }}>
+                                                {{ $inv?->size?->name ?? 'N/A' }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -326,25 +327,25 @@
                             @endif
                         </div>
                         <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                            <h6 class="text-truncate mb-3" title="{{ $latestProduct->name }}">
-                                {{ Str::limit($latestProduct->name, 20, '...') }}</h6>
+                            <h6 class="text-truncate mb-3" title="{{ $latestProduct?->name }}">
+                                {{ Str::limit($latestProduct?->name, 20, '...') }}</h6>
                             <div class="d-flex justify-content-center">
-                                @if ($latestProduct->discount > 0 && $latestProduct->discount != $latestProduct->price)
-                                    <h6 class="variant-price">৳{{ $latestProduct->discount }}</h6>
+                                @if ($latestProduct?->discount > 0 && $latestProduct?->discount != $latestProduct?->price)
+                                    <h6 class="variant-price">৳{{ $latestProduct?->discount }}</h6>
                                     <h6 class="text-muted ml-2"><del
-                                            class="main-price">৳{{ $latestProduct->price }}</del></h6>
+                                            class="main-price">৳{{ $latestProduct?->price }}</del></h6>
                                 @else
-                                    <h6 class="variant-price">৳{{ $latestProduct->price }}</h6>
+                                    <h6 class="variant-price">৳{{ $latestProduct?->price }}</h6>
                                     <h6 class="text-muted ml-2"><del class="main-price d-none"></del></h6>
                                 @endif
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="{{ route('productDetails', $latestProduct->slug) }}"
+                            <a href="{{ route('productDetails', $latestProduct?->slug) }}"
                                 class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
                                 Detail</a>
                             <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart"
-                                data-product-id="{{ $latestProduct->id }}"><i
+                                data-product-id="{{ $latestProduct?->id }}"><i
                                     class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
                         </div>
                     </div>
@@ -394,3 +395,40 @@
     </div>
     <!-- Vendor End -->
 @endsection
+@push('script')
+    <script>
+        $(document).ready(function() {
+            console.log('owl length:', $(".category-carousel").length);
+            console.log($(window).width());
+
+            if ($(".category-carousel").length > 0) {
+                $(".category-carousel").owlCarousel({
+                    loop: true,
+                    dots: false,
+                    margin: 25,
+                    autoplay: true,
+                    responsive: {
+                        0: {
+                            items: 1
+                        },
+                        576: {
+                            items: 2
+                        },
+                        768: {
+                            items: 3
+                        },
+                        992: {
+                            items: 4
+                        },
+                        1200: {
+                            items: 5
+                        },
+                        1400: {
+                            items: 6
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+@endpush

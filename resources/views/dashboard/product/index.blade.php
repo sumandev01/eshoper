@@ -60,10 +60,13 @@
                                             </td>
                                             <td>
                                                 @if ($product->discount > 0)
-                                                    <div class="fw-bold text-dark">৳{{ number_format($product->discount, 2) }}</div>
-                                                    <del class="text-muted small">৳{{ number_format($product->price, 2) }}</del>
+                                                    <div class="fw-bold text-dark">
+                                                        ৳{{ number_format($product->discount, 2) }}</div>
+                                                    <del
+                                                        class="text-muted small">৳{{ number_format($product->price, 2) }}</del>
                                                 @else
-                                                    <div class="fw-bold text-dark">৳{{ number_format($product->price, 2) }}</div>
+                                                    <div class="fw-bold text-dark">৳{{ number_format($product->price, 2) }}
+                                                    </div>
                                                 @endif
                                             </td>
                                             <td>
@@ -149,6 +152,12 @@
         .btn-group .btn {
             margin: 0 2px;
             border-radius: 4px !important;
+        }
+
+        .table th img,
+        .table td img {
+            width: 70px;
+            height: 70px;
         }
     </style>
 @endpush
