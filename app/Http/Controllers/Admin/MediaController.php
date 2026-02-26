@@ -75,16 +75,15 @@ class MediaController extends Controller
         }
     }
 
-    public function destroy(Media $id)
+    public function destroy(Media $media)
     {
-
-        if ($id->src && Storage::disk('public')->exists($id->src)) {
-            Storage::disk('public')->delete($id->src);
+        // File delete
+        if ($media->src && Storage::disk('public')->exists($media->src)) {
+            Storage::disk('public')->delete($media->src);
         }
 
-        $deleted = $id->delete();
-
-        if ($deleted) {
+        // Record delete
+        if ($media->delete()) {
             return redirect()->route('admin.media')->with('success', 'Media deleted successfully.');
         }
 

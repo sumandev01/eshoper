@@ -41,10 +41,9 @@ class ProductRequest extends FormRequest
             'buy_price' => 'nullable|numeric|min:0',
             'tax' => 'nullable|numeric|min:0',
             'media_id' => 'nullable|exists:media,id',
-            'status' => 'required|numeric|in:0,1', // english - min/max validation use 
+            'status' => 'required|numeric|in:0,1',
             'product_galleries' => 'nullable|array',
             'category_id' => 'required|exists:categories,id',
-            // 'sub_category_id' => 'required|exists:sub_categories,id',
             'sub_category_id' => [
                 'required',
                 Rule::exists('sub_categories', 'id')->where(function ($query) {
@@ -52,7 +51,9 @@ class ProductRequest extends FormRequest
                 }),
             ],
             'brand_id' => 'nullable|exists:brands,id',
-            'tag_id' => 'nullable|array', // assuming multiple tags can be selected
+            'tag_id' => 'nullable|array',
+            'meta_title' => 'nullable|string|min:30|max:60',
+            'meta_description' => 'nullable|string|min:120|max:160',
         ];
     }
 

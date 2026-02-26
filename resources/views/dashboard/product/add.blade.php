@@ -97,6 +97,16 @@
                                 limit="10" button_class="mt-2" />
                         </div>
                     </div>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header pt-3">
+                            <h5 class="card-title">SEO</h5>
+                        </div>
+                        <div class="card-body">
+                            <x-textarea name="meta_title" label="Meta Title" :value="$item->meta_title ?? ''" :maxlength="60" :wordcount="true" :rows="1" />
+                            <x-textarea name="meta_description" label="Meta Description" :value="$item->meta_description ?? ''" :maxlength="160" :wordcount="true" :rows="2" />
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right Side: Category, Brand & Image -->
@@ -187,6 +197,12 @@
 
         .product_thumbnail .noImagesSelected {
             font-size: 14px !important;
+        }
+        textarea {
+            resize: none !important;
+        }
+        textarea:focus {
+            box-shadow: none !important;
         }
     </style>
 @endpush

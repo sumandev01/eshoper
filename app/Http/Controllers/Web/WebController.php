@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Product;
@@ -28,8 +29,10 @@ class WebController extends Controller
     {
         $products = Product::latest('id')->where('status', 1)->get();
         $latestProducts = $products->take(8);
+        $trendingProducts = $this->webService->getTrendingProducts();
         $categories = Category::latest('id')->withCount('products')->get();
-        return view('web.index', compact('products', 'latestProducts', 'categories'));
+        $brands = Brand::latest('id')->get();
+        return view('web.index', compact('products', 'latestProducts', 'trendingProducts', 'categories', 'brands'));
     }
 
     public function products(Request $request, ProductFilterService $filterService)

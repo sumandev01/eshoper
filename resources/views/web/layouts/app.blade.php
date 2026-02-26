@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
-    <title>EShopper - Bootstrap Shop Template</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
-    <meta content="Free HTML Templates" name="description">
+
+    <!-- SEO Meta Tags -->
+    <title>@yield('title', config('app.name'))</title>
+    <meta name="description" content="@yield('meta_description', '')">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="@yield('og_title')">
+    <meta property="og:description" content="@yield('og_description')">
+    <meta property="og:image" content="@yield('og_image')">
+    <meta property="og:url" content="@yield('og_url')">
+    <meta property="og:type" content="@yield('og_type', 'website')">
+
+
+
     <!-- Favicon -->
     <link href="{{ asset('web/img/favicon.ico') }}" rel="icon">
     <!-- Google Web Fonts -->
@@ -26,6 +39,7 @@
         .navbarShadow {
             box-shadow: 0px 15px 10px -15px rgba(0, 0, 0, 0.15);
         }
+
         .wpo-breadcumb-wrap ol li {
             display: inline-block;
             color: #233d50;
@@ -35,6 +49,7 @@
             line-height: 30px;
             padding: 0 20px 0 5px;
         }
+
         .wpo-breadcumb-wrap ol li::after {
             content: "\f105";
             position: absolute;
@@ -45,20 +60,25 @@
             font-family: "Font Awesome 5 Free";
             font-weight: 900;
         }
+
         .wpo-breadcumb-wrap ol li:last-child::after {
             display: none;
         }
+
         button:focus {
             box-shadow: none ! important;
         }
+
         .wishlist-btn i.active {
-    color: #e74c3c !important;
-}
-.wishlist-btn i {
-    color: #ccc;
-}
+            color: #e74c3c !important;
+        }
+
+        .wishlist-btn i {
+            color: #ccc;
+        }
     </style>
 </head>
+
 <body>
     <!-- Topbar Start -->
     @include('web.layouts.partial.header')
@@ -76,7 +96,7 @@
                 <div class="modal-body p-0">
                     <div class="text-left mb-4">
                         <h3 style="color: #2c4a63; font-weight: 700; margin-bottom: 5px;">Login</h2>
-                        <p style="color: #6c757d; font-size: 16px;">Sign into your pages account</p>
+                            <p style="color: #6c757d; font-size: 16px;">Sign into your pages account</p>
                     </div>
 
                     <form id="ajaxLoginForm">
@@ -111,7 +131,7 @@
                         </button>
 
                         <p class="pt-3 text-center">Don't have an account? <a href="{{ route('register') }}">Create free
-                                    account</a></p>
+                                account</a></p>
 
                         <div id="loginError" class="text-danger mt-3 text-center" style="display:none;"></div>
                     </form>
@@ -176,4 +196,5 @@
     @endif
     @stack('script')
 </body>
+
 </html>

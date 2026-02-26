@@ -76,12 +76,24 @@ class ProductController extends Controller
 
     public function update(ProductRequest $request, Product $product, ProductRepository $productRepository)
     {
-        
+
         $updated = $productRepository->updateByRequest($request, $product);
         if ($updated) {
             return redirect()->route('product.index')->with('success', 'Product updated successfully.');
         }
         return redirect()->back()->with('error', 'Failed to update product. Please try again.');
+    }
+
+    public function updateTrendy(Request $request)
+    {
+        $product = Product::findOrFail($request->product_id);
+        $product->is_trending = $request->is_trending === 'true' ? 1 : 0;
+        $product->save();
+
+        return response()->json([
+            'success' => true,
+            //'is_trending' => $product->is_trending,
+        ]);
     }
 
     public function destroy(Product $product)

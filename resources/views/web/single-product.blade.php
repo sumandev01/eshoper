@@ -1,4 +1,12 @@
 @extends('web.layouts.app')
+@section('title', ($product?->details?->meta_title ?? $product?->name) . ' | ' . config('app.name'))
+@section('meta_description', $product?->details?->meta_description ?? Str::limit(strip_tags($product?->details?->description ?? ''), 160))
+
+@section('og_title', $product?->details?->meta_title ?? $product?->name)
+@section('og_description', $product?->details?->meta_description ?? Str::limit(strip_tags($product?->details?->description ?? ''), 160))
+@section('og_image', url($product?->thumbnail))
+@section('og_url', route('productDetails', $product?->slug))
+
 @section('content')
     <div class="container-fluid mb-4">
         <div class="row">
@@ -19,12 +27,12 @@
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner border" id="carousel-images-container">
                         <div class="carousel-item active">
-                            <img id="main-image-preview" class="w-100 h-100" src="{{ $product->thumbnail }}"
+                            <img id="main-image-preview" class="w-100 h-100" src="{{ $product?->thumbnail }}"
                                 style="aspect-ratio: 1/1; object-fit: contain;" alt="Image">
                         </div>
-                        @foreach ($product->galleries as $gallery)
+                        @foreach ($product?->galleries ?? [] as $gallery)
                             <div class="carousel-item">
-                                <img class="w-100 h-100" src="{{ Storage::url($gallery->src) }}"
+                                <img class="w-100 h-100" src="{{ Storage::url($gallery?->src) }}"
                                     style="aspect-ratio: 1/1; object-fit: contain;" alt="Image">
                             </div>
                         @endforeach
@@ -39,7 +47,7 @@
             </div>
 
             <div class="col-lg-7 pb-5">
-                <h3 class="font-weight-semi-bold">{{ $product->name }}</h3>
+                <h3 class="font-weight-semi-bold">{{ $product?->name }}</h3>
                 <div class="d-flex mb-3">
                     <div class="text-primary mr-2">
                         <small class="fas fa-star"></small>
@@ -52,16 +60,16 @@
                 </div>
                 <div class="d-flex align-items-end mb-4" id="price-container">
                     @php
-                        $mainPrice = $product->price;
-                        $discountPrice = $product->discount;
+                        $mainPrice = $product?->price;
+                        $discountPrice = $product?->discount;
 
                         if (isset($productInventory)) {
                             $mainPrice =
-                                $productInventory->user_main_price == 1 ? $product->price : $productInventory->price;
+                                $productInventory?->user_main_price == 1 ? $product?->price : $productInventory?->price;
                             $discountPrice =
-                                $productInventory->user_main_discount == 1
-                                    ? $product->discount
-                                    : $productInventory->discount;
+                                $productInventory?->user_main_discount == 1
+                                    ? $product?->discount
+                                    : $productInventory?->discount;
                         }
                     @endphp
 
@@ -75,7 +83,7 @@
                     @endif
                 </div>
 
-                <p class="mb-4">{{ $product->details->shortDescription }}</p>
+                <p class="mb-4">{{ $product?->details?->shortDescription }}</p>
 
                 @if ($sizes && $sizes->count() > 0)
                     <div class="d-flex mb-3">
@@ -84,9 +92,9 @@
                             @foreach ($sizes->sortByDesc('name') ?? [] as $size)
                                 <div class="custom-control custom-radio custom-control-inline">
                                     <input type="radio" class="custom-control-input variable-size-input"
-                                        id="size-{{ $size->id }}" name="size" value="{{ $size->id }}">
+                                        id="size-{{ $size?->id }}" name="size" value="{{ $size?->id }}">
                                     <label class="custom-control-label"
-                                        for="size-{{ $size->id }}">{{ $size->name }}</label>
+                                        for="size-{{ $size?->id }}">{{ $size?->name }}</label>
                                 </div>
                             @endforeach
                         </form>
@@ -107,8 +115,8 @@
                 <div class="d-flex pt-2 mb-4">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Quantity:</p>
                     <span id="variant-stock-display">
-                        @if ($product->stock > 0)
-                            <span class="text-success fw-bold product_stock">{{ $product->stock }} In Stock (Total)</span>
+                        @if ($product?->stock > 0)
+                            <span class="text-success fw-bold product_stock">{{ $product?->stock }} In Stock (Total)</span>
                         @else
                             <span class="text-danger fw-bold">Out of Stock</span>
                         @endif
@@ -138,24 +146,24 @@
 
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Category:</p>
-                    <span>{{ $product->details->category->name ?? 'N/A' }}</span>
+                    <span>{{ $product?->details?->category?->name ?? 'N/A' }}</span>
                 </div>
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Sub Category:</p>
-                    <span>{{ $product->details->subCategory->name ?? 'N/A' }}</span>
+                    <span>{{ $product?->details?->subCategory?->name ?? 'N/A' }}</span>
                 </div>
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Brand:</p>
-                    <span>{{ $product->details->brand->name ?? 'N/A' }}</span>
+                    <span>{{ $product?->details?->brand?->name ?? 'N/A' }}</span>
                 </div>
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">SKU:</p>
-                    <span>{{ $product->sku ?? 'N/A' }}</span>
+                    <span>{{ $product?->sku ?? 'N/A' }}</span>
                 </div>
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Tags:</p>
                     <div class="d-inline-flex">
-                        {{ $tags->pluck('name')->implode(', ') ?? 'N/A' }}
+                        {{ $tags?->pluck('name')->implode(', ') ?? 'N/A' }}
                     </div>
                 </div>
                 <div class="d-flex pt-2">
@@ -179,11 +187,11 @@
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
                         <h4 class="mb-3">Product Description</h4>
-                        {!! $product->details->description ?? 'No description available.' !!}
+                        {!! $product?->details?->description ?? 'No description available.' !!}
                     </div>
                     <div class="tab-pane fade" id="tab-pane-2">
                         <h4 class="mb-3">Additional Information</h4>
-                        {!! $product->details->information ?? 'No specifications provided.' !!}
+                        {!! $product?->details?->information ?? 'No specifications provided.' !!}
                     </div>
                     <div class="tab-pane fade" id="tab-pane-3">
                         <div class="row">
@@ -250,41 +258,41 @@
         </div>
         <div class="row px-xl-5">
             <div class="col">
-                <div class="owl-carousel related-carousel">
+                <div class="owl-carousel">
                     @foreach ($relatedProducts ?? [] as $item)
-                        <div class="card product-item border-0 product-card" data-product-id="{{ $item->id }}">
+                        <div class="card product-item border-0 product-card" data-product-id="{{ $item?->id }}">
                             <div
                                 class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                                 <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
                                     <button class="btn btn-sm bg-white rounded-circle shadow-sm wishlist-btn p-1"
-                                        data-product-id="{{ $product->id }}"
+                                        data-product-id="{{ $item?->id }}"
                                         style="width: 32px; height: 32px; line-height: 1;">
                                         <i class="fas fa-heart"
-                                            style="font-size: 13px; color: {{ in_array($product->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
+                                            style="font-size: 13px; color: {{ in_array($item?->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
                                     </button>
                                 </div>
                                 <div class="save-amount-box text-center position-absolute p-0"
                                     style="top: 0; right: 0; z-index: 99;">
-                                    @if ($product->discount > 0 && $product->discount < $product->price)
+                                    @if ($item?->discount > 0 && $item?->discount < $item?->price)
                                         <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                                            Save ৳{{ $product->price - $product->discount }}
+                                            Save ৳{{ $item?->price - $item?->discount }}
                                         </p>
                                     @else
                                         <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
                                     @endif
                                 </div>
-                                <img class="img-fluid w-100" src="{{ $item->thumbnail }}"
-                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item->name }}">
-                                @if ($item->inventories->count() > 0)
+                                <img class="img-fluid w-100" src="{{ $item?->thumbnail }}"
+                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}">
+                                @if ($item?->inventories->count() > 0)
                                     <div class="varient-product position-absolute d-flex justify-content-between bg-white"
                                         style="bottom: 0; left: 0; width: 100%;">
                                         {{-- Size dropdown --}}
                                         <select class="form-control form-control-md shop-size-selector"
                                             style="width: 100px">
                                             <option value="" disabled>Size</option>
-                                            @foreach ($item->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
-                                                <option value="{{ $inv->size_id }}" {{ $index == 0 ? 'selected' : '' }}>
-                                                    {{ $inv->size->name ?? 'N/A' }}
+                                            @foreach ($item?->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
+                                                <option value="{{ $inv?->size_id }}" {{ $index == 0 ? 'selected' : '' }}>
+                                                    {{ $inv?->size?->name ?? 'N/A' }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -297,22 +305,22 @@
                                 @endif
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                <h6 class="text-truncate mb-3" title="{{ $item->name }}">
-                                    {{ Str::limit($item->name, 30, '...') }}</h6>
+                                <h6 class="text-truncate mb-3" title="{{ $item?->name }}">
+                                    {{ Str::limit($item?->name, 30, '...') }}</h6>
                                 <div class="d-flex justify-content-center">
-                                    @if ($item->discount > 0)
-                                        <h6>৳{{ $item->discount }}</h6>
-                                        <h6 class="text-muted ml-2"><del>৳{{ $item->price }}</del></h6>
+                                    @if ($item?->discount > 0)
+                                        <h6>৳{{ $item?->discount }}</h6>
+                                        <h6 class="text-muted ml-2"><del>৳{{ $item?->price }}</del></h6>
                                     @else
-                                        <h6>৳{{ $item->price }}</h6>
+                                        <h6>৳{{ $item?->price }}</h6>
                                     @endif
                                 </div>
                             </div>
                             <div class="card-footer d-flex justify-content-between bg-light border">
-                                <a href="{{ route('productDetails', $item->slug) }}" class="btn btn-sm text-dark p-0"><i
+                                <a href="{{ route('productDetails', $item?->slug) }}" class="btn btn-sm text-dark p-0"><i
                                         class="fas fa-eye text-primary mr-1"></i>View Detail</a>
                                 <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart"
-                                    data-product-id="{{ $item->id }}"><i
+                                    data-product-id="{{ $item?->id }}"><i
                                         class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
                             </div>
                         </div>
@@ -527,6 +535,26 @@
                         }
                     },
                 });
+            });
+
+            $('.owl-carousel').owlCarousel({
+                loop: true,
+                margin: 10,
+                nav: true,
+                dots: false,
+                autoplay: true,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    600: {
+                        items: 2
+                    },
+                    1000: {
+                        items: 4
+                    }
+                }
             });
         });
     </script>

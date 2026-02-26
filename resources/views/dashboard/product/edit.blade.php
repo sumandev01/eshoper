@@ -26,31 +26,31 @@
                         </div>
                         <div class="card-body">
                             <x-input name="name" label="Product Name" type="text" placeholder="Enter product name"
-                                :required="false" :maxlength="100" :value="$product->name ?? ''" />
+                                :required="false" :maxlength="100" :value="$product?->name ?? ''" />
 
                             <x-input name="slug" label="Product Slug" type="text" placeholder="enter-product-slug"
-                                :required="false" :maxlength="100" :value="$product->slug ?? ''" />
+                                :required="false" :maxlength="100" :value="$product?->slug ?? ''" />
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sku" type="text" placeholder="SKU-12345" label="Product SKU"
-                                        :value="$product->sku ?? ''" />
+                                        :value="$product?->sku ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="quantity" type="number" placeholder="0" label="Product Quantity"
-                                        :value="$product->stock ?? ''" />
+                                        :value="$product?->stock ?? ''" />
                                 </div>
                             </div>
 
                             <x-textarea name="short_description" label="Short Description" :editor="false"
-                                :value="$product->details->shortDescription ?? ''" placeholder="Write something..." maxlength="500" :wordcount="true"
+                                :value="$product?->details?->shortDescription ?? ''" placeholder="Write something..." maxlength="500" :wordcount="true"
                                 rows="5" :required="false" />
 
-                            <x-textarea name="description" label="Description" :editor="true" :value="$product->details->description ?? ''"
+                            <x-textarea name="description" label="Description" :editor="true" :value="$product?->details?->description ?? ''"
                                 placeholder="Write something..." maxlength="1500" :wordcount="true" rows="5"
                                 :required="false" />
 
-                            <x-textarea name="specifications" label="Specifications" :editor="true" :value="$product->details->information ?? ''"
+                            <x-textarea name="specifications" label="Specifications" :editor="true" :value="$product?->details?->information ?? ''"
                                 placeholder="Write something..." maxlength="1500" :wordcount="true" rows="5"
                                 :required="false" />
                         </div>
@@ -64,19 +64,19 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sale_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="৳" label="Sale Price" :value="$product->price ?? ''" />
+                                        inputGroupText="৳" label="Sale Price" :value="$product?->price ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="discount" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="৳" label="Discount Price" :value="$product->discount ?? ''" />
+                                        inputGroupText="৳" label="Discount Price" :value="$product?->discount ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="buy_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="৳" label="Buy Price" :value="$product->buy_price ?? ''" />
+                                        inputGroupText="৳" label="Buy Price" :value="$product?->buy_price ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="tax" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="%" label="Tax" :value="$product->tax ?? ''" />
+                                        inputGroupText="%" label="Tax" :value="$product?->tax ?? ''" />
                                 </div>
                             </div>
                         </div>
@@ -91,6 +91,16 @@
                                 name="galleries" :required="false" limit="10" button_class="mt-2" />
                         </div>
                     </div>
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header bg-white pt-3">
+                            <h5 class="card-title">SEO</h5>
+                        </div>
+                        <div class="card-body">
+                            <x-textarea name="meta_title" label="Meta Title" :value="$product?->details?->meta_title ?? ''" :maxlength="60" :wordcount="true" :rows="1" />
+                            <x-textarea name="meta_description" label="Meta Description" :value="$product?->details?->meta_description ?? ''" :maxlength="160" :wordcount="true" :rows="2" />
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Right Side: Category, Brand & Image -->
@@ -101,17 +111,17 @@
                         </div>
                         <div class="card-body">
                             <x-select name="category_id" id="category_id" label="Category" :options="$categories"
-                                placeholder="Select Category" :required="false" :value="$product->details->category_id ?? ''" />
+                                placeholder="Select Category" :required="false" :value="$product?->details?->category_id ?? ''" />
                             <x-select name="sub_category_id" id="sub_category_id" label="Subcategory" :options="$subCategories ?? []"
-                                placeholder="Select Subcategory" :value="$product->details->sub_category_id ?? ''" />
+                                placeholder="Select Subcategory" :value="$product?->details?->sub_category_id ?? ''" />
 
                             <x-select name="brand_id" id="brand_id" label="Brand" :options="$brands ?? []"
-                                placeholder="Select Brand" :value="$product->details->brand_id ?? ''" />
+                                placeholder="Select Brand" :value="$product?->details?->brand_id ?? ''" />
 
-                            <x-select name="status" label="Status" :value="$product->status ?? 0">
-                                <option value="1" {{ isset($product) && $product->status == 1 ? 'selected' : '' }}>
+                            <x-select name="status" label="Status" :value="$product?->status ?? 0">
+                                <option value="1" {{ isset($product) && $product?->status == 1 ? 'selected' : '' }}>
                                     Active</option>
-                                <option value="0" {{ isset($product) && $product->status == 0 ? 'selected' : '' }}>
+                                <option value="0" {{ isset($product) && $product?->status == 0 ? 'selected' : '' }}>
                                     Inactive</option>
                             </x-select>
                         </div>
@@ -127,10 +137,10 @@
 
                             {{-- Hidden inputs container for tag IDs --}}
                             <div id="hidden-tags-inputs">
-                                @if (isset($product) && $product->tags)
-                                    @foreach ($product->tags as $tag)
-                                        <input type="hidden" name="tag_id[]" value="{{ $tag->id }}"
-                                            id="input-tag-{{ $tag->id }}">
+                                @if (isset($product) && $product?->tags)
+                                    @foreach ($product?->tags as $tag)
+                                        <input type="hidden" name="tag_id[]" value="{{ $tag?->id }}"
+                                            id="input-tag-{{ $tag?->id }}">
                                     @endforeach
                                 @endif
                             </div>
@@ -138,11 +148,11 @@
                             {{-- Displaying selected tags as badges --}}
                             <div id="selected-tags-container" class="mt-3">
                                 <div id="tag-badges" class="d-flex flex-wrap gap-2">
-                                    @if (isset($product) && $product->tags)
-                                        @foreach ($product->tags as $tag)
+                                    @if (isset($product) && $product?->tags)
+                                        @foreach ($product?->tags as $tag)
                                             <span class="badge bg-primary p-2 d-inline-flex align-items-center"
-                                                data-id="{{ $tag->id }}">
-                                                {{ $tag->name }}
+                                                data-id="{{ $tag?->id }}">
+                                                {{ $tag?->name }}
                                                 <span class="ms-2 btn-close btn-close-white remove-tag"
                                                     style="cursor:pointer; font-size: 10px;"></span>
                                             </span>
@@ -159,7 +169,7 @@
                         </div>
                         <div class="card-body text-center">
                             <x-media-thumbnail name="image" image_preview_class="product_thumbnail" fit_content="100%"
-                                :required="false" :existing_image="$product->thumbnail ?? ''" :existing_id="$product->media_id" />
+                                :required="false" :existing_image="$product?->thumbnail ?? ''" :existing_id="$product?->media_id" />
                         </div>
                     </div>
 
@@ -205,6 +215,12 @@
 
         .product_thumbnail .noImagesSelected {
             font-size: 14px !important;
+        }
+        textarea {
+            resize: none !important;
+        }
+        textarea:focus {
+            box-shadow: none !important;
         }
     </style>
 @endpush

@@ -1,5 +1,4 @@
 @extends('web.layouts.app')
-
 @section('content')
     <!-- Featured Start -->
     <div class="container-fluid pt-5">
@@ -41,7 +40,8 @@
                     @foreach (($categories ?? [])->sortByDesc('products_count') as $category)
                         <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
                             <p class="text-right">{{ $category?->products_count }} Products</p>
-                            <a href="{{ route('categoryProducts', $category?->slug ?? '#') }}" class="cat-img position-relative overflow-hidden mb-3">
+                            <a href="{{ route('categoryProducts', $category?->slug ?? '#') }}"
+                                class="cat-img position-relative overflow-hidden mb-3">
                                 <img class="img-fluid" src="{{ $category?->image }}" alt=""
                                     style="aspect-ratio: 4/3;">
                             </a>
@@ -89,166 +89,80 @@
             <h2 class="section-title px-5"><span class="px-2">Trandy Products</span></h2>
         </div>
         <div class="row px-xl-5 pb-3">
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="{{ asset('web/img/product-1.jpg') }}" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                        <div class="d-flex justify-content-center">
-                            <h6>$123.00</h6>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
+            @forelse ($trendingProducts ?? [] as $item)
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                    <div class="card product-item border-0 mb-4 product-card position-relative"
+                        data-product-id="{{ $item?->id }}" data-main-price="{{ $item?->price }}"
+                        data-discount-price="{{ $item?->discount }}">
+                        <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                            <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
+                                <button class="btn btn-sm bg-white rounded-circle shadow-sm wishlist-btn p-1"
+                                    data-product-id="{{ $item?->id }}"
+                                    style="width: 32px; height: 32px; line-height: 1;">
+                                    <i class="fas fa-heart"
+                                        style="font-size: 13px; color: {{ in_array($item?->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
+                                </button>
+                            </div>
+                            <div class="save-amount-box text-center position-absolute p-0"
+                                style="top: 0; right: 0; z-index: 99;">
+                                @if ($item?->discount > 0 && $item?->discount < $item?->price)
+                                    <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
+                                        Save ৳{{ $item?->price - $item?->discount }}
+                                    </p>
+                                @else
+                                    <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
+                                @endif
+                            </div>
+                            <img class="img-fluid w-100" src="{{ $item?->thumbnail }}"
+                                style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}">
+                            @if ($item?->inventories->count() > 0)
+                                <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"
+                                    style="bottom: 0; left: 0; width: 100%;">
+                                    {{-- Size dropdown --}}
+                                    <select class="form-control form-control-md shop-size-selector" style="width: 100px">
+                                        <option value="" disabled>Size</option>
+                                        @foreach ($item?->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
+                                            <option value="{{ $inv?->size_id }}" {{ $index == 0 ? 'selected' : '' }}>
+                                                {{ $inv?->size?->name ?? 'N/A' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    {{-- Color dropdown --}}
+                                    <select class="form-control form-control-md shop-color-selector" style="width: 100px">
+                                        <option value="">Color</option>
+                                    </select>
+                                </div>
+                            @endif
+                        </div>
+                        <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                            <h6 class="text-truncate mb-3" title="{{ $item?->name }}">
+                                {{ Str::limit($item?->name, 20, '...') }}</h6>
+                            <div class="d-flex justify-content-center">
+                                @if ($item?->discount > 0 && $item?->discount != $item?->price)
+                                    <h6 class="variant-price">৳{{ $item?->discount }}</h6>
+                                    <h6 class="text-muted ml-2"><del
+                                            class="main-price">৳{{ $item?->price }}</del></h6>
+                                @else
+                                    <h6 class="variant-price">৳{{ $item?->price }}</h6>
+                                    <h6 class="text-muted ml-2"><del class="main-price d-none"></del></h6>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between bg-light border">
+                            <a href="{{ route('productDetails', $item?->slug) }}"
+                                class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
+                                Detail</a>
+                            <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart"
+                                data-product-id="{{ $item?->id }}"><i
+                                    class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
                         </div>
                     </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
-                            Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="{{ asset('web/img/product-2.jpg') }}" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                        <div class="d-flex justify-content-center">
-                            <h6>$123.00</h6>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
-                            Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                    </div>
+            @empty
+                <div class="col-md-12">
+                    <h3 class="text-center mt-5">No Product Found</h3>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="{{ asset('web/img/product-3.jpg') }}" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                        <div class="d-flex justify-content-center">
-                            <h6>$123.00</h6>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="{{ asset('web/img/product-4.jpg') }}" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                        <div class="d-flex justify-content-center">
-                            <h6>$123.00</h6>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="{{ asset('web/img/product-5.jpg') }}" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                        <div class="d-flex justify-content-center">
-                            <h6>$123.00</h6>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="{{ asset('web/img/product-6.jpg') }}" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                        <div class="d-flex justify-content-center">
-                            <h6>$123.00</h6>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="{{ asset('web/img/product-7.jpg') }}" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                        <div class="d-flex justify-content-center">
-                            <h6>$123.00</h6>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="card product-item border-0 mb-4">
-                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="{{ asset('web/img/product-8.jpg') }}" alt="">
-                    </div>
-                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                        <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
-                        <div class="d-flex justify-content-center">
-                            <h6>$123.00</h6>
-                            <h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                        </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        <a href="" class="btn btn-sm text-dark p-0"><i
-                                class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                    </div>
-                </div>
-            </div>
+            @endforelse
         </div>
     </div>
     <!-- Products End -->
@@ -365,30 +279,11 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel vendor-carousel">
-                    <div class="vendor-item border p-4">
-                        <img src="{{ asset('web/img/vendor-1.jpg') }}" alt="">
-                    </div>
-                    <div class="vendor-item border p-4">
-                        <img src="{{ asset('web/img/vendor-2.jpg') }}" alt="">
-                    </div>
-                    <div class="vendor-item border p-4">
-                        <img src="{{ asset('web/img/vendor-3.jpg') }}" alt="">
-                    </div>
-                    <div class="vendor-item border p-4">
-                        <img src="{{ asset('web/img/vendor-4.jpg') }}" alt="">
-                    </div>
-                    <div class="vendor-item border p-4">
-                        <img src="{{ asset('web/img/vendor-5.jpg') }}" alt="">
-                    </div>
-                    <div class="vendor-item border p-4">
-                        <img src="{{ asset('web/img/vendor-6.jpg') }}" alt="">
-                    </div>
-                    <div class="vendor-item border p-4">
-                        <img src="{{ asset('web/img/vendor-7.jpg') }}" alt="">
-                    </div>
-                    <div class="vendor-item border p-4">
-                        <img src="{{ asset('web/img/vendor-8.jpg') }}" alt="">
-                    </div>
+                    @foreach ($brands ?? [] as $brand)
+                        <div class="vendor-item border p-4">
+                            <img src="{{ Storage::url($brand?->media?->src) }}" style="aspect-ratio: 4/2; object-fit: contain;" alt="">
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -398,15 +293,13 @@
 @push('script')
     <script>
         $(document).ready(function() {
-            console.log('owl length:', $(".category-carousel").length);
-            console.log($(window).width());
-
             if ($(".category-carousel").length > 0) {
                 $(".category-carousel").owlCarousel({
                     loop: true,
                     dots: false,
                     margin: 25,
                     autoplay: true,
+                    autoplayHoverPause: true,
                     responsive: {
                         0: {
                             items: 1

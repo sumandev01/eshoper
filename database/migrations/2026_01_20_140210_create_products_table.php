@@ -23,6 +23,7 @@ return new class extends Migration
             $table->float('tax')->nullable()->default(0);
             $table->float('stock')->default(0);
             $table->integer('rating')->default(0);
+            $table->integer('is_trending')->default(0);
             $table->integer('views')->default(0);
             $table->integer('status')->default(0);
             $table->foreignIdFor(Media::class)->nullable()->constrained()->onDelete('set null');

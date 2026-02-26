@@ -26,7 +26,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/media', 'store')->name('admin.media.store');
         Route::get('/media//{id}/edit', 'edit')->name('admin.media.edit');
         Route::put('/media/{id}', 'update')->name('admin.media.update');
-        Route::delete('/media/{id}', 'destroy')->name('admin.media.destroy');
+        Route::delete('/media/{media}', 'destroy')->name('admin.media.destroy');
 
         Route::get('/media/get-gallery-ajax', 'getGalleryAjax')->name('admin.media.getGalleryAjax');
         Route::post('/media/ajax-store', 'ajaxStore')->name('admin.media.ajaxStore');
@@ -89,6 +89,7 @@ Route::prefix('admin')->group(function () {
         Route::post('/products', 'store')->name('product.store');
         Route::get('/products/{product}/edit', 'edit')->name('product.edit');
         Route::put('/products/{product}', 'update')->name('product.update');
+        Route::put('/products/{product}/trendy', 'updateTrendy')->name('product.update.trendy');
         Route::delete('/products/{product}', 'destroy')->name('product.destroy');
     });
 

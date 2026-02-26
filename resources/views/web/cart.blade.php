@@ -1,4 +1,5 @@
 @extends('web.layouts.app')
+@section('title', 'Cart' . ' | ' . config('app.name'))
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">
@@ -45,18 +46,18 @@
                             <tr data-product-stock="{{ $productStock }}" data-cart-id="{{ $cart?->id }}"
                                 data-product-price="{{ $price }}">
                                 <td style="max-width: 100px">
-                                    <img src="{{ Storage::url($cart->cart_image) }}" alt="" style="width: 100px; aspect-ratio: 1/1; object-fit: cover;">
+                                    <img src="{{ Storage::url($cart?->cart_image) }}" alt="" style="width: 100px; aspect-ratio: 1/1; object-fit: cover;">
                                 </td>
                                 <td class="text-left">
                                     <a class="text-dark nav-link px-0" style="text-decoration: none;"
                                         href="{{ route('productDetails', $cart?->product?->slug) }}"
                                         title="{{ $cart?->product?->name }}">{{ Str::limit($cart?->product?->name, 30, '...') }}</a>
                                     <div>
-                                        @if ($cart->size_id)
+                                        @if ($cart?->size_id)
                                             <span class="p-1 text-white bg-primary">Size:
                                                 {{ $cart?->size?->name ?? '' }}</span>
                                         @endif
-                                        @if ($cart->color_id)
+                                        @if ($cart?->color_id)
                                             <span class="p-1 text-white bg-primary">Color:
                                                 {{ $cart?->color?->name ?? '' }}</span>
                                         @endif

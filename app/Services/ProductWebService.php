@@ -163,4 +163,27 @@ class ProductWebService
 
         return $related;
     }
+
+    public function getTrendingProducts()
+    {
+        $trendyProducts = Product::where('is_trending', 1)
+            ->where('status', 1)
+            ->take(8)
+            ->get();
+
+        $remaining = 8 - $trendyProducts->count();
+
+        if ($remaining > 0) {
+            $trendyIds = $trendyProducts->pluck('id');
+            $moreTrendy = Product::where('status', 1)
+                ->whereNotIn('id', $trendyIds)
+                ->inRandomOrder()
+                ->take($remaining)
+                ->get();
+
+            $trendyProducts = $trendyProducts->merge($moreTrendy);
+        }
+
+        return $trendyProducts;
+    }
 }

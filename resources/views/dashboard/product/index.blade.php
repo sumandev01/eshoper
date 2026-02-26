@@ -30,10 +30,11 @@
                                     <tr>
                                         <th style="width: 50px;">Sl</th>
                                         <th>Product</th>
-                                        <th>Category/Brand</th>
-                                        <th>Price</th>
-                                        <th>Stock</th>
-                                        <th>Status</th>
+                                        <th>Trandy</th>
+                                        <th><p class="mb-1">Category /</p> Brand</th>
+                                        <th class="text-end">Price</th>
+                                        <th class="text-center">Stock</th>
+                                        <th class="text-center">Status</th>
                                         <th class="text-center">Action</th>
                                     </tr>
                                 </thead>
@@ -43,45 +44,49 @@
                                             <td>{{ $key + 1 }}</td>
                                             <td>
                                                 <div class="d-flex align-items-center">
-                                                    <img src="{{ asset($product->thumbnail) }}" alt="product-img"
+                                                    <img src="{{ asset($product?->thumbnail) }}" alt="product-img"
                                                         title="product-img" class="rounded me-3 border" height="45"
                                                         width="45" style="object-fit: cover;">
                                                     <div class="flex-grow-1">
-                                                        <h6 class="mb-0 fs-14">{{ Str::limit($product->name, 30) }}</h6>
-                                                        <small class="text-muted">SKU: {{ $product->sku ?? 'N/A' }}</small>
+                                                        <h6 class="mb-0 fs-14">{{ Str::limit($product?->name, 30) }}</h6>
+                                                        <small class="text-muted">SKU: {{ $product?->sku ?? 'N/A' }}</small>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td>
-                                                <p class="mb-0 fw-medium">{{ $product->details->category->name ?? 'N/A' }}
-                                                </p>
-                                                <small
-                                                    class="text-muted">{{ $product->details->brand->name ?? 'No Brand' }}</small>
+                                            <td class="text-center">
+                                                <input type="checkbox" data-id="{{ $product?->id }}"
+                                                    class="toggle-trendy form-check-input" {{ $product?->is_trending ? 'checked' : '' }}>
                                             </td>
                                             <td>
-                                                @if ($product->discount > 0)
+                                                <p class="mb-0 fw-medium">{{ $product?->details?->category?->name ?? 'N/A' }}
+                                                </p>
+                                                <small
+                                                    class="text-muted">{{ $product?->details?->brand?->name ?? 'No Brand' }}</small>
+                                            </td>
+                                            <td class="text-end">
+                                                @if ($product?->discount > 0)
                                                     <div class="fw-bold text-dark">
-                                                        ৳{{ number_format($product->discount, 2) }}</div>
+                                                        ৳{{ number_format($product?->discount, 2) }}</div>
                                                     <del
-                                                        class="text-muted small">৳{{ number_format($product->price, 2) }}</del>
+                                                        class="text-muted small">৳{{ number_format($product?->price, 2) }}</del>
                                                 @else
-                                                    <div class="fw-bold text-dark">৳{{ number_format($product->price, 2) }}
+                                                    <div class="fw-bold text-dark">৳{{ number_format($product?->price, 2) }}
                                                     </div>
                                                 @endif
                                             </td>
-                                            <td>
-                                                @if ($product->stock > 10)
-                                                    <span class="text-success fw-bold">{{ $product->stock }}</span>
-                                                @elseif($product->stock > 0)
-                                                    <span class="text-warning fw-bold">{{ $product->stock }}
+                                            <td class="text-center">
+                                                @if ($product?->stock > 10)
+                                                    <span class="text-success fw-bold">{{ $product?->stock }}</span>
+                                                @elseif($product?->stock > 0)
+                                                    <span class="text-warning fw-bold">{{ $product?->stock }}
                                                         (Low)
                                                     </span>
                                                 @else
                                                     <span class="text-danger fw-bold">Out of Stock</span>
                                                 @endif
                                             </td>
-                                            <td>
-                                                @if ($product->status == 1)
+                                            <td class="text-center">
+                                                @if ($product?->status == 1)
                                                     <span
                                                         class="badge bg-soft-success text-success border border-success-subtle">Active</span>
                                                 @else
@@ -90,21 +95,21 @@
                                                 @endif
                                             </td>
                                             <td class="text-center">
-                                                <div class="btn-group">
-                                                    <a href="{{ route('inventory.index', $product->id) }}"
-                                                        class="btn btn-sm btn-outline-secondary" title="View">
+                                                <div class="d-flex justify-content-center">
+                                                    <a href="{{ route('inventory.index', $product?->id) }}"
+                                                        class="btn btn-sm btn-outline-secondary me-1" title="View">
                                                         <i class="mdi mdi-cog-outline me-1"></i>
                                                     </a>
-                                                    <a href="{{ route('product.view', $product->id) }}"
-                                                        class="btn btn-sm btn-outline-secondary" title="View">
+                                                    <a href="{{ route('product.view', $product?->id) }}"
+                                                        class="btn btn-sm btn-outline-secondary me-1" title="View">
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('product.edit', $product->id) }}"
-                                                        class="btn btn-sm btn-outline-info" title="Edit">
+                                                    <a href="{{ route('product.edit', $product?->id) }}"
+                                                        class="btn btn-sm btn-outline-info me-1" title="Edit">
                                                         <i class="mdi mdi-square-edit-outline"></i>
                                                     </a>
-                                                    {{-- <a href="{{ route('product.destroy', $product->id) }}"
-                                                        class="btn btn-danger btn-sm deleteBtn">
+                                                    {{-- <a href="{{ route('product.destroy', $product?->id) }}"
+                                                        class="btn btn-danger btn-sm deleteBtn me-1">
                                                         <i class="mdi mdi-delete"></i>
                                                     </a> --}}
                                                 </div>
@@ -172,6 +177,28 @@
                     searchPlaceholder: "Search products...",
                     sSearch: "",
                 }
+            });
+
+            // Handle trendy toggle
+            $(document).on('change', '.toggle-trendy', function() {
+                let productId = $(this).data('id');
+                let isChecked = $(this).is(':checked');
+
+                $.ajax({
+                    url: '{{ route("product.update.trendy", ":id") }}'.replace(':id', productId),
+                    method: 'PUT',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        product_id: productId,
+                        is_trending: isChecked
+                    },
+                    success: function(response) {
+                        // Handle success response
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle error response
+                    }
+                });
             });
         });
     </script>
