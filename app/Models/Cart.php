@@ -76,7 +76,6 @@ class Cart extends Model
 
     public function getProductStockAttribute()
     {
-        //dd($this->product_inventory_id, $this->productInventory, $this->productInventory?->quantity);
         if ($this->product_inventory_id) {
             $productStock = $this->productInventory->stock;
         } else {

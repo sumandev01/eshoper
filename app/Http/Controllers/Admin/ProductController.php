@@ -79,7 +79,7 @@ class ProductController extends Controller
 
         $updated = $productRepository->updateByRequest($request, $product);
         if ($updated) {
-            return redirect()->route('product.index')->with('success', 'Product updated successfully.');
+            return back()->with('success', 'Product updated successfully.');
         }
         return redirect()->back()->with('error', 'Failed to update product. Please try again.');
     }

@@ -45,7 +45,7 @@ class ProductRequest extends FormRequest
             'product_galleries' => 'nullable|array',
             'category_id' => 'required|exists:categories,id',
             'sub_category_id' => [
-                'required',
+                'nullable',
                 Rule::exists('sub_categories', 'id')->where(function ($query) {
                     return $query->where('category_id', $this->category_id);
                 }),

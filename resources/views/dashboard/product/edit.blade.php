@@ -4,17 +4,31 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
-                <div class="page-title-box d-flex align-products-center justify-content-between">
-                    <h4 class="mb-0">Edit Product</h4>
-                    <a href="{{ route('product.index') }}" class="btn btn-primary btn-sm">
-                        <i class="mdi mdi-arrow-left me-1"></i>
-                        <span>Back to List</span>
-                    </a>
+                <div class="card">
+                    <div class="card-header py-4">
+                        <div class="page-title-box d-flex align-items-center justify-content-between">
+                            <h4 class="mb-0">Edit Product</h4>
+                            <a href="{{ route('product.index') }}" class="btn btn-primary btn-sm">
+                                <i class="mdi mdi-arrow-left me-1"></i>
+                                <span>Back to List</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body py-3">
+                        <p class="text-muted fw-bold">
+                            @if ($product?->inventories->isNotEmpty())
+                                This product has {{ $product?->inventories->count() }} variants. You can edit the product information here, but to edit variant-specific details like price, stock, etc., please go to the <a href="{{ route('inventory.index', $product?->id) }}" class="text-decoration-none">Product Variants</a> section.
+                                
+                            @else
+                                This product does not have any variants. You can edit all product details here, including price, stock, etc or you can add variants in the <a href="{{ route('inventory.index', $product?->id) }}" class="text-decoration-none">Product Variants</a> section.
+                            @endif
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <form action="{{ route('product.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('product.update', $product?->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="row mt-3">
@@ -38,7 +52,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="quantity" type="number" placeholder="0" label="Product Quantity"
-                                        :value="$product?->stock ?? ''" />
+                                        :value="$product?->stock ?? ''" :readonly="$product?->inventories->isNotEmpty() ? true : false" />
                                 </div>
                             </div>
 
@@ -87,7 +101,7 @@
                             <h5 class="card-title">Gallery</h5>
                         </div>
                         <div class="card-body">
-                            <x-media-gallery target_id="product_galleries" :existing_media="$product->galleries" :existing_id="$product->details->media_id"
+                            <x-media-gallery target_id="product_galleries" :existing_media="$product?->galleries" :existing_id="$product?->details?->media_id"
                                 name="galleries" :required="false" limit="10" button_class="mt-2" />
                         </div>
                     </div>
