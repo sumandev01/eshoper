@@ -95,20 +95,17 @@
             <div class="modal-content border-0 shadow-lg" style="border-radius: 5px; padding: 30px;">
                 <div class="modal-body p-0">
                     <div class="text-left mb-4">
-                        <h3 style="color: #2c4a63; font-weight: 700; margin-bottom: 5px;">Login</h2>
+                        <h2 style="color: #2c4a63; font-weight: 700; margin-bottom: 5px;">Login</h2>
                             <p style="color: #6c757d; font-size: 16px;">Sign into your pages account</p>
                     </div>
 
                     <form id="ajaxLoginForm">
                         @csrf
                         <div class="form-group mb-4">
-                            <label style="color: #6c757d; font-weight: 500;">Email</label>
-                            <input type="email" name="email" class="form-control" placeholder="Your email here.."
-                                style="height: 55px; border: 1px solid #e0e0e0; border-radius: 5px; background: #fff;">
+                            <input type="email" name="email" class="form-control" placeholder="Your email here.." style="height: 55px; border: 1px solid #e0e0e0; border-radius: 5px; background: #fff;">
                         </div>
 
                         <div class="form-group mb-2">
-                            <label style="color: #6c757d; font-weight: 500;">Password</label>
                             <div class="position-relative">
                                 <input type="password" name="password" id="modal_password" class="form-control"
                                     placeholder="Your password here.."
@@ -121,17 +118,14 @@
                         </div>
 
                         <div class="text-left mb-4">
-                            <a href="#" style="color: #8cc63f; font-weight: 500; text-decoration: none;">Forgot
-                                Password?</a>
+                            <a href="#" class="text-primary" style="font-weight: 500; text-decoration: none;">Forgot Password?</a>
                         </div>
 
-                        <button type="submit" class="btn w-100"
-                            style="background-color: #8cc63f; color: white; height: 55px; font-size: 18px; font-weight: 500; border-radius: 3px;">
+                        <button type="submit" class="btn bg-primary w-100">
                             Login
                         </button>
 
-                        <p class="pt-3 text-center">Don't have an account? <a href="{{ route('register') }}">Create free
-                                account</a></p>
+                        <p class="pt-3 text-center">Don't have an account? <a href="{{ route('register') }}">Create free account</a></p>
 
                         <div id="loginError" class="text-danger mt-3 text-center" style="display:none;"></div>
                     </form>

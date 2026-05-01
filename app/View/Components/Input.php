@@ -14,6 +14,7 @@ class Input extends Component
     public function __construct(
         public string $name,
         public ?string $label = null,
+        public ?string $labelClass = null,
         public ?string $type = 'text',
         public ?string $value = null,
         public ?string $placeholder = null,

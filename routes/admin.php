@@ -9,12 +9,20 @@ use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductInventory;
 use App\Http\Controllers\Admin\ProductInventoryController;
+use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 
+Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
+    Route::get('/login', 'showLoginForm')->name('admin.login');
+    Route::post('/login', 'login')->name('admin.login.submit');
+    Route::post('/logout', 'logout')->name('admin.logout');
+});
 Route::prefix('admin')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'index')->name('admin.dashboard');
@@ -117,5 +125,25 @@ Route::prefix('admin')->group(function () {
         Route::put('/sliders/{slider}', 'update')->name('slider.update');
         Route::delete('/sliders/{slider}', 'destroy')->name('slider.destroy');
         Route::post('/sliders/reorder', 'reorder')->name('slider.reorder');
+    });
+
+    Route::controller(UserController::class)->group(function () {
+        Route::get('/users', 'index')->name('admin.user.index');
+        Route::get('/users/add', 'add')->name('admin.user.add');
+        Route::post('/users', 'store')->name('admin.user.store');
+        Route::get('/users/{user}/view', 'view')->name('admin.user.view');
+        Route::get('/users/{user}/edit', 'edit')->name('admin.user.edit');
+        Route::put('/users/{user}', 'update')->name('admin.user.update');
+        Route::delete('/users/{user}', 'destroy')->name('admin.user.destroy');
+    });
+
+    Route::controller(RolePermissionController::class)->group(function () {
+        Route::get('/roles', 'index')->name('admin.role.index');
+        Route::get('/roles/add', 'add')->name('admin.role.add');
+        Route::post('/roles', 'store')->name('admin.role.store');
+        Route::get('/roles/{role}/view', 'view')->name('admin.role.view');
+        Route::get('/roles/{role}/edit', 'edit')->name('admin.role.edit');
+        Route::put('/roles/{role}', 'update')->name('admin.role.update');
+        Route::delete('/roles/{role}', 'destroy')->name('admin.role.destroy');
     });
 });

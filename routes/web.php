@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
+use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\WebController;
 use App\Http\Controllers\Web\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,17 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+    // User Dashboard
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('user/dashboard', 'index')->name('user.dashboard');
+        Route::get('user/profile', 'profile')->name('user.profile');
+        Route::post('user/profile', 'updateProfile')->name('user.updateProfile');
+        Route::get('user/address', 'address')->name('user.address');
+        Route::post('user/address', 'updateAddress')->name('user.updateAddress');
+        Route::get('user/orders', 'orders')->name('user.orders');
+        Route::get('user/orders/{order}', 'orderDetails')->name('user.orderDetails');
+        Route::get('user/change-password', 'changePasswordForm')->name('user.changePasswordForm');
+    });
     // Cart Routes
     Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'cart')->name('cart');

@@ -158,7 +158,7 @@
                                         style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; padding: 2px"
                                         alt="">
                                 @endif
-                                <a href="" class="nav-item nav-link">{{ $user->name }}</a>
+                                <a href="{{ route('user.dashboard') }}" class="nav-item nav-link">{{ $user->name }}</a>
                             </div>
                             <a href="{{ route('logout') }}" class="nav-item nav-link">Logout</a>
                         @else

@@ -1,7 +1,7 @@
 @if($inputGroup ?? false)
 <div class="form-group">
     @if(isset($label))
-        <label for="{{ $name }}" class="form-label font-weight-bold">{{ $label }} @if (!empty($required)) <span class="text-danger">*</span> @endif </label>
+        <label for="{{ $name }}" class="form-label font-weight-bold {{ $labelClass ?? '' }}">{{ $label }} @if (!empty($required)) <span class="text-danger">*</span> @endif </label>
     @endif
     <div class="input-group">
         <span class="input-group-text">{{ $inputGroupText ?? '' }}</span>
@@ -24,7 +24,7 @@
 @else
 <div class="form-group">
     @if(isset($label))
-        <label for="{{ $name }}" class="form-label font-weight-bold">{{ $label }} @if (!empty($required)) <span class="text-danger">*</span> @endif </label>
+        <label for="{{ $name }}" class="form-label font-weight-bold {{ $labelClass ?? '' }}">{{ $label }} @if (!empty($required)) <span class="text-danger">*</span> @endif </label>
     @endif
 
     <input type="{{ $type ?? 'text' }}"

@@ -106,6 +106,18 @@ class ProductRepository
                 'meta_title' => $request->meta_title,
                 'meta_description' => $request->meta_description,
             ]);
+        } else {
+            ProductDetails::create([
+                'product_id' => $product->id,
+                'category_id' => $request->category_id,
+                'sub_category_id' => $request->sub_category_id,
+                'brand_id' => $request->brand_id,
+                'shortDescription' => $request->short_description,
+                'description' => $request->description,
+                'information' => $request->specifications,
+                'meta_title' => $request->meta_title,
+                'meta_description' => $request->meta_description,
+            ]);
         }
 
         // Gallery update logic

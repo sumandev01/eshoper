@@ -57,7 +57,7 @@ class User extends Authenticatable
 
     public function profile(): Attribute
     {
-        $url = asset('default.webp');
+        $url = asset('user.png'); // Default profile image URL
         if ($this->media && $this->media->src) {
             $url = Storage::url($this->media->src);
         }

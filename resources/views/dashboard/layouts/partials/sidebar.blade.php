@@ -168,29 +168,38 @@
                 </ul>
             </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false"
-                aria-controls="auth">
-                <span class="menu-title">User Pages</span>
+        <li class="nav-item {{ request()->routeIs('admin.user*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#user" aria-expanded="false"
+                aria-controls="user">
+                <span class="menu-title">Users</span>
                 <i class="menu-arrow"></i>
-                <i class="mdi mdi-lock menu-icon"></i>
+                <i class="mdi mdi-account menu-icon"></i>
             </a>
-            <div class="collapse" id="auth">
+            <div class="collapse {{ request()->routeIs('admin.user*') ? 'show' : '' }}" id="user">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/samples/blank-page.html"> Blank Page </a>
+                        <a class="nav-link {{ request()->routeIs('admin.user.index') ? 'active' : '' }}" href="{{ route('admin.user.index') }}">All Users</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/samples/login.html"> Login </a>
+                        <a class="nav-link {{ request()->routeIs('admin.user.add') ? 'active' : '' }}" href="{{ route('admin.user.add') }}">Add User</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item {{ request()->routeIs('admin.role*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#role" aria-expanded="false"
+                aria-controls="role">
+                <span class="menu-title">Roles</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-shield menu-icon"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('admin.role*') ? 'show' : '' }}" id="role">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.role.index') ? 'active' : '' }}" href="{{ route('admin.role.index') }}">All Roles</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/samples/register.html"> Register </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/samples/error-404.html"> 404 </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/samples/error-500.html"> 500 </a>
+                        <a class="nav-link {{ request()->routeIs('admin.role.add') ? 'active' : '' }}" href="{{ route('admin.role.add') }}">Add Role</a>
                     </li>
                 </ul>
             </div>

@@ -108,7 +108,7 @@
                             <div class="border-top pt-3 d-flex justify-content-end gap-2">
                                 <a href="{{ route('coupon.index') }}" class="btn btn-light px-4">Cancel</a>
                                 <button type="submit" class="btn btn-primary px-4">
-                                    <i class="mdi mdi-content-save me-1"></i> Create Coupon
+                                    <i class="mdi mdi-content-save me-1"></i> Update Coupon
                                 </button>
                             </div>
                         </form>

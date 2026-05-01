@@ -6,25 +6,17 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Purple Admin</title>
-    <!-- plugins:css -->
+
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/ti-icons/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/css/vendor.bundle.base.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/font-awesome/css/font-awesome.min.css') }}" />
     <link rel="stylesheet"
         href="{{ asset('dashboard/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <!-- endinject -->
-    <!-- Layout styles -->
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/style.css') }}">
-    <!-- End layout styles -->
     <link rel="shortcut icon" href="{{ asset('dashboard/assets/images/favicon.png') }}" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Sweetalert2 style -->
+    {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> --}}
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/dataTables.min.css') }}">
@@ -34,9 +26,19 @@
             outline: none ! important;
             box-shadow: none ! important;
         }
+
         select:focus {
             outline-color: #86b7fe ! important;
             box-shadow: none ! important;
+        }
+
+        @media (min-width: 992px) {
+            .sidebar-offcanvas {
+                position: fixed ! important;
+                left: 0 ! important;
+                overflow: auto ! important;
+                height: 100% ! important;
+            }
         }
     </style>
 </head>
@@ -44,7 +46,7 @@
 <body>
     <div class="container-scroller">
         @include('dashboard.layouts.partials.header')
-        <div class="container-fluid page-body-wrapper">
+        <div class="container-fluid page-body-wrapper justify-content-end">
             @include('dashboard.layouts.partials.sidebar')
             <div class="main-panel">
                 <div class="content-wrapper">
@@ -65,23 +67,14 @@
     <!-- plugins:js -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="{{ asset('dashboard/assets/vendors/js/vendor.bundle.base.js') }}"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <script src="{{ asset('dashboard/assets/vendors/chart.js') }}/chart.umd.js') }}"></script>
-    <script src="{{ asset('dashboard/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
     <script src="{{ asset('dashboard/assets/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('dashboard/assets/js/chart.js') }}"></script>
+    <script src="{{ asset('dashboard/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/misc.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/settings.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/todolist.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/jquery.cookie.js') }}"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page -->
     <script src="{{ asset('dashboard/assets/js/dashboard.js') }}"></script>
-    <!-- End custom js for this page -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Sweetalert2 js -->
     <script src="{{ asset('dashboard/assets/js/sweetalert2.all.min.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/custom.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/dataTables.min.js') }}"></script>
