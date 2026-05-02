@@ -10,14 +10,15 @@
                                 <h4 class="mb-1 fw-semibold">Coupons</h4>
                                 <p class="text-muted small mb-0">Manage all your coupons</p>
                             </div>
-                            <a href="{{ route('coupon.add') }}"
-                                class="btn btn-primary btn-sm d-flex align-items-center gap-1">
-                                <i class="mdi mdi-plus"></i>
-                                <span>Add New Coupon</span>
-                            </a>
+                            @can(\App\Enums\Permission\CouponPermission::CREATE->value)
+                                <a href="{{ route('coupon.add') }}"
+                                    class="btn btn-primary btn-sm d-flex align-items-center gap-1">
+                                    <i class="mdi mdi-plus"></i>
+                                    <span>Add New Coupon</span>
+                                </a>
+                            @endcan
                         </div>
                     </div>
-
                     <div class="card-body p-4">
                         <div class="table-responsive">
                             <table class="table table-bordered table-hover table-striped" id="couponTable">
@@ -74,24 +75,28 @@
                                             <td>
                                                 @if ($coupon?->expire_date > now())
                                                     @if ($coupon?->status === 1)
-                                                    <span class="badge bg-success">Active</span>
-                                                @else
-                                                    <span class="badge bg-danger">Inactive</span>
-                                                @endif
+                                                        <span class="badge bg-success">Active</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Inactive</span>
+                                                    @endif
                                                 @else
                                                     <span class="badge bg-secondary">Expired</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 <div class="d-flex gap-2">
-                                                    <a href="{{ route('coupon.edit', $coupon?->id) }}"
-                                                        class="btn btn-info btn-sm">
-                                                        <i class="mdi mdi-square-edit-outline"></i>
-                                                    </a>
-                                                    <a href="{{ route('coupon.destroy', $coupon?->id) }}"
-                                                        class="btn btn-danger btn-sm deleteBtn">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </a>
+                                                    @can(\App\Enums\Permission\CouponPermission::UPDATE->value)
+                                                        <a href="{{ route('coupon.edit', $coupon?->id) }}"
+                                                            class="btn btn-info btn-sm">
+                                                            <i class="mdi mdi-square-edit-outline"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can(\App\Enums\Permission\CouponPermission::DELETE->value)
+                                                        <a href="{{ route('coupon.destroy', $coupon?->id) }}"
+                                                            class="btn btn-danger btn-sm deleteBtn">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </a>
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>
@@ -111,7 +116,6 @@
         </div>
     </div>
 @endsection
-
 @push('scripts')
     <script>
         $(document).ready(function() {

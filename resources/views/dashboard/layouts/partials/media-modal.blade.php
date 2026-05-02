@@ -11,10 +11,12 @@
                         <button class="nav-link active" id="gallery-tab" data-bs-toggle="pill"
                             data-bs-target="#modal-gallery-pane" type="button">Gallery</button>
                     </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="upload-tab" data-bs-toggle="pill"
-                            data-bs-target="#modal-upload-pane" type="button">Upload New</button>
-                    </li>
+                    @can(\App\Enums\Permission\MediaPermission::CREATE->value)
+                        <li class="nav-item">
+                            <button class="nav-link" id="upload-tab" data-bs-toggle="pill"
+                                data-bs-target="#modal-upload-pane" type="button">Upload New</button>
+                        </li>
+                    @endcan
                 </ul>
 
                 <div class="tab-content border-top pt-3">
@@ -47,18 +49,20 @@
                     <div class="tab-pane fade" id="modal-upload-pane">
                         <div class="row">
                             <div class="col-12" style="height: 450px; overflow-y: auto; overflow-x: hidden;">
-                                <form id="ajax-upload-form">
+                                @can(\App\Enums\Permission\MediaPermission::CREATE->value)
+                                    <form id="ajax-upload-form">
                                     @csrf
                                     <input type="hidden" name="user_id" value="{{ auth()?->id() }}">
-                                    
+
                                     <div id="drop-area" class="border-dashed py-5 text-center"
                                         style="background: #fafafa; border: 2px dashed #ccc; position: relative;">
-                                        
+
                                         <div id="click-trigger" style="cursor: pointer; display: inline-block;">
                                             <i class="mdi mdi-cloud-upload text-primary" style="font-size: 40px;"></i>
                                             <p class="mb-0">Click here</p>
                                         </div>
-                                        <p class="text-muted mt-2" style="font-size: 12px;">or drag and drop images anywhere in this box</p>
+                                        <p class="text-muted mt-2" style="font-size: 12px;">or drag and drop images
+                                            anywhere in this box</p>
 
                                         <input type="file" name="files[]" id="file-input" multiple hidden
                                             accept="image/*">
@@ -67,10 +71,13 @@
                                     <div id="error-container" class="mt-2"></div>
                                     <div class="row mt-3" id="tabpanel-image-preview-container"></div>
                                     <div class="text-right mt-3 pb-3">
-                                        <button type="submit" id="upload-all-btn" class="btn btn-primary">Upload
+                                        @can(\App\Enums\Permission\MediaPermission::CREATE->value)
+                                            <button type="submit" id="upload-all-btn" class="btn btn-primary">Upload
                                             All</button>
+                                        @endcan
                                     </div>
                                 </form>
+                                @endcan
                             </div>
                         </div>
                     </div>
@@ -119,7 +126,7 @@
         let currentTargetId = null;
         let isMultiple = false;
         let tempSelectedMedia = [];
-        let uploadFilesContainer = new DataTransfer(); 
+        let uploadFilesContainer = new DataTransfer();
 
         function adjustGridSystem() {
             if (isMultiple === true) {
@@ -144,12 +151,13 @@
             $(document).on('click', '.open-media-picker', function(e) {
                 e.preventDefault();
                 currentTargetId = $(this).data('target-id');
-                
-                const limit = parseInt($(this).data('limit')) || 5; 
-                const currentImagesCount = $(`#media-preview-${currentTargetId}`).find('.gallery-item').length;
+
+                const limit = parseInt($(this).data('limit')) || 5;
+                const currentImagesCount = $(`#media-preview-${currentTargetId}`).find('.gallery-item')
+                    .length;
 
                 if (currentImagesCount >= limit) {
-                    e.stopImmediatePropagation(); 
+                    e.stopImmediatePropagation();
                     Swal.fire({
                         icon: 'warning',
                         title: 'Limit Reached',
@@ -188,7 +196,10 @@
                 dropArea.addEventListener(eventName, (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    $(dropArea).css({'border-color': '#b66dff', 'background': '#f3eaff'});
+                    $(dropArea).css({
+                        'border-color': '#b66dff',
+                        'background': '#f3eaff'
+                    });
                 }, false);
             });
 
@@ -196,7 +207,10 @@
                 dropArea.addEventListener(eventName, (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    $(dropArea).css({'border-color': '#ccc', 'background': '#fafafa'});
+                    $(dropArea).css({
+                        'border-color': '#ccc',
+                        'background': '#fafafa'
+                    });
                 }, false);
             });
 
@@ -233,7 +247,7 @@
                             $errorAlert.fadeOut(500, function() {
                                 $(this).remove();
                             });
-                        }, 3000 + (index * 500)); 
+                        }, 3000 + (index * 500));
 
                         return;
                     }
@@ -259,7 +273,7 @@
                 });
                 this.files = uploadFilesContainer.files;
             });
-            
+
 
             // 5. Upload Section: Remove file from preview
             $(document).on('click', '.remove-upload-img', function() {
@@ -301,7 +315,8 @@
                         uploadFilesContainer = new DataTransfer();
                         btn.prop('disabled', false).text('Upload All');
 
-                        bootstrap.Tab.getInstance(document.querySelector('#gallery-tab')).show();
+                        bootstrap.Tab.getInstance(document.querySelector('#gallery-tab'))
+                    .show();
                         refreshGallery();
                     },
                     error: function() {
@@ -315,14 +330,18 @@
             $(document).on('click', '.select-this-media', function() {
                 const mediaId = $(this).data('id');
                 const mediaSrc = $(this).data('src');
-                
-                const limit = parseInt($(`.open-media-picker[data-target-id="${currentTargetId}"]`).data('limit')) || 5;
+
+                const limit = parseInt($(`.open-media-picker[data-target-id="${currentTargetId}"]`).data(
+                    'limit')) || 5;
                 const currentInPreviewCount = $(`#media-preview-${currentTargetId} .gallery-item`).length;
 
                 if (!isMultiple) {
                     $('.select-this-media').removeClass('selected-media-border');
                     $(this).addClass('selected-media-border');
-                    tempSelectedMedia = [{ id: mediaId, src: mediaSrc }];
+                    tempSelectedMedia = [{
+                        id: mediaId,
+                        src: mediaSrc
+                    }];
                     $('#no-preview-text').hide();
                     $('#modal-selection-preview').attr('src', mediaSrc).show();
                 } else {
@@ -339,8 +358,11 @@
                             });
                             return false;
                         }
-                        
-                        tempSelectedMedia.push({ id: mediaId, src: mediaSrc });
+
+                        tempSelectedMedia.push({
+                            id: mediaId,
+                            src: mediaSrc
+                        });
                         $(this).addClass('selected-media-border');
                     }
                 }
@@ -352,7 +374,8 @@
 
                 let previewContainer = $(`#media-preview-${currentTargetId}`);
                 let baseInputName = currentTargetId.replace(/-/g, '_');
-                const limit = parseInt($(`.open-media-picker[data-target-id="${currentTargetId}"]`).data('limit')) || 5;
+                const limit = parseInt($(`.open-media-picker[data-target-id="${currentTargetId}"]`).data(
+                    'limit')) || 5;
 
                 if (!isMultiple) {
                     const media = tempSelectedMedia[0];
@@ -368,7 +391,8 @@
                     tempSelectedMedia.forEach(media => {
                         let currentInGallery = previewContainer.find('.gallery-item').length;
                         if (currentInGallery < limit) {
-                            if (previewContainer.find(`[data-media-id="${media.id}"]`).length === 0) {
+                            if (previewContainer.find(`[data-media-id="${media.id}"]`).length ===
+                                0) {
                                 previewContainer.append(`
                                 <div class="col-md-3 col-sm-4 col-6 position-relative gallery-item p-0" data-media-id="${media.id}" data-target="${currentTargetId}">
                                     <span class="remove-image-btn bg-danger text-white rounded-circle position-absolute" style="top:5px; right:5px; cursor:pointer; width:20px; height:20px; text-align:center; line-height:18px;">&times;</span>
@@ -391,7 +415,8 @@
 
                 let existingInput = $(`#media-input-${targetId}-existing`);
                 if (existingInput.length > 0) {
-                    let existingIds = existingInput.val().split(',').filter(id => id != mediaId && id != "");
+                    let existingIds = existingInput.val().split(',').filter(id => id != mediaId && id !=
+                    "");
                     existingInput.val(existingIds.join(','));
                 }
 

@@ -1,5 +1,4 @@
 @extends('dashboard.layouts.app')
-
 @section('content')
     <div class="content-wrapper">
         <div class="page-header">
@@ -12,7 +11,6 @@
                 </ol>
             </nav>
         </div>
-
         <div class="row">
             <div class="col-md-5 grid-margin stretch-card">
                 <div class="card">
@@ -26,18 +24,19 @@
                         <div class="mt-4 border-top pt-3">
                             <p class="mb-2"><strong>Name:</strong> <span class="text-muted">{{ $media->file_name }}</span>
                             </p>
-                            <p class="mb-2"><strong>File Size:</strong> <span class="text-muted">
-                                @if ($media->size < 1000000)
-                                    {{ number_format($media->size / 1024, 2) }} KB
-                                @else
-                                    {{ number_format($media->size / (1024 * 1024), 2) }} MB
-                                @endif
-                            </span></p>
+                            <p class="mb-2"><strong>File Size:</strong>
+                                <span class="text-muted">
+                                    @if ($media->size < 1000000)
+                                        {{ number_format($media->size / 1024, 2) }} KB
+                                    @else
+                                        {{ number_format($media->size / (1024 * 1024), 2) }} MB
+                                    @endif
+                                </span>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-
             <div class="col-md-7 grid-margin stretch-card">
                 <div class="card">
                     <div class="card-body">
@@ -48,9 +47,11 @@
                             @csrf
                             @method('PUT')
                             <input type="hidden" class="d-none" name="id" value="{{ $media->id }}" hidden />
-                            <x-input label="Name" name="name" type="text" value="{{ $media->name }}" placeholder="Enter media name" required="true" :maxlength="50" />
+                            <x-input label="Name" name="name" type="text" value="{{ $media->name }}"
+                                placeholder="Enter media name" required="true" :maxlength="50" />
 
-                            <x-input label="Alt Text" name="alt_text" type="text" value="{{ $media->alt_text }}" placeholder="Enter alternative text" required="true" :maxlength="50" />
+                            <x-input label="Alt Text" name="alt_text" type="text" value="{{ $media->alt_text }}"
+                                placeholder="Enter alternative text" required="true" :maxlength="50" />
 
                             <div class="form-group">
                                 <label for="description">Description</label>
@@ -62,9 +63,11 @@
                             </div>
 
                             <div class="mt-4">
-                                <button type="submit" class="btn btn-primary mr-2 btn-icon-text">
-                                    <i class="mdi mdi-content-save btn-icon-prepend"></i> Update Media
-                                </button>
+                                @can(\App\Enums\Permission\MediaPermission::UPDATE->value)
+                                    <button type="submit" class="btn btn-primary mr-2 btn-icon-text">
+                                        <i class="mdi mdi-content-save btn-icon-prepend"></i> Update Media
+                                    </button>
+                                @endcan
                                 <a href="{{ route('admin.media') }}" class="btn btn-danger mr-2 btn-icon-text">
                                     <i class="mdi mdi-cancel btn-icon-prepend"></i> Cancel
                                 </a>

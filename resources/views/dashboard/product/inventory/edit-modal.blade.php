@@ -20,8 +20,9 @@
                                     option_value="{{ $inv?->size?->id }}" :selected="$inv?->size_id" value="{{ $inv?->size_id }}"
                                     placeholder="Select Size" :required="false" :disabled="true" />
                                 <x-select label="Color" name="color_id" :options="$colors" option_label="name"
-                                    option_value="{{ $inv?->color?->id }}" :selected="$inv?->color_id" value="{{ $inv?->color_id }}"
-                                    placeholder="Select color" :required="false" :disabled="true" />
+                                    option_value="{{ $inv?->color?->id }}" :selected="$inv?->color_id"
+                                    value="{{ $inv?->color_id }}" placeholder="Select color" :required="false"
+                                    :disabled="true" />
                                 <div class="mb-3 checkBox">
                                     <x-input id="edit_price_{{ $inv?->id }}" label="Price" name="price"
                                         type="number" step="0.01" :value="$inv?->price" placeholder="Enter price" />
@@ -55,10 +56,12 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
-                            <span>Update</span>
-                        </button>
+                        @can(\App\Enums\Permission\ProductInventoryPermission::UPDATE->value)
+                            <button type="submit" class="btn btn-primary">
+                                <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                                <span>Update</span>
+                            </button>
+                        @endcan
                         <button type="button" class="btn btn-danger btn-icon-text" data-bs-dismiss="modal">
                             <i class="mdi mdi-close btn-icon-prepend me-2"></i>
                             <span>Close</span>

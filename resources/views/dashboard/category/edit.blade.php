@@ -19,16 +19,19 @@
                         <x-input label="Name" name="name" type="text" value="{{ $category?->name }}"
                             placeholder="Enter category name" />
 
-                        <x-input label="Slug" name="slug" type="text" value="{{ $category?->slug }}" :required='false' placeholder="Enter category slug" />
+                        <x-input label="Slug" name="slug" type="text" value="{{ $category?->slug }}"
+                            :required='false' placeholder="Enter category slug" />
 
                         <x-media-thumbnail label="Image" input_name="media_id" :existing_image="$category->image" :existing_id="$category->media_id" />
 
                     </div>
                     <div class="card-footer pb-4 pt-3">
-                        <button type="submit" class="btn btn-primary me-2 mt-2">
-                            <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
-                            <span>Save</span>
-                        </button>
+                        @can(\App\Enums\Permission\CategoryPermission::UPDATE->value)
+                            <button type="submit" class="btn btn-primary me-2 mt-2">
+                                <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                                <span>Save</span>
+                            </button>
+                        @endcan
                         <a href="{{ route('category.index') }}" class="btn btn-danger btn-icon-text mt-2">
                             <i class="mdi mdi-close btn-icon-prepend"></i>
                             <span>Cancel</span>

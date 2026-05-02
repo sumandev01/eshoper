@@ -21,15 +21,19 @@
                                     <td class="text-start">{{ $key + 1 }}</td>
                                     <td> {{ $tag->name }} </td>
                                     <td class="text-end">
-                                        <button type="button" class="btn btn-info btn-sm editBtn"
-                                            data-id="{{ $tag->id }}" data-name="{{ $tag->name }}"
-                                            data-bs-toggle="modal" data-bs-target="#editTagModal">
-                                            <i class="mdi mdi-square-edit-outline"></i>
-                                        </button>
-                                        <a href="{{ route('tag.destroy', $tag?->id) }}"
-                                            class="btn btn-danger btn-sm deleteBtn">
-                                            <i class="mdi mdi-delete"></i>
-                                        </a>
+                                        @can(\App\Enums\Permission\TagPermission::UPDATE->value)
+                                            <button type="button" class="btn btn-info btn-sm editBtn"
+                                                data-id="{{ $tag->id }}" data-name="{{ $tag->name }}"
+                                                data-bs-toggle="modal" data-bs-target="#editTagModal">
+                                                <i class="mdi mdi-square-edit-outline"></i>
+                                            </button>
+                                        @endcan
+                                        @can(\App\Enums\Permission\TagPermission::DELETE->value)
+                                            <a href="{{ route('tag.destroy', $tag?->id) }}"
+                                                class="btn btn-danger btn-sm deleteBtn">
+                                                <i class="mdi mdi-delete"></i>
+                                            </a>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty
@@ -42,26 +46,28 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
-            <div class="card">
-                <form action="{{ route('tag.store') }}" method="post" enctype="multipart/form-data">
-                    @csrf
-                    <div class="card-header pt-4">
-                        <h4 class="card-title">Add New Tag</h4>
-                    </div>
-                    <div class="card-body px-4 pb-0">
-                        <x-input label="Name" name="name" type="text" placeholder="Enter tag name"
-                            :required='true' />
-                    </div>
-                    <div class="card-footer py-4">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
-                            <span>Add Tag</span>
-                        </button>
-                    </div>
-                </form>
+        @can(\App\Enums\Permission\TagPermission::CREATE->value)
+            <div class="col-lg-5">
+                <div class="card">
+                    <form action="{{ route('tag.store') }}" method="post" enctype="multipart/form-data">
+                        @csrf
+                        <div class="card-header pt-4">
+                            <h4 class="card-title">Add New Tag</h4>
+                        </div>
+                        <div class="card-body px-4 pb-0">
+                            <x-input label="Name" name="name" type="text" placeholder="Enter tag name"
+                                :required='true' />
+                        </div>
+                        <div class="card-footer py-4">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                                <span>Add Tag</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
+        @endcan
     </div>
 
     <!-- Edit Tag Modal -->

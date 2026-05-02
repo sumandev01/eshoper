@@ -29,13 +29,17 @@
                                             src="{{ $brand->thumbnail }}" alt="{{ $brand->alt }}">
                                     </td>
                                     <td class="text-end">
-                                        <a href="{{ route('brand.edit', $brand?->id) }}" class="btn btn-info btn-sm">
+                                        @can(\App\Enums\Permission\BrandPermission::UPDATE->value)
+                                            <a href="{{ route('brand.edit', $brand?->id) }}" class="btn btn-info btn-sm">
                                             <i class="mdi mdi-square-edit-outline"></i>
                                         </a>
-                                        <a href="{{ route('brand.destroy', $brand?->id) }}"
-                                            class="btn btn-danger btn-sm deleteBtn">
-                                            <i class="mdi mdi-delete"></i>
-                                        </a>
+                                        @endcan
+                                        @can(\App\Enums\Permission\BrandPermission::DELETE->value)
+                                            <a href="{{ route('brand.destroy', $brand?->id) }}"
+                                                class="btn btn-danger btn-sm deleteBtn">
+                                                <i class="mdi mdi-delete"></i>
+                                            </a>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty
@@ -48,7 +52,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
+        @can(\App\Enums\Permission\BrandPermission::CREATE->value)
+            <div class="col-lg-5">
             <div class="card">
                 <form action="{{ route('brand.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
@@ -71,6 +76,7 @@
                 </form>
             </div>
         </div>
+        @endcan
     </div>
 @endsection
 @push('scripts')

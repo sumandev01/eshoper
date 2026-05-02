@@ -14,16 +14,23 @@
                             </a>
                         </div>
                     </div>
-                    <div class="card-body py-3">
-                        <p class="text-muted fw-bold">
-                            @if ($product?->inventories->isNotEmpty())
-                                This product has {{ $product?->inventories->count() }} variants. You can edit the product information here, but to edit variant-specific details like price, stock, etc., please go to the <a href="{{ route('inventory.index', $product?->id) }}" class="text-decoration-none">Product Variants</a> section.
-                                
-                            @else
-                                This product does not have any variants. You can edit all product details here, including price, stock, etc or you can add variants in the <a href="{{ route('inventory.index', $product?->id) }}" class="text-decoration-none">Product Variants</a> section.
-                            @endif
-                        </p>
-                    </div>
+                    @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value, \App\Enums\Permission\ProductInventoryPermission::CREATE->value, \App\Enums\Permission\ProductInventoryPermission::UPDATE->value, \App\Enums\Permission\ProductInventoryPermission::DELETE->value)
+                        <div class="card-body py-3">
+                            <p class="text-muted fw-bold">
+                                @if ($product?->inventories->isNotEmpty())
+                                    This product has {{ $product?->inventories->count() }} variants. You can edit the product
+                                    information here, but to edit variant-specific details like price, stock, etc., please go to
+                                    the <a href="{{ route('inventory.index', $product?->id) }}"
+                                        class="text-decoration-none">Product Variants</a> section.
+                                @else
+                                    This product does not have any variants. You can edit all product details here, including
+                                    price, stock, etc or you can add variants in the <a
+                                        href="{{ route('inventory.index', $product?->id) }}"
+                                        class="text-decoration-none">Product Variants</a> section.
+                                @endif
+                            </p>
+                        </div>
+                    @endcan
                 </div>
             </div>
         </div>
@@ -111,8 +118,10 @@
                             <h5 class="card-title">SEO</h5>
                         </div>
                         <div class="card-body">
-                            <x-textarea name="meta_title" label="Meta Title" :value="$product?->details?->meta_title ?? ''" :maxlength="60" :wordcount="true" :rows="1" />
-                            <x-textarea name="meta_description" label="Meta Description" :value="$product?->details?->meta_description ?? ''" :maxlength="160" :wordcount="true" :rows="2" />
+                            <x-textarea name="meta_title" label="Meta Title" :value="$product?->details?->meta_title ?? ''" :maxlength="60"
+                                :wordcount="true" :rows="1" />
+                            <x-textarea name="meta_description" label="Meta Description" :value="$product?->details?->meta_description ?? ''"
+                                :maxlength="160" :wordcount="true" :rows="2" />
                         </div>
                     </div>
                 </div>
@@ -189,9 +198,11 @@
 
                     <div class="card shadow-sm">
                         <div class="card-body">
-                            <button type="submit" class="btn btn-primary w-100 mb-2">
-                                <i class="mdi mdi-content-save me-1"></i> Update Product
-                            </button>
+                            @can(\App\Enums\Permission\ProductPermission::UPDATE->value)
+                                <button type="submit" class="btn btn-primary w-100 mb-2">
+                                    <i class="mdi mdi-content-save me-1"></i> Update Product
+                                </button>
+                            @endcan
                         </div>
                     </div>
                 </div>
@@ -230,9 +241,11 @@
         .product_thumbnail .noImagesSelected {
             font-size: 14px !important;
         }
+
         textarea {
             resize: none !important;
         }
+
         textarea:focus {
             box-shadow: none !important;
         }
@@ -316,88 +329,88 @@
     </script>
 @endpush
 @push('scripts')
-<script>
-    /**
-     * Variable to store data in memory (Caching)
-     * This prevents multiple API calls for the same data
-     */
-    let cachedSubCategories = null;
+    <script>
+        /**
+         * Variable to store data in memory (Caching)
+         * This prevents multiple API calls for the same data
+         */
+        let cachedSubCategories = null;
 
-    /**
-     * Function to handle subcategory loading based on category selection
-     */
-    async function handleCategoryChange(parentId, targetId, savedValue = null) {
-        const targetSelect = document.getElementById(targetId);
-        if (!targetSelect) return;
+        /**
+         * Function to handle subcategory loading based on category selection
+         */
+        async function handleCategoryChange(parentId, targetId, savedValue = null) {
+            const targetSelect = document.getElementById(targetId);
+            if (!targetSelect) return;
 
-        // Start loading: Disable dropdown and change placeholder text
-        targetSelect.disabled = true;
-        targetSelect.innerHTML = '<option value="" selected disabled>Loading subcategories...</option>';
+            // Start loading: Disable dropdown and change placeholder text
+            targetSelect.disabled = true;
+            targetSelect.innerHTML = '<option value="" selected disabled>Loading subcategories...</option>';
 
-        try {
-            // 1. Fetch all subcategories from API only once (Caching)
-            if (!cachedSubCategories) {
-                const response = await fetch("{{ route('getAllSubCategory') }}");
-                cachedSubCategories = await response.json();
+            try {
+                // 1. Fetch all subcategories from API only once (Caching)
+                if (!cachedSubCategories) {
+                    const response = await fetch("{{ route('getAllSubCategory') }}");
+                    cachedSubCategories = await response.json();
+                }
+
+                // 2. Filter data by category_id
+                const filtered = cachedSubCategories.filter(item => String(item.category_id) === String(parentId));
+
+                // 3. Update dropdown options
+                targetSelect.innerHTML = '<option value="" selected disabled>Select Subcategory</option>';
+
+                if (filtered.length === 0) {
+                    targetSelect.innerHTML = '<option value="" selected disabled>No Subcategory Found</option>';
+                } else {
+                    filtered.forEach(item => {
+                        let option = document.createElement('option');
+                        option.value = item.id;
+                        option.text = item.name;
+
+                        // Set selected option for Edit Mode (if savedValue matches)
+                        if (savedValue && String(item.id) === String(savedValue)) {
+                            option.selected = true;
+                        }
+                        targetSelect.add(option);
+                    });
+                }
+
+                // 4. Loading finished: Enable the dropdown
+                targetSelect.disabled = false;
+
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                targetSelect.innerHTML = '<option value="" selected disabled>Error Loading Data</option>';
+                targetSelect.disabled = false;
             }
+        }
 
-            // 2. Filter data by category_id
-            const filtered = cachedSubCategories.filter(item => String(item.category_id) === String(parentId));
+        /**
+         * Initialize event listeners on DOM Content Loaded
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            const categorySelect = document.getElementById('category_id');
+            const subCategorySelect = document.getElementById('sub_category_id');
 
-            // 3. Update dropdown options
-            targetSelect.innerHTML = '<option value="" selected disabled>Select Subcategory</option>';
-            
-            if (filtered.length === 0) {
-                targetSelect.innerHTML = '<option value="" selected disabled>No Subcategory Found</option>';
-            } else {
-                filtered.forEach(item => {
-                    let option = document.createElement('option');
-                    option.value = item.id;
-                    option.text = item.name;
-                    
-                    // Set selected option for Edit Mode (if savedValue matches)
-                    if (savedValue && String(item.id) === String(savedValue)) {
-                        option.selected = true;
-                    }
-                    targetSelect.add(option);
+            if (categorySelect && subCategorySelect) {
+                // Check for initial value on page load (useful for Edit Mode)
+                const initialCat = categorySelect.value;
+                const initialSub = subCategorySelect.getAttribute('data-selected-value');
+
+                if (initialCat) {
+                    // If category is already selected, load its subcategories
+                    handleCategoryChange(initialCat, 'sub_category_id', initialSub);
+                } else {
+                    // Keep disabled initially if no category is selected
+                    subCategorySelect.disabled = true;
+                }
+
+                // Trigger logic whenever the Category dropdown is changed
+                categorySelect.addEventListener('change', function() {
+                    handleCategoryChange(this.value, 'sub_category_id', null);
                 });
             }
-
-            // 4. Loading finished: Enable the dropdown
-            targetSelect.disabled = false;
-
-        } catch (error) {
-            console.error("Error fetching data:", error);
-            targetSelect.innerHTML = '<option value="" selected disabled>Error Loading Data</option>';
-            targetSelect.disabled = false;
-        }
-    }
-
-    /**
-     * Initialize event listeners on DOM Content Loaded
-     */
-    document.addEventListener('DOMContentLoaded', function() {
-        const categorySelect = document.getElementById('category_id');
-        const subCategorySelect = document.getElementById('sub_category_id');
-
-        if (categorySelect && subCategorySelect) {
-            // Check for initial value on page load (useful for Edit Mode)
-            const initialCat = categorySelect.value;
-            const initialSub = subCategorySelect.getAttribute('data-selected-value');
-
-            if (initialCat) {
-                // If category is already selected, load its subcategories
-                handleCategoryChange(initialCat, 'sub_category_id', initialSub);
-            } else {
-                // Keep disabled initially if no category is selected
-                subCategorySelect.disabled = true; 
-            }
-
-            // Trigger logic whenever the Category dropdown is changed
-            categorySelect.addEventListener('change', function() {
-                handleCategoryChange(this.value, 'sub_category_id', null);
-            });
-        }
-    });
-</script>
+        });
+    </script>
 @endpush

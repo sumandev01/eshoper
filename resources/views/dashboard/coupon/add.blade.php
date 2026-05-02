@@ -17,7 +17,6 @@
                             </a>
                         </div>
                     </div>
-
                     <div class="card-body p-4">
                         <form action="{{ route('coupon.store') }}" method="POST">
                             @csrf
@@ -44,7 +43,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             {{-- Discount Info --}}
                             <div class="mb-4">
                                 <h6 class="text-uppercase text-muted fw-semibold small mb-3 border-bottom pb-2">
@@ -70,7 +68,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             {{-- Validity --}}
                             <div class="mb-4">
                                 <h6 class="text-uppercase text-muted fw-semibold small mb-3 border-bottom pb-2">
@@ -85,7 +82,6 @@
                                     </div>
                                 </div>
                             </div>
-
                             {{-- Status --}}
                             <div class="mb-4">
                                 <h6 class="text-uppercase text-muted fw-semibold small mb-3 border-bottom pb-2">
@@ -100,12 +96,13 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="border-top pt-3 d-flex justify-content-end gap-2">
                                 <a href="{{ route('coupon.index') }}" class="btn btn-light px-4">Cancel</a>
-                                <button type="submit" class="btn btn-primary px-4">
-                                    <i class="mdi mdi-content-save me-1"></i> Create Coupon
-                                </button>
+                                @can(\App\Enums\Permission\CouponPermission::CREATE->value)
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="mdi mdi-content-save me-1"></i> Create Coupon
+                                    </button>
+                                @endcan
                             </div>
                         </form>
                     </div>

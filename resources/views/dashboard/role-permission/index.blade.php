@@ -8,10 +8,12 @@
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">Role Permission List</h4>
-                            <a href="{{ route('admin.role.add') }}" class="btn btn-primary">
-                                <i class="mdi mdi-plus me-1"></i>
-                                <span>Add New Role</span>
-                            </a>
+                            @can(\App\Enums\Permission\UserRolePermission::CREATE->value)
+                                <a href="{{ route('admin.role.add') }}" class="btn btn-primary">
+                                    <i class="mdi mdi-plus me-1"></i>
+                                    <span>Add New Role</span>
+                                </a>
+                            @endcan
                         </div>
                     </div>
                     <div class="card-body pt-3">
@@ -38,18 +40,24 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('admin.role.view', $role?->id) }}"
-                                                        class="btn btn-sm btn-outline-secondary me-1" title="View">
-                                                        <i class="mdi mdi-eye"></i>
+                                                    @can(\App\Enums\Permission\UserRolePermission::VIEW->value)
+                                                        <a href="{{ route('admin.role.view', $role?->id) }}"
+                                                            class="btn btn-sm btn-outline-secondary me-1" title="View">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can(\App\Enums\Permission\UserRolePermission::UPDATE->value)
+                                                        <a href="{{ route('admin.role.edit', $role?->id) }}"
+                                                            class="btn btn-sm btn-outline-info me-1" title="Edit">
+                                                            <i class="mdi mdi-square-edit-outline"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can(\App\Enums\Permission\UserRolePermission::DELETE->value)
+                                                        <a href="{{ route('admin.role.destroy', $role?->id) }}"
+                                                            class="btn btn-danger btn-sm deleteBtn me-1">
+                                                            <i class="mdi mdi-delete"></i>
                                                     </a>
-                                                    <a href="{{ route('admin.role.edit', $role?->id) }}"
-                                                        class="btn btn-sm btn-outline-info me-1" title="Edit">
-                                                        <i class="mdi mdi-square-edit-outline"></i>
-                                                    </a>
-                                                    <a href="{{ route('admin.role.destroy', $role?->id) }}"
-                                                        class="btn btn-danger btn-sm deleteBtn me-1">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </a>
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>

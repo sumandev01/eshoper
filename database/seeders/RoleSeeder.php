@@ -13,21 +13,8 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = [
-            [
-                'name' => 'Admin',
-                'guard_name' => 'web'
-            ],
-            [
-                'name' => 'User',
-                'guard_name' => 'web'
-            ],
-        ];
-        foreach($roles as $role) {
-            Role::updateOrCreate(
-                ['name' => $role['name']],
-                $role
-            );
+        foreach (PermissionEnums::cases() as $permission) {
+            Permission::findOrCreate($permission->value, 'web');
         }
     }
 }

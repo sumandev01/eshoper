@@ -30,10 +30,11 @@
                                 <div class="row g-3">
                                     <div class="col-lg-6">
                                         <x-input label="Coupon Code" name="code" :value="$coupon?->code" type="text"
-                                            placeholder="Coupon Code" :required='true' :readonly='true'/>
+                                            placeholder="Coupon Code" :required='true' :readonly='true' />
                                     </div>
                                     <div class="col-lg-6">
-                                        <x-select label="Type" id="type" class="text-capitalize" name="type" :required='true' :readonly='true' :disabled='true'>
+                                        <x-select label="Type" id="type" class="text-capitalize" name="type"
+                                            :required='true' :readonly='true' :disabled='true'>
                                             <option disabled>Select Type</option>
                                             @foreach ($couponTypeEnums ?? [] as $couponType)
                                                 <option class="text-capitalize" value="{{ $couponType->value }}"
@@ -107,9 +108,11 @@
 
                             <div class="border-top pt-3 d-flex justify-content-end gap-2">
                                 <a href="{{ route('coupon.index') }}" class="btn btn-light px-4">Cancel</a>
-                                <button type="submit" class="btn btn-primary px-4">
-                                    <i class="mdi mdi-content-save me-1"></i> Update Coupon
-                                </button>
+                                @can(\App\Enums\Permission\CouponPermission::UPDATE->value)
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="mdi mdi-content-save me-1"></i> Update Coupon
+                                    </button>
+                                @endcan
                             </div>
                         </form>
                     </div>

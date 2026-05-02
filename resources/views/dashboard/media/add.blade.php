@@ -16,25 +16,27 @@
                         <p class="card-description"> You can upload multiple images at once. </p>
                         <input type="hidden" name="user_id" value="{{ auth()?->id() }}">
                         <div id="drop-area" class="border-dashed py-5 text-center"
-                                        style="background: #fafafa; border: 2px dashed #ccc; position: relative;">
-                                        
-                                        <div id="click-trigger" style="cursor: pointer; display: inline-block;">
-                                            <i class="mdi mdi-cloud-upload text-primary" style="font-size: 40px;"></i>
-                                            <p class="mb-0">Click here</p>
-                                        </div>
-                                        <p class="text-muted mt-2" style="font-size: 12px;">or drag and drop images anywhere in this box</p>
+                            style="background: #fafafa; border: 2px dashed #ccc; position: relative;">
 
-                                        <input type="file" name="files[]" id="file-input" multiple hidden
-                                            accept="image/*">
-                                    </div>
+                            <div id="click-trigger" style="cursor: pointer; display: inline-block;">
+                                <i class="mdi mdi-cloud-upload text-primary" style="font-size: 40px;"></i>
+                                <p class="mb-0">Click here</p>
+                            </div>
+                            <p class="text-muted mt-2" style="font-size: 12px;">or drag and drop images anywhere in this box
+                            </p>
+
+                            <input type="file" name="files[]" id="file-input" multiple hidden accept="image/*">
+                        </div>
                         <div id="error-container" class="mt-2"></div>
                         <div class="row mt-3" id="tabpanel-image-preview-container"></div>
                     </div>
                     <div class="card-footer text-end p-4">
-                        <button type="submit" class="btn btn-primary me-4 btn-icon-text">
-                            <i class="mdi mdi-file-check btn-icon-prepend me-2"></i>
-                            <span>Upload All</span>
-                        </button>
+                        @can(\App\Enums\Permission\MediaPermission::CREATE->value)
+                            <button type="submit" class="btn btn-primary me-4 btn-icon-text">
+                                <i class="mdi mdi-file-check btn-icon-prepend me-2"></i>
+                                <span>Upload All</span>
+                            </button>
+                        @endcan
                         <a href="{{ route('admin.media') }}" class="btn btn-danger btn-icon-text">
                             <i class="mdi mdi-close btn-icon-prepend me-2"></i>
                             <span>Cancel</span>

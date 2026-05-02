@@ -1,14 +1,15 @@
 @extends('dashboard.layouts.app')
-
 @section('content')
     <div class="page-header flex-wrap">
         <div class="header-left">
             <h3 class="page-title"> Media Gallery </h3>
         </div>
         <div class="header-right d-flex flex-wrap mt-2 mt-sm-0">
-            <a href="{{ route('admin.media.add') }}" class="btn btn-primary mt-2 mt-sm-0 btn-icon-text">
-                <i class="mdi mdi-plus-circle"></i> Add New Media
-            </a>
+            @can(\App\Enums\Permission\MediaPermission::CREATE->value)
+                <a href="{{ route('admin.media.add') }}" class="btn btn-primary mt-2 mt-sm-0 btn-icon-text">
+                    <i class="mdi mdi-plus-circle"></i> Add New Media
+                </a>
+            @endcan
         </div>
     </div>
 
@@ -39,16 +40,19 @@
                             style="height: 180px; overflow: hidden; background: #f8f9fa; border-radius: 8px;">
                             <img src="{{ asset($media->thumbnail) }}" alt="media" class="img-fluid w-100 h-100"
                                 style="object-fit: contain;">
-
                             <div class="media-actions position-absolute w-100 h-100 d-flex align-items-center justify-content-center"
                                 style="top:0; left:0; background: rgba(0,0,0,0.5); opacity:0; transition: 0.3s;">
-                                <button class="btn btn-primary btn-sm mx-1"
-                                    onclick="window.location.href='{{ route('admin.media.edit', $media->id) }}'"><i
-                                        class="fa fa-edit"></i></button>
-                                <a href="{{ route('admin.media.destroy', $media->id) }}"
-                                    class="btn btn-danger deleteBtn btn-sm mx-1">
-                                    <i class="mdi mdi-delete"></i>
-                                </a>
+                                @can(\App\Enums\Permission\MediaPermission::UPDATE->value)
+                                    <button class="btn btn-primary btn-sm mx-1"
+                                        onclick="window.location.href='{{ route('admin.media.edit', $media->id) }}'"><i
+                                            class="fa fa-edit"></i></button>
+                                @endcan
+                                @can(\App\Enums\Permission\MediaPermission::DELETE->value)
+                                    <a href="{{ route('admin.media.destroy', $media->id) }}"
+                                        class="btn btn-danger deleteBtn btn-sm mx-1">
+                                        <i class="mdi mdi-delete"></i>
+                                    </a>
+                                @endcan
                             </div>
                         </div>
 

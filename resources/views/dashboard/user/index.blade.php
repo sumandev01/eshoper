@@ -8,10 +8,12 @@
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">Users List</h4>
-                            <a href="{{ route('admin.user.add') }}" class="btn btn-primary">
-                                <i class="mdi mdi-plus me-1"></i>
-                                <span>Add New User</span>
-                            </a>
+                            @can(\App\Enums\Permission\UserPermission::CREATE->value)
+                                <a href="{{ route('admin.user.add') }}" class="btn btn-primary">
+                                    <i class="mdi mdi-plus me-1"></i>
+                                    <span>Add New User</span>
+                                </a>
+                            @endcan
                         </div>
                     </div>
                     <div class="card-body pt-3">
@@ -29,7 +31,8 @@
                                     </form>
                                 </div>
                             </div>
-                            <table id="productTable" class="table table-hover table-bordered table-centered align-middle table-nowrap mb-0">
+                            <table id="productTable"
+                                class="table table-hover table-bordered table-centered align-middle table-nowrap mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th style="width: 50px;">Sl</th>
@@ -46,7 +49,8 @@
                                             <td>{{ $key + 1 }}</td>
                                             <td> {{ $user?->name }} </td>
                                             <td> {{ $user?->email }} </td>
-                                            <td class="text-center"> <span class="badge bg-success">{{ $user?->getRoleNames()[0] }}</span> </td>
+                                            <td class="text-center"> <span
+                                                    class="badge bg-success">{{ $user?->getRoleNames()->first() }}</span> </td>
                                             <td class="text-center">
                                                 <img class="img-fluid"
                                                     style=" border-radius: 100%; padding: 2px; object-fit: contain; aspect-ratio: 4 / 4; background-color: #fff; border: 1px solid #ccc;"
@@ -58,14 +62,18 @@
                                                         class="btn btn-sm btn-outline-secondary me-1" title="View">
                                                         <i class="mdi mdi-eye"></i>
                                                     </a>
-                                                    <a href="{{ route('admin.user.edit', $user?->id) }}"
-                                                        class="btn btn-sm btn-outline-info me-1" title="Edit">
-                                                        <i class="mdi mdi-square-edit-outline"></i>
-                                                    </a>
-                                                    <a href="{{ route('admin.user.destroy', $user?->id) }}"
-                                                        class="btn btn-danger btn-sm deleteBtn me-1">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </a>
+                                                    @can(\App\Enums\Permission\UserPermission::UPDATE->value)
+                                                        <a href="{{ route('admin.user.edit', $user?->id) }}"
+                                                            class="btn btn-sm btn-outline-info me-1" title="Edit">
+                                                            <i class="mdi mdi-square-edit-outline"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can(\App\Enums\Permission\UserPermission::DELETE->value)
+                                                        <a href="{{ route('admin.user.destroy', $user?->id) }}"
+                                                            class="btn btn-danger btn-sm deleteBtn me-1">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </a>
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>

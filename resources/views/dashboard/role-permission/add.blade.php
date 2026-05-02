@@ -36,6 +36,23 @@
                                 <h6 class="text-uppercase text-muted fw-semibold small mb-3 border-bottom pb-2">
                                     <i class="mdi mdi-shield-check me-1"></i> Permissions
                                 </h6>
+                                <div class="row mb-3">
+                                    @foreach ($adminAccess ?? [] as $adminAccess => $permissions)
+                                        <div class="col-md-4">
+                                            <h4>{{ $adminAccess }}</h4>
+                                            @foreach ($permissions as $permission)
+                                                <div class="form-check ms-4">
+                                                    <input class="form-check-input permission-checkbox" type="checkbox"
+                                                        name="permissions[]" value="{{ $permission->value }}"
+                                                        id="{{ $permission->value }}" />
+                                                    <label for="{{ $permission->value }}">
+                                                        {{ $permission->name }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
+                                </div>
                                 <div class="row g-3">
                                     @foreach ($groups as $group => $permissions)
                                         <div class="col-xl-3 col-lg-4 col-md-6 permission-group">
@@ -66,9 +83,11 @@
 
                             <div class="border-top pt-3 d-flex justify-content-end gap-2">
                                 <a href="{{ route('admin.role.index') }}" class="btn btn-light px-4">Cancel</a>
-                                <button type="submit" class="btn btn-primary px-4">
-                                    <i class="mdi mdi-content-save me-1"></i> Create Role
-                                </button>
+                                @can(\App\Enums\Permission\UserRolePermission::CREATE->value)
+                                    <button type="submit" class="btn btn-primary px-4">
+                                        <i class="mdi mdi-content-save me-1"></i> Create Role
+                                    </button>
+                                @endcan
                             </div>
                         </form>
                     </div>

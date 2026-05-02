@@ -22,10 +22,12 @@
                         <x-color-picker name="color_code" label="Color Code" value="{{ $color?->color_code }}" />
                     </div>
                     <div class="card-footer pb-4 pt-3">
-                        <button type="submit" class="btn btn-primary me-2 mt-2">
-                            <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
-                            <span>Save</span>
-                        </button>
+                        @can(\App\Enums\Permission\ColorPermission::UPDATE->value)
+                            <button type="submit" class="btn btn-primary me-2 mt-2">
+                                <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                                <span>Save</span>
+                            </button>
+                        @endcan
                         <a href="{{ route('color.index') }}" class="btn btn-danger btn-icon-text mt-2">
                             <i class="mdi mdi-close btn-icon-prepend me-2"></i>
                             <span>Cancel</span>

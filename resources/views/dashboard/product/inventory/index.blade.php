@@ -88,14 +88,18 @@
                                                 @endif
                                             </td>
                                             <td class="text-end">
-                                                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                                    data-bs-target="#editInventoryModal{{ $item?->id }}">
-                                                    <i class="mdi mdi-square-edit-outline"></i>
-                                                </button>
-                                                <a href="{{ route('inventory.destroy', $item?->id) }}"
-                                                    class="btn btn-danger btn-sm deleteBtn">
-                                                    <i class="mdi mdi-delete"></i>
-                                                </a>
+                                                @can(\App\Enums\Permission\ProductInventoryPermission::UPDATE->value)
+                                                    <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                                                        data-bs-target="#editInventoryModal{{ $item?->id }}">
+                                                        <i class="mdi mdi-square-edit-outline"></i>
+                                                    </button>
+                                                @endcan
+                                                @can(\App\Enums\Permission\ProductInventoryPermission::DELETE->value)
+                                                    <a href="{{ route('inventory.destroy', $item?->id) }}"
+                                                        class="btn btn-danger btn-sm deleteBtn">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </a>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @empty
@@ -111,60 +115,62 @@
             </div>
 
             <!-- Right Side Add Form Submition -->
-            <div class="col-lg-4">
-                <div class="card">
-                    <form action="{{ route('inventory.store') }}" method="post" enctype="multipart/form-data">
-                        @csrf
-                        <div class="card-header pt-4">
-                            <h4 class="card-title">Add New Inventory</h4>
-                        </div>
-                        <div class="card-body px-4 pb-0">
-                            <input type="hidden" name="product_id" value="{{ $product?->id }}">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <x-select label="Size" name="size_id" :options="$sizes" option_label="name"
-                                        option_value="id" placeholder="Select Size" :required="true" />
-                                </div>
-                                <div class="col-md-6">
-                                    <x-select label="Color" name="color_id" :options="$colors" option_label="name"
-                                        option_value="id" placeholder="Select color" :required="true" />
-                                </div>
-                                <div class="col-md-12 checkBox mb-4">
-                                    <x-input id="variant_price" label="Price" name="price" type="number" step="0.01"
-                                        placeholder="Enter price" :required='true' />
-                                    <div class="check-box mt-2">
-                                        <input class="form-check-input" id="use_main_price" name="use_main_price"
-                                            type="checkbox">
-                                        <label for="use_main_price" style="cursor: pointer;">Default price</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-12 checkBox mb-4">
-                                    <x-input id="variant_discount" label="Discount Price" name="discount" type="number"
-                                        step="0.01" placeholder="Enter discount" :required='true' />
-                                    <div class="check-box mt-2">
-                                        <input class="form-check-input" id="use_main_discount" name="use_main_discount"
-                                            type="checkbox">
-                                        <label for="use_main_discount" style="cursor: pointer;">Default discount
-                                            price</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <x-input label="Quantity" name="stock" type="number"
-                                        placeholder="Enter stock quantity" :required='true' />
-                                </div>
+            @can(\App\Enums\Permission\ProductInventoryPermission::CREATE->value)
+                <div class="col-lg-4">
+                    <div class="card">
+                        <form action="{{ route('inventory.store') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="card-header pt-4">
+                                <h4 class="card-title">Add New Inventory</h4>
                             </div>
-                            <x-media-thumbnail label="Image" target_id="main_thumb" input_name="media_id"
-                                required="true" />
-                        </div>
-                        <div class="card-footer py-4">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
-                                <span>Add Inventory</span>
-                            </button>
-                        </div>
-                    </form>
+                            <div class="card-body px-4 pb-0">
+                                <input type="hidden" name="product_id" value="{{ $product?->id }}">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <x-select label="Size" name="size_id" :options="$sizes" option_label="name"
+                                            option_value="id" placeholder="Select Size" :required="true" />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <x-select label="Color" name="color_id" :options="$colors" option_label="name"
+                                            option_value="id" placeholder="Select color" :required="true" />
+                                    </div>
+                                    <div class="col-md-12 checkBox mb-4">
+                                        <x-input id="variant_price" label="Price" name="price" type="number" step="0.01"
+                                            placeholder="Enter price" :required='true' />
+                                        <div class="check-box mt-2">
+                                            <input class="form-check-input" id="use_main_price" name="use_main_price"
+                                                type="checkbox">
+                                            <label for="use_main_price" style="cursor: pointer;">Default price</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 checkBox mb-4">
+                                        <x-input id="variant_discount" label="Discount Price" name="discount" type="number"
+                                            step="0.01" placeholder="Enter discount" :required='true' />
+                                        <div class="check-box mt-2">
+                                            <input class="form-check-input" id="use_main_discount" name="use_main_discount"
+                                                type="checkbox">
+                                            <label for="use_main_discount" style="cursor: pointer;">Default discount
+                                                price</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <x-input label="Quantity" name="stock" type="number"
+                                            placeholder="Enter stock quantity" :required='true' />
+                                    </div>
+                                </div>
+                                <x-media-thumbnail label="Image" target_id="main_thumb" input_name="media_id"
+                                    required="true" />
+                            </div>
+                            <div class="card-footer py-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                                    <span>Add Inventory</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </div>
+            @endcan
         </div>
     </div>
     @include('dashboard.product.inventory.edit-modal')
@@ -174,6 +180,7 @@
         .checkBox .form-group {
             margin-bottom: 0 !important;
         }
+
         .stock-col {
             width: 60px;
             white-space: nowrap;
@@ -221,7 +228,7 @@
             togglePriceInput();
             toggleDiscountInput();
 
-            
+
             $('#inventoryTable').DataTable({
                 "pageLength": 10,
                 "language": {

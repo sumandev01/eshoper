@@ -19,16 +19,18 @@
                         <x-input label="Name" name="name" type="text" value="{{ $brand?->name }}"
                             placeholder="Enter brand name" />
 
-                        <x-input label="Slug" name="slug" type="text" value="{{ $brand?->slug }}"
-                            :required='false' placeholder="Enter brand slug" />
+                        <x-input label="Slug" name="slug" type="text" value="{{ $brand?->slug }}" :required='false'
+                            placeholder="Enter brand slug" />
 
                         <x-media-thumbnail label="Image" input_name="media_id" :existing_image="$brand->thumbnail" :existing_id="$brand->media_id" />
                     </div>
                     <div class="card-footer pb-4 pt-3">
-                        <button type="submit" class="btn btn-primary me-2 mt-2">
-                            <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
-                            <span>Save</span>
-                        </button>
+                        @can(\App\Enums\Permission\BrandPermission::UPDATE->value)
+                            <button type="submit" class="btn btn-primary me-2 mt-2">
+                                <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                                <span>Save</span>
+                            </button>
+                        @endcan
                         <a href="{{ route('brand.index') }}" class="btn btn-danger btn-icon-text mt-2">
                             <i class="mdi mdi-close btn-icon-prepend me-2"></i>
                             <span>Cancel</span>

@@ -36,14 +36,18 @@
                                         </td>
 
                                         <td class="text-end">
-                                            <a href="{{ route('sub-category.edit', $subCategory?->id) }}"
+                                            @can(\App\Enums\Permission\SubCategoryPermission::UPDATE->value)
+                                                <a href="{{ route('sub-category.edit', $subCategory?->id) }}"
                                                 class="btn btn-info btn-sm">
                                                 <i class="mdi mdi-square-edit-outline"></i>
                                             </a>
-                                            <a href="{{ route('sub-category.destroy', $subCategory?->id) }}"
-                                                class="btn btn-danger btn-sm deleteBtn">
-                                                <i class="mdi mdi-delete"></i>
-                                            </a>
+                                            @endcan
+                                            @can(\App\Enums\Permission\SubCategoryPermission::DELETE->value)
+                                                <a href="{{ route('sub-category.destroy', $subCategory?->id) }}"
+                                                    class="btn btn-danger btn-sm deleteBtn">
+                                                    <i class="mdi mdi-delete"></i>
+                                                </a>
+                                            @endcan
                                         </td>
                                     </tr>
                                 @empty
@@ -57,7 +61,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
+        @can(\App\Enums\Permission\SubCategoryPermission::CREATE->value)
+            <div class="col-lg-5">
             <div class="card">
                 <form action="{{ route('sub-category.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
@@ -82,6 +87,7 @@
                 </form>
             </div>
         </div>
+        @endcan
     </div>
 @endsection
 @push('scripts')

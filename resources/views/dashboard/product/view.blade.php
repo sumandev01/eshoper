@@ -1,5 +1,4 @@
 @extends('dashboard.layouts.app')
-
 @section('content')
     <div class="container-fluid">
         <!-- Page Header -->
@@ -11,17 +10,20 @@
                         {{-- <p class="text-muted mb-0">Full information for: <strong>{{ $product->name }}</strong></p> --}}
                     </div>
                     <div>
-                        <a href="{{ route('product.index') }}" class="btn btn-secondary btn-sm me-2">
-                            <i class="mdi mdi-arrow-left me-1"></i> Back to List
-                        </a>
-                        <a href="{{ route('product.edit', $product?->id) }}" class="btn btn-primary btn-sm">
-                            <i class="mdi mdi-pencil me-1"></i> Edit Product
-                        </a>
+                        @can(\App\Enums\Permission\ProductPermission::VIEW->value)
+                            <a href="{{ route('product.index') }}" class="btn btn-secondary btn-sm me-2">
+                                <i class="mdi mdi-arrow-left me-1"></i> Back to List
+                            </a>
+                        @endcan
+                        @can(\App\Enums\Permission\ProductPermission::UPDATE->value)
+                            <a href="{{ route('product.edit', $product?->id) }}" class="btn btn-primary btn-sm">
+                                <i class="mdi mdi-pencil me-1"></i> Edit Product
+                            </a>
+                        @endcan
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="row mt-3">
             <!-- Left Side: Basic Info, Descriptions & Pricing -->
             <div class="col-lg-8">
@@ -129,8 +131,7 @@
                         <div class="row g-2">
                             @forelse($product?->galleries ?? [] as $gallery)
                                 <div class="col-md-3">
-                                    <img src="{{ Storage::url($gallery?->src) }}" class="img-fluid rounded border"
-                                        alt="gallery">
+                                    <img src="{{ Storage::url($gallery?->src) }}" class="w-100 rounded border" style="object-fit: cover; aspect-ratio: 1/1" alt="gallery">
                                 </div>
                             @empty
                                 <div class="col-md-12 text-center">
@@ -165,67 +166,75 @@
                 </div>
 
                 <!-- Product Inventory Card -->
-                <div class="card mb-4 shadow-sm border-0">
-                    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Inventory & Variations</h5>
-                        <a href="{{ route('inventory.index', $product?->id) }}" class="btn btn-sm btn-soft-primary">
-                            <i class="mdi mdi-cog-outline me-1"></i> Manage Inventory
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-centered table-bordered table-hover table-nowrap mb-0 align-middle">
-                                <thead class="table-light">
-                                    <tr>
-                                        <th>Size</th>
-                                        <th class="text-center">Color</th>
-                                        <th class="text-center">Image</th>
-                                        <th>Price</th>
-                                        <th class="text-center">Stock</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @forelse($product?->inventories ?? [] as $inv)
+                @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value,
+                    \App\Enums\Permission\ProductInventoryPermission::CREATE->value,
+                    \App\Enums\Permission\ProductInventoryPermission::UPDATE->value,
+                    \App\Enums\Permission\ProductInventoryPermission::DELETE->value)
+                    <div class="card mb-4 shadow-sm border-0">
+                        <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">Inventory & Variations</h5>
+                            @can(\App\Enums\Permission\ProductInventoryPermission::UPDATE->value)
+                                <a href="{{ route('inventory.index', $product?->id) }}" class="btn btn-sm btn-soft-primary">
+                                    <i class="mdi mdi-cog-outline me-1"></i> Manage Inventory
+                                </a>
+                            @endcan
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-centered table-bordered table-hover table-nowrap mb-0 align-middle">
+                                    <thead class="table-light">
                                         <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <!-- Size Name -->
-                                                    <span class="fw-medium">{{ $inv?->size?->name ?? 'Default' }}</span>
-                                                </div>
-                                            </td>
-                                            <td class="d-flex justify-content-center align-items-center">
-                                                <div class="me-2"
+                                            <th>Size</th>
+                                            <th class="text-center">Color</th>
+                                            <th class="text-center">Image</th>
+                                            <th>Price</th>
+                                            <th class="text-center">Stock</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($product?->inventories ?? [] as $inv)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <!-- Size Name -->
+                                                        <span class="fw-medium">{{ $inv?->size?->name ?? 'Default' }}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="d-flex justify-content-center align-items-center">
+                                                    <div class="me-2"
                                                         style="background-color: {{ $inv?->color?->color_code ?? '#eee' }}; border: 1px solid #ddd; width: 20px; height: 20px; border-radius: 50%;"
                                                         title="{{ $inv?->color?->name ?? '' }}"></div>
-                                            </td>
-                                            <td class="text-center">
-                                                <img src="{{ $inv?->thumbnail }}" alt="Variant Image"
-                                                    class="img-fluid rounded" style="max-width: 50px; max-height: 50px; object-fit: cover; border: 1px solid #ccc; padding: 2px;">
-                                            </td>
-                                            <td class="fw-bold text-primary">৳{{ number_format($inv?->price, 2) }}</td>
-                                            <td class="text-center">
-                                                @if ($inv?->stock > 10)
-                                                    <span class="badge bg-success-subtle text-success">{{ $inv?->stock }}
-                                                        In Stock</span>
-                                                @elseif($inv?->stock > 0)
-                                                    <span class="badge bg-warning-subtle text-warning">{{ $inv?->stock }}
-                                                        Low Stock</span>
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger">Out of Stock</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="5" class="text-center py-3 text-muted">No variants available
-                                                for this product.</td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                                </td>
+                                                <td class="text-center">
+                                                    <img src="{{ $inv?->thumbnail }}" alt="Variant Image"
+                                                        class="img-fluid rounded"
+                                                        style="max-width: 50px; max-height: 50px; object-fit: cover; border: 1px solid #ccc; padding: 2px;">
+                                                </td>
+                                                <td class="fw-bold text-primary">৳{{ number_format($inv?->price, 2) }}</td>
+                                                <td class="text-center">
+                                                    @if ($inv?->stock > 10)
+                                                        <span class="badge bg-success-subtle text-success">{{ $inv?->stock }}
+                                                            In Stock</span>
+                                                    @elseif($inv?->stock > 0)
+                                                        <span class="badge bg-warning-subtle text-warning">{{ $inv?->stock }}
+                                                            Low Stock</span>
+                                                    @else
+                                                        <span class="badge bg-danger-subtle text-danger">Out of Stock</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="text-center py-3 text-muted">No variants available
+                                                    for this product.</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endcan
             </div>
 
             <!-- Right Side: Organization, Image & Tags -->

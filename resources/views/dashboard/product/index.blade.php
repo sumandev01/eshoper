@@ -16,10 +16,12 @@
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">Product List</h4>
-                            <a href="{{ route('product.add') }}" class="btn btn-primary">
-                                <i class="mdi mdi-plus me-1"></i>
-                                <span>Add New Product</span>
-                            </a>
+                            @can(\App\Enums\Permission\ProductPermission::CREATE->value)
+                                <a href="{{ route('product.add') }}" class="btn btn-primary">
+                                    <i class="mdi mdi-plus me-1"></i>
+                                    <span>Add New Product</span>
+                                </a>
+                            @endcan
                         </div>
                     </div>
                     <div class="card-body pt-3">
@@ -31,7 +33,9 @@
                                         <th style="width: 50px;">Sl</th>
                                         <th>Product</th>
                                         <th>Trandy</th>
-                                        <th><p class="mb-1">Category /</p> Brand</th>
+                                        <th>
+                                            <p class="mb-1">Category /</p> Brand
+                                        </th>
                                         <th class="text-end">Price</th>
                                         <th class="text-center">Stock</th>
                                         <th class="text-center">Status</th>
@@ -55,10 +59,12 @@
                                             </td>
                                             <td class="text-center">
                                                 <input type="checkbox" data-id="{{ $product?->id }}"
-                                                    class="toggle-trendy form-check-input" {{ $product?->is_trending ? 'checked' : '' }}>
+                                                    class="toggle-trendy form-check-input"
+                                                    {{ $product?->is_trending ? 'checked' : '' }}>
                                             </td>
                                             <td>
-                                                <p class="mb-0 fw-medium">{{ $product?->details?->category?->name ?? 'N/A' }}
+                                                <p class="mb-0 fw-medium">
+                                                    {{ $product?->details?->category?->name ?? 'N/A' }}
                                                 </p>
                                                 <small
                                                     class="text-muted">{{ $product?->details?->brand?->name ?? 'No Brand' }}</small>
@@ -70,7 +76,8 @@
                                                     <del
                                                         class="text-muted small">৳{{ number_format($product?->price, 2) }}</del>
                                                 @else
-                                                    <div class="fw-bold text-dark">৳{{ number_format($product?->price, 2) }}
+                                                    <div class="fw-bold text-dark">
+                                                        ৳{{ number_format($product?->price, 2) }}
                                                     </div>
                                                 @endif
                                             </td>
@@ -96,22 +103,30 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center">
-                                                    <a href="{{ route('inventory.index', $product?->id) }}"
-                                                        class="btn btn-sm btn-outline-secondary me-1" title="View">
-                                                        <i class="mdi mdi-cog-outline me-1"></i>
-                                                    </a>
-                                                    <a href="{{ route('product.view', $product?->id) }}"
-                                                        class="btn btn-sm btn-outline-secondary me-1" title="View">
-                                                        <i class="mdi mdi-eye"></i>
-                                                    </a>
-                                                    <a href="{{ route('product.edit', $product?->id) }}"
-                                                        class="btn btn-sm btn-outline-info me-1" title="Edit">
-                                                        <i class="mdi mdi-square-edit-outline"></i>
-                                                    </a>
-                                                    {{-- <a href="{{ route('product.destroy', $product?->id) }}"
-                                                        class="btn btn-danger btn-sm deleteBtn me-1">
-                                                        <i class="mdi mdi-delete"></i>
-                                                    </a> --}}
+                                                    @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value)
+                                                        <a href="{{ route('inventory.index', $product?->id) }}"
+                                                            class="btn btn-sm btn-outline-secondary me-1" title="View">
+                                                            <i class="mdi mdi-cog-outline me-1"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can(\App\Enums\Permission\ProductPermission::VIEW->value)
+                                                        <a href="{{ route('product.view', $product?->id) }}"
+                                                            class="btn btn-sm btn-outline-secondary me-1" title="View">
+                                                            <i class="mdi mdi-eye"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can(\App\Enums\Permission\ProductPermission::UPDATE->value)
+                                                        <a href="{{ route('product.edit', $product?->id) }}"
+                                                            class="btn btn-sm btn-outline-info me-1" title="Edit">
+                                                            <i class="mdi mdi-square-edit-outline"></i>
+                                                        </a>
+                                                    @endcan
+                                                    @can(\App\Enums\Permission\ProductPermission::DELETE->value)
+                                                        <a href="{{ route('product.destroy', $product?->id) }}"
+                                                            class="btn btn-danger btn-sm deleteBtn me-1">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </a>
+                                                    @endcan
                                                 </div>
                                             </td>
                                         </tr>
@@ -185,7 +200,7 @@
                 let isChecked = $(this).is(':checked');
 
                 $.ajax({
-                    url: '{{ route("product.update.trendy", ":id") }}'.replace(':id', productId),
+                    url: '{{ route('product.update.trendy', ':id') }}'.replace(':id', productId),
                     method: 'PUT',
                     data: {
                         _token: '{{ csrf_token() }}',

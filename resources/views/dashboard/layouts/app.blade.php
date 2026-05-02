@@ -113,7 +113,7 @@
                 }
             });
             Toast.fire({
-                icon: "success",
+                icon: type,
                 title: message
             });
         }

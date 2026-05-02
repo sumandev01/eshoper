@@ -21,15 +21,19 @@
                                     <td class="text-start">{{ $key + 1 }}</td>
                                     <td> {{ $size->name }} </td>
                                     <td class="text-end">
-                                        <button type="button" class="btn btn-info btn-sm editBtn"
-                                            data-id="{{ $size->id }}" data-name="{{ $size->name }}"
-                                            data-bs-toggle="modal" data-bs-target="#editTagModal">
-                                            <i class="mdi mdi-square-edit-outline"></i>
-                                        </button>
-                                        <a href="{{ route('size.destroy', $size?->id) }}"
-                                            class="btn btn-danger btn-sm deleteBtn">
-                                            <i class="mdi mdi-delete"></i>
-                                        </a>
+                                        @can(\App\Enums\Permission\SizePermission::UPDATE->value)
+                                            <button type="button" class="btn btn-info btn-sm editBtn"
+                                                data-id="{{ $size->id }}" data-name="{{ $size->name }}"
+                                                data-bs-toggle="modal" data-bs-target="#editTagModal">
+                                                <i class="mdi mdi-square-edit-outline"></i>
+                                            </button>
+                                        @endcan
+                                        @can(\App\Enums\Permission\SizePermission::DELETE->value)
+                                            <a href="{{ route('size.destroy', $size?->id) }}"
+                                                class="btn btn-danger btn-sm deleteBtn">
+                                                <i class="mdi mdi-delete"></i>
+                                            </a>
+                                        @endcan
                                     </td>
                                 </tr>
                             @empty
@@ -42,7 +46,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-5">
+        @can(\App\Enums\Permission\SizePermission::CREATE->value)
+            <div class="col-lg-5">
             <div class="card">
                 <form action="{{ route('size.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
@@ -62,6 +67,7 @@
                 </form>
             </div>
         </div>
+        @endcan
     </div>
 
     <!-- Edit Tag Modal -->
