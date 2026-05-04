@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductInventory;
@@ -158,5 +159,15 @@ Route::middleware(['auth:web', 'can:' . AdminAccessEnums::AdminAccess->value])->
         Route::get('/roles/{role}/edit', 'edit')->name('admin.role.edit')->middleware('permission:' . UserRolePermission::UPDATE->value);
         Route::put('/roles/{role}', 'update')->name('admin.role.update')->middleware('permission:' . UserRolePermission::UPDATE->value);
         Route::delete('/roles/{role}', 'destroy')->name('admin.role.destroy')->middleware('permission:' . UserRolePermission::DELETE->value);
+    });
+
+    Route::controller(LocationController::class)->group(function () {
+        Route::get('/locations', 'index')->name('admin.location.index')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
+        Route::post('/locations/divisions', 'storeDivision')->name('admin.location.division.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
+        Route::post('/locations/districts', 'storeDistrict')->name('admin.location.district.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
+        Route::post('/locations/thanas', 'storeThana')->name('admin.location.thana.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
+        Route::get('/locations/divisions/ajax', 'ajaxStoreDivision')->name('admin.location.division.view');
+        Route::get('/locations/districts/ajax', 'ajaxStoreDistrict')->name('admin.location.district.view');
+        Route::get('/locations/thanas/ajax', 'ajaxStoreThana')->name('admin.location.thana.view');
     });
 });
