@@ -121,7 +121,6 @@ class RolePermissionController extends Controller
     {
         $request->validate([
             'name' => 'required|string|unique:roles,name,' . $id,
-            'permissions' => 'required|array',
         ], [
             'name.required' => 'Role name is required.',
             'name.unique' => 'This role name already exists.',
@@ -129,18 +128,22 @@ class RolePermissionController extends Controller
         ]);
 
         try {
-            DB::beginTransaction();
-
             $role = Role::findOrFail($id);
+
+            $protectedRoles = array_column(RoleEnums::cases(), 'value');
+            if (in_array($role->name, $protectedRoles) && $request->name !== $role->name) {
+                return redirect()->back()->with('error', 'This role name cannot be edited.');
+            }
+
+            DB::beginTransaction();
 
             $role->update([
                 'name' => $request->name,
                 'guard_name' => 'web'
             ]);
 
-            if ($request->has('permissions')) {
-                $role->syncPermissions($request->permissions);
-            }
+            $permissions = $request->input('permissions', []);
+            $role->syncPermissions($permissions);
 
             DB::commit();
 

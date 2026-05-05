@@ -59,7 +59,7 @@ Route::middleware('auth')->group(function () {
 
     // Checkout Routes
     Route::controller(CheckoutController::class)->group(function () {
-        Route::post('/checkout', 'index')->name('checkout.index');
+        Route::get('/checkout', 'index')->name('checkout.index');
     });
 
     // Wishlist Routes

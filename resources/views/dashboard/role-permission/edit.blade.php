@@ -43,9 +43,10 @@
                                             <h4>{{ $adminAccess }}</h4>
                                             @foreach ($permissions as $permission)
                                                 <div class="form-check ms-4">
-                                                    <input class="form-check-input permission-checkbox" type="checkbox"
-                                                        name="permissions[]" value="{{ $permission->value }}"
-                                                        id="{{ $permission->value }}"
+                                                    <input class="form-check-input permission-checkbox admin-access"
+                                                        type="checkbox" name="permissions[]"
+                                                        value="{{ $permission->value }}"
+                                                        id="{{ $permission->value }} admin_access"
                                                         {{ $role->hasPermissionTo($permission) ? 'checked' : '' }} />
                                                     <label for="{{ $permission->value }}">
                                                         {{ $permission->name }}
@@ -100,23 +101,43 @@
     </div>
 @endsection
 @push('scripts')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
-
+            // Page load - set "All" checkbox state based on individual permissions
             $('.permission-group').each(function() {
                 updateGroupAllCheckbox($(this));
             });
 
+            // 1. Group checkbox clicked
             $('.group-checkbox').on('click', function() {
                 $(this).closest('.permission-group').find('.permission-checkbox').prop('checked', this
                     .checked);
+
+                checkAdminAccess();
             });
 
+            // 2. Individual permission checkbox clicked
             $('.permission-checkbox').on('click', function() {
                 updateGroupAllCheckbox($(this).closest('.permission-group'));
+
+                checkAdminAccess();
             });
 
+            // 3. "Admin Access" checkbox should be checked if any other permission is checked, and unchecked if no other permissions are checked
+            function checkAdminAccess() {
+                const adminAccess = $('.admin-access');
+
+                // 
+                const isAnyOtherChecked = $('.permission-checkbox:checked').not('.admin-access').length > 0;
+
+                if (isAnyOtherChecked) {
+                    adminAccess.prop('checked', true);
+                } else {
+                    adminAccess.prop('checked', false);
+                }
+            }
+
+            // 4. Update "All" checkbox based on individual permissions
             function updateGroupAllCheckbox(groupElement) {
                 let allPermissions = groupElement.find('.permission-checkbox').length;
                 let checkedPermissions = groupElement.find('.permission-checkbox:checked').length;

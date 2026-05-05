@@ -1,5 +1,4 @@
 <?php
-
 use App\Enums\Permission\AdminAccessEnums;
 use App\Enums\Permission\BrandPermission;
 use App\Enums\Permission\CategoryPermission;
@@ -22,7 +21,6 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ProductInventory;
 use App\Http\Controllers\Admin\ProductInventoryController;
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SizeController;
@@ -38,7 +36,7 @@ Route::controller(AdminAuthController::class)->prefix('admin')->group(function (
     Route::post('/login', 'login')->name('admin.login.submit');
     Route::get('/logout', 'logout')->name('admin.logout');
 });
-Route::middleware(['auth:web', 'can:' . AdminAccessEnums::AdminAccess->value])->prefix('admin')->group(function () {
+Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAccess->value])->prefix('admin')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'index')->name('admin.dashboard');
     });

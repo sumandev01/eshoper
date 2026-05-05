@@ -12,13 +12,16 @@ class CheckoutController extends Controller
 {
     public function index(Request $request)
     {
+        if (url()->previous() !== route('cart')) {
+            return redirect()->route('cart')->with('error', 'সরাসরি চেকআউট পেজে আসা সম্ভব নয়।');
+        }
         $couponId = $request->couponId;
         $coupon = Coupon::find($couponId);
 
         $userId = auth('web')->id();
 
         $cartItems = auth('web')->user()->cartItems;
-        
+
         $validItems = $cartItems->filter(function ($item) {
             if ($item->product_inventory_id) {
                 $inventory = ProductInventory::find($item->product_inventory_id);
