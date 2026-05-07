@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\DashboardController;
+use App\Http\Controllers\Web\OrderController;
 use App\Http\Controllers\Web\WebController;
 use App\Http\Controllers\Web\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -60,6 +61,16 @@ Route::middleware('auth')->group(function () {
     // Checkout Routes
     Route::controller(CheckoutController::class)->group(function () {
         Route::get('/checkout', 'index')->name('checkout.index');
+    });
+
+    // Order Routes
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/orders', 'index')->name('web.orders');
+        Route::post('/orders', 'store')->name('web.orders.store');
+        Route::get('/orders/{order}', 'orderDetails')->name('web.orderDetails');
+        Route::get('/order-invoice/{order}', 'orderInvoice')->name('web.orderInvoice');
+        Route::get('/download-invoice/{order}', 'downloadInvoice')->name('web.downloadInvoice');
+        Route::post('/cancel-order/{order}', 'cancelOrder')->name('web.cancelOrder');
     });
 
     // Wishlist Routes

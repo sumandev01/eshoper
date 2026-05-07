@@ -162,7 +162,8 @@
                             </div>
                             <a href="{{ route('logout') }}" class="nav-item nav-link">Logout</a>
                         @else
-                            <a href="{{ route('login') }}" class="nav-item nav-link">Login</a>
+                            <a href="javascript:void(0)" class="nav-item nav-link" data-toggle="modal" data-target="#loginModal">Login</a>
+                            {{-- <a href="{{ route('login') }}" class="nav-item nav-link">Login</a> --}}
                             <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
                         @endif
                     </div>

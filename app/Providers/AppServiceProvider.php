@@ -34,5 +34,13 @@ class AppServiceProvider extends ServiceProvider
 
             $view->with('wishlistIds', $wishlistIds);
         });
+
+        $siteSettings = (object)[
+                'id' => 1,
+                'currency' => 'BDT',
+                'currency_symbol' => '৳'
+        ];
+
+        View::share('siteSettings', $siteSettings);
     }
 }

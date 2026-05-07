@@ -142,7 +142,7 @@
                             <h5 class="font-weight-bold">Total</h5>
                             <h5 class="font-weight-bold grand-total">৳{{ formatBDT($subTotalPrice) }}</h5>
                         </div>
-                        <form action="{{ route('checkout.index') }}" method="POST">
+                        <form action="{{ route('checkout.index') }}" method="get">
                             @csrf
                             <input type="hidden" name="couponId" id="CouponId">
                             <button type="submit" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
