@@ -6,17 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Repositories\CartRepository;
+use App\Services\CouponService;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
 
     protected $cartRepository;
+    protected $couponService;
 
 
-    public function __construct(CartRepository $cartRepository)
+    public function __construct(CartRepository $cartRepository, CouponService $couponService)
     {
         $this->cartRepository = $cartRepository;
+        $this->couponService = $couponService;
     }
 
     public function cart()
@@ -70,50 +73,20 @@ class CartController extends Controller
             'couponCode' => 'required|string',
         ]);
 
-        $discountPrice = 0;
-
         $couponCode = $request->couponCode;
+        $cartSubTotal = $request->cartSubTotal;
 
-        $coupon = Coupon::where('code', $couponCode)->where('status', 1)->first();
+        $couponResult = $this->couponService->getAjaxCouponPrice($couponCode, $cartSubTotal);
 
-        if (!$coupon) {
-            return response()->json(['status' => 'error', 'message' => 'Coupon not found'], 400);
+        if ($couponResult['status'] === 'error') {
+            return response()->json($couponResult);
         }
-
-        $isValid = $coupon->start_date <= now() && $coupon->expire_date >= now();
-
-        if (!$isValid) {
-            return response()->json(['status' => 'error', 'message' => 'Coupon is not valid'], 400);
-        }
-
-        $hasLimit = ($coupon->usage_limit - $coupon->used_count) > 0;
-
-        if (!$hasLimit) {
-            return response()->json(['status' => 'error', 'message' => 'Coupon usage limit exceeded'], 400);
-        }
-
-        $minAmount = $coupon->min_order_amount;
-
-        if ($request->cartSubTotal < $minAmount) {
-            return response()->json(['status' => 'error', 'message' => 'Minimum order amount not met'], 400);
-        }
-
-        $couponDiscount = 0;
-
-        if ($coupon->type == 'fixed') {
-            $couponDiscount = $coupon->amount;
-        } elseif ($coupon->type == 'percentage') {
-            $couponDiscount = ($request->cartSubTotal * $coupon->amount) / 100;
-        }
-
-        $discountPrice = $request->cartSubTotal - $couponDiscount;
-
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Coupon applied successfully',
-            'discountPrice' => $discountPrice,
-            'couponId' => $coupon->id
+            'message' => $couponResult['message'],
+            'discountPrice' => $couponResult['finalDiscountPrice'],
+            'couponId' => $couponResult['couponId'],
         ]);
     }
 }

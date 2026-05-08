@@ -7,6 +7,7 @@ use App\Models\Coupon;
 use App\Models\Division;
 use App\Models\Product;
 use App\Models\ProductInventory;
+use App\Models\ShippingCost;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
 
@@ -48,18 +49,7 @@ class CheckoutController extends Controller
         $shippingAddress = UserAddress::where('user_id', $userId)->where('type', 'shipping')->first();
         $divisions = Division::all();
 
-        $shippingCost = [
-            (object)[
-                'id' => 1,
-                'location' => 'Inside Dhaka',
-                'price' => 60,
-            ],
-            (object)[
-                'id' => 2,
-                'location' => 'Outside Dhaka',
-                'price' => 100,
-            ]
-        ];
+        $shippingCost = ShippingCost::all();
 
         return view('web.checkout', compact('coupon', 'userId', 'validItems', 'subTotalPrice', 'couponDiscount', 'totalPrice', 'billingAddress', 'shippingAddress', 'divisions', 'shippingCost'));
     }

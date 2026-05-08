@@ -70,18 +70,19 @@
                                 <x-input label="ZIP Code" name="billing_zip" :value="old('billing_zip') ?? $billingAddress?->zip" />
                             </div>
                             <div class="col-md-12 form-group">
-                                <x-textarea label="Message" name="billing_note" :value="old('billing_note') ?? $billingAddress?->note" />
+                                <x-textarea label="Message" name="note" :value="old('note') ?? $billingAddress?->note" />
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="custom-control custom-checkbox">
-                                    <input type="checkbox" class="custom-control-input" id="shipto">
-                                    <label class="custom-control-label" for="shipto" data-toggle="collapse"
-                                        data-target="#shipping-address">Ship to different address</label>
+                                    <input type="checkbox" name="shipto" class="custom-control-input" id="shipto"
+                                        value="1" {{ old('shipto') ? 'checked' : '' }}>
+                                    <label class="custom-control-label {{ old('shipto') ? '' : 'collapsed'}}" for="shipto" data-toggle="collapse"
+                                        data-target="#shipping-address" aria-expanded="{{ old('shipto') ? 'true' : 'false' }}">Ship to different address</label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="collapse mb-4" id="shipping-address">
+                    <div class="collapse mb-4 {{ old('shipto') ? 'show' : '' }}" id="shipping-address">
                         <h4 class="font-weight-semi-bold mb-4">Shipping Address</h4>
                         <div class="row">
                             <div class="col-md-6 form-group">
@@ -104,27 +105,33 @@
                                             {{ $division->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('shipping_division_id'))
+                                    <span class="text-danger mt-2 d-block">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>District</label>
                                 <select class="custom-select" name="shipping_district_id" id="shipping_district_id">
                                     <option selected disabled>Choose...</option>
                                 </select>
+                                @error('shipping_district_id')
+                                    <span class="text-danger mt-2 d-block">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-6 form-group">
                                 <label>Thana</label>
                                 <select class="custom-select" name="shipping_thana_id" id="shipping_thana_id">
                                     <option selected disabled>Choose...</option>
                                 </select>
+                                @error('shipping_thana_id')
+                                    <span class="text-danger mt-2 d-block">{{ $message }}</span>
+                                @enderror
                             </div>
                             <div class="col-md-6 form-group">
                                 <x-input label="Address" name="shipping_address" :value="old('shipping_address') ?? $shippingAddress?->address" />
                             </div>
                             <div class="col-md-6 form-group">
                                 <x-input label="ZIP Code" name="shipping_zip" :value="old('shipping_zip') ?? $shippingAddress?->zip" />
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <x-textarea label="Message" name="shipping_note" :value="old('shipping_note') ?? $shippingAddress?->note" />
                             </div>
                         </div>
                     </div>
@@ -150,6 +157,8 @@
                                             <td>
                                                 <p title="{{ $item?->product?->name }}">
                                                     {{ Str::limit($item?->product?->name, 20) }}</p>
+                                                <input type="text" name="cart_ids[]" value="{{ $item?->id }}"
+                                                    hidden>
                                             </td>
                                             <td>
                                                 <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
@@ -173,6 +182,7 @@
                                 </h6>
                             </div>
                             <div class="d-flex justify-content-between mb-3">
+                                <input type="text" name="coupon_code" value="{{ $coupon?->id }}" hidden>
                                 <h6 class="font-weight-medium">Discount</h6>
                                 <h6 class="font-weight-medium">
                                     <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
@@ -218,6 +228,9 @@
                                         </div>
                                     </div>
                                 @endforeach
+                                @error('shipping_charge')
+                                    <span class="text-danger mt-2 d-block">{{ $message }}</span>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -228,22 +241,28 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" id="paypal">
+                                    <input type="radio" class="custom-control-input" name="payment" value="paypal"
+                                        id="paypal">
                                     <label class="custom-control-label" for="paypal">Paypal</label>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                                    <label class="custom-control-label" for="directcheck">Direct Check</label>
+                                    <input type="radio" class="custom-control-input" name="payment" value="stripe"
+                                        id="stripe">
+                                    <label class="custom-control-label" for="stripe">Stripe</label>
                                 </div>
                             </div>
                             <div class="">
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                                    <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
+                                    <input type="radio" class="custom-control-input" name="payment"
+                                        value="cashOnDelivery" id="cashOnDelivery">
+                                    <label class="custom-control-label" for="cashOnDelivery">Cash on Delivery</label>
                                 </div>
                             </div>
+                            @error('payment')
+                                <span class="text-danger mt-2 d-block">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="card-footer border-secondary bg-transparent">
                             <button type="submit"
@@ -402,10 +421,10 @@
 
                 let baseTotal = parseFloat('{{ $totalPrice }}');
 
-                $('.shipping-charge').text(shippingPrice.toFixed(2));
+                $('.shipping-charge').text(shippingPrice);
 
                 let finalTotal = baseTotal + shippingPrice;
-                $('.total-price').text(finalTotal.toFixed(2));
+                $('.total-price').text(finalTotal);
             }
 
         });
