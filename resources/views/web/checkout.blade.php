@@ -30,11 +30,11 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <x-input name="billing_name" label="Name" type="text" placeholder="John"
-                                    :value="$billingAddress?->name" />
+                                    :value="old('billing_name') ?? $billingAddress?->name ?? ''" />
                             </div>
                             <div class="col-md-6 form-group">
                                 <x-input name="billing_mobile" label="Mobile No" type="text" placeholder="+123 456 789"
-                                    :value="$billingAddress?->mobile" />
+                                    :value="old('billing_mobile') ?? $billingAddress?->mobile" />
                             </div>
                             <div class="col-md-6 form-group">
                                 <x-input name="billing_email" label="E-mail" type="text" placeholder="example@email.com"
@@ -46,7 +46,7 @@
                                     <option selected disabled>Choose...</option>
                                     @foreach ($divisions as $division)
                                         <option value="{{ $division->id }}"
-                                            {{ $billingAddress?->division_id == $division->id ? 'selected' : '' }}>
+                                            {{ old('billing_division_id', $billingAddress?->division_id) == $division->id ? 'selected' : '' }}>
                                             {{ $division->name }}</option>
                                     @endforeach
                                 </select>
@@ -89,7 +89,7 @@
                                 <x-input label="Name" name="shipping_name" :value="old('shipping_name') ?? $shippingAddress?->name" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <x-input label="Mobile No" name="shipping_mobile" :value="old('shipping_mobile') ?? $shippingAddress?->mobile" />
+                                <x-input label="Mobile No" type="text" name="shipping_mobile" :value="old('shipping_mobile') ?? $shippingAddress?->mobile" />
                             </div>
                             <div class="col-md-6 form-group">
                                 <x-input label="E-mail" name="shipping_email" :value="old('shipping_email') ?? $userEmail"

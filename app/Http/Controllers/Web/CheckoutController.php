@@ -49,7 +49,7 @@ class CheckoutController extends Controller
         $shippingAddress = UserAddress::where('user_id', $userId)->where('type', 'shipping')->first();
         $divisions = Division::all();
 
-        $shippingCost = ShippingCost::all();
+        $shippingCost = ShippingCost::orderBy('id', 'asc')->get();
 
         return view('web.checkout', compact('coupon', 'userId', 'validItems', 'subTotalPrice', 'couponDiscount', 'totalPrice', 'billingAddress', 'shippingAddress', 'divisions', 'shippingCost'));
     }

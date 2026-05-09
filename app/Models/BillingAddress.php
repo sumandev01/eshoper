@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class BillingAddress extends Model
 {
-    //
+    protected $guarded = ['id'];
 }

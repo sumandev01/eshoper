@@ -7,15 +7,20 @@ use App\Http\Requests\WebOrderRequest;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\ShippingCost;
+use App\Repositories\OrderRepository;
 use App\Services\CouponService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
     protected $couponService;
-    public function __construct(CouponService $couponService)
+    protected $orderRepository;
+
+    public function __construct(CouponService $couponService, OrderRepository $orderRepository)
     {
         $this->couponService = $couponService;
+        $this->orderRepository = $orderRepository;
     }
     public function index()
     {
@@ -25,53 +30,13 @@ class OrderController extends Controller
     public function store(WebOrderRequest $request)
     {
         $user = auth('web')->user();
-        $userName = $user->name;
-        $userEmail = $user->email;
-
-        $shippingCost = ShippingCost::where('price', $request->shipping_charge)->first();
-        if (!$shippingCost) {
-            return redirect()->back()->with('error', 'Shipping cost not found');
-        } else {
-            $shippingCostId = $shippingCost->id;
-            $shippingLocation = $shippingCost->location;
-            $shippingPrice = $shippingCost->price;
+        DB::beginTransaction();
+        try {
+            $this->orderRepository->OrderByStore($user, $request);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
 
-        dd($shippingCostId, $shippingLocation, $shippingPrice);
-
-        $cartItems = Cart::whereIn('id', $request->cart_ids)->get();
-        $subTotalPrice = $cartItems->map(function ($item) {
-            return $item->cart_price * $item->quantity;
-        })->sum();
-
-        if ($request->coupon_code) {
-            $couponId = $request->coupon_code;
-            $couponResult = $this->couponService->getCouponPrice($couponId, $subTotalPrice);
-            $couponDiscount = $couponResult['couponDiscount'];
-            $finalDiscountPrice = $couponResult['finalDiscountPrice'];
-            $grandTotalPrice = $finalDiscountPrice + $shippingCost->price;
-            $couponCode = $couponResult['couponCode'];
-        } else {
-            $couponCode = null;
-            $couponDiscount = 0;
-            $finalDiscountPrice = $subTotalPrice;
-            $grandTotalPrice = $subTotalPrice + $shippingPrice;
-        }
-
-        dd($userName, $userEmail, $shippingPrice, $subTotalPrice, $couponDiscount, $finalDiscountPrice, $grandTotalPrice, $couponCode, $couponId);
-
-        foreach ($cartItems as $cart) {
-            $productId = $cart->product_id;
-            $name = $cart->product->name;
-            $sku = $cart->product->sku;
-            $size = $cart->size->name;
-            $color = $cart->color->name;
-            $quantity = $cart->quantity;
-            $price = $cart->cart_price;
-
-            // dd($productId, $name, $sku, $size, $color, $quantity, $price);
-        }
-
-        dd($request->all());
+        return redirect()->route('web.orders')->with('success', 'Order created successfully');
     }
 }

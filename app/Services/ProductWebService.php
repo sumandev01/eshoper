@@ -24,18 +24,14 @@ class ProductWebService
         return $inventories->map(function ($inventory) {
             $mediaUrl = $inventory->media && $inventory->media->src ? Storage::url($inventory->media->src) : '';
 
-            // ১. প্রাইস সেট করা (ভ্যারিয়েন্ট না থাকলে মেইন প্রাইস)
             $basePrice = ($inventory->use_main_price == 1 || $inventory->price === null)
                 ? (float)$inventory->product->price
                 : (float)$inventory->price;
 
-            // ২. ডিসকাউন্ট লজিক (আপনার রিকোয়ারমেন্ট অনুযায়ী)
             $finalDiscount = 0;
             if ($inventory->use_main_discount == 1) {
-                // মেইন প্রোডাক্টের ডিসকাউন্ট নিবে
                 $finalDiscount = (float)($inventory->product->discount ?? 0);
             } else {
-                // ইনভেন্টরির নিজস্ব ডিসকাউন্ট নিবে (যদি থাকে)
                 $finalDiscount = (float)($inventory->discount ?? 0);
             }
 
@@ -44,7 +40,7 @@ class ProductWebService
                 'name'           => $inventory->color->name ?? 'N/A',
                 'image'          => $mediaUrl,
                 'price'          => $basePrice,
-                'discount_price' => $finalDiscount, // এটি ০ হতে পারে যদি ভ্যালু না থাকে
+                'discount_price' => $finalDiscount,
                 'stock'          => $inventory->stock,
             ];
         })->unique('id')->values();
