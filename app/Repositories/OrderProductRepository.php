@@ -6,18 +6,19 @@ use App\Models\OrderProduct;
 
 class OrderProductRepository
 {
-    public static function storeByRequest($request, $order, $cartItems)
+    public static function storeByRequest($request, $user, $order, $cartItems)
     {
         foreach ($cartItems as $cart) {
             $productId = $cart->product_id;
             $name = $cart->product->name ?? 'Product Not Found';
             $sku = $cart->product->sku;
-            $size = $cart->size->name ?? 'N/A';
-            $color = $cart->color->name ?? 'N/A';
+            $size = $cart->size->name ?? null;
+            $color = $cart->color->name ?? null;
             $quantity = $cart->quantity;
             $price = $cart->cart_price;
 
             OrderProduct::create([
+                'user_id' => $user->id,
                 'order_id' => $order->id,
                 'product_id' => $productId,
                 'product_name' => $name,

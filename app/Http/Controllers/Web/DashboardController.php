@@ -3,15 +3,54 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\BillingAddress;
 use App\Models\Division;
+use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\ShippingAddress;
 use App\Models\UserAddress;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         return view('web.dashboard.index');
+    }
+
+    public function orders()
+    {
+        $user = auth('web')->user();
+        $orders = Order::where('user_id', $user->id)->orderBy('id', 'desc')->get();
+        return view('web.dashboard.orders', compact('orders'));
+    }
+
+    public function orderDetails(Order $order)
+    {
+        $orderProducts = OrderProduct::where('order_id', $order->id)->get();
+        $billingAddress = BillingAddress::where('order_id', $order->id)->first();
+        $shippingAddress = ShippingAddress::where('order_id', $order->id)->first();
+        return view('web.dashboard.order-details', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
+    }
+
+    public function downloadInvoice($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+        $orderProducts = OrderProduct::where('order_id', $order->id)->get();
+        $billingAddress = BillingAddress::where('order_id', $order->id)->first();
+        $shippingAddress = ShippingAddress::where('order_id', $order->id)->first();
+        $pdf = Pdf::loadView('web.dashboard.order-pdf', compact('order', 'orderProducts', 'shippingAddress'));
+
+        return $pdf->download('invoice-' . $order->order_number . '.pdf');
+    }
+
+    public function orderProducts()
+    {
+        $user = auth('web')->user();
+        $orderProducts = OrderProduct::where('user_id', $user->id)->get();
+        return view('web.dashboard.order-products', compact('orderProducts'));
     }
 
     public function profile()
@@ -50,6 +89,7 @@ class DashboardController extends Controller
         } else {
             $address_default = '0';
         };
+        DB::beginTransaction();
         try {
             UserAddress::updateOrCreate(
                 ['user_id' => $userId, 'type' => 'shipping'],
@@ -93,7 +133,9 @@ class DashboardController extends Controller
                     ]
                 );
             }
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
         return redirect()->route('user.address')->with('success', 'Address updated successfully.');

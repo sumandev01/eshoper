@@ -4,17 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderProduct extends Model
+class ProductReview extends Model
 {
     protected $guarded = ['id'];
-
-    public function order()
+    public function user()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(User::class);
     }
 
     public function product()
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(ProductReviewReply::class);
     }
 }

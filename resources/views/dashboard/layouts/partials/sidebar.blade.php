@@ -128,6 +128,26 @@
                 </div>
             </li>
         @endcan
+        @can(App\Enums\Permission\OrderPermission::VIEW->value)
+            <li class="nav-item {{ request()->routeIs('order*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#order"
+                    aria-expanded="{{ request()->routeIs('order*') ? 'true' : 'false' }}" aria-controls="order">
+                    <span class="menu-title">Orders</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-cart menu-icon"></i>
+                </a>
+                <div class="collapse {{ request()->routeIs('order*') ? 'show' : '' }}" id="order">
+                    <ul class="nav flex-column sub-menu">
+                        @can(App\Enums\Permission\OrderPermission::VIEW->value)
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('order.index') ? 'active' : '' }}"
+                                    href="{{ route('order.index') }}">All Orders</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
         @can(App\Enums\Permission\CouponPermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('coupon*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#coupon"

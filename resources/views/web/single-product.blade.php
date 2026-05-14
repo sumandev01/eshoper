@@ -1,9 +1,11 @@
 @extends('web.layouts.app')
 @section('title', ($product?->details?->meta_title ?? $product?->name) . ' | ' . config('app.name'))
-@section('meta_description', $product?->details?->meta_description ?? Str::limit(strip_tags($product?->details?->description ?? ''), 160))
+@section('meta_description', $product?->details?->meta_description ??
+    Str::limit(strip_tags($product?->details?->description ?? ''), 160))
 
 @section('og_title', $product?->details?->meta_title ?? $product?->name)
-@section('og_description', $product?->details?->meta_description ?? Str::limit(strip_tags($product?->details?->description ?? ''), 160))
+@section('og_description', $product?->details?->meta_description ??
+    Str::limit(strip_tags($product?->details?->description ?? ''), 160))
 @section('og_image', url($product?->thumbnail))
 @section('og_url', route('productDetails', $product?->slug))
 
@@ -180,9 +182,11 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
-                    <a class="nav-item nav-link active" data-toggle="tab" href="#tab-pane-1">Description</a>
+                    <a class="nav-item nav-link active " data-toggle="tab"
+                        href="#tab-pane-1">Description</a>
                     <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a>
-                    <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-3">Reviews (0)</a>
+                    <a class="nav-item nav-link " data-toggle="tab"
+                        href="#tab-pane-3">Reviews (0)</a>
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
@@ -213,37 +217,6 @@
                                             at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <h4 class="mb-4">Leave a review</h4>
-                                <small>Your email address will not be published. Required fields are marked *</small>
-                                <div class="d-flex my-3">
-                                    <p class="mb-0 mr-2">Your Rating * :</p>
-                                    <div class="text-primary">
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                </div>
-                                <form>
-                                    <div class="form-group">
-                                        <label for="message">Your Review *</label>
-                                        <textarea id="message" cols="30" rows="5" class="form-control"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="name">Your Name *</label>
-                                        <input type="text" class="form-control" id="name">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="email">Your Email *</label>
-                                        <input type="email" class="form-control" id="email">
-                                    </div>
-                                    <div class="form-group mb-0">
-                                        <input type="submit" value="Leave Your Review" class="btn btn-primary px-3">
-                                    </div>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -284,7 +257,7 @@
                                 <img class="img-fluid w-100" src="{{ $item?->thumbnail }}"
                                     style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}">
                                 @if ($item?->inventories->count() > 0)
-                                    <div class="varient-product position-absolute d-flex justify-content-between bg-white"
+                                    <div class="varient-product position-absolute d-flex justify-content-between"
                                         style="bottom: 0; left: 0; width: 100%;">
                                         {{-- Size dropdown --}}
                                         <select class="form-control form-control-md shop-size-selector"
@@ -555,6 +528,20 @@
                         items: 4
                     }
                 }
+            });
+
+            $(document).on('click', '.star-btn', function() {
+                let value = $(this).data('value');
+
+                $('#rating_value').val(value);
+
+                $('.star-btn').removeClass('fas').addClass('far');
+
+                $('.star-btn').each(function(index) {
+                    if (index < value) {
+                        $(this).removeClass('far').addClass('fas');
+                    }
+                });
             });
         });
     </script>

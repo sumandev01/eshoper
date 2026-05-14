@@ -4,8 +4,12 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WebOrderRequest;
+use App\Models\BillingAddress;
 use App\Models\Cart;
 use App\Models\Coupon;
+use App\Models\Order;
+use App\Models\OrderProduct;
+use App\Models\ShippingAddress;
 use App\Models\ShippingCost;
 use App\Repositories\OrderRepository;
 use App\Services\CouponService;
@@ -22,9 +26,11 @@ class OrderController extends Controller
         $this->couponService = $couponService;
         $this->orderRepository = $orderRepository;
     }
-    public function index()
+    public function index($order)
     {
-        // return view('web.orders.index');
+        $orderId = Order::find($order->id);
+        dd($orderId);
+        return view('web.dashboard.order-details', compact('order'));
     }
 
     public function store(WebOrderRequest $request)
@@ -32,11 +38,21 @@ class OrderController extends Controller
         $user = auth('web')->user();
         DB::beginTransaction();
         try {
-            $this->orderRepository->OrderByStore($user, $request);
+            $order = $this->orderRepository->OrderByStore($user, $request);
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', $e->getMessage());
         }
 
-        return redirect()->route('web.orders')->with('success', 'Order created successfully');
+        return redirect()->route('web.orderDetails', ['order' => $order->id])->with('success', 'Order created successfully');
+    }
+
+    public function orderDetails(Order $order)
+    {
+        $orderProducts = OrderProduct::where('order_id', $order->id)->get();
+        $billingAddress = BillingAddress::where('order_id', $order->id)->first();
+        $shippingAddress = ShippingAddress::where('order_id', $order->id)->first();
+        return view('web.dashboard.order-details', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
     }
 }

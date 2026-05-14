@@ -85,15 +85,15 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sale_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="৳" label="Sale Price" :value="$product?->price ?? ''" />
+                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Sale Price" :value="$product?->price ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="discount" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="৳" label="Discount Price" :value="$product?->discount ?? ''" />
+                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Discount Price" :value="$product?->discount ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="buy_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="৳" label="Buy Price" :value="$product?->buy_price ?? ''" />
+                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Buy Price" :value="$product?->buy_price ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="tax" type="number" placeholder="0.00" :inputGroup="true"

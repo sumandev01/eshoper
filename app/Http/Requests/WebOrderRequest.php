@@ -71,6 +71,22 @@ class WebOrderRequest extends FormRequest
     public function messages()
     {
         return [
+            'billing_name.required' => 'Billing name is required.',
+            'billing_mobile.required' => 'Billing mobile is required.',
+            'billing_email.required' => 'Billing email is required.',
+            'billing_division_id.required' => 'Billing division is required.',
+            'billing_district_id.required' => 'Billing district is required.',
+            'billing_thana_id.required' => 'Billing thana is required.',
+            'billing_address.required' => 'Billing address is required.',
+            'billing_zip.required' => 'Billing zip is required.',
+            'shipping_name.required_if' => 'Shipping name is required.',
+            'shipping_mobile.required_if' => 'Shipping mobile is required.',
+            'shipping_email.required_if' => 'Shipping email is required.',
+            'shipping_division_id.required_if' => 'Shipping division is required.',
+            'shipping_district_id.required_if' => 'Shipping district is required.',
+            'shipping_thana_id.required_if' => 'Shipping thana is required.',
+            'shipping_address.required_if' => 'Shipping address is required.',
+            'shipping_zip.required_if' => 'Shipping zip is required.',
             'payment.required' => 'Payment method is required.',
         ];
     }

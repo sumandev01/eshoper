@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\PaymentStatusEnums;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\ShippingCost;
@@ -64,8 +65,8 @@ class OrderRepository
             'shipping_location' => $shippingLocation,
             'shipping_charge' => $shippingPrice,
             'grand_total' => $grandTotalPrice,
-            'payment_method' => $request->payment_method,
-            'payment_status' => 'pending',
+            'payment_method' => $request->payment,
+            'payment_status' => PaymentStatusEnums::UNPAID->value,
             'order_status' => 'pending',
             'transaction_id' => $request->transaction_id ?? null,
             'note' => $request->note ?? null,
@@ -75,11 +76,10 @@ class OrderRepository
 
         ShippingRepository::storeByRequest($request, $order);
 
-        OrderProductRepository::storeByRequest($request, $order, $cartItems);
+        OrderProductRepository::storeByRequest($request, $user, $order, $cartItems);
 
-        $cartItems->each(function ($item) {
-            $item->delete();
-        });
+        $cartItems->each->delete();
+
         return $order;
     }
 }

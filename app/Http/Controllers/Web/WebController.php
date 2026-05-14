@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductInventory;
+use App\Models\ProductReview;
 use App\Models\Size;
 use App\Models\SubCategory;
 use App\Services\ProductFilterService;
@@ -66,7 +68,7 @@ class WebController extends Controller
             'sizes'           => $product->sizes,
             'colors'          => $product->colors,
             'tags'            => $product->tags,
-            'relatedProducts' => $relatedProducts
+            'relatedProducts' => $relatedProducts,
         ]);
     }
 
@@ -100,31 +102,31 @@ class WebController extends Controller
     }
 
     // Search suggestions for header search input
-public function searchSuggestions(Request $request)
-{
-    if (!$request->filled('search')) {
-        return response()->json([]);
+    public function searchSuggestions(Request $request)
+    {
+        if (!$request->filled('search')) {
+            return response()->json([]);
+        }
+
+        $products = Product::where('status', 1)
+            ->where('name', 'like', '%' . $request->search . '%')
+            ->with('media')
+            ->select('id', 'name', 'slug', 'price', 'discount', 'media_id')
+            ->limit(6)
+            ->get()
+            ->map(function ($product) {
+                return [
+                    'id'        => $product->id,
+                    'name'      => $product->name,
+                    'slug'      => $product->slug,
+                    'price'     => $product->price,
+                    'discount'  => $product->discount,
+                    'thumbnail' => $product->thumbnail,
+                ];
+            });
+
+        return response()->json($products);
     }
-
-    $products = Product::where('status', 1)
-        ->where('name', 'like', '%' . $request->search . '%')
-        ->with('media')
-        ->select('id', 'name', 'slug', 'price', 'discount', 'media_id')
-        ->limit(6)
-        ->get()
-        ->map(function ($product) {
-            return [
-                'id'        => $product->id,
-                'name'      => $product->name,
-                'slug'      => $product->slug,
-                'price'     => $product->price,
-                'discount'  => $product->discount,
-                'thumbnail' => $product->thumbnail,
-            ];
-        });
-
-    return response()->json($products);
-}
 
     // Category
     public function categoryProducts($slug, ProductFilterService $filterService)

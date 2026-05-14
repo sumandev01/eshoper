@@ -9,4 +9,15 @@ enum OrderStatusEnums: string
     case SHIPPED = 'shipped';
     case COMPLETED = 'completed';
     case CANCELLED = 'cancelled';
+
+    public function color(): string
+    {
+        return match ($this) {
+            self::PENDING => 'warning',
+            self::PROCESSING => 'info',
+            self::SHIPPED => 'success',
+            self::COMPLETED => 'success',
+            self::CANCELLED => 'danger',
+        };
+    }
 }

@@ -1,14 +1,6 @@
 @extends('dashboard.layouts.app')
-
 @section('content')
     <div class="container-fluid">
-        <!-- Page Header -->
-        <div class="row">
-            <div class="col-12">
-
-            </div>
-        </div>
-
         <!-- Product Table Card -->
         <div class="row">
             <div class="col-12">
@@ -32,7 +24,6 @@
                                     <tr>
                                         <th style="width: 50px;">Sl</th>
                                         <th>Product</th>
-                                        <th>Trandy</th>
                                         <th>
                                             <p class="mb-1">Category /</p> Brand
                                         </th>
@@ -54,13 +45,15 @@
                                                     <div class="flex-grow-1">
                                                         <h6 class="mb-0 fs-14">{{ Str::limit($product?->name, 30) }}</h6>
                                                         <small class="text-muted">SKU: {{ $product?->sku ?? 'N/A' }}</small>
+                                                        <hr class="my-1">
+                                                        <div class="d-inline-block mt-0 bg-light p-2">
+                                                            <label for="">Trandy</label>
+                                                            <input type="checkbox" data-id="{{ $product?->id }}"
+                                                                class="toggle-trendy form-check-input mt-0"
+                                                                {{ $product?->is_trending ? 'checked' : '' }}>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </td>
-                                            <td class="text-center">
-                                                <input type="checkbox" data-id="{{ $product?->id }}"
-                                                    class="toggle-trendy form-check-input"
-                                                    {{ $product?->is_trending ? 'checked' : '' }}>
                                             </td>
                                             <td>
                                                 <p class="mb-0 fw-medium">
@@ -72,12 +65,15 @@
                                             <td class="text-end">
                                                 @if ($product?->discount > 0)
                                                     <div class="fw-bold text-dark">
-                                                        ৳{{ number_format($product?->discount, 2) }}</div>
-                                                    <del
-                                                        class="text-muted small">৳{{ number_format($product?->price, 2) }}</del>
+                                                        {{ $siteSettings?->currency_symbol }}
+                                                        {{ number_format($product?->discount, 2) }}</div>
+                                                    <del class="text-muted small">
+                                                        {{ $siteSettings?->currency_symbol }}
+                                                        {{ number_format($product?->price, 2) }}</del>
                                                 @else
                                                     <div class="fw-bold text-dark">
-                                                        ৳{{ number_format($product?->price, 2) }}
+                                                        {{ $siteSettings?->currency_symbol }}
+                                                        {{ number_format($product?->price, 2) }}
                                                     </div>
                                                 @endif
                                             </td>

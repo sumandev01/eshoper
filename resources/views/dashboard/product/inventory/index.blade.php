@@ -65,11 +65,15 @@
                                                     @endphp
 
                                                     @if (!is_null($displayDiscount) && $displayDiscount > 0)
-                                                        <span
-                                                            style="color: gray; text-decoration: line-through;">৳{{ $displayPrice }}</span>
+                                                        <span style="color: gray; text-decoration: line-through;">
+                                                            {{ $siteSettings?->currency_symbol }}
+                                                            {{ $displayPrice }}
+                                                        </span>
                                                         <br>
-                                                        <span
-                                                            style="font-weight: bold; color: red;">৳{{ $displayDiscount }}</span>
+                                                        <span style="font-weight: bold; color: red;">
+                                                            {{ $siteSettings?->currency_symbol }}
+                                                            {{ $displayDiscount }}
+                                                        </span>
                                                     @else
                                                         <span style="font-weight: bold;">&#2547;{{ $displayPrice }}</span>
                                                     @endif

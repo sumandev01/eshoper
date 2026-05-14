@@ -104,15 +104,24 @@
                         <div class="row text-center">
                             <div class="col-md-3 border-end">
                                 <label class="text-muted small d-block">Sale Price</label>
-                                <h4 class="text-primary mb-0">৳{{ number_format($product?->price ?? 0, 2) }}</h4>
+                                <h4 class="text-primary mb-0">
+                                    {{ $siteSettings?->currency_symbol }}
+                                    {{ number_format($product?->price ?? 0, 2) }}
+                                </h4>
                             </div>
                             <div class="col-md-3 border-end">
                                 <label class="text-muted small d-block">Discount Price</label>
-                                <h4 class="text-danger mb-0">৳{{ number_format($product?->discount ?? 0, 2) }}</h4>
+                                <h4 class="text-danger mb-0">
+                                    {{ $siteSettings?->currency_symbol }}
+                                    {{ number_format($product?->discount ?? 0, 2) }}
+                                </h4>
                             </div>
                             <div class="col-md-3 border-end">
                                 <label class="text-muted small d-block">Buy Price</label>
-                                <h4 class="text-dark mb-0">৳{{ number_format($product?->buy_price ?? 0, 2) }}</h4>
+                                <h4 class="text-dark mb-0">
+                                    {{ $siteSettings?->currency_symbol }}
+                                    {{ number_format($product?->buy_price ?? 0, 2) }}
+                                </h4>
                             </div>
                             <div class="col-md-3">
                                 <label class="text-muted small d-block">Tax</label>
@@ -131,7 +140,8 @@
                         <div class="row g-2">
                             @forelse($product?->galleries ?? [] as $gallery)
                                 <div class="col-md-3">
-                                    <img src="{{ Storage::url($gallery?->src) }}" class="w-100 rounded border" style="object-fit: cover; aspect-ratio: 1/1" alt="gallery">
+                                    <img src="{{ Storage::url($gallery?->src) }}" class="w-100 rounded border"
+                                        style="object-fit: cover; aspect-ratio: 1/1" alt="gallery">
                                 </div>
                             @empty
                                 <div class="col-md-12 text-center">
@@ -210,7 +220,10 @@
                                                         class="img-fluid rounded"
                                                         style="max-width: 50px; max-height: 50px; object-fit: cover; border: 1px solid #ccc; padding: 2px;">
                                                 </td>
-                                                <td class="fw-bold text-primary">৳{{ number_format($inv?->price, 2) }}</td>
+                                                <td class="fw-bold text-primary">
+                                                    {{ $siteSettings?->currency_symbol }}
+                                                    {{ number_format($inv?->price, 2) }}
+                                                </td>
                                                 <td class="text-center">
                                                     @if ($inv?->stock > 10)
                                                         <span class="badge bg-success-subtle text-success">{{ $inv?->stock }}

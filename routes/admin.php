@@ -1,10 +1,12 @@
 <?php
+
 use App\Enums\Permission\AdminAccessEnums;
 use App\Enums\Permission\BrandPermission;
 use App\Enums\Permission\CategoryPermission;
 use App\Enums\Permission\ColorPermission;
 use App\Enums\Permission\CouponPermission;
 use App\Enums\Permission\MediaPermission;
+use App\Enums\Permission\OrderPermission;
 use App\Enums\Permission\ProductInventoryPermission;
 use App\Enums\Permission\ProductPermission;
 use App\Enums\Permission\SizePermission;
@@ -20,6 +22,7 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductInventoryController;
 use App\Http\Controllers\Admin\RolePermissionController;
@@ -120,6 +123,13 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
         Route::delete('/products/inventories/{productInventory}', 'destroy')->name('inventory.destroy')->middleware('permission:' . ProductInventoryPermission::DELETE->value);
     });
 
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('/orders', 'index')->name('order.index')->middleware('permission:' . OrderPermission::VIEW->value);
+        Route::get('/orders/{order}/view', 'view')->name('order.view')->middleware('permission:' . OrderPermission::VIEW->value);
+        Route::put('/orders/{order}', 'update')->name('order.update')->middleware('permission:' . OrderPermission::UPDATE->value);
+        Route::delete('/orders/{order}', 'destroy')->name('order.destroy')->middleware('permission:' . OrderPermission::DELETE->value);
+    });
+
     Route::controller(CouponController::class)->group(function () {
         Route::get('/coupons', 'index')->name('coupon.index')->middleware('permission:' . CouponPermission::VIEW->value);
         Route::get('/coupons/add', 'add')->name('coupon.add')->middleware('permission:' . CouponPermission::CREATE->value);
@@ -164,8 +174,11 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
         Route::post('/locations/divisions', 'storeDivision')->name('admin.location.division.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
         Route::post('/locations/districts', 'storeDistrict')->name('admin.location.district.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
         Route::post('/locations/thanas', 'storeThana')->name('admin.location.thana.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
-        Route::get('/locations/divisions/ajax', 'ajaxStoreDivision')->name('admin.location.division.view');
-        Route::get('/locations/districts/ajax', 'ajaxStoreDistrict')->name('admin.location.district.view');
-        Route::get('/locations/thanas/ajax', 'ajaxStoreThana')->name('admin.location.thana.view');
     });
+});
+
+Route::controller(LocationController::class)->group(function () {
+    Route::get('/locations/divisions/ajax', 'ajaxStoreDivision')->name('admin.location.division.view');
+    Route::get('/locations/districts/ajax', 'ajaxStoreDistrict')->name('admin.location.district.view');
+    Route::get('/locations/thanas/ajax', 'ajaxStoreThana')->name('admin.location.thana.view');
 });

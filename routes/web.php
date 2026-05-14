@@ -5,6 +5,7 @@ use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\DashboardController;
 use App\Http\Controllers\Web\OrderController;
+use App\Http\Controllers\Web\ReviewController;
 use App\Http\Controllers\Web\WebController;
 use App\Http\Controllers\Web\WishlistController;
 use Illuminate\Support\Facades\Route;
@@ -41,14 +42,18 @@ Route::middleware('auth')->group(function () {
     // User Dashboard
     Route::controller(DashboardController::class)->group(function () {
         Route::get('user/dashboard', 'index')->name('user.dashboard');
+        Route::get('user/orders', 'orders')->name('user.orders');
+        Route::get('user/orders/{order}', 'orderDetails')->name('user.orderDetails');
+        Route::get('user/order-products', 'orderProducts')->name('user.orderProducts');
         Route::get('user/profile', 'profile')->name('user.profile');
         Route::post('user/profile', 'updateProfile')->name('user.updateProfile');
         Route::get('user/address', 'address')->name('user.address');
         Route::post('user/address', 'updateAddress')->name('user.updateAddress');
-        Route::get('user/orders', 'orders')->name('user.orders');
-        Route::get('user/orders/{order}', 'orderDetails')->name('user.orderDetails');
+        Route::get('/order/invoice-download/{id}', 'downloadInvoice')->name('order.invoice.download');
         Route::get('user/change-password', 'changePasswordForm')->name('user.changePasswordForm');
     });
+
+
     // Cart Routes
     Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'cart')->name('cart');
@@ -78,6 +83,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/wishlist', 'index')->name('wishlist');
         Route::post('/add-to-wishlist', 'wishlistToggle')->name('wishlist.toggle');
         Route::get('/remove-from-wishlist/{id}', 'removeFromWishlist')->name('removeFromWishlist');
+    });
+
+    // Review Routes
+    Route::controller(ReviewController::class)->group(function () {
+        Route::post('/add-review', 'store')->name('user.addReview');
     });
 });
 

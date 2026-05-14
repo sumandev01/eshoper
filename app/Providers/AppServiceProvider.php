@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
         $siteSettings = (object)[
                 'id' => 1,
                 'currency' => 'BDT',
-                'currency_symbol' => '৳'
+                'currency_symbol' => '$',
         ];
 
         View::share('siteSettings', $siteSettings);

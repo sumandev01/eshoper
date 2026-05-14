@@ -30,54 +30,47 @@
                         <div class="row">
                             <div class="col-md-6 form-group">
                                 <x-input name="billing_name" label="Name" type="text" placeholder="John"
-                                    :value="old('billing_name') ?? $billingAddress?->name ?? ''" />
+                                    :value="$billingAddress?->name" :required="true" />
                             </div>
                             <div class="col-md-6 form-group">
                                 <x-input name="billing_mobile" label="Mobile No" type="text" placeholder="+123 456 789"
-                                    :value="old('billing_mobile') ?? $billingAddress?->mobile" />
+                                    :value="$billingAddress?->mobile" :required="true" />
                             </div>
                             <div class="col-md-6 form-group">
                                 <x-input name="billing_email" label="E-mail" type="text" placeholder="example@email.com"
-                                    :value="old('email') ?? $userEmail" />
+                                    :value="$userEmail" :required="true" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>Division</label>
-                                <select class="custom-select" name="billing_division_id" id="billing_division_id">
-                                    <option selected disabled>Choose...</option>
-                                    @foreach ($divisions as $division)
-                                        <option value="{{ $division->id }}"
-                                            {{ old('billing_division_id', $billingAddress?->division_id) == $division->id ? 'selected' : '' }}>
-                                            {{ $division->name }}</option>
-                                    @endforeach
-                                </select>
+                                <x-select name="billing_division_id" label="Division" class="custom-select"
+                                    id="billing_division_id" placeholder="Choose..." :options="$divisions" :value="old('billing_division_id', $billingAddress?->division_id)"
+                                    :required="true" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>District</label>
-                                <select class="custom-select" name="billing_district_id" id="billing_district_id">
-                                    <option selected disabled>Choose...</option>
-                                </select>
+                                <x-select name="billing_district_id" label="District" class="custom-select"
+                                    id="billing_district_id" placeholder="Choose..." :options="[]" :value="old('billing_district_id', $billingAddress?->district_id)"
+                                    :required="true" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>Thana</label>
-                                <select class="custom-select" name="billing_thana_id" id="billing_thana_id">
-                                    <option selected disabled>Choose...</option>
-                                </select>
+                                <x-select name="billing_thana_id" label="Thana" class="custom-select" id="billing_thana_id"
+                                    placeholder="Choose..." :options="[]" :value="old('billing_thana_id', $billingAddress?->thana_id)" :required="true" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <x-input label="Address" name="billing_address" :value="old('billing_address') ?? $billingAddress?->address" />
+                                <x-input label="Address" name="billing_address" :value="$billingAddress?->address" :required="true" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <x-input label="ZIP Code" name="billing_zip" :value="old('billing_zip') ?? $billingAddress?->zip" />
+                                <x-input label="ZIP Code" name="billing_zip" :value="$billingAddress?->zip" :required="true" />
                             </div>
                             <div class="col-md-12 form-group">
-                                <x-textarea label="Message" name="note" :value="old('note') ?? $billingAddress?->note" />
+                                <x-textarea label="Message" name="note" :value="old('note')" />
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="custom-control custom-checkbox">
                                     <input type="checkbox" name="shipto" class="custom-control-input" id="shipto"
                                         value="1" {{ old('shipto') ? 'checked' : '' }}>
-                                    <label class="custom-control-label {{ old('shipto') ? '' : 'collapsed'}}" for="shipto" data-toggle="collapse"
-                                        data-target="#shipping-address" aria-expanded="{{ old('shipto') ? 'true' : 'false' }}">Ship to different address</label>
+                                    <label class="custom-control-label {{ old('shipto') ? '' : 'collapsed' }}"
+                                        for="shipto" data-toggle="collapse" data-target="#shipping-address"
+                                        aria-expanded="{{ old('shipto') ? 'true' : 'false' }}">Ship to different
+                                        address</label>
                                 </div>
                             </div>
                         </div>
@@ -86,52 +79,37 @@
                         <h4 class="font-weight-semi-bold mb-4">Shipping Address</h4>
                         <div class="row">
                             <div class="col-md-6 form-group">
-                                <x-input label="Name" name="shipping_name" :value="old('shipping_name') ?? $shippingAddress?->name" />
+                                <x-input label="Name" id="shipping_name" name="shipping_name" :value="$shippingAddress?->name" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <x-input label="Mobile No" type="text" name="shipping_mobile" :value="old('shipping_mobile') ?? $shippingAddress?->mobile" />
+                                <x-input label="Mobile No" type="text" id="shipping_mobile" name="shipping_mobile"
+                                    :value="$shippingAddress?->mobile" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <x-input label="E-mail" name="shipping_email" :value="old('shipping_email') ?? $userEmail"
-                                    placeholder="example@email.com" />
+                                <x-input label="E-mail" type="email" id="shipping_email" name="shipping_email"
+                                    :value="$userEmail" placeholder="example@email.com" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>Division</label>
-                                <select class="custom-select" name="shipping_division_id" id="shipping_division_id">
-                                    <option selected disabled>Choose...</option>
-                                    @foreach ($divisions as $division)
-                                        <option value="{{ $division->id }}"
-                                            {{ $shippingAddress?->division_id == $division->id ? 'selected' : '' }}>
-                                            {{ $division->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('shipping_division_id'))
-                                    <span class="text-danger mt-2 d-block">{{ $message }}</span>
-                                @enderror
+                                <x-select name="shipping_division_id" label="Division" class="custom-select"
+                                    id="shipping_division_id" placeholder="Choose..." :options="$divisions"
+                                    :value="old('shipping_division_id', $shippingAddress?->division_id)" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>District</label>
-                                <select class="custom-select" name="shipping_district_id" id="shipping_district_id">
-                                    <option selected disabled>Choose...</option>
-                                </select>
-                                @error('shipping_district_id')
-                                    <span class="text-danger mt-2 d-block">{{ $message }}</span>
-                                @enderror
+                                <x-select name="shipping_district_id" label="District" class="custom-select"
+                                    id="shipping_district_id" placeholder="Choose..." :options="[]"
+                                    :value="old('shipping_district_id', $shippingAddress?->district_id)" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <label>Thana</label>
-                                <select class="custom-select" name="shipping_thana_id" id="shipping_thana_id">
-                                    <option selected disabled>Choose...</option>
-                                </select>
-                                @error('shipping_thana_id')
-                                    <span class="text-danger mt-2 d-block">{{ $message }}</span>
-                                @enderror
+                                <x-select name="shipping_thana_id" label="Thana" class="custom-select"
+                                    id="shipping_thana_id" placeholder="Choose..." :options="[]"
+                                    :value="old('shipping_thana_id', $shippingAddress?->thana_id)" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <x-input label="Address" name="shipping_address" :value="old('shipping_address') ?? $shippingAddress?->address" />
+                                <x-input label="Address" id="shipping_address" name="shipping_address"
+                                    :value="$shippingAddress?->address" />
                             </div>
                             <div class="col-md-6 form-group">
-                                <x-input label="ZIP Code" name="shipping_zip" :value="old('shipping_zip') ?? $shippingAddress?->zip" />
+                                <x-input label="ZIP Code" id="shipping_zip" name="shipping_zip" :value="$shippingAddress?->zip" />
                             </div>
                         </div>
                     </div>

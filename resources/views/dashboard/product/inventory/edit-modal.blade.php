@@ -26,7 +26,7 @@
                                 <div class="mb-3 checkBox">
                                     <x-input id="edit_price_{{ $inv?->id }}" label="Price" name="price"
                                         type="number" step="0.01" :value="$inv?->price" placeholder="Enter price" />
-                                    <div class="form-check mt-1">
+                                    <div class="form-check mt-1 ps-4">
                                         <input class="form-check-input edit-price-check" type="checkbox"
                                             name="use_main_price" id="edit_use_main_price_{{ $inv?->id }}"
                                             value="1" data-id="{{ $inv?->id }}" @checked($inv?->use_main_price == 1)>
@@ -38,7 +38,7 @@
                                     <x-input id="edit_discount_{{ $inv?->id }}" label="Discount Price"
                                         name="discount" type="number" step="0.01" :value="$inv?->discount"
                                         placeholder="Enter discount price" />
-                                    <div class="form-check mt-1">
+                                    <div class="form-check mt-1 ps-4">
                                         <input class="form-check-input edit-discount-check" type="checkbox"
                                             name="use_main_discount" id="edit_use_main_discount_{{ $inv?->id }}"
                                             value="1" data-id="{{ $inv?->id }}" @checked($inv?->use_main_discount == 1)>
@@ -73,3 +73,13 @@
     </div>
 @endforeach
 <!-- End Edit Modal -->
+@push('styles')
+    <style>
+        .gallery-item {
+            padding: 0 !important;
+        }
+        .gallery-item img {
+            margin: 0 !important;
+        }
+    </style>
+@endpush
