@@ -23,24 +23,24 @@ class DashboardController extends Controller
     public function orders()
     {
         $user = auth('web')->user();
-        $orders = Order::where('user_id', $user->id)->orderBy('id', 'desc')->get();
+        $orders = Order::whereUserId($user->id)->orderBy('id', 'desc')->get();
         return view('web.dashboard.orders', compact('orders'));
     }
 
     public function orderDetails(Order $order)
     {
-        $orderProducts = OrderProduct::where('order_id', $order->id)->get();
-        $billingAddress = BillingAddress::where('order_id', $order->id)->first();
-        $shippingAddress = ShippingAddress::where('order_id', $order->id)->first();
+        $orderProducts = OrderProduct::whereOrderId($order->id)->get();
+        $billingAddress = BillingAddress::whereOrderId($order->id)->first();
+        $shippingAddress = ShippingAddress::whereOrderId($order->id)->first();
         return view('web.dashboard.order-details', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
     }
 
     public function downloadInvoice($orderId)
     {
         $order = Order::findOrFail($orderId);
-        $orderProducts = OrderProduct::where('order_id', $order->id)->get();
-        $billingAddress = BillingAddress::where('order_id', $order->id)->first();
-        $shippingAddress = ShippingAddress::where('order_id', $order->id)->first();
+        $orderProducts = OrderProduct::whereOrderId($order->id)->get();
+        $billingAddress = BillingAddress::whereOrderId($order->id)->first();
+        $shippingAddress = ShippingAddress::whereOrderId($order->id)->first();
         $pdf = Pdf::loadView('web.dashboard.order-pdf', compact('order', 'orderProducts', 'shippingAddress'));
 
         return $pdf->download('invoice-' . $order->order_number . '.pdf');
@@ -49,7 +49,7 @@ class DashboardController extends Controller
     public function orderProducts()
     {
         $user = auth('web')->user();
-        $orderProducts = OrderProduct::where('user_id', $user->id)->get();
+        $orderProducts = OrderProduct::whereUserId($user->id)->get();
         return view('web.dashboard.order-products', compact('orderProducts'));
     }
 
@@ -62,8 +62,8 @@ class DashboardController extends Controller
     {
         $user = auth('web')->user();
         $divisions = Division::all();
-        $shippingAddress = UserAddress::where('user_id', $user->id)->where('type', 'shipping')->first();
-        $billingAddress = UserAddress::where('user_id', $user->id)->where('type', 'billing')->first();
+        $shippingAddress = UserAddress::whereUserId($user->id)->whereType('shipping')->first();
+        $billingAddress = UserAddress::whereUserId($user->id)->whereType('billing')->first();
         return view('web.dashboard.address', compact('user', 'divisions', 'shippingAddress', 'billingAddress'));
     }
 

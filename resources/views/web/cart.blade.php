@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'Cart' . ' | ' . config('app.name'))
+@section('title', ucfirst(Route::currentRouteName()) . ' - ' . $siteSettings?->site_title)
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">

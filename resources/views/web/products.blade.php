@@ -1,4 +1,7 @@
 @extends('web.layouts.app')
+@section('title', ucfirst(Route::currentRouteName()) . ' - ' . $siteSettings?->site_title)
+@section('meta_description', $siteSettings?->site_description)
+@section('meta_keywords', $siteSettings?->site_keywords)
 @section('content')
     <div class="container-fluid mb-4">
         <div class="row">

@@ -2,7 +2,7 @@
     $userEmail = auth('web')->user() ? auth('web')->user()->email : '';
 @endphp
 @extends('web.layouts.app')
-@section('title', 'Checkout' . ' | ' . config('app.name'))
+@section('title', 'Checkout' . ' - ' . $siteSettings?->site_title)
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">

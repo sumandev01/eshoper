@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Setting;
 use App\Models\Wishlist;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -27,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
 
         View::composer('*', function ($view) {
             $wishlistIds = auth('web')->check()
-                ? Wishlist::where('user_id', auth('web')->id())
+                ? Wishlist::whereUserId(auth('web')->user()->id)
                 ->pluck('product_id')
                 ->toArray()
                 : [];
@@ -35,12 +37,18 @@ class AppServiceProvider extends ServiceProvider
             $view->with('wishlistIds', $wishlistIds);
         });
 
-        $siteSettings = (object)[
-                'id' => 1,
-                'currency' => 'BDT',
-                'currency_symbol' => '$',
-        ];
+        try {
+            if (!app()->runningInConsole() && Schema::hasTable('settings')) {
+                $siteSettings = (object) [
+                    ...Setting::pluck('key_value', 'key_name')->toArray()
+                ];
 
-        View::share('siteSettings', $siteSettings);
+                View::share('siteSettings', $siteSettings);
+            }
+        } catch (\Exception $e) {
+            if (app()->runningInConsole()) {
+                throw $e;
+            }
+        }
     }
 }

@@ -9,6 +9,7 @@ use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
 use App\Enums\Permission\ProductInventoryPermission;
 use App\Enums\Permission\ProductPermission;
+use App\Enums\Permission\SettingPermission;
 use App\Enums\Permission\SizePermission;
 use App\Enums\Permission\SliderPermission;
 use App\Enums\Permission\SubCategoryPermission;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductInventoryController;
 use App\Http\Controllers\Admin\RolePermissionController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TagController;
@@ -174,6 +176,11 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
         Route::post('/locations/divisions', 'storeDivision')->name('admin.location.division.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
         Route::post('/locations/districts', 'storeDistrict')->name('admin.location.district.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
         Route::post('/locations/thanas', 'storeThana')->name('admin.location.thana.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
+    });
+
+    Route::controller(SettingController::class)->group(function () {
+        Route::get('/settings', 'index')->name('admin.settings.index')->middleware('permission:' . SettingPermission::SettingAccess->value);
+        Route::put('/settings', 'update')->name('admin.settings.update')->middleware('permission:' . SettingPermission::SettingAccess->value);
     });
 });
 

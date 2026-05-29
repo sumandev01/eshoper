@@ -294,6 +294,14 @@
                 </div>
             </li>
         @endcan
+        @can(\App\Enums\Permission\SettingPermission::SettingAccess->value)
+            <li class="nav-item {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.settings.index') }}">
+                    <span class="menu-title">Settings</span>
+                    <i class="mdi mdi-cog menu-icon"></i>
+                </a>
+            </li>
+        @endcan
         <li class="nav-item">
             <a class="nav-link" href="docs/documentation.html" target="_blank">
                 <span class="menu-title">Documentation</span>

@@ -1,0 +1,224 @@
+@extends('dashboard.layouts.app')
+@section('content')
+    <div class="container-fluid">
+        <div class="card shadow-sm border-0">
+            <div class="card-header py-4">
+                <div class="page-title-box">
+                    <h3 class="mb-0">Settings</h3>
+                    <p class="text-muted fw-bold mt-2">Manage all your settings</p>
+                </div>
+            </div>
+            <div class="card-body py-3">
+
+                <form action="">
+                    <div class="container mt-4">
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Site Title</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="site_title" class="fs-6" type="text" :value="$siteSettings?->site_title"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Site Logo</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-media-thumbnail button_label="Select Logo" input_name="site_logo" :existing_image="$siteLogo" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Site Favicon</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-media-thumbnail button_label="Select Favicon" input_name="site_favicon"
+                                    :existing_image="$siteFavicon" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Site Description</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->site_description"
+                                    :required="false" :rows="3" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Site Keywords</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="site_keywords" class="fs-6" type="text" :value="$siteSettings?->site_keywords"
+                                    :required="false" />
+                            </div>
+                        </div>
+                        
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Contact Email</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="contact_email" class="fs-6" type="email" :value="$siteSettings?->contact_email"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Contact Phone</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="contact_phone" class="fs-6" type="text" :value="$siteSettings?->contact_phone"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Contact Address</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="contact_address" class="fs-6" type="text" :value="$siteSettings?->contact_address"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Footer Text</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="footer_text" class="fs-6" type="text" :value="$siteSettings?->footer_text"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Facebook Pixel ID</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="facebook_pixel" class="fs-6" type="text" :value="$siteSettings?->facebook_pixel"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Google Analytics ID</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="google_analytics" class="fs-6" type="text" :value="$siteSettings?->google_analytics"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Currency Symbol</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="currency_symbol" class="fs-6" type="text" :value="$siteSettings?->currency_symbol"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Currency Code</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="currency_code" class="fs-6" type="text" :value="$siteSettings?->currency_code"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Site Description</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->site_description"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Site Description</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->site_description"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-md-3 text-start">
+                                <label class="form-label mb-0">Site Description</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->site_description"
+                                    :required="false" />
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                            <i class="mdi mdi-content-save me-1"></i> Save Settings
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+@endsection
+@push('styles')
+    <style>
+        .form-group {
+            margin-bottom: 0 !important;
+            width: 100%;
+            margin-left: 10px;
+        }
+
+        #media-preview-main_thumb {
+            padding: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .preview-image-wrapper {
+            padding-left: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .imagePreviewSingle {
+            margin-bottom: 0 !important;
+        }
+    </style>
+@endpush

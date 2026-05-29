@@ -1,4 +1,5 @@
 @extends('web.layouts.app')
+@section('title', ucfirst($category->name) . ' - ' . $siteSettings?->site_title )
 @section('content')
     <div class="container-fluid mb-4">
         <div class="row">

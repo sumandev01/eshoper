@@ -4,11 +4,12 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="Free HTML Templates" name="keywords">
 
     <!-- SEO Meta Tags -->
-    <title>@yield('title', config('app.name'))</title>
-    <meta name="description" content="@yield('meta_description', '')">
+    <title>@yield('title', $siteSettings?->site_title)</title>
+    <meta name="description" content="@yield('meta_description', $siteSettings?->site_description)">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="@yield('meta_keywords', $siteSettings?->site_keywords)">
 
     <!-- Open Graph -->
     <meta property="og:title" content="@yield('og_title')">

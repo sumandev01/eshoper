@@ -19,6 +19,7 @@ use App\Enums\Permission\CouponPermission;
 use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
 use App\Enums\Permission\ProductInventoryPermission;
+use App\Enums\Permission\SettingPermission;
 use App\Enums\RoleEnums;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -52,6 +53,7 @@ class PermissionSeeder extends Seeder
             ...array_column(TagPermission::cases(), 'value'),
             ...array_column(CouponPermission::cases(), 'value'),
             ...array_column(OrderPermission::cases(), 'value'),
+            ...array_column(SettingPermission::cases(), 'value'),
         ];
 
         $allPermissions = array_merge($userAndRolePermissions, $otherPermissions);

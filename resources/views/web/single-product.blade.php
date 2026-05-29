@@ -1,11 +1,8 @@
 @extends('web.layouts.app')
-@section('title', ($product?->details?->meta_title ?? $product?->name) . ' | ' . config('app.name'))
+@section('title', ($product?->details?->meta_title ?? $product?->name) . ' - ' . $siteSettings?->site_title)
 @section('meta_description', $product?->details?->meta_description ??
     Str::limit(strip_tags($product?->details?->description ?? ''), 160))
-
-@section('og_title', $product?->details?->meta_title ?? $product?->name)
-@section('og_description', $product?->details?->meta_description ??
-    Str::limit(strip_tags($product?->details?->description ?? ''), 160))
+@section('meta_keywords', $siteSettings?->site_keywords)
 @section('og_image', url($product?->thumbnail))
 @section('og_url', route('productDetails', $product?->slug))
 

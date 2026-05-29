@@ -31,6 +31,7 @@
                                         <th>#</th>
                                         <th>Product Name</th>
                                         <th>Order Date</th>
+                                        <th class="text-center">Delivery status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -40,6 +41,12 @@
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $product->product->name }}</td>
                                             <td>{{ $product->order->created_at->format('d-M-Y') }}</td>
+                                            <td class="text-center">
+                                                <span
+                                                    class="badge rounded-pill bg-{{ $product?->delivery_status?->color() }}">
+                                                    {{ ucfirst($product?->delivery_status?->value) }}
+                                                </span>
+                                            </td>
                                             <td>
                                                 <a class="btn"
                                                     href="{{ route('productDetails', $product->product->slug) }}">

@@ -28,8 +28,7 @@ class OrderController extends Controller
     }
     public function index($order)
     {
-        $orderId = Order::find($order->id);
-        dd($orderId);
+        $orderId = Order::findOrFail($order->id);
         return view('web.dashboard.order-details', compact('order'));
     }
 
@@ -50,9 +49,9 @@ class OrderController extends Controller
 
     public function orderDetails(Order $order)
     {
-        $orderProducts = OrderProduct::where('order_id', $order->id)->get();
-        $billingAddress = BillingAddress::where('order_id', $order->id)->first();
-        $shippingAddress = ShippingAddress::where('order_id', $order->id)->first();
+        $orderProducts = OrderProduct::whereOrderId($order->id)->get();
+        $billingAddress = BillingAddress::whereOrderId($order->id)->first();
+        $shippingAddress = ShippingAddress::whereOrderId($order->id)->first();
         return view('web.dashboard.order-details', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
     }
 }
