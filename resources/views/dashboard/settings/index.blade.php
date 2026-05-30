@@ -8,13 +8,13 @@
                     <p class="text-muted fw-bold mt-2">Manage all your settings</p>
                 </div>
             </div>
-            <div class="card-body py-3">
+            <div class="card-body py-3 px-md-4 px-2">
 
                 <form action="">
                     <div class="container mt-4">
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-sm-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Title</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -24,8 +24,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Logo</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -34,8 +34,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Favicon</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -45,8 +45,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Description</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -56,8 +56,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Keywords</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -67,8 +67,8 @@
                             </div>
                         </div>
                         
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Contact Email</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -78,8 +78,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Contact Phone</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -89,8 +89,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Contact Address</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -101,8 +101,8 @@
                         </div>
 
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Footer Text</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -111,9 +111,14 @@
                                     :required="false" />
                             </div>
                         </div>
+                        <div class="row mb-4">
+                            <div class="col-md-8 offset-md-3">
+                                <span class="text-danger pt-2 ps-md-3 ps-0 d-block"><b>Note: </b>You can use copyright- &copy; and {year} and {site_title} as placeholders</span>
+                            </div>
+                        </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Facebook Pixel ID</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -123,8 +128,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Google Analytics ID</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -134,8 +139,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Currency Symbol</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -145,8 +150,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Currency Code</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -156,8 +161,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Description</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -167,8 +172,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Description</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -178,8 +183,8 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4">
-                            <div class="col-md-3 text-start">
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Description</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
@@ -219,6 +224,11 @@
 
         .imagePreviewSingle {
             margin-bottom: 0 !important;
+        }
+        @media (max-width: 767px) {
+            .form-group {
+                margin-left: 0 !important;
+            }
         }
     </style>
 @endpush

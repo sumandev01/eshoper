@@ -1,4 +1,5 @@
 @extends('web.layouts.app')
+@section('title', 'Product Reviews' . ' - ' . $siteSettings?->site_title)
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">

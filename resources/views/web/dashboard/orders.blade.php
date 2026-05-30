@@ -1,4 +1,5 @@
 @extends('web.layouts.app')
+@section('title', 'Order' . ' - ' . $siteSettings?->site_title)
 @section('title', 'Order')
 @section('content')
     <!-- Page Header Start -->

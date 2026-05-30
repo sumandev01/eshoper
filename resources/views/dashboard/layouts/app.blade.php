@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/style.css') }}">
-    <link rel="shortcut icon" href="{{ asset('dashboard/assets/images/favicon.png') }}" />
+    <link rel="shortcut icon" href="{{ $siteSettings?->site_favicon }}" />
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/dataTables.min.css') }}">

@@ -18,10 +18,53 @@
     <meta property="og:url" content="@yield('og_url')">
     <meta property="og:type" content="@yield('og_type', 'website')">
 
+    <!-- Google Tag Manager -->
+    <script>
+        (function(w, d, s, l, i) {
+            w[l] = w[l] || [];
+            w[l].push({
+                'gtm.start': new Date().getTime(),
+                event: 'gtm.js'
+            });
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != 'dataLayer' ? '&l=' + l : '';
+            j.async = true;
+            j.src =
+                'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+            f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', '{{ $siteSettings?->google_analytics }}');
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Facebook Pixel Code -->
+    <script>
+        ! function(f, b, e, v, n, t, s) {
+            if (f.fbq) return;
+            n = f.fbq = function() {
+                n.callMethod ?
+                    n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            };
+            if (!f._fbq) f._fbq = n;
+            n.push = n;
+            n.loaded = !0;
+            n.version = '2.0';
+            n.queue = [];
+            t = b.createElement(e);
+            t.async = !0;
+            t.src = v;
+            s = b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t, s)
+        }(window, document, 'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '{{ $siteSettings?->facebook_pixel }}');
+        fbq('track', 'PageView');
+    </script>
+    <!-- End Facebook Pixel Code -->
 
 
     <!-- Favicon -->
-    <link href="{{ asset('web/img/favicon.ico') }}" rel="icon">
+    <link href="{{ $siteSettings?->site_favicon }}" rel="icon">
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
@@ -97,13 +140,14 @@
                 <div class="modal-body p-0">
                     <div class="text-left mb-4">
                         <h2 style="color: #2c4a63; font-weight: 700; margin-bottom: 5px;">Login</h2>
-                            <p style="color: #6c757d; font-size: 16px;">Sign into your pages account</p>
+                        <p style="color: #6c757d; font-size: 16px;">Sign into your pages account</p>
                     </div>
 
                     <form id="ajaxLoginForm">
                         @csrf
                         <div class="form-group mb-4">
-                            <input type="email" name="email" class="form-control" placeholder="Your email here.." style="height: 55px; border: 1px solid #e0e0e0; border-radius: 5px; background: #fff;">
+                            <input type="email" name="email" class="form-control" placeholder="Your email here.."
+                                style="height: 55px; border: 1px solid #e0e0e0; border-radius: 5px; background: #fff;">
                         </div>
 
                         <div class="form-group mb-2">
@@ -119,14 +163,16 @@
                         </div>
 
                         <div class="text-left mb-4">
-                            <a href="#" class="text-primary" style="font-weight: 500; text-decoration: none;">Forgot Password?</a>
+                            <a href="#" class="text-primary"
+                                style="font-weight: 500; text-decoration: none;">Forgot Password?</a>
                         </div>
 
                         <button type="submit" class="btn bg-primary w-100">
                             Login
                         </button>
 
-                        <p class="pt-3 text-center">Don't have an account? <a href="{{ route('register') }}">Create free account</a></p>
+                        <p class="pt-3 text-center">Don't have an account? <a href="{{ route('register') }}">Create free
+                                account</a></p>
 
                         <div id="loginError" class="text-danger mt-3 text-center" style="display:none;"></div>
                     </form>
@@ -157,6 +203,17 @@
             csrf_token: "{{ csrf_token() }}"
         };
     </script>
+    <!-- Facebook Pixel Code -->
+    <noscript>
+        <img height="1" width="1" style="display:none"
+            src="https://www.facebook.com/tr?id={{ $siteSettings?->facebook_pixel }}&ev=PageView&noscript=1" />
+    </noscript>
+    <!-- End Facebook Pixel Code -->
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $siteSettings?->google_analytics }}"
+            height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
     <script>
         // GLOBAL TOAST FUNCTION
         function showToast(type, message) {
