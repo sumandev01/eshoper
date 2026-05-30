@@ -70,26 +70,56 @@
                         </div>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <h5 class="font-weight-semi-bold mb-2">Resent Orders</h5>
+
+                <div class="table-responsive mt-4">
+                    <div class="d-flex justify-content-between align-items-center gap-1 mb-3">
+                        <h5 class="font-weight-semi-bold mb-2">Recent Orders</h5>
+                        <a href="{{ route('user.orders') }}" class="btn btn-sm btn-primary">View All</a>
+                    </div>
                     <table class="table table-bordered table-hover mb-0">
-                        <thead>
-                            <tr>
+                        <thead class="table-primary">
+                            <tr class="text-center">
+                                <th>#</th>
                                 <th>Order ID</th>
                                 <th>Order Date</th>
-                                <th>Order Status</th>
+                                <th>Payment Status</th>
+                                <th>Delivery Status</th>
                                 <th>Total</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>#123</td>
-                                <td>01 Jan 2045</td>
-                                <td>Processing</td>
-                                <td>$99</td>
-                                <td><a class="btn" href="">View</a></td>
-                            </tr>
+                            @forelse ($orders ?? [] as $key => $order)
+                                <tr>
+                                    <td class="text-center">{{ $key + 1 }}</td>
+                                    <td>{{ $order?->order_number }}</td>
+                                    <td class="text-end">{{ $order?->created_at?->format('d-M-Y') }}</td>
+                                    <td class="text-center">
+                                        <span
+                                            class="badge text-white p-2 rounded-pill bg-{{ $order?->payment_status?->color() }}">
+                                            {{ ucfirst($order?->payment_status?->value) }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span
+                                            class="badge text-white p-2 rounded-pill bg-{{ $order?->order_status?->color() }}">
+                                            {{ ucfirst($order?->order_status?->value) }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-flex justify-content-end align-items-center gap-1">
+                                            <span>{{ $siteSettings?->currency_symbol }}</span>
+                                            <span>{{ formatBDT($order?->grand_total) }}</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center"><a class="btn btn-sm btn-primary"
+                                            href="{{ route('user.orderDetails', $order->id) }}">View</a></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center">No Order Found</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Invoice - {{ $order?->order_number }}</title>
+    <title>{{ $siteSettings?->site_title }} - {{ $order?->order_number }}</title>
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
     <style>
         body {
@@ -17,7 +17,7 @@
         }
 
         .button-box {
-            max-width: 800px;
+            max-width: 880px;
             margin: auto;
             padding-bottom: 20px;
         }
@@ -35,6 +35,10 @@
         }
 
         @media print {
+            .button-box {
+                display: none;
+            }
+
             .invoice-box {
                 max-width: 100%;
                 margin: auto;
@@ -119,17 +123,15 @@
 
 <body>
     <div class="button-box">
-        <a href="{{ route('user.dashboard') }}"
-            style="background: #D19C97; color: white; padding: 5px 15px; text-decoration: none; border-radius: 3px; font-size: 13px; margin-left: 10px; margin-right: 10px;">
-            <i class="fa fa-arrow-left" aria-hidden="true"></i>
-            Back Dashboard
-        </a>
+        <button onclick="window.history.back();" style="background: #D19C97; color: white; border: none; padding: 10px 30px; text-decoration: none; border-radius: 3px; font-size: 14px; margin-left: 10px; margin-right: 10px; cursor: pointer;">
+            <i class="fa fa-arrow-left" aria-hidden="true" style="margin-right: 15px;"></i>
+            Back
+        </button>
 
 
-        <button onclick="window.print();">Print Invoice</button>
+        <button onclick="window.print();" style="background: #D19C97; border: none; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; font-size: 14px; margin-left: 10px; margin-right: 10px; cursor: pointer;">Print Invoice</button>
 
-        <a href="{{ route('order.invoice.download', $order->id) }}"
-            style="background: #D19C97; color: white; padding: 5px 15px; text-decoration: none; border-radius: 3px; font-size: 13px; margin-left: 10px;">
+        <a href="{{ route('order.invoice.download', $order->id) }}" style="background: #D19C97; color: white; padding: 10px 20px; text-decoration: none; border-radius: 3px; font-size: 14px; margin-left: 10px;">
             Download PDF
         </a>
     </div>
@@ -142,7 +144,10 @@
                             <td class="title">
                                 <h2 style="margin: 0;">
                                     <a href="{{ route('root') }}" target="_blank"
-                                        style="color: #D19C97 !important; text-decoration: none;">MY STORE</a>
+                                        style="color: #D19C97 !important; text-decoration: none;">
+                                        <img src="{{ $siteSettings?->site_logo }}" alt="Logo"
+                                            style="max-width: 250px;">
+                                    </a>
                                 </h2>
                             </td>
                             <td>
@@ -161,10 +166,9 @@
                         <tr>
                             <td>
                                 <strong>From:</strong><br>
-                                My eCommerce Ltd.<br>
-                                House 12, Road 5, Dhanmondi<br>
-                                Dhaka, Bangladesh<br>
-                                BIN: 001234567-0101
+                                {{ $siteSettings?->site_title }}<br>
+                                {{ $siteSettings?->contact_address }}<br>
+                                {{ $siteSettings?->contact_phone }}
                             </td>
                             <td>
                                 <strong>To:</strong><br>
@@ -273,7 +277,7 @@
         <div class="footer">
             <div class="status-paid">{{ $order?->payment_status }}</div>
             <p>Thank you for your business! If you have any questions about this invoice, please contact us at
-                support@mystore.com</p>
+                <b>{{ $siteSettings?->contact_email }}</b></p>
             <p><i>This is a computer-generated invoice. No signature required.</i></p>
         </div>
     </div>

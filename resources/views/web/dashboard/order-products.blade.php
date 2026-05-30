@@ -28,7 +28,7 @@
                             <h5 class="font-weight-semi-bold mb-4">All Orders Products</h5>
                             <table class="table table-bordered table-hover mb-0">
                                 <thead class="table-primary">
-                                    <tr>
+                                    <tr class="text-center">
                                         <th>#</th>
                                         <th>Product Name</th>
                                         <th>Order Date</th>
@@ -39,13 +39,13 @@
                                 <tbody>
                                     @foreach ($orderProducts ?? [] as $key => $product)
                                         <tr>
-                                            <td>{{ $key + 1 }}</td>
+                                            <td class="text-center">{{ $key + 1 }}</td>
                                             <td>{{ $product->product->name }}</td>
                                             <td>{{ $product->order->created_at->format('d-M-Y') }}</td>
                                             <td class="text-center">
                                                 <span
-                                                    class="badge rounded-pill bg-{{ $product?->delivery_status?->color() }}">
-                                                    {{ ucfirst($product?->delivery_status?->value) }}
+                                                    class="badge rounded-pill bg-{{ $product?->order?->order_status?->color() }}">
+                                                    {{ ucfirst($product?->order?->order_status?->value) }}
                                                 </span>
                                             </td>
                                             <td>

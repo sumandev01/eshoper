@@ -23,17 +23,18 @@
         <div class="row px-xl-5">
             @include('web.dashboard.sidebar')
             <div class="col-lg-9 mb-2">
-                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow">
                     <div class="card-body p-4">
                         <div class="table-responsive">
                             <h5 class="font-weight-semi-bold mb-4">All Orders</h5>
                             <table class="table table-bordered table-hover mb-0">
-                                <thead>
-                                    <tr>
+                                <thead class="table-primary">
+                                    <tr class="text-center">
                                         <th>#</th>
                                         <th>Order ID</th>
                                         <th>Order Date</th>
-                                        <th>Order Status</th>
+                                        <th>Payment Status</th>
+                                        <th>Delivery Status</th>
                                         <th>Total</th>
                                         <th>Action</th>
                                     </tr>
@@ -41,19 +42,30 @@
                                 <tbody>
                                     @forelse ($orders ?? [] as $key => $order)
                                         <tr>
-                                            <td>{{ $key + 1 }}</td>
+                                            <td class="text-center">{{ $key + 1 }}</td>
                                             <td>{{ $order?->order_number }}</td>
-                                            <td>{{ $order?->created_at }}</td>
-                                            <td>{{ $order?->order_status }}</td>
-                                            <td>
-                                                <span>{{ $siteSettings?->currency_symbol }}</span>
-                                                <span>{{ formatBDT($order?->grand_total) }}</span>
+                                            <td class="text-end">{{ $order?->created_at?->format('d-M-Y') }}</td>
+                                            <td class="text-center">
+                                                <span class="badge text-white p-2 rounded-pill bg-{{ $order?->payment_status?->color() }}">
+                                                    {{ ucfirst($order?->payment_status?->value) }}
+                                                </span>
                                             </td>
-                                            <td><a class="btn" href="{{ route('user.orderDetails', $order->id) }}">View</a></td>
+                                            <td class="text-center">
+                                                <span class="badge text-white p-2 rounded-pill bg-{{ $order?->order_status?->color() }}">
+                                                    {{ ucfirst($order?->order_status?->value) }}
+                                                </span>
+                                            </td>
+                                            <td class="text-end">
+                                                <div class="d-flex justify-content-end align-items-center gap-1">
+                                                    <span>{{ $siteSettings?->currency_symbol }}</span>
+                                                <span>{{ formatBDT($order?->grand_total) }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-center"><a class="btn btn-sm btn-primary" href="{{ route('user.orderDetails', $order->id) }}">View</a></td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="text-center">No Order Found</td>
+                                            <td colspan="7" class="text-center">No Order Found</td>
                                         </tr>
                                     @endforelse
                                 </tbody>

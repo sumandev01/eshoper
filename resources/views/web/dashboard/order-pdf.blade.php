@@ -1,27 +1,28 @@
 <!DOCTYPE html>
 <html lang="bn">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Invoice - {{ $order?->order_number }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@100..900&display=swap" rel="stylesheet">
     <style>
         @font-face {
-            font-family: 'SolaimanLipi';
-            src: url('{{ public_path('fonts/SolaimanLipi.ttf') }}') format('truetype');
+            font-family: "Noto Sans Bengali", sans-serif;
             font-weight: normal;
             font-style: normal;
         }
 
         body {
-            font-family: 'sans-serif';
+            font-family: 'Noto Sans Bengali', sans-serif;
             color: #333;
             margin: 0;
             padding: 0;
         }
 
         .currency {
-            font-family: 'SolaimanLipi', sans-serif;
+            font-family: 'Noto Sans Bengali', sans-serif;
         }
 
         .invoice-box {
@@ -95,7 +96,9 @@
         <table>
             <tr>
                 <td style="width: 50%;">
-                    <span class="title">MY STORE</span>
+                    <span class="title">
+                        <img src="{{ $logoBase64 }}" alt="Logo" style="max-width: 250px;">
+                    </span>
                 </td>
                 <td style="width: 50%; text-align: right;">
                     <strong>Invoice Number:</strong> {{ $order?->order_number }}<br>
@@ -111,10 +114,9 @@
             <tr>
                 <td style="width: 50%;">
                     <strong>From:</strong><br>
-                    My eCommerce Ltd.<br>
-                    House 12, Road 5, Dhanmondi<br>
-                    Dhaka, Bangladesh<br>
-                    BIN: 001234567-0101
+                    {{ $siteSettings?->site_title }}<br>
+                    {{ $siteSettings?->contact_address }}<br>
+                    {{ $siteSettings?->contact_phone }}
                 </td>
                 <td style="width: 50%; text-align: right;">
                     <strong>To:</strong><br>
@@ -211,7 +213,8 @@
 
         <div class="footer">
             <div class="status-badge">{{ $order?->payment_status }}</div>
-            <p>Thank you for your business! For any queries, contact us at support@mystore.com</p>
+            <p>Thank you for your business! For any queries, contact us at <b>{{ $siteSettings?->contact_email }}</b>
+            </p>
             <p><i>This is a computer-generated invoice. No signature required.</i></p>
         </div>
     </div>
