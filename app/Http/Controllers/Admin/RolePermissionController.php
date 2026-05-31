@@ -17,6 +17,7 @@ use App\Enums\Permission\TagPermission;
 use App\Enums\Permission\UserPermission;
 use App\Enums\Permission\UserRolePermission;
 use App\Enums\Permission\ProductPermission;
+use App\Enums\Permission\SettingPermission;
 use App\Enums\RoleEnums;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -28,6 +29,9 @@ class RolePermissionController extends Controller
     public function index()
     {
         $roles = Role::with('permissions')->get();
+        $roles = $roles->sortByDesc(function ($role) {
+            return $role->permissions->count();
+        })->values();
         return view('dashboard.role-permission.index', compact('roles'));
     }
 
@@ -51,6 +55,7 @@ class RolePermissionController extends Controller
             'Order' => OrderPermission::cases(),
             'Product' => ProductPermission::cases(),
             'Product Inventory' => ProductInventoryPermission::cases(),
+            'Setting' => SettingPermission::cases(),
         ];
         return view('dashboard.role-permission.add', compact('groups', 'adminAccess'));
     }
@@ -113,6 +118,7 @@ class RolePermissionController extends Controller
             'Order' => OrderPermission::cases(),
             'Product' => ProductPermission::cases(),
             'Product Inventory' => ProductInventoryPermission::cases(),
+            'Setting' => SettingPermission::cases(),
         ];
         return view('dashboard.role-permission.edit', compact('role', 'groups', 'adminAccess'));
     }

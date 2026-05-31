@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Edit Media - ' . $media->file_name)
 @section('content')
     <div class="content-wrapper">
         <div class="page-header">

@@ -27,12 +27,12 @@
                     <div class="carousel-inner border" id="carousel-images-container">
                         <div class="carousel-item active">
                             <img id="main-image-preview" class="w-100 h-100" src="{{ $product?->thumbnail }}"
-                                style="aspect-ratio: 1/1; object-fit: contain;" alt="Image">
+                                style="aspect-ratio: 1/1; object-fit: contain;" alt="Image" loading="lazy">
                         </div>
                         @foreach ($product?->galleries ?? [] as $gallery)
                             <div class="carousel-item">
                                 <img class="w-100 h-100" src="{{ Storage::url($gallery?->src) }}"
-                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="Image">
+                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="Image" loading="lazy">
                             </div>
                         @endforeach
                     </div>
@@ -200,7 +200,7 @@
                                 <h4 class="mb-4">1 review for "Colorful Stylish Shirt"</h4>
                                 <div class="media mb-4">
                                     <img src="{{ asset('web/img/user.jpg') }}" alt="Image"
-                                        class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                        class="img-fluid mr-3 mt-1" style="width: 45px;" loading="lazy">
                                     <div class="media-body">
                                         <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
                                         <div class="text-primary mb-2">
@@ -252,7 +252,7 @@
                                     @endif
                                 </div>
                                 <img class="img-fluid w-100" src="{{ $item?->thumbnail }}"
-                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}">
+                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}" loading="lazy">
                                 @if ($item?->inventories->count() > 0)
                                     <div class="varient-product position-absolute d-flex justify-content-between"
                                         style="bottom: 0; left: 0; width: 100%;">

@@ -46,7 +46,7 @@
                             <tr data-product-stock="{{ $productStock }}" data-cart-id="{{ $cart?->id }}"
                                 data-product-price="{{ $price }}">
                                 <td style="max-width: 100px">
-                                    <img src="{{ Storage::url($cart?->cart_image) }}" alt="" style="width: 100px; aspect-ratio: 1/1; object-fit: cover;">
+                                    <img src="{{ Storage::url($cart?->cart_image) }}" alt="" style="width: 100px; aspect-ratio: 1/1; object-fit: cover;" loding="lazy">
                                 </td>
                                 <td class="text-left">
                                     <a class="text-dark nav-link px-0" style="text-decoration: none;"

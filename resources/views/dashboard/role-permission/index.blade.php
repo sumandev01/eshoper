@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Role Permissions')
 @section('content')
     <div class="container-fluid">
         <!-- Role Permission Table Card -->
@@ -34,9 +35,19 @@
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ $role?->name }}</td>
                                             <td style="white-space: normal;">
-                                                @foreach ($role?->permissions as $permission)
-                                                    <span class="badge bg-info text-white mb-1">{{ $permission?->name }}</span>
-                                                @endforeach
+                                                @php
+                                                    $firstThreePermissions = $role?->permissions->take(3) ?? [];
+                                                    $totalPermissions = $role?->permissions->count() ?? 0;
+                                                    $remainingCount = $totalPermissions - 3;
+                                                @endphp
+                                                @forelse ($firstThreePermissions as $permission)
+                                                    <span class="badge bg-info text-white mb-1">{{ $permission?->name ?? 'N/A' }}</span>
+                                                @empty
+                                                    <span class="badge bg-danger text-white mb-1">No Permissions</span>
+                                                @endforelse
+                                                @if ($remainingCount > 0)
+                                                    <span class="badge bg-primary text-white mb-1">+{{ $remainingCount }}</span>
+                                                @endif
                                             </td>
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center">
@@ -56,7 +67,7 @@
                                                         <a href="{{ route('admin.role.destroy', $role?->id) }}"
                                                             class="btn btn-danger btn-sm deleteBtn me-1">
                                                             <i class="mdi mdi-delete"></i>
-                                                    </a>
+                                                        </a>
                                                     @endcan
                                                 </div>
                                             </td>

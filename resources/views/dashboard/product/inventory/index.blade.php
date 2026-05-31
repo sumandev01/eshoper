@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-
+@section('title', $siteSettings?->site_title . ' - ' . 'Product Inventory - ' . $product?->name)
 @section('content')
     <div class="container-fluid">
         <div class="row">

@@ -128,6 +128,7 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
     Route::controller(OrderController::class)->group(function () {
         Route::get('/orders', 'index')->name('order.index')->middleware('permission:' . OrderPermission::VIEW->value);
         Route::get('/orders/{order}/view', 'view')->name('order.view')->middleware('permission:' . OrderPermission::VIEW->value);
+        Route::get('/orders/{order}/edit', 'edit')->name('order.edit')->middleware('permission:' . OrderPermission::UPDATE->value);
         Route::put('/orders/{order}', 'update')->name('order.update')->middleware('permission:' . OrderPermission::UPDATE->value);
         Route::delete('/orders/{order}', 'destroy')->name('order.destroy')->middleware('permission:' . OrderPermission::DELETE->value);
     });

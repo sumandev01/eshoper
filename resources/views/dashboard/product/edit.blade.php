@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-
+@section('title', $siteSettings?->site_title . ' - ' . 'Edit Product - ' . $product?->name)
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -14,7 +14,10 @@
                             </a>
                         </div>
                     </div>
-                    @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value, \App\Enums\Permission\ProductInventoryPermission::CREATE->value, \App\Enums\Permission\ProductInventoryPermission::UPDATE->value, \App\Enums\Permission\ProductInventoryPermission::DELETE->value)
+                    @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value,
+                        \App\Enums\Permission\ProductInventoryPermission::CREATE->value,
+                        \App\Enums\Permission\ProductInventoryPermission::UPDATE->value,
+                        \App\Enums\Permission\ProductInventoryPermission::DELETE->value)
                         <div class="card-body py-3">
                             <p class="text-muted fw-bold">
                                 @if ($product?->inventories->isNotEmpty())
@@ -57,9 +60,14 @@
                                     <x-input name="sku" type="text" placeholder="SKU-12345" label="Product SKU"
                                         :value="$product?->sku ?? ''" />
                                 </div>
-                                <div class="col-md-6 mb-3">
+                                <div class="col-md-6 mb-3 @if ($product?->inventories->isNotEmpty()) product-quantity @endif">
                                     <x-input name="quantity" type="number" placeholder="0" label="Product Quantity"
                                         :value="$product?->stock ?? ''" :readonly="$product?->inventories->isNotEmpty() ? true : false" />
+                                    @if ($product?->inventories->isNotEmpty())
+                                        <span class="small text-danger">
+                                            Quantity is managed through variants. Please edit variants to update stock.
+                                        </span>
+                                    @endif
                                 </div>
                             </div>
 
@@ -85,15 +93,18 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sale_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Sale Price" :value="$product?->price ?? ''" />
+                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Sale Price"
+                                        :value="$product?->price ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="discount" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Discount Price" :value="$product?->discount ?? ''" />
+                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Discount Price"
+                                        :value="$product?->discount ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="buy_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Buy Price" :value="$product?->buy_price ?? ''" />
+                                        inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Buy Price"
+                                        :value="$product?->buy_price ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="tax" type="number" placeholder="0.00" :inputGroup="true"
@@ -212,6 +223,10 @@
 @endsection
 @push('styles')
     <style>
+        .product-quantity .form-group {
+            margin-bottom: 0 !important;
+        }
+
         .product_thumbnail {
             /* border: 2px solid #dee2e6 !important; */
             padding: 10px !important;

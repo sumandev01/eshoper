@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-
+@section('title', $siteSettings?->site_title . ' - ' . 'Add New Product')
 @section('content')
     <div class="container-fluid">
         <div class="row">

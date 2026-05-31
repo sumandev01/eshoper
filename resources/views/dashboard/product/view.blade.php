@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'View Product - ' . $product?->name)
 @section('content')
     <div class="container-fluid">
         <!-- Page Header -->

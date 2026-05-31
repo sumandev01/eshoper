@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Product List')
 @section('content')
     <div class="container-fluid">
         <!-- Product Table Card -->

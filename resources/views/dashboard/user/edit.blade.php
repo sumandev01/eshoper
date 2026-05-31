@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Edit User - ' . $user->name)
 @section('content')
     <div class="container-fluid">
         <!-- User Table Card -->

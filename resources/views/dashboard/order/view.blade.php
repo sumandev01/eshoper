@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Order Details - ' . $order->order_number)
 @section('content')
     <!-- Main Content Area -->
     <div id="printableArea">

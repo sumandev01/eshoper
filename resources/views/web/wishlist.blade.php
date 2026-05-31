@@ -37,7 +37,7 @@
                         @forelse ($wishlists ?? [] as $item)
                             <tr data-item-id="{{ $item?->id }}">
                                 <td class="" style="max-width: 100px;">
-                                    <img src="{{ $item->product?->thumbnail }}" alt="" style="width: 100px;">
+                                    <img src="{{ $item->product?->thumbnail }}" alt="" style="width: 100px;" loading="lazy">
                                 </td>
                                 <td class="text-left">
                                     <a class="text-dark nav-link px-0" style="text-decoration: none;"

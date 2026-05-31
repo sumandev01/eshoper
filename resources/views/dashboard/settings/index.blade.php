@@ -1,18 +1,20 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Settings')
 @section('content')
     <div class="container-fluid">
         <div class="card shadow-sm border-0">
             <div class="card-header py-4">
                 <div class="page-title-box">
                     <h3 class="mb-0">Settings</h3>
-                    <p class="text-muted fw-bold mt-2">Manage all your settings</p>
+                    <p class="text-muted fw-bold mt-2 mb-0">Manage all your settings</p>
                 </div>
             </div>
             <div class="card-body py-3 px-md-4 px-2">
 
-                <form action="">
+                <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    @method('PUT')
                     <div class="container mt-4">
-
                         <div class="row align-items-center mb-4 gy-3">
                             <div class="col-sm-3 col-10 text-start">
                                 <label class="form-label mb-0">Site Title</label>
@@ -26,22 +28,22 @@
 
                         <div class="row align-items-center mb-4 gy-3">
                             <div class="col-md-3 col-10 text-start">
-                                <label class="form-label mb-0">Site Logo</label>
+                                <label class="form-label mb-0">Logo</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-media-thumbnail button_label="Select Logo" input_name="site_logo" :existing_image="$siteLogo" />
+                                <x-media-thumbnail button_label="Select Logo" input_name="site_logo" :existing_image="$siteLogo" :target_id="'logo'"/>
                             </div>
                         </div>
 
                         <div class="row align-items-center mb-4 gy-3">
                             <div class="col-md-3 col-10 text-start">
-                                <label class="form-label mb-0">Site Favicon</label>
+                                <label class="form-label mb-0">Favicon</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
                                 <x-media-thumbnail button_label="Select Favicon" input_name="site_favicon"
-                                    :existing_image="$siteFavicon" />
+                                    :existing_image="$siteFavicon" :target_id="'favicon'"/>
                             </div>
                         </div>
 
@@ -66,7 +68,7 @@
                                     :required="false" />
                             </div>
                         </div>
-                        
+
                         <div class="row align-items-center mb-4 gy-3">
                             <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Contact Email</label>
@@ -113,11 +115,12 @@
                         </div>
                         <div class="row mb-4">
                             <div class="col-md-8 offset-md-3">
-                                <span class="text-danger pt-2 ps-md-3 ps-0 d-block"><b>Note: </b>You can use copyright- &copy; and {year} and {site_title} as placeholders</span>
+                                <span class="text-danger pt-2 ps-md-3 ps-0 d-block"><b>Note: </b>You can use copyright-
+                                    &copy; and {year} and {site_title} as placeholders</span>
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4 gy-3">
+                        <div class="row align-items-center gy-3">
                             <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Facebook Pixel ID</label>
                             </div>
@@ -127,8 +130,14 @@
                                     :required="false" />
                             </div>
                         </div>
+                        <div class="row mb-4">
+                            <div class="col-md-8 offset-md-3">
+                                <span class="text-danger pt-2 ps-md-3 ps-0 d-block"><b>Note: </b>You can use facebook pixel
+                                    Id as placeholders</span>
+                            </div>
+                        </div>
 
-                        <div class="row align-items-center mb-4 gy-3">
+                        <div class="row align-items-center gy-3">
                             <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Google Analytics ID</label>
                             </div>
@@ -139,7 +148,14 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4 gy-3">
+                        <div class="row mb-4">
+                            <div class="col-md-8 offset-md-3">
+                                <span class="text-danger pt-2 ps-md-3 ps-0 d-block"><b>Note: </b>You can use google
+                                    analytics Id as placeholders</span>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center gy-3">
                             <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Currency Symbol</label>
                             </div>
@@ -147,6 +163,13 @@
                             <div class="col-md-8">
                                 <x-input name="currency_symbol" class="fs-6" type="text" :value="$siteSettings?->currency_symbol"
                                     :required="false" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-8 offset-md-3">
+                                <span class="text-danger pt-2 ps-md-3 ps-0 d-block"><b>Note: </b>You can use currency
+                                    symbol as placeholders</span>
                             </div>
                         </div>
 
@@ -194,7 +217,7 @@
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 mb-2">
+                        <button type="submit" class="btn btn-primary px-4 py-3 mb-2">
                             <i class="mdi mdi-content-save me-1"></i> Save Settings
                         </button>
                     </div>
@@ -225,6 +248,7 @@
         .imagePreviewSingle {
             margin-bottom: 0 !important;
         }
+
         @media (max-width: 767px) {
             .form-group {
                 margin-left: 0 !important;

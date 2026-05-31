@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Users')
 @section('content')
     <div class="container-fluid">
         <!-- User Table Card -->

@@ -4,7 +4,7 @@
             <a href="{{ route('root') }}" class="text-decoration-none">
                 <h1 class="mb-4 display-5 font-weight-semi-bold">
                     <img src="{{ $siteSettings->site_logo }}" class="img-fluid" style="width: auto; max-height: 80px;"
-                        alt="Logo">
+                        alt="Logo" loading="lazy">
                 </h1>
             </a>
             <p>{!! $siteSettings?->site_description !!}</p>
@@ -71,7 +71,7 @@
             </p>
         </div>
         <div class="col-md-6 px-xl-0 text-center text-md-right">
-            <img class="img-fluid" src="{{ asset('web/img/payments.png') }}" alt="">
+            <img class="img-fluid" src="{{ asset('web/img/payments.png') }}" alt="" loading="lazy">
         </div>
     </div>
 </div>

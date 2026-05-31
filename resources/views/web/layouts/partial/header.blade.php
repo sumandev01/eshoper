@@ -1,9 +1,7 @@
 @php
     $categories = App\Models\Category::with('subCategories')->latest('id')->get();
     $user = auth('web')->user();
-    $wishlistIds = $user
-        ? App\Models\Wishlist::where('user_id', $user->id)->pluck('product_id')->toArray()
-        : [];
+    $wishlistIds = $user ? App\Models\Wishlist::where('user_id', $user->id)->pluck('product_id')->toArray() : [];
 @endphp
 <div class="container-fluid">
     <div class="row bg-secondary py-2 px-xl-5">
@@ -31,26 +29,23 @@
         <div class="col-lg-3 d-none d-lg-block">
             <a href="{{ route('root') }}" class="text-decoration-none">
                 <h1 class="m-0 display-5 font-weight-semi-bold">
-                    <img src="{{ $siteSettings->site_logo }}" class="img-fluid" style="width: auto; max-height: 80px;" alt="Logo">
+                    <img src="{{ $siteSettings?->site_logo }}" class="img-fluid" style="width: auto; max-height: 80px;"
+                        alt="Logo" loading="lazy">
                 </h1>
             </a>
         </div>
 
         <div class="col-lg-6 col-6 text-left">
             <div class="input-group search-wrapper position-relative">
-                <input
-                    id="header-search"
-                    type="text"
-                    class="form-control"
-                    placeholder="Search for products"
-                    autocomplete="off"
-                >
+                <input id="header-search" type="text" class="form-control" placeholder="Search for products"
+                    autocomplete="off">
                 <div class="input-group-append">
                     <span class="input-group-text bg-transparent text-primary" style="cursor: pointer;">
                         <i class="fa fa-search"></i>
                     </span>
                 </div>
-                <div id="search-suggestions" style="
+                <div id="search-suggestions"
+                    style="
                     position: absolute;
                     top: calc(100% + 4px);
                     left: 0;
@@ -64,7 +59,8 @@
                     overflow: hidden;
                     max-height: 380px;
                     overflow-y: auto;
-                "></div>
+                ">
+                </div>
             </div>
         </div>
         @php
@@ -91,9 +87,7 @@
     <div class="row border-top px-xl-5">
         <div class="col-lg-3 d-none d-lg-block" id="{{ request()->routeIs('root') ? '' : 'navbar-vertical-wrapper' }}">
             <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100"
-                data-toggle="collapse"
-                href="#navbar-vertical"
-                style="height: 65px; margin-top: -1px; padding: 0 30px;">
+                data-toggle="collapse" href="#navbar-vertical" style="height: 65px; margin-top: -1px; padding: 0 30px;">
                 <h6 class="m-0">Categories</h6>
                 <i class="fa fa-angle-down text-dark"></i>
             </a>
@@ -113,7 +107,8 @@
                                 <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0"
                                     style="left: calc(100% + 2px); top: 0;">
                                     @foreach ($category->subCategories as $subCategory)
-                                        <a href="{{ route('subcategoryProducts', $subCategory?->slug) }}" class="nav-link">
+                                        <a href="{{ route('subcategoryProducts', $subCategory?->slug) }}"
+                                            class="nav-link">
                                             {{ $subCategory->name }}
                                         </a>
                                     @endforeach
@@ -150,19 +145,21 @@
                         @if ($user)
                             <div class="d-flex justify-items-center align-items-center">
                                 @if ($user->media_id > 0)
-                                    <img src="{{ $user->profile }}"
+                                    <img src="{{ $user?->profile }}"
                                         style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; padding: 2px"
-                                        alt="">
+                                        alt="{{ $user?->name }}" loading="lazy">
                                 @else
                                     <img src="{{ asset('user.png') }}"
                                         style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; padding: 2px"
-                                        alt="">
+                                        alt="{{ $user?->name }}" loading="lazy">
                                 @endif
-                                <a href="{{ route('user.dashboard') }}" class="nav-item nav-link">{{ $user->name }}</a>
+                                <a href="{{ route('user.dashboard') }}"
+                                    class="nav-item nav-link">{{ $user?->name }}</a>
                             </div>
                             <a href="{{ route('logout') }}" class="nav-item nav-link">Logout</a>
                         @else
-                            <a href="javascript:void(0)" class="nav-item nav-link" data-toggle="modal" data-target="#loginModal">Login</a>
+                            <a href="javascript:void(0)" class="nav-item nav-link" data-toggle="modal"
+                                data-target="#loginModal">Login</a>
                             {{-- <a href="{{ route('login') }}" class="nav-item nav-link">Login</a> --}}
                             <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
                         @endif
@@ -182,17 +179,17 @@
 
 @push('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
 
             // =====================
             // Category Dropdown Hover
             // =====================
-            $('.nav-item.dropdown').hover(function () {
+            $('.nav-item.dropdown').hover(function() {
                 var $this = $(this);
                 $this.addClass('show bg-secondary');
                 $this.find('> .dropdown-menu').addClass('show');
                 $this.find('i.fa').removeClass('fa-angle-down').addClass('fa-angle-right');
-            }, function () {
+            }, function() {
                 var $this = $(this);
                 $this.removeClass('show bg-secondary');
                 $this.find('> .dropdown-menu').removeClass('show');
@@ -202,20 +199,20 @@
             // =====================
             // Vertical Navbar Hover
             // =====================
-            $('#navbar-vertical-wrapper').hover(function () {
+            $('#navbar-vertical-wrapper').hover(function() {
                 $('#navbar-vertical').addClass('show position-absolute').css({
                     width: 'calc(100% - 30px)',
                     zIndex: 999,
                     background: 'rgba(255, 255, 255, 1)'
                 });
-            }, function () {
+            }, function() {
                 $('#navbar-vertical').removeClass('show position-absolute').removeAttr('style');
             });
 
             // =====================
             // Search Suggestions
             // =====================
-            $('#header-search').on('keyup', function () {
+            $('#header-search').on('keyup', function() {
                 let search = $(this).val().trim();
 
                 if (search.length < 2) {
@@ -226,8 +223,10 @@
                 $.ajax({
                     url: "{{ route('searchSuggestions') }}",
                     method: "GET",
-                    data: { search: search },
-                    success: function (products) {
+                    data: {
+                        search: search
+                    },
+                    success: function(products) {
                         if (products.length === 0) {
                             $('#search-suggestions').hide();
                             return;
@@ -235,7 +234,7 @@
 
                         let html = '';
 
-                        products.forEach(function (product) {
+                        products.forEach(function(product) {
                             html += `
                                 <a href="/product/${product.slug}" style="
                                     display: flex;
@@ -256,6 +255,8 @@
                                         border-radius: 6px;
                                         border: 1px solid #eee;
                                         flex-shrink: 0;
+                                        loading: lazy;
+                                    " alt="${product.name}">
                                     ">
                                     <div style="flex: 1; min-width: 0;">
                                         <div style="
@@ -267,11 +268,11 @@
                                         ">${product.name}</div>
                                         <div style="margin-top: 3px;">
                                             ${product.discount > 0 ? `
-                                                <span style="color: #e74c3c; font-weight: 600; font-size: 13px;">৳${product.discount}</span>
-                                                <span style="color: #aaa; font-size: 12px; text-decoration: line-through; margin-left: 5px;">৳${product.price}</span>
-                                            ` : `
-                                                <span style="color: #e74c3c; font-weight: 600; font-size: 13px;">৳${product.price}</span>
-                                            `}
+                                                    <span style="color: #e74c3c; font-weight: 600; font-size: 13px;">৳${product.discount}</span>
+                                                    <span style="color: #aaa; font-size: 12px; text-decoration: line-through; margin-left: 5px;">৳${product.price}</span>
+                                                ` : `
+                                                    <span style="color: #e74c3c; font-weight: 600; font-size: 13px;">৳${product.price}</span>
+                                                `}
                                         </div>
                                     </div>
                                 </a>
@@ -304,12 +305,13 @@
             // =====================
             // Enter Key - Go to Products Page
             // =====================
-            $('#header-search').on('keydown', function (e) {
+            $('#header-search').on('keydown', function(e) {
                 if (e.which === 13) {
                     e.preventDefault();
                     let search = $(this).val().trim();
                     if (search.length > 0) {
-                        window.location.href = "{{ route('products') }}?search=" + encodeURIComponent(search);
+                        window.location.href = "{{ route('products') }}?search=" + encodeURIComponent(
+                            search);
                     }
                 }
             });
@@ -317,7 +319,7 @@
             // =====================
             // Search Icon Click
             // =====================
-            $('.input-group-text').on('click', function () {
+            $('.input-group-text').on('click', function() {
                 let search = $('#header-search').val().trim();
                 if (search.length > 0) {
                     window.location.href = "{{ route('products') }}?search=" + encodeURIComponent(search);
@@ -327,7 +329,7 @@
             // =====================
             // Click Outside - Hide Suggestions
             // =====================
-            $(document).on('click', function (e) {
+            $(document).on('click', function(e) {
                 if (!$(e.target).closest('.search-wrapper').length) {
                     $('#search-suggestions').hide();
                 }

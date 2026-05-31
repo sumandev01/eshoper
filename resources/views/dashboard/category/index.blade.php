@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Categories')
 @section('content')
     <div class="row">
         <div class="col-lg-7">

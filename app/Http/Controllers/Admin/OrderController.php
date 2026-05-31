@@ -45,4 +45,11 @@ class OrderController extends Controller
         $shippingAddress = ShippingAddress::whereOrderId($order->id)->first();
         return view('dashboard.order.view', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
     }
+
+    public function edit($order)
+    {
+        $order = Order::findOrFail($order);
+
+        return view('dashboard.order.edit', compact('order'));
+    }
 }

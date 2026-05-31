@@ -281,7 +281,7 @@
                 <div class="owl-carousel vendor-carousel">
                     @foreach ($brands ?? [] as $brand)
                         <div class="vendor-item border p-4">
-                            <img src="{{ Storage::url($brand?->media?->src) }}" style="aspect-ratio: 4/2; object-fit: contain;" alt="">
+                            <img src="{{ Storage::url($brand?->media?->src) }}" style="aspect-ratio: 4/2; object-fit: contain;" alt="{{ $brand?->name }}">
                         </div>
                     @endforeach
                 </div>

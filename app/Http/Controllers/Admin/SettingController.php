@@ -19,8 +19,9 @@ class SettingController extends Controller
         return view('dashboard.settings.index', compact('siteLogo', 'siteFavicon'));
     }
 
-    public function update(Request $request, $setting)
+    public function update(Request $request)
     {
+        dd($request->all());
         // Update setting logic here
     }
 }

@@ -1,4 +1,5 @@
 @extends('dashboard.layouts.app')
+@section('title', $siteSettings?->site_title . ' - ' . 'Order List')
 @section('content')
     <div class="container-fluid">
         <!-- Product Table Card -->
@@ -69,6 +70,8 @@
                                             <td class="text-center">
                                                 <a class="btn btn-sm btn-primary"
                                                     href="{{ route('order.view', $order->id) }}">View</a>
+                                                <a class="btn btn-sm btn-primary"
+                                                    href="{{ route('order.edit', $order->id) }}">Edit</a>
                                             </td>
                                         </tr>
                                     @empty
