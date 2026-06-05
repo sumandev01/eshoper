@@ -1,0 +1,30 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\AboutUs;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class AboutUsSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $data = [
+            ['key_name' => 'top_header', 'key_value' => 'About Us'],
+            ['key_name' => 'top_sub_header', 'key_value' => 'Delivering quality products to your doorstep since 2020.'],
+            ['key_name' => 'heading', 'key_value' => 'Our Story'],
+            ['key_name' => 'description', 'key_value' => 'We started with a simple idea: to make high-quality products accessible to everyone. What began in a small garage has now grown into a full-scale e-commerce platform serving thousands of happy customers daily. <br> Our dedicated team works around the clock to source the best materials, ensure top-notch quality control, and provide customer service that makes you feel like family.'],
+            ['key_name' => 'image', 'key_value' => ''],
+            ['key_name' => 'button_title', 'key_value' => 'Shop Now'],
+            ['key_name' => 'button_url', 'key_value' => '#'],
+        ];
+
+        foreach ($data as $datum) {
+            AboutUs::updateOrCreate(['key_name' => $datum['key_name']], ['key_value' => $datum['key_value']]);
+        }
+    }
+}

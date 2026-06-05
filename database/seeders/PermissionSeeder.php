@@ -9,6 +9,7 @@ use App\Enums\Permission\CategoryPermission;
 use App\Enums\Permission\SubCategoryPermission;
 use App\Enums\Permission\BrandPermission;
 use App\Enums\Permission\ColorPermission;
+use App\Enums\Permission\CommentPermission;
 use App\Enums\Permission\SizePermission;
 use App\Enums\Permission\ProductPermission;
 use App\Enums\Permission\SliderPermission;
@@ -16,6 +17,7 @@ use App\Enums\Permission\TagPermission;
 use App\Enums\Permission\UserPermission;
 use App\Enums\Permission\UserRolePermission;
 use App\Enums\Permission\CouponPermission;
+use App\Enums\Permission\LocationPermission;
 use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
 use App\Enums\Permission\ProductInventoryPermission;
@@ -54,6 +56,8 @@ class PermissionSeeder extends Seeder
             ...array_column(CouponPermission::cases(), 'value'),
             ...array_column(OrderPermission::cases(), 'value'),
             ...array_column(SettingPermission::cases(), 'value'),
+            ...array_column(LocationPermission::cases(), 'value'),
+            ...array_column(CommentPermission::cases(), 'value'),
         ];
 
         $allPermissions = array_merge($userAndRolePermissions, $otherPermissions);
@@ -78,7 +82,7 @@ class PermissionSeeder extends Seeder
             ['guard_name' => 'web']
         );
         $adminRole->syncPermissions($otherPermissions);
-        
+
         Role::updateOrCreate(
             ['name' => RoleEnums::User->value],
             ['guard_name' => 'web']

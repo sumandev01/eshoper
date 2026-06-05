@@ -8,6 +8,7 @@ use App\Models\Division;
 use App\Models\Media;
 use App\Models\Order;
 use App\Models\OrderProduct;
+use App\Models\ProductReview;
 use App\Models\Setting;
 use App\Models\ShippingAddress;
 use App\Models\UserAddress;
@@ -69,8 +70,10 @@ class DashboardController extends Controller
     public function orderProducts()
     {
         $user = auth('web')->user();
-        $orderProducts = OrderProduct::whereUserId($user->id)->get();
-        return view('web.dashboard.order-products', compact('orderProducts'));
+        $orderProducts = OrderProduct::whereUserId($user->id)->orderBy('id', 'desc')->paginate(10);
+        $productReviews = ProductReview::whereUserId($user->id)->get()->keyBy('product_id');
+
+        return view('web.dashboard.order-products', compact('orderProducts', 'productReviews'));
     }
 
     public function profile()

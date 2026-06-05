@@ -74,6 +74,11 @@ class Product extends Model
         return $this->belongsToMany(Category::class, 'product_details', 'product_id', 'category_id')->distinct();
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -84,7 +89,7 @@ class Product extends Model
 
                 $slug = $baseSlug;
                 $count = 1;
-                while (self::where('slug', $slug)->where('id', '!=', $product->id)->exists()) {
+                while (self::whereSlug($slug)->where('id', '!=', $product->id)->exists()) {
                     $slug = $baseSlug . '-' . $count++;
                 }
                 $product->slug = $slug;

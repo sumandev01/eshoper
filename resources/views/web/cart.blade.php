@@ -46,7 +46,8 @@
                             <tr data-product-stock="{{ $productStock }}" data-cart-id="{{ $cart?->id }}"
                                 data-product-price="{{ $price }}">
                                 <td style="max-width: 100px">
-                                    <img src="{{ Storage::url($cart?->cart_image) }}" alt="" style="width: 100px; aspect-ratio: 1/1; object-fit: cover;" loding="lazy">
+                                    <img src="{{ Storage::url($cart?->cart_image) }}" alt=""
+                                        style="width: 100px; aspect-ratio: 1/1; object-fit: cover;" loding="lazy">
                                 </td>
                                 <td class="text-left">
                                     <a class="text-dark nav-link px-0" style="text-decoration: none;"
@@ -62,15 +63,30 @@
                                                 {{ $cart?->color?->name ?? '' }}</span>
                                         @endif
                                     </div>
+                                    @php
+                                        $productId = $cart?->product?->id;
+                                        $sumReview = $productReviews?->where('product_id', $productId)->sum('rating');
+                                        $countReview = $productReviews?->where('product_id', $productId)->count();
+                                        $finalRating = 0;
+                                        if ($countReview > 0) {
+                                            $finalRating = round($sumReview / $countReview);
+                                        }
+                                    @endphp
                                     <div class="d-flex mb-3">
-                                        <div class="text-primary mr-2">
-                                            <small class="fas fa-star"></small>
-                                            <small class="fas fa-star"></small>
-                                            <small class="fas fa-star"></small>
-                                            <small class="fas fa-star-half-alt"></small>
-                                            <small class="far fa-star"></small>
+                                        <div class="star-group">
+                                            <input type="hidden" class="rating-value-active" value="{{ $finalRating }}">
+                                            <button type="button" class="star-btn-active far fa-star" data-value="1"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            <button type="button" class="star-btn-active far fa-star" data-value="2"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            <button type="button" class="star-btn-active far fa-star" data-value="3"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            <button type="button" class="star-btn-active far fa-star" data-value="4"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            <button type="button" class="star-btn-active far fa-star" data-value="5"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
                                         </div>
-                                        <small class="pt-1">(50 Reviews)</small>
+                                        <small class="pt-1">({{ $countReview ?? 0 }} Reviews)</small>
                                     </div>
                                 </td>
                                 <td class="align-middle">
@@ -145,7 +161,8 @@
                         <form action="{{ route('checkout.index') }}" method="get">
                             @csrf
                             <input type="hidden" name="couponId" id="CouponId">
-                            <button type="submit" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                            <button type="submit" class="btn btn-block btn-primary my-3 py-3">Proceed To
+                                Checkout</button>
                         </form>
                     </div>
                 </div>
@@ -254,6 +271,18 @@
                         showToast('error', error.responseJSON.message);
                     }
                 });
+            });
+
+            $('.star-group').each(function() {
+                let $group = $(this);
+                let dbValue = parseInt($group.find('.rating-value-active').val());
+                if (dbValue > 0) {
+                    $group.find('.star-btn-active').each(function(index) {
+                        if (index < dbValue) {
+                            $(this).removeClass('far').addClass('fas');
+                        }
+                    });
+                }
             });
         })
     </script>

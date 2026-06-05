@@ -9,63 +9,77 @@ class LocationSeeder extends Seeder
 {
     public function run(): void
     {
-        $dhakaId = DB::table('divisions')->insertGetId(['name' => 'Dhaka', 'created_at' => now(), 'updated_at' => now()]);
-        $rangpurId = DB::table('divisions')->insertGetId(['name' => 'Rangpur', 'created_at' => now(), 'updated_at' => now()]);
-        $ctgId = DB::table('divisions')->insertGetId(['name' => 'Chittagong', 'created_at' => now(), 'updated_at' => now()]);
+        // 1. Insert or Get Divisions
+        $dhakaId = $this->getDivisionId('Dhaka');
+        $rangpurId = $this->getDivisionId('Rangpur');
+        $ctgId = $this->getDivisionId('Chittagong');
 
-        $dhakaCityId = DB::table('districts')->insertGetId([
-            'division_id' => $dhakaId, 
-            'name' => 'Dhaka',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        // 2. Insert or Get Districts
+        $dhakaCityId = $this->getDistrictId($dhakaId, 'Dhaka');
+        $gazipurId = $this->getDistrictId($dhakaId, 'Gazipur');
+        
+        $rangpurCityId = $this->getDistrictId($rangpurId, 'Rangpur');
+        $dinajpurId = $this->getDistrictId($rangpurId, 'Dinajpur');
+        $thakurgaonId = $this->getDistrictId($rangpurId, 'Thakurgaon');
+        
+        $ctgCityId = $this->getDistrictId($ctgId, 'Chittagong');
 
-        $rangpurCityId = DB::table('districts')->insertGetId([
-            'division_id' => $rangpurId, 
-            'name' => 'Rangpur',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        // 3. Update or Insert Thanas
+        $thanas = [
+            ['district_id' => $dhakaCityId, 'name' => 'Mirpur'],
+            ['district_id' => $dhakaCityId, 'name' => 'Uttara'],
+            ['district_id' => $dhakaCityId, 'name' => 'Dhanmondi'],
+            ['district_id' => $dhakaCityId, 'name' => 'Mohammadpur'],
+            ['district_id' => $dhakaCityId, 'name' => 'Gulshan'],
+            ['district_id' => $dhakaCityId, 'name' => 'Banani'],
+            ['district_id' => $dhakaCityId, 'name' => 'Dakshinkhan'],
+            ['district_id' => $gazipurId, 'name' => 'Tongi'],
+            ['district_id' => $gazipurId, 'name' => 'Sreepur'],
+            ['district_id' => $gazipurId, 'name' => 'Gazipur'],
+            ['district_id' => $rangpurCityId, 'name' => 'Rangpur Sadar'],
+            ['district_id' => $rangpurCityId, 'name' => 'Kaunia'],
+            ['district_id' => $dinajpurId, 'name' => 'Dinajpur Sadar'],
+            ['district_id' => $dinajpurId, 'name' => 'Birampur'],
+            ['district_id' => $thakurgaonId, 'name' => 'Thakurgaon Sadar'],
+            ['district_id' => $thakurgaonId, 'name' => 'Pirganj'],
+            ['district_id' => $ctgCityId, 'name' => 'Anwara'],
+            ['district_id' => $ctgCityId, 'name' => 'Pohela'],
+        ];
 
-        $dinajpurId = DB::table('districts')->insertGetId([
-            'division_id' => $rangpurId, 
-            'name' => 'Dinajpur',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        foreach ($thanas as $thana) {
+            DB::table('thanas')->updateOrInsert(
+                [
+                    'district_id' => $thana['district_id'], 
+                    'name' => $thana['name']
+                ],
+                [
+                    'created_at' => now(), 
+                    'updated_at' => now()
+                ]
+            );
+        }
+    }
 
-        $thakurgaonId = DB::table('districts')->insertGetId([
-            'division_id' => $rangpurId, 
-            'name' => 'Thakurgaon',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+    private function getDivisionId(string $name): int
+    {
+        DB::table('divisions')->updateOrInsert(
+            ['name' => $name],
+            ['created_at' => now(), 'updated_at' => now()]
+        );
 
-        $gazipurId = DB::table('districts')->insertGetId([
-            'division_id' => $dhakaId, 
-            'name' => 'Gazipur',
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
+        return DB::table('divisions')->where('name', $name)->value('id');
+    }
 
-        DB::table('thanas')->insert([
-            ['district_id' => $dhakaCityId, 'name' => 'Mirpur', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dhakaCityId, 'name' => 'Uttara', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dhakaCityId, 'name' => 'Dhanmondi', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dhakaCityId, 'name' => 'Mohammadpur', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dhakaCityId, 'name' => 'Gulshan', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dhakaCityId, 'name' => 'Banani', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dhakaCityId, 'name' => 'Dakshinkhan', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dhakaCityId, 'name' => 'Mirpur', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $gazipurId, 'name' => 'Tongi', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $gazipurId, 'name' => 'Sreepur', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $gazipurId, 'name' => 'Gazipur', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $rangpurCityId, 'name' => 'Rangpur Sadar', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $rangpurCityId, 'name' => 'Kaunia', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dinajpurId, 'name' => 'Dinajpur Sadar', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $dinajpurId, 'name' => 'Birampur', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $thakurgaonId, 'name' => 'Thakurgaon Sadar', 'created_at' => now(), 'updated_at' => now()],
-            ['district_id' => $thakurgaonId, 'name' => 'Pirganj', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+    private function getDistrictId(int $divisionId, string $name): int
+    {
+        DB::table('districts')->updateOrInsert(
+            ['division_id' => $divisionId, 'name' => $name],
+            ['created_at' => now(), 'updated_at' => now()]
+        );
+
+        return DB::table('districts')
+            ->where('division_id', $divisionId)
+            ->where('name', $name)
+            ->value('id');
     }
 }

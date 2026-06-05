@@ -10,6 +10,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductInventory;
 use App\Models\ProductReview;
+use App\Models\ProductReviewReply;
 use App\Models\Size;
 use App\Models\SubCategory;
 use App\Services\ProductFilterService;
@@ -45,7 +46,7 @@ class WebController extends Controller
             return view('web.layouts.partial.product_list', compact('products'))->render();
         }
 
-        $allProductIds = Product::where('status', 1)->pluck('id');
+        $allProductIds = Product::whereStatus(1)->pluck('id');
         $shopSidebarData = $filterService->shopSidebar();
         [$minPrice, $maxPrice] = $filterService->getPriceRange($allProductIds);
 
@@ -61,7 +62,16 @@ class WebController extends Controller
 
         // Related products by category and random products
         $relatedProducts = $this->webService->getRelatedProductsSinglePage($product);
+        $productReview = ProductReview::whereProductId($product->id)->whereStatus(1)->get();
 
+        $totalReviews = $productReview->count();
+        $totalRatingSum = $productReview->sum('rating');
+        $finalRating = 0;
+        if ($totalReviews > 0) {
+            $finalRating = round($totalRatingSum / $totalReviews);
+        } else {
+            $finalRating = 0;
+        }
         // Return view
         return view('web.single-product', [
             'product'         => $product,
@@ -69,6 +79,8 @@ class WebController extends Controller
             'colors'          => $product->colors,
             'tags'            => $product->tags,
             'relatedProducts' => $relatedProducts,
+            'productReview'   => $productReview,
+            'finalRating'     => $finalRating
         ]);
     }
 
@@ -108,7 +120,7 @@ class WebController extends Controller
             return response()->json([]);
         }
 
-        $products = Product::where('status', 1)
+        $products = Product::whereStatus(1)
             ->where('name', 'like', '%' . $request->search . '%')
             ->with('media')
             ->select('id', 'name', 'slug', 'price', 'discount', 'media_id')
@@ -131,14 +143,14 @@ class WebController extends Controller
     // Category
     public function categoryProducts($slug, ProductFilterService $filterService)
     {
-        $category = Category::where('slug', $slug)->firstOrFail();
+        $category = Category::whereSlug($slug)->firstOrFail();
         $products = $filterService->CategoryFilter(request(), $category);
 
         if (request()->ajax()) {
             return view('web.layouts.partial.product_list', compact('products'))->render();
         }
         // Get all product IDs for the category to fetch sidebar data and price range
-        $allProductIds = Product::where('status', 1)
+        $allProductIds = Product::whereStatus(1)
             ->whereHas('details', function ($q) use ($category) {
                 $q->where('category_id', $category->id);
             })->pluck('id');
@@ -152,14 +164,14 @@ class WebController extends Controller
     // Subcategory
     public function subcategoryProducts($slug, ProductFilterService $filterService)
     {
-        $subcategory = SubCategory::where('slug', $slug)->firstOrFail();
+        $subcategory = SubCategory::whereSlug($slug)->firstOrFail();
         $products = $filterService->CategoryFilter(request(), null, $subcategory);
 
         if (request()->ajax()) {
             return view('web.layouts.partial.product_list', compact('products'))->render();
         }
         // Get all product IDs for the subcategory to fetch sidebar data and price range
-        $allProductIds = Product::where('status', 1)
+        $allProductIds = Product::whereStatus(1)
             ->whereHas('details', function ($q) use ($subcategory) {
                 $q->where('sub_category_id', $subcategory->id);
             })->pluck('id');

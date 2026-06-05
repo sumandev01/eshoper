@@ -32,7 +32,8 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-media-thumbnail button_label="Select Logo" input_name="site_logo" :existing_image="$siteLogo" :target_id="'logo'"/>
+                                <x-media-thumbnail button_label="Select Logo" input_name="site_logo" :existing_image="$siteLogo"
+                                    :target_id="'logo'" />
                             </div>
                         </div>
 
@@ -42,8 +43,8 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-media-thumbnail button_label="Select Favicon" input_name="site_favicon"
-                                    :existing_image="$siteFavicon" :target_id="'favicon'"/>
+                                <x-media-thumbnail button_label="Select Favicon" input_name="site_favicon" :existing_image="$siteFavicon"
+                                    :target_id="'favicon'" />
                             </div>
                         </div>
 
@@ -184,14 +185,22 @@
                             </div>
                         </div>
 
-                        <div class="row align-items-center mb-4 gy-3">
+                        <div class="row align-items-center gy-3">
                             <div class="col-md-3 col-10 text-start">
-                                <label class="form-label mb-0">Site Description</label>
+                                <label class="form-label mb-0">Google Map</label>
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->site_description"
+                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->google_map"
                                     :required="false" />
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-8 offset-md-3">
+                                <span class="text-danger pt-2 ps-md-3 ps-0 d-block">
+                                    <b>Note:</b> Go to Google Maps, share your location, select "Embed a map", and paste the
+                                    full <code>&lt;iframe&gt;</code> code here.
+                                </span>
                             </div>
                         </div>
 

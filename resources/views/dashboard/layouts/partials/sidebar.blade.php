@@ -200,20 +200,23 @@
                 </div>
             </li>
         @endcan
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#forms" aria-expanded="false"
-                aria-controls="forms">
-                <span class="menu-title">Forms</span>
-                <i class="mdi mdi-format-list-bulleted menu-icon"></i>
+        @can(App\Enums\Permission\CommentPermission::VIEW->value)
+        <li class="nav-item {{ request()->routeIs('admin.comment*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#comments" aria-expanded="{{ request()->routeIs('admin.comment*') ? 'true' : 'false' }}" aria-controls="comments">
+                <span class="menu-title">Comments</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-comment menu-icon"></i>
             </a>
-            <div class="collapse" id="forms">
+            <div class="collapse {{ request()->routeIs('admin.comment*') ? 'show' : '' }}" id="comments">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/forms/basic_elements.html">Form Elements</a>
+                        <a class="nav-link {{ request()->routeIs('admin.comment.index') ? 'active' : '' }}"
+                        href="{{ route('admin.comment.index') }}">All Comments</a>
                     </li>
                 </ul>
             </div>
         </li>
+        @endcan
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false"
                 aria-controls="charts">
@@ -288,6 +291,32 @@
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('admin.role.add') ? 'active' : '' }}"
                                     href="{{ route('admin.role.add') }}">Add Role</a>
+                            </li>
+                        @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+        @can(\App\Enums\Permission\LocationPermission::VIEW->value)
+            <li class="nav-item {{ request()->routeIs('admin.location*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#location" aria-expanded="false"
+                    aria-controls="location">
+                    <span class="menu-title">Locations</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-map-marker menu-icon"></i>
+                </a>
+                <div class="collapse {{ request()->routeIs('admin.location*') ? 'show' : '' }}" id="location">
+                    <ul class="nav flex-column sub-menu">
+                        @can(\App\Enums\Permission\LocationPermission::VIEW->value)
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.location.index') ? 'active' : '' }}"
+                                    href="{{ route('admin.location.index') }}">All Locations</a>
+                            </li>
+                        @endcan
+                        @can(\App\Enums\Permission\LocationPermission::CREATE->value)
+                            <li class="nav-item">
+                                <a class="nav-link {{ request()->routeIs('admin.location.create') ? 'active' : '' }}"
+                                    href="{{ route('admin.location.create') }}">Add Location</a>
                             </li>
                         @endcan
                     </ul>

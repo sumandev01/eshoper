@@ -1,76 +1,116 @@
 @extends('web.layouts.app')
 @section('content')
-    <!-- Page Header Start -->
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <ol class="wpo-breadcumb-wrap">
-                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li>Contact</li>
-                    </ol>
-                </div>
-            </div>
+<!-- Page header section -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4">Contact Us</h1>
+            <p class="lead text-muted">Have any questions? We would love to hear from you.</p>
         </div>
-    </div>
-    <!-- Page Header End -->
+    </section>
 
-
-    <!-- Contact Start -->
-    <div class="container-fluid pt-2">
-        <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">Contact For Any Queries</span></h2>
-        </div>
-        <div class="row px-xl-5">
-            <div class="col-lg-7 mb-5">
-                <div class="contact-form">
-                    <div id="success"></div>
-                    <form name="sentMessage" id="contactForm" novalidate="novalidate">
-                        <div class="control-group">
-                            <input type="text" class="form-control" id="name" placeholder="Your Name"
-                                required="required" data-validation-required-message="Please enter your name" />
-                            <p class="help-block text-danger"></p>
+    <!-- Main contact form and info section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Left side: Contact Form -->
+                <div class="col-md-7 mb-5 mb-md-0">
+                    <h3 class="font-weight-light mb-4">Send Us a Message</h3>
+                    <form action="" method="POST">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="name">Your Name</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="email">Your Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
                         </div>
-                        <div class="control-group">
-                            <input type="email" class="form-control" id="email" placeholder="Your Email"
-                                required="required" data-validation-required-message="Please enter your email" />
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" class="form-control" id="subject" required>
                         </div>
-                        <div class="control-group">
-                            <input type="text" class="form-control" id="subject" placeholder="Subject"
-                                required="required" data-validation-required-message="Please enter a subject" />
-                            <p class="help-block text-danger"></p>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea class="form-control" id="message" rows="5" required></textarea>
                         </div>
-                        <div class="control-group">
-                            <textarea class="form-control" rows="6" id="message" placeholder="Message"
-                                required="required"
-                                data-validation-required-message="Please enter your message"></textarea>
-                            <p class="help-block text-danger"></p>
-                        </div>
-                        <div>
-                            <button class="btn btn-primary py-2 px-4" type="submit" id="sendMessageButton">Send
-                                Message</button>
-                        </div>
+                        <button type="submit" class="btn btn-primary px-4">Submit</button>
                     </form>
                 </div>
-            </div>
-            <div class="col-lg-5 mb-5">
-                <h5 class="font-weight-semi-bold mb-3">Get In Touch</h5>
-                <p>Justo sed diam ut sed amet duo amet lorem amet stet sea ipsum, sed duo amet et. Est elitr dolor elitr erat sit sit. Dolor diam et erat clita ipsum justo sed.</p>
-                <div class="d-flex flex-column mb-3">
-                    <h5 class="font-weight-semi-bold mb-3">Store 1</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-                    <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
-                </div>
-                <div class="d-flex flex-column">
-                    <h5 class="font-weight-semi-bold mb-3">Store 2</h5>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt text-primary mr-3"></i>123 Street, New York, USA</p>
-                    <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>info@example.com</p>
-                    <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>+012 345 67890</p>
+
+                <!-- Right side: Contact Info -->
+                <div class="col-md-5">
+                    <h3 class="font-weight-light mb-4">Our Store</h3>
+                    
+                    <div class="d-flex mb-3">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <h5>Address</h5>
+                            <p class="text-muted">{{ $siteSettings->contact_address }}</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex mb-3">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div>
+                            <h5>Phone</h5>
+                            <p class="text-muted">{{ $siteSettings->contact_phone }}</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex mb-4">
+                        <div class="contact-info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h5>Email</h5>
+                            <p class="text-muted">{{ $siteSettings->contact_email }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Google Map Placeholder -->
+                    <h4 class="font-weight-light mb-3">Find Us on Map</h4>
+                    <div class="map-container rounded shadow-sm">
+                        {!! $siteSettings->google_map !!}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Contact End -->
+    </section>
 @endsection
+@push('styles')
+    <style>
+        .hero-section {
+            background-color: #f8f9fa;
+            padding: 80px 0;
+        }
+        .contact-info-icon {
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .map-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+        }
+        .map-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
+@endpush

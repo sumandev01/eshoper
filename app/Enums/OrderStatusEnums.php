@@ -7,7 +7,7 @@ enum OrderStatusEnums: string
     case PENDING = 'pending';
     case PROCESSING = 'processing';
     case SHIPPED = 'shipped';
-    case COMPLETED = 'completed';
+    case DELIVERED = 'delivered';
     case CANCELLED = 'cancelled';
 
     public function color(): string
@@ -16,7 +16,7 @@ enum OrderStatusEnums: string
             self::PENDING => 'warning',
             self::PROCESSING => 'info',
             self::SHIPPED => 'success',
-            self::COMPLETED => 'success',
+            self::DELIVERED => 'success',
             self::CANCELLED => 'danger',
         };
     }

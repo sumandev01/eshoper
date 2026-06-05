@@ -5,7 +5,6 @@
 @section('meta_keywords', $siteSettings?->site_keywords)
 @section('og_image', url($product?->thumbnail))
 @section('og_url', route('productDetails', $product?->slug))
-
 @section('content')
     <div class="container-fluid mb-4">
         <div class="row">
@@ -22,6 +21,7 @@
     </div>
     <div class="container-fluid py-5">
         <div class="row px-xl-5">
+            <!-- Product Gallery Start -->
             <div class="col-lg-5 pb-5">
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner border" id="carousel-images-container">
@@ -44,18 +44,25 @@
                     </a>
                 </div>
             </div>
-
+            <!-- Product Gallery End -->
+            <!-- Product Detail Start -->
             <div class="col-lg-7 pb-5">
                 <h3 class="font-weight-semi-bold">{{ $product?->name }}</h3>
                 <div class="d-flex mb-3">
-                    <div class="text-primary mr-2">
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star"></small>
-                        <small class="fas fa-star-half-alt"></small>
-                        <small class="far fa-star"></small>
+                    <div class="star-group">
+                        <input type="hidden" class="rating-value-active" value="{{ $finalRating }}">
+                        <button type="button" class="star-btn-active far fa-star" data-value="1"
+                            style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                        <button type="button" class="star-btn-active far fa-star" data-value="2"
+                            style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                        <button type="button" class="star-btn-active far fa-star" data-value="3"
+                            style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                        <button type="button" class="star-btn-active far fa-star" data-value="4"
+                            style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                        <button type="button" class="star-btn-active far fa-star" data-value="5"
+                            style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
                     </div>
-                    <small class="pt-1">(50 Reviews)</small>
+                    <small class="pt-1 ml-2">({{ $productReview?->count() ?? 0 }} Reviews)</small>
                 </div>
                 <div class="d-flex align-items-end mb-4" id="price-container">
                     @php
@@ -175,15 +182,16 @@
                     </div>
                 </div>
             </div>
+            <!-- Product Detail End -->
         </div>
+        <!-- Product Extra Detail End -->
         <div class="row px-xl-5">
             <div class="col">
                 <div class="nav nav-tabs justify-content-center border-secondary mb-4">
-                    <a class="nav-item nav-link active " data-toggle="tab"
-                        href="#tab-pane-1">Description</a>
+                    <a class="nav-item nav-link active " data-toggle="tab" href="#tab-pane-1">Description</a>
                     <a class="nav-item nav-link" data-toggle="tab" href="#tab-pane-2">Information</a>
-                    <a class="nav-item nav-link " data-toggle="tab"
-                        href="#tab-pane-3">Reviews (0)</a>
+                    <a class="nav-item nav-link " data-toggle="tab" href="#tab-pane-3">Reviews
+                        ({{ $productReview?->count() ?? 0 }})</a>
                 </div>
                 <div class="tab-content">
                     <div class="tab-pane fade show active" id="tab-pane-1">
@@ -194,41 +202,92 @@
                         <h4 class="mb-3">Additional Information</h4>
                         {!! $product?->details?->information ?? 'No specifications provided.' !!}
                     </div>
+                    <!-- Reviews Start -->
                     <div class="tab-pane fade" id="tab-pane-3">
                         <div class="row">
                             <div class="col-md-6">
-                                <h4 class="mb-4">1 review for "Colorful Stylish Shirt"</h4>
-                                <div class="media mb-4">
-                                    <img src="{{ asset('web/img/user.jpg') }}" alt="Image"
-                                        class="img-fluid mr-3 mt-1" style="width: 45px;" loading="lazy">
-                                    <div class="media-body">
-                                        <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
-                                        <div class="text-primary mb-2">
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star"></i>
-                                            <i class="fas fa-star-half-alt"></i>
-                                            <i class="far fa-star"></i>
+                                <h5 class="mb-4">
+                                    @if ($productReview?->count() ?? 0 > 0)
+                                        {{ $productReview?->count() ?? 0 }} Reviews for "{{ $product?->name }}"
+                                    @else
+                                        No reviews for "{{ $product?->name }}"
+                                    @endif
+                                </h5>
+                                @foreach ($productReview ?? [] as $review)
+                                    <div class="media {{ $review?->replies?->count() ?? 0 > 0 ? 'mb-0' : 'mb-4' }}">
+                                        <img src="{{ $review?->user?->profile }}" alt="Image"
+                                            class="img-fluid mr-3 mt-1 rounded-circle" style="width: 45px;">
+                                        <div class="media-body">
+                                            <h6>{{ $review?->user?->name ?? $review?->name }}<small> -
+                                                    <i>{{ $review?->created_at?->format('d-M-Y') }}</i></small></h6>
+                                            <div class="star-group">
+                                                <input type="hidden" class="rating-value-active"
+                                                    value="{{ $review->rating ?? 0 }}">
+                                                <button type="button" class="star-btn-active far fa-star" data-value="1"
+                                                    style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                <button type="button" class="star-btn-active far fa-star" data-value="2"
+                                                    style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                <button type="button" class="star-btn-active far fa-star" data-value="3"
+                                                    style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                <button type="button" class="star-btn-active far fa-star" data-value="4"
+                                                    style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                <button type="button" class="star-btn-active far fa-star" data-value="5"
+                                                    style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            </div>
+                                            <p>{{ $review?->review_text ?? 'No review provided.' }}</p>
+
+                                            @can(App\Enums\Permission\CommentPermission::REPLY->value)
+                                                @if ($review?->replies?->count() == 0)
+                                                    <button class="btn btn-primary btn-sm reply-toggle-btn"
+                                                        data-target="reply-form-{{ $review->id }}">Reply</button>
+                                                @endif
+                                                <div id="reply-form-{{ $review->id }}" class="d-none mt-2">
+                                                    <form action="{{ route('user.replyReview') }}" method="POST">
+                                                        @csrf
+                                                        <input type="hidden" name="comment_id" value="{{ $review->id }}">
+                                                        <div class="form-group mb-2">
+                                                            <textarea name="reply_text" class="form-control" rows="3" placeholder="Write your reply here..." required></textarea>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-primary btn-sm">Submit
+                                                            Reply</button>
+                                                        <button type="button"
+                                                            class="btn btn-secondary btn-sm cancel-btn">Cancel</button>
+                                                    </form>
+                                                </div>
+                                            @endcan
                                         </div>
-                                        <p>Diam amet duo labore stet elitr ea clita ipsum, tempor labore accusam ipsum et no
-                                            at. Kasd diam tempor rebum magna dolores sed sed eirmod ipsum.</p>
                                     </div>
-                                </div>
+                                    <!-- Reply Reviews Start -->
+                                    @foreach ($review?->replies ?? [] as $reply)
+                                        <div class="media mb-4 ml-5">
+                                            <img src="{{ $reply?->user?->profile }}" alt="Image"
+                                                class="img-fluid mr-3 mt-1 rounded-circle" style="width: 45px;">
+                                            <div class="media-body">
+                                                <h6>{{ $reply?->user?->name ?? 'Admin' }}<small> -
+                                                        <i>{{ $reply?->created_at?->format('d-M-Y') }}</i></small></h6>
+                                                <p>{{ $reply?->reply_text ?? 'No reply provided.' }}</p>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                    <!-- Reply Reviews End -->
+                                @endforeach
                             </div>
                         </div>
                     </div>
+                    <!-- Reviews End -->
                 </div>
             </div>
         </div>
+        <!-- Product Extra Detail End -->
     </div>
-    <!-- Products Start -->
+    <!-- Related Products Start -->
     <div class="container-fluid py-5">
         <div class="text-center mb-4">
             <h2 class="section-title px-5"><span class="px-2">You May Also Like</span></h2>
         </div>
         <div class="row px-xl-5">
             <div class="col">
-                <div class="owl-carousel">
+                <div class="owl-carousel related-carousel">
                     @foreach ($relatedProducts ?? [] as $item)
                         <div class="card product-item border-0 product-card" data-product-id="{{ $item?->id }}">
                             <div
@@ -252,7 +311,8 @@
                                     @endif
                                 </div>
                                 <img class="img-fluid w-100" src="{{ $item?->thumbnail }}"
-                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}" loading="lazy">
+                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}"
+                                    loading="lazy">
                                 @if ($item?->inventories->count() > 0)
                                     <div class="varient-product position-absolute d-flex justify-content-between"
                                         style="bottom: 0; left: 0; width: 100%;">
@@ -299,9 +359,15 @@
             </div>
         </div>
     </div>
-    <!-- Products End -->
+    <!-- Related Products End -->
 @endsection
-
+@push('styles')
+    <style>
+        .related-carousel .owl-nav {
+            display: none !important;
+        }
+    </style>
+@endpush
 @push('script')
     <script>
         $(document).ready(function() {
@@ -538,6 +604,31 @@
                     if (index < value) {
                         $(this).removeClass('far').addClass('fas');
                     }
+                });
+            });
+
+            $('.star-group').each(function() {
+                let $group = $(this);
+                let dbValue = parseInt($group.find('.rating-value-active').val());
+                if (dbValue > 0) {
+                    $group.find('.star-btn-active').each(function(index) {
+                        if (index < dbValue) {
+                            $(this).removeClass('far').addClass('fas');
+                        }
+                    });
+                }
+            });
+
+            document.querySelectorAll('.reply-toggle-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).classList.remove('d-none');
+                });
+            });
+            document.querySelectorAll('.cancel-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetId = this.getAttribute('data-target');
+                    document.getElementById(targetId).classList.add('d-none');
                 });
             });
         });

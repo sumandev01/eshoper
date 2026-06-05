@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
     // Review Routes
     Route::controller(ReviewController::class)->group(function () {
         Route::post('/add-review', 'store')->name('user.addReview');
+        Route::post('/reply-review', 'reply')->name('user.replyReview');
     });
 });
 

@@ -4,7 +4,9 @@ use App\Enums\Permission\AdminAccessEnums;
 use App\Enums\Permission\BrandPermission;
 use App\Enums\Permission\CategoryPermission;
 use App\Enums\Permission\ColorPermission;
+use App\Enums\Permission\CommentPermission;
 use App\Enums\Permission\CouponPermission;
+use App\Enums\Permission\LocationPermission;
 use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
 use App\Enums\Permission\ProductInventoryPermission;
@@ -19,6 +21,7 @@ use App\Enums\Permission\UserRolePermission;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
+use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LocationController;
@@ -152,6 +155,12 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
         Route::post('/sliders/reorder', 'reorder')->name('slider.reorder')->middleware('permission:' . SliderPermission::UPDATE->value);
     });
 
+    Route::controller(CommentController::class)->group(function () {
+        Route::get('/comments', 'index')->name('admin.comment.index')->middleware('permission:' . CommentPermission::VIEW->value);
+        Route::put('/comments/{comment}/update', 'update')->name('admin.comment.update')->middleware('permission:' . CommentPermission::UPDATE->value);
+        Route::delete('/comments/{comment}', 'destroy')->name('admin.comment.destroy')->middleware('permission:' . CommentPermission::DELETE->value);
+    });
+
     Route::controller(UserController::class)->group(function () {
         Route::get('/users', 'index')->name('admin.user.index')->middleware('permission:' . UserPermission::VIEW->value);
         Route::get('/users/add', 'add')->name('admin.user.add')->middleware('permission:' . UserPermission::CREATE->value);
@@ -173,11 +182,21 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
     });
 
     Route::controller(LocationController::class)->group(function () {
-        Route::get('/locations', 'index')->name('admin.location.index')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
-        Route::post('/locations/divisions', 'storeDivision')->name('admin.location.division.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
-        Route::post('/locations/districts', 'storeDistrict')->name('admin.location.district.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
-        Route::post('/locations/thanas', 'storeThana')->name('admin.location.thana.store')->middleware('permission:' . AdminAccessEnums::AdminAccess->value);
-    });
+        Route::get('/locations', 'index')->name('admin.location.index')->middleware('permission:' . LocationPermission::VIEW->value);
+        Route::get('/locations/create', 'create')->name('admin.location.create')->middleware('permission:' . LocationPermission::CREATE->value);
+        Route::post('/locations', 'store')->name('admin.location.store')->middleware('permission:' . LocationPermission::CREATE->value);
+        Route::delete('/locations/{location}', 'destroy')->name('admin.location.destroy')->middleware('permission:' . LocationPermission::DELETE->value);
+        
+        // Since divisions, districts, and thanas are separate entities, we can have separate routes for updating them if needed
+        Route::put('/locations/{division}/divisions', 'updateDivision')->name('admin.location.division.update')->middleware('permission:' . LocationPermission::UPDATE->value);
+        Route::put('/locations/{district}/districts', 'updateDistrict')->name('admin.location.district.update')->middleware('permission:' . LocationPermission::UPDATE->value);
+        Route::put('/locations/{thana}/thanas', 'updateThana')->name('admin.location.thana.update')->middleware('permission:' . LocationPermission::UPDATE->value);
+
+        // Since divisions, districts, and thanas are separate entities, we can have separate routes for deleting them if needed
+        Route::delete('/locations/divisions/{division}', 'destroyDivision')->name('admin.location.division.destroy')->middleware('permission:' . LocationPermission::DELETE->value);
+        Route::delete('/locations/districts/{district}', 'destroyDistrict')->name('admin.location.district.destroy')->middleware('permission:' . LocationPermission::DELETE->value);
+        Route::delete('/locations/thanas/{thana}', 'destroyThana')->name('admin.location.thana.destroy')->middleware('permission:' . LocationPermission::DELETE->value);
+        });
 
     Route::controller(SettingController::class)->group(function () {
         Route::get('/settings', 'index')->name('admin.settings.index')->middleware('permission:' . SettingPermission::SettingAccess->value);

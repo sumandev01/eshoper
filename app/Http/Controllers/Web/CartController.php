@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Coupon;
+use App\Models\ProductReview;
 use App\Repositories\CartRepository;
 use App\Services\CouponService;
 use Illuminate\Http\Request;
@@ -25,11 +26,12 @@ class CartController extends Controller
     public function cart()
     {
         $userId = auth('web')->user()->id;
-        $carts = Cart::where('user_id', $userId)->latest('id')->get();
+        $carts = Cart::whereUserId($userId)->latest('id')->get();
         $subTotalPrice = $carts->map(function ($cartItem) {
             return $cartItem->cart_price * $cartItem->quantity;
         })->sum();
-        return view('web.cart', compact('carts', 'subTotalPrice'));
+        $productReviews = ProductReview::whereStatus(1)->get();
+        return view('web.cart', compact('carts', 'subTotalPrice', 'productReviews'));
     }
     
     public function addToCart(Request $request)
@@ -60,7 +62,7 @@ class CartController extends Controller
 
     public function removeFromCart(Cart $cart)
     {
-        $cartItem = Cart::find($cart->id);
+        $cartItem = Cart::findOrFail($cart->id);
         $cartItem->delete();
 
         return redirect()->route('cart')->with('success', 'Product removed from cart successfully.');

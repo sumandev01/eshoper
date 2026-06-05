@@ -12,4 +12,9 @@ class Division extends Model
     {
         return $this->hasMany(District::class);
     }
+
+    public function thanas()
+    {
+        return $this->hasMany(Thana::class);
+    }
 }

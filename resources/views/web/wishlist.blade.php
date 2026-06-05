@@ -15,8 +15,6 @@
         </div>
     </div>
     <!-- Page Header End -->
-
-
     <!-- Cart Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
@@ -37,21 +35,38 @@
                         @forelse ($wishlists ?? [] as $item)
                             <tr data-item-id="{{ $item?->id }}">
                                 <td class="" style="max-width: 100px;">
-                                    <img src="{{ $item->product?->thumbnail }}" alt="" style="width: 100px;" loading="lazy">
+                                    <img src="{{ $item->product?->thumbnail }}" alt="" style="width: 100px;"
+                                        loading="lazy">
                                 </td>
                                 <td class="text-left">
                                     <a class="text-dark nav-link px-0" style="text-decoration: none;"
                                         href="{{ route('productDetails', $item?->product?->slug) }}"
                                         title="{{ $item?->product?->name }}">{{ Str::limit($item?->product?->name, 30, '...') }}</a>
+                                    @php
+                                        $productId = $item?->product?->id;
+                                        $reviewSum = $productReviews?->where('product_id', $productId)->sum('rating');
+                                        $reviewCount = $productReviews?->where('product_id', $productId)->count();
+                                        $finalRating = 0;
+                                        if ($reviewCount > 0) {
+                                            $finalRating = round($reviewSum / $reviewCount);
+                                        }
+                                    @endphp
                                     <div class="d-flex mb-3">
-                                        <div class="text-primary mr-2">
-                                            <small class="fas fa-star"></small>
-                                            <small class="fas fa-star"></small>
-                                            <small class="fas fa-star"></small>
-                                            <small class="fas fa-star-half-alt"></small>
-                                            <small class="far fa-star"></small>
+                                        <div class="star-group">
+                                            <input type="hidden" class="rating-value-active" value="{{ $finalRating }}">
+                                            <button type="button" class="star-btn-active far fa-star" data-value="1"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            <button type="button" class="star-btn-active far fa-star" data-value="2"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            <button type="button" class="star-btn-active far fa-star" data-value="3"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            <button type="button" class="star-btn-active far fa-star" data-value="4"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                            <button type="button" class="star-btn-active far fa-star" data-value="5"
+                                                style="background: none; border: none; font-size: 15px; padding: 0; color: #ffc107; cursor: default; pointer-events: none;"></button>
                                         </div>
-                                        <small class="pt-1">(50 Reviews)</small>
+                                        <small class="pt-1">({{ $item?->product?->reviews?->count() ?? 0 }}
+                                            Reviews)</small>
                                     </div>
                                 </td>
                                 <td class="align-middle">
@@ -62,14 +77,16 @@
                                     @endif
                                 </td>
                                 <td class="align-middle">
-                                    <button onclick="window.location.href = '{{ route('productDetails', $item->product?->slug) }}';"
+                                    <button
+                                        onclick="window.location.href = '{{ route('productDetails', $item->product?->slug) }}';"
                                         class="btn btn-sm btn-primary btn-add p-2 rounded">
                                         <i class="fa fa-shopping-cart"></i>
                                         Buy Now
                                     </button>
                                 </td>
                                 <td class="align-middle">
-                                    <button onclick="window.location.href = '{{ route('removeFromWishlist', $item->id) }}';"
+                                    <button
+                                        onclick="window.location.href = '{{ route('removeFromWishlist', $item->id) }}';"
                                         class="btn btn-sm btn-primary btn-remove">
                                         <i class="fa fa-times"></i>
                                     </button>
@@ -82,8 +99,28 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="mt-3">
+                    {{ $wishlists->links() }}
+                </div>
             </div>
         </div>
     </div>
     <!-- Cart End -->
 @endsection
+@push('script')
+    <script>
+        $(document).ready(function() {
+            $('.star-group').each(function() {
+                let $group = $(this);
+                let dbValue = parseInt($group.find('.rating-value-active').val());
+                if (dbValue > 0) {
+                    $group.find('.star-btn-active').each(function(index) {
+                        if (index < dbValue) {
+                            $(this).removeClass('far').addClass('fas');
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+@endpush

@@ -3,15 +3,18 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\ProductReview;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
 class WishlistController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $user = auth('web')->user();
-        $wishlists = $user->wishlists()->with('product')->get();
-        return view('web.wishlist', compact('wishlists'));
+        $wishlists = $user->wishlists()->with('product')->orderBy('id', 'desc')->paginate(10);
+        $productReviews = ProductReview::whereStatus(1)->get();
+        return view('web.wishlist', compact('wishlists', 'productReviews'));
     }
 
     public function wishlistToggle(Request $request)
@@ -32,10 +35,10 @@ class WishlistController extends Controller
             ], 400);
         }
         // Already Wishlisted check
-        $wishlist = Wishlist::where('user_id', $user->id)->where('product_id', $productId)->first();
+        $wishlist = Wishlist::whereUserId($user->id)->where('product_id', $productId)->first();
 
         if ($wishlist) {
-            $wishlist->delete();
+            $wishlist->delete($wishlist->id);
             $status = 'removed';
         } else {
             Wishlist::create([
@@ -57,9 +60,9 @@ class WishlistController extends Controller
 
     public function removeFromWishlist($id)
     {
-        $wishlistItem = Wishlist::where('id', $id)->first();
+        $wishlistItem = Wishlist::whereId($id)->first();
         if ($wishlistItem) {
-            $wishlistItem->delete();
+            $wishlistItem->delete($id);
         }
         return redirect()->route('wishlist')->with('success', 'Item removed from wishlist.');
     }

@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\OrderStatusEnums;
+use App\Enums\PaymentStatusEnums;
 use App\Http\Controllers\Controller;
 use App\Models\BillingAddress;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\ShippingAddress;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
@@ -49,7 +52,25 @@ class OrderController extends Controller
     public function edit($order)
     {
         $order = Order::findOrFail($order);
+        $orderStatusEnums = OrderStatusEnums::cases();
+        $paymentStatusEnums = PaymentStatusEnums::cases();
+        return view('dashboard.order.edit', compact('order', 'orderStatusEnums', 'paymentStatusEnums'));
+    }
 
-        return view('dashboard.order.edit', compact('order'));
+    public function update(Request $request, $order)
+    {
+        $order = Order::findOrFail($order);
+
+        $request->validate([
+            'order_status' => ['required', Rule::enum(OrderStatusEnums::class)],
+            'payment_status' => ['required', Rule::enum(PaymentStatusEnums::class)],
+        ]);
+
+        $order->update([
+            'order_status' => $request->order_status,
+            'payment_status' => $request->payment_status,
+        ]);
+
+        return redirect()->route('order.index')->with('success', 'Order updated successfully.');
     }
 }
