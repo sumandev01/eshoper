@@ -29,7 +29,7 @@ $(document).ready(function () {
         let currentPrice = card
             .find(".variant-price")
             .text()
-            .replace("৳", "")
+            .replace(siteCurrency, "")
             .trim();
 
         if (card.find(".shop-size-selector").length > 0) {
@@ -120,7 +120,10 @@ $(document).ready(function () {
                 $("#wishlistCount").text(response.wishlistCount);
             },
             error: function (xhr) {
-                showToast("error", "Please login to add this to your wishlist.");
+                showToast(
+                    "error",
+                    "Please login to add this to your wishlist.",
+                );
             },
         });
     });
@@ -183,6 +186,46 @@ function fetchColors(element) {
     });
 }
 
+// function updateProductUI(element) {
+//     let card = element.closest(".product-card");
+//     let colorId = element.val();
+//     let variants = card.data("variants");
+
+//     if (!variants || !colorId) return;
+
+//     let selected = variants.find((v) => v.id == colorId);
+//     if (!selected) return;
+
+//     let basePrice = parseFloat(selected.price);
+//     let discountPrice = parseFloat(selected.discount_price);
+
+//     if (discountPrice > 0 && discountPrice < basePrice) {
+//         card.find(".variant-price").text(siteCurrency + discountPrice);
+//         card.find(".main-price")
+//             .text(siteCurrency + basePrice)
+//             .removeClass("d-none");
+
+//         card.find(".save-amount-box").removeClass("d-none");
+//         card.find(".save-amount").text("Save " + siteCurrency + (basePrice - discountPrice));
+//     } else {
+//         card.find(".variant-price").text(siteCurrency + basePrice);
+//         card.find(".main-price").addClass("d-none");
+//         card.find(".save-amount-box").addClass("d-none");
+//     }
+
+//     if (selected.stock <= 0) {
+//         card.find(".shop-add-to-cart")
+//             .addClass("disabled")
+//             .text("Out of Stock");
+//     } else {
+//         card.find(".shop-add-to-cart")
+//             .removeClass("disabled")
+//             .html(
+//                 '<i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart',
+//             );
+//     }
+// }
+
 function updateProductUI(element) {
     let card = element.closest(".product-card");
     let colorId = element.val();
@@ -196,26 +239,33 @@ function updateProductUI(element) {
     let basePrice = parseFloat(selected.price);
     let discountPrice = parseFloat(selected.discount_price);
 
+    // ১. প্রাইস এবং সেভ অ্যামাউন্ট আপডেট লজিক
     if (discountPrice > 0 && discountPrice < basePrice) {
-        card.find(".variant-price").text("৳" + discountPrice);
+        let dPrice = parseFloat(discountPrice);
+        card.find(".variant-price").text(
+            siteCurrency + dPrice.toLocaleString("en-IN"),
+        );
         card.find(".main-price")
-            .text("৳" + basePrice)
+            .text(siteCurrency + basePrice.toLocaleString("en-IN"))
             .removeClass("d-none");
 
         card.find(".save-amount-box").removeClass("d-none");
-        card.find(".save-amount").text("Save ৳" + (basePrice - discountPrice));
+        let savings = basePrice - discountPrice;
+        card.find(".save-amount").text(
+            "Save " + siteCurrency + savings.toLocaleString("en-IN"),
+        );
     } else {
-        card.find(".variant-price").text("৳" + basePrice);
+        card.find(".variant-price").text(siteCurrency + basePrice.toLocaleString('en-IN'));
         card.find(".main-price").addClass("d-none");
         card.find(".save-amount-box").addClass("d-none");
     }
 
+    // ২. স্টক অনুযায়ী বাটন আপডেট লজিক
+    let addToCartBtn = card.find(".shop-add-to-cart");
     if (selected.stock <= 0) {
-        card.find(".shop-add-to-cart")
-            .addClass("disabled")
-            .text("Out of Stock");
+        addToCartBtn.addClass("disabled").text("Out of Stock");
     } else {
-        card.find(".shop-add-to-cart")
+        addToCartBtn
             .removeClass("disabled")
             .html(
                 '<i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart',

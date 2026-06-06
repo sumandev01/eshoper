@@ -103,14 +103,14 @@
                                         style="font-size: 13px; color: {{ in_array($item?->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
                                 </button>
                             </div>
-                            <div class="save-amount-box text-center position-absolute p-0"
+                            <div class="save-amount-box @if ($item?->discount > 0 && $item?->discount < $item?->price) d-block @else d-none @endif text-center position-absolute p-0"
                                 style="top: 0; right: 0; z-index: 99;">
                                 @if ($item?->discount > 0 && $item?->discount < $item?->price)
                                     <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                                        Save ৳{{ $item?->price - $item?->discount }}
+                                        Save {{ $siteSettings?->currency_symbol }}{{ formatBDT($item?->price - $item?->discount) }}
                                     </p>
                                 @else
-                                    <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
+                                    <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
                                 @endif
                             </div>
                             <img class="img-fluid w-100" src="{{ $item?->thumbnail }}"
@@ -139,18 +139,21 @@
                                 {{ Str::limit($item?->name, 20, '...') }}</h6>
                             <div class="d-flex justify-content-center">
                                 @if ($item?->discount > 0 && $item?->discount != $item?->price)
-                                    <h6 class="variant-price">৳{{ $item?->discount }}</h6>
+                                    <h6 class="variant-price"> {{ $siteSettings?->currency_symbol }}
+                                        {{ formatBDT($item?->discount) }}</h6>
                                     <h6 class="text-muted ml-2"><del
-                                            class="main-price">৳{{ $item?->price }}</del></h6>
+                                            class="main-price">{{ $siteSettings?->currency_symbol }}{{ formatBDT($item?->price) }}</del>
+                                    </h6>
                                 @else
-                                    <h6 class="variant-price">৳{{ $item?->price }}</h6>
+                                    <h6 class="variant-price">{{ $siteSettings?->currency_symbol }}{{ formatBDT($item?->price) }}
+                                    </h6>
                                     <h6 class="text-muted ml-2"><del class="main-price d-none"></del></h6>
                                 @endif
                             </div>
                         </div>
                         <div class="card-footer d-flex justify-content-between bg-light border">
-                            <a href="{{ route('productDetails', $item?->slug) }}"
-                                class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View
+                            <a href="{{ route('productDetails', $item?->slug) }}" class="btn btn-sm text-dark p-0"><i
+                                    class="fas fa-eye text-primary mr-1"></i>View
                                 Detail</a>
                             <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart"
                                 data-product-id="{{ $item?->id }}"><i
@@ -209,14 +212,14 @@
                                         style="font-size: 13px; color: {{ in_array($latestProduct?->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
                                 </button>
                             </div>
-                            <div class="save-amount-box text-center position-absolute p-0"
+                            <div class="save-amount-box @if ($item?->discount > 0 && $item?->discount < $item?->price) d-block @else d-none @endif text-center position-absolute p-0"
                                 style="top: 0; right: 0; z-index: 99;">
-                                @if ($latestProduct?->discount > 0 && $latestProduct?->discount < $latestProduct?->price)
+                                @if ($item?->discount > 0 && $item?->discount < $item?->price)
                                     <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                                        Save ৳{{ $latestProduct?->price - $latestProduct?->discount }}
+                                        Save {{ $siteSettings?->currency_symbol }}{{ formatBDT($item?->price - $item?->discount) }}
                                     </p>
                                 @else
-                                    <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
+                                    <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
                                 @endif
                             </div>
                             <img class="img-fluid w-100" src="{{ $latestProduct?->thumbnail }}"
@@ -245,11 +248,13 @@
                                 {{ Str::limit($latestProduct?->name, 20, '...') }}</h6>
                             <div class="d-flex justify-content-center">
                                 @if ($latestProduct?->discount > 0 && $latestProduct?->discount != $latestProduct?->price)
-                                    <h6 class="variant-price">৳{{ $latestProduct?->discount }}</h6>
-                                    <h6 class="text-muted ml-2"><del
-                                            class="main-price">৳{{ $latestProduct?->price }}</del></h6>
+                                    <h6 class="variant-price">
+                                        {{ $siteSettings?->currency_symbol }}{{ formatBDT($latestProduct?->discount) }}</h6>
+                                    <h6 class="text-muted ml-2"><del class="main-price">
+                                            {{ $siteSettings?->currency_symbol }}{{ formatBDT($latestProduct?->price) }}</del></h6>
                                 @else
-                                    <h6 class="variant-price">৳{{ $latestProduct?->price }}</h6>
+                                    <h6 class="variant-price">
+                                        {{ $siteSettings?->currency_symbol }}{{ formatBDT($latestProduct?->price) }}</h6>
                                     <h6 class="text-muted ml-2"><del class="main-price d-none"></del></h6>
                                 @endif
                             </div>
@@ -281,7 +286,8 @@
                 <div class="owl-carousel vendor-carousel">
                     @foreach ($brands ?? [] as $brand)
                         <div class="vendor-item border p-4">
-                            <img src="{{ Storage::url($brand?->media?->src) }}" style="aspect-ratio: 4/2; object-fit: contain;" alt="{{ $brand?->name }}">
+                            <img src="{{ Storage::url($brand?->media?->src) }}"
+                                style="aspect-ratio: 4/2; object-fit: contain;" alt="{{ $brand?->name }}">
                         </div>
                     @endforeach
                 </div>

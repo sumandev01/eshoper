@@ -12,14 +12,15 @@
                                 style="font-size: 13px; color: {{ in_array($product->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
                         </button>
                     </div>
-                    <div class="save-amount-box text-center position-absolute p-0"
+
+                    <div class="save-amount-box @if ($product->discount > 0 && $product->discount < $product->price) d-block @else d-none @endif text-center position-absolute p-0"
                         style="top: 0; right: 0; z-index: 99;">
                         @if ($product->discount > 0 && $product->discount < $product->price)
                             <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                                Save ৳{{ $product->price - $product->discount }}
+                                Save {{ $siteSettings?->currency_symbol }}{{ formatBDT($product->price - $product->discount) }}
                             </p>
                         @else
-                            <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
+                            <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
                         @endif
                     </div>
                     <img class="img-fluid w-100" src="{{ $product->thumbnail }}"
@@ -48,10 +49,13 @@
                         {{ Str::limit($product->name, 20, '...') }}</h6>
                     <div class="d-flex justify-content-center">
                         @if ($product->discount > 0 && $product->discount != $product->price)
-                            <h6 class="variant-price">৳{{ $product->discount }}</h6>
-                            <h6 class="text-muted ml-2"><del class="main-price">৳{{ $product->price }}</del></h6>
+                            <h6 class="variant-price">{{ $siteSettings?->currency_symbol }}{{ formatBDT($product->discount) }}
+                            </h6>
+                            <h6 class="text-muted ml-2"><del
+                                    class="main-price">{{ $siteSettings?->currency_symbol }}{{ formatBDT($product->price) }}</del>
+                            </h6>
                         @else
-                            <h6 class="variant-price">৳{{ $product->price }}</h6>
+                            <h6 class="variant-price">{{ $siteSettings?->currency_symbol }}{{ formatBDT($product->price) }}</h6>
                             <h6 class="text-muted ml-2"><del class="main-price d-none"></del></h6>
                         @endif
                     </div>

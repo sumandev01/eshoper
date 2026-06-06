@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\AboutUs;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\ContactMessage;
+use App\Models\Media;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductInventory;
@@ -13,6 +16,7 @@ use App\Models\ProductReview;
 use App\Models\ProductReviewReply;
 use App\Models\Size;
 use App\Models\SubCategory;
+use App\Models\TeamMember;
 use App\Services\ProductFilterService;
 use App\Services\ProductWebService;
 use Illuminate\Http\Request;
@@ -108,9 +112,54 @@ class WebController extends Controller
         return view('web.contact');
     }
 
+    public function contactRequest(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:50',
+            'email' => 'required|email',
+            'phone' => 'required|phone:AUTO,INTERNATIONAL',
+            'subject' => 'required|string|max:100',
+            'message' => 'required|string|max:1000',
+        ], [
+            'name.required' => 'Name is required.',
+            'email.required' => 'Email is required.',
+            'phone.required' => 'Phone is required.',
+            'phone.phone' => 'Invalid phone number.',
+            'subject.required' => 'Subject is required.',
+            'message.required' => 'Message is required.',
+        ]);
+
+        $userIp = $request->ip();
+
+        try {
+            $contact = ContactMessage::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'subject' => $request->subject,
+                'message' => $request->message,
+                'status' => 0,
+                'ip_address' => $userIp,
+            ]);
+
+            return redirect()->route('contact')->with('success', 'Sent successfully.');
+        } catch (\Exception $e) {
+            return redirect()->route('contact')->with('error', 'Please try again.');
+        }
+    }
+
     public function about()
     {
-        return view('web.about');
+        $aboutPages = (object)AboutUs::pluck('key_value', 'key_name')->toArray();
+        $mediaId = $aboutPages->image ?? null;
+        $media = null;
+        if (!empty($mediaId)) {
+            $media = Storage::url(optional(Media::find($mediaId, ['*']))->src);
+        } else {
+            $media = asset('about.jpg');
+        }
+        $teamMembers = TeamMember::with('media')->orderBy('order', 'asc')->where('is_active', 1)->get();
+        return view('web.about', compact('aboutPages', 'media', 'teamMembers'));
     }
 
     // Search suggestions for header search input
@@ -180,5 +229,28 @@ class WebController extends Controller
         [$minPrice, $maxPrice] = $filterService->getPriceRange($allProductIds);
 
         return view('web.subcategory-products', compact('products', 'subcategory', 'minPrice', 'maxPrice'), $sidebarData);
+    }
+
+    // Terms and Conditions
+    public function termsAndConditions()
+    {
+        return view('web.terms');
+    }
+
+    // Privacy Policy
+    public function privacyPolicy()
+    {
+        return view('web.privacy-policy');
+    }
+
+    // Order Tracking
+    public function orderTracking()
+    {
+        return view('web.order-tracking');
+    }
+
+    public function orderTrackingDetails(Request $request)
+    {
+        return view('web.order-tracking-result');
     }
 }

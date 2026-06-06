@@ -139,8 +139,8 @@
                 max: maxPriceLimit,
                 values: [minVal, maxVal],
                 slide: function(event, ui) {
-                    $("#min-price").val("৳" + ui.values[0]);
-                    $("#max-price").val("৳" + ui.values[1]);
+                    $("#min-price").val(siteCurrency + ui.values[0]);
+                    $("#max-price").val(siteCurrency + ui.values[1]);
                     minVal = ui.values[0];
                     maxVal = ui.values[1];
                 },
@@ -149,8 +149,8 @@
                 }
             });
 
-            $("#min-price").val("৳" + minVal);
-            $("#max-price").val("৳" + maxVal);
+            $("#min-price").val(siteCurrency + minVal);
+            $("#max-price").val(siteCurrency + maxVal);
 
             // Filter function
             function filterProducts(page = 1) {
@@ -285,8 +285,8 @@
                 let minLimit = {{ $minPrice }};
 
                 $("#price-range-slider").slider("option", "values", [minLimit, maxLimit]);
-                $("#min-price").val("৳" + minLimit);
-                $("#max-price").val("৳" + maxLimit);
+                $("#min-price").val(siteCurrency + minLimit);
+                $("#max-price").val(siteCurrency + maxLimit);
 
                 // Reset global variables
                 minVal = minLimit;

@@ -201,49 +201,53 @@
             </li>
         @endcan
         @can(App\Enums\Permission\CommentPermission::VIEW->value)
-        <li class="nav-item {{ request()->routeIs('admin.comment*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#comments" aria-expanded="{{ request()->routeIs('admin.comment*') ? 'true' : 'false' }}" aria-controls="comments">
-                <span class="menu-title">Comments</span>
-                <i class="menu-arrow"></i>
-                <i class="mdi mdi-comment menu-icon"></i>
-            </a>
-            <div class="collapse {{ request()->routeIs('admin.comment*') ? 'show' : '' }}" id="comments">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.comment.index') ? 'active' : '' }}"
-                        href="{{ route('admin.comment.index') }}">All Comments</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+            <li class="nav-item {{ request()->routeIs('admin.comment*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#comments"
+                    aria-expanded="{{ request()->routeIs('admin.comment*') ? 'true' : 'false' }}"
+                    aria-controls="comments">
+                    <span class="menu-title">Comments</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-comment menu-icon"></i>
+                </a>
+                <div class="collapse {{ request()->routeIs('admin.comment*') ? 'show' : '' }}" id="comments">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.comment.index') ? 'active' : '' }}"
+                                href="{{ route('admin.comment.index') }}">All Comments</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
         @endcan
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#charts" aria-expanded="false"
-                aria-controls="charts">
-                <span class="menu-title">Charts</span>
-                <i class="mdi mdi-chart-bar menu-icon"></i>
+        <li class="nav-item {{ request()->routeIs('admin.contact-message*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#contact-message"
+                aria-expanded="{{ request()->routeIs('admin.comment*') ? 'true' : 'false' }}"
+                aria-controls="contact-message">
+                <span class="menu-title">Contact Us</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-email menu-icon"></i>
             </a>
-            <div class="collapse" id="charts">
+            <div class="collapse {{ request()->routeIs('admin.contact-message*') ? 'show' : '' }}"
+                id="contact-message">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link" href="pages/charts/chartjs.html">ChartJs</a>
+                        <a class="nav-link {{ request()->routeIs('admin.contact-message.index') ? 'active' : '' }}"
+                            href="{{ route('admin.contact-message.index') }}">All Contact</a>
                     </li>
                 </ul>
             </div>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#tables" aria-expanded="false"
-                aria-controls="tables">
-                <span class="menu-title">Tables</span>
-                <i class="mdi mdi-table-large menu-icon"></i>
+        <li class="nav-item {{ request()->routeIs('admin.about-page.index') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.about-page.index') }}">
+                <span class="menu-title">About Page</span>
+                <i class="mdi mdi-file-document menu-icon"></i>
             </a>
-            <div class="collapse" id="tables">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link" href="pages/tables/basic-table.html">Basic table</a>
-                    </li>
-                </ul>
-            </div>
+        </li>
+        <li class="nav-item {{ request()->routeIs('admin.team-member*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.team-member.index') }}">
+                <span class="menu-title">Team Member</span>
+                <i class="mdi mdi-account-group menu-icon"></i>
+            </a>
         </li>
         @can(App\Enums\Permission\UserPermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('admin.user*') ? 'active' : '' }}">
@@ -339,3 +343,8 @@
         </li>
     </ul>
 </nav>
+<style>
+    .sidebar .nav.sub-menu {
+        margin-bottom: 0 !important;
+    }
+</style>

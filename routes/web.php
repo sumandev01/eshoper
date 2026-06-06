@@ -19,11 +19,19 @@ Route::controller(WebController::class)->group(function () {
     Route::get('/search', 'search')->name('check.stock');
     Route::get('/get-signle-product-variant', 'getSignleProductVariantBySizeId')->name('getSignleProductVariantBySizeId');
     Route::get('/contact', 'contact')->name('contact');
+    Route::post('/contact', 'contactRequest')->name('contactRequest');
     Route::get('/about', 'about')->name('about');
     Route::get('/category/{slug}', 'categoryProducts')->name('categoryProducts'); // Category Products
     Route::get('/subcategory/{slug}', 'subcategoryProducts')->name('subcategoryProducts'); // SubCategory Products
     Route::get('/brand/{slug}', 'brandProducts')->name('brandProducts'); // Brand Products
     Route::get('/search-suggestions', 'searchSuggestions')->name('searchSuggestions'); // Search Suggestions
+
+    // Terms & Conditions
+    Route::get('/terms-and-conditions', 'termsAndConditions')->name('termsAndConditions');
+    Route::get('/privacy-policy', 'privacyPolicy')->name('privacyPolicy');
+    // Order Tracking
+    Route::get('/order-tracking', 'orderTracking')->name('orderTracking');
+    Route::get('/order-tracking/id', 'orderTrackingDetails')->name('orderTrackingDetails');
 });
 
 Route::controller(AuthController::class)->group(function () {

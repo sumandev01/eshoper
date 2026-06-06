@@ -33,10 +33,9 @@
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
                                 <x-media-thumbnail button_label="Select Logo" input_name="site_logo" :existing_image="$siteLogo"
-                                    :target_id="'logo'" />
+                                    :target_id="'logo'"/>
                             </div>
                         </div>
-
                         <div class="row align-items-center mb-4 gy-3">
                             <div class="col-md-3 col-10 text-start">
                                 <label class="form-label mb-0">Favicon</label>
@@ -191,7 +190,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->google_map"
+                                <x-input name="google_map" class="fs-6" type="text" :value="$siteSettings?->google_map"
                                     :required="false" />
                             </div>
                         </div>
@@ -203,29 +202,6 @@
                                 </span>
                             </div>
                         </div>
-
-                        <div class="row align-items-center mb-4 gy-3">
-                            <div class="col-md-3 col-10 text-start">
-                                <label class="form-label mb-0">Site Description</label>
-                            </div>
-                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
-                            <div class="col-md-8">
-                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->site_description"
-                                    :required="false" />
-                            </div>
-                        </div>
-
-                        <div class="row align-items-center mb-4 gy-3">
-                            <div class="col-md-3 col-10 text-start">
-                                <label class="form-label mb-0">Site Description</label>
-                            </div>
-                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
-                            <div class="col-md-8">
-                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->site_description"
-                                    :required="false" />
-                            </div>
-                        </div>
-
                         <button type="submit" class="btn btn-primary px-4 py-3 mb-2">
                             <i class="mdi mdi-content-save me-1"></i> Save Settings
                         </button>

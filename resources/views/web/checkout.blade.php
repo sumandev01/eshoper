@@ -138,14 +138,13 @@
                                                 <input type="text" name="cart_ids[]" value="{{ $item?->id }}"
                                                     hidden>
                                             </td>
-                                            <td>
+                                            <td class="d-flex">
                                                 <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
-                                                <span class="cart-item-price">{{ $item?->cart_price }}</span>
-                                                <span class="text-muted">x {{ $item?->quantity }}</span>
+                                                <span class="cart-item-price">{{ formatBDT($item?->cart_price) }}</span>
+                                                <span class="text-muted"> x {{ $item?->quantity }}</span>
                                             </td>
                                             <td class="text-right">
-                                                <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
-                                                <span>{{ $item?->cart_price * $item?->quantity }}</span>
+                                                <span>{{ $siteSettings?->currency_symbol }}{{ formatBDT($item?->cart_price * $item?->quantity) }}</span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -156,7 +155,7 @@
                                 <h6 class="font-weight-medium">Subtotal</h6>
                                 <h6 class="font-weight-medium">
                                     <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
-                                    <span class="cart-subtotal">{{ $subTotalPrice }}</span>
+                                    <span class="cart-subtotal">{{ formatBDT($subTotalPrice) }}</span>
                                 </h6>
                             </div>
                             <div class="d-flex justify-content-between mb-3">
@@ -164,7 +163,7 @@
                                 <h6 class="font-weight-medium">Discount</h6>
                                 <h6 class="font-weight-medium">
                                     <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
-                                    <span class="coupon-discount">{{ $couponDiscount }}</span>
+                                    <span class="coupon-discount">{{ formatBDT($couponDiscount) }}</span>
                                 </h6>
                             </div>
                             <div class="d-flex justify-content-between">
@@ -180,7 +179,7 @@
                                 <h5 class="font-weight-bold">Total</h5>
                                 <h5 class="font-weight-bold">
                                     <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
-                                    <span class="total-price">{{ $totalPrice }}</span>
+                                    <span class="total-price">{{ formatBDT($totalPrice) }}</span>
                                 </h5>
                             </div>
                         </div>
@@ -402,7 +401,7 @@
                 $('.shipping-charge').text(shippingPrice);
 
                 let finalTotal = baseTotal + shippingPrice;
-                $('.total-price').text(finalTotal);
+                $('.total-price').text(finalTotal.toLocaleString('en-IN'));
             }
 
         });

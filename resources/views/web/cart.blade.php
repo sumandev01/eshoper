@@ -96,7 +96,7 @@
                                         <span class="badge badge-danger p-2 rounded">Out of Stock</span>
                                     @endif
                                 </td>
-                                <td class="align-middle">৳{{ formatBDT($price) }}</td>
+                                <td class="align-middle">{{ $siteSettings?->currency_symbol }}{{ formatBDT($price) }}</td>
                                 <td class="align-middle">
                                     <div class="input-group quantity mx-auto" style="width: 100px;">
                                         <div class="input-group-btn">
@@ -114,7 +114,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="align-middle product-subtotal">৳{{ formatBDT($subTotal) }}</td>
+                                <td class="align-middle product-subtotal">{{ $siteSettings?->currency_symbol }}{{ formatBDT($subTotal) }}</td>
                                 <td class="align-middle">
                                     <button onclick="window.location.href = '{{ route('removeFromCart', $cart->id) }}';"
                                         class="btn btn-sm btn-primary btn-remove">
@@ -146,7 +146,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium cart-subtotal">৳{{ formatBDT($subTotalPrice) }}</h6>
+                            <h6 class="font-weight-medium cart-subtotal">{{ $siteSettings?->currency_symbol }}{{ formatBDT($subTotalPrice) }}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Discount</h6>
@@ -156,7 +156,7 @@
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold grand-total">৳{{ formatBDT($subTotalPrice) }}</h5>
+                            <h5 class="font-weight-bold grand-total">{{ $siteSettings?->currency_symbol }}{{ formatBDT($subTotalPrice) }}</h5>
                         </div>
                         <form action="{{ route('checkout.index') }}" method="get">
                             @csrf
@@ -181,8 +181,8 @@
                     let subTotalText = $(this).text().replace(/[^0-9.-]+/g, '');
                     cartStotal += parseFloat(subTotalText) || 0;
                 });
-                $('.cart-subtotal').text('৳' + cartStotal.toLocaleString('en-IN'));
-                $('.grand-total').text('৳' + cartStotal.toLocaleString('en-IN'));
+                $('.cart-subtotal').text(siteCurrency + cartStotal.toLocaleString('en-IN'));
+                $('.grand-total').text(siteCurrency + cartStotal.toLocaleString('en-IN'));
             }
 
             $('.quantity-btn').on('click', function() {
@@ -208,7 +208,7 @@
 
                 let subTotal = (quantity * $price).toLocaleString('en-IN');
 
-                $row.find('.product-subtotal').text('৳' + subTotal);
+                $row.find('.product-subtotal').text(siteCurrency + subTotal);
 
                 $input.val(quantity);
 

@@ -17,8 +17,10 @@ class ProductFilterService
     {
         // Price filter
         if ($request->filled('min_price') && $request->filled('max_price')) {
-            $min = (float) str_replace(['৳', '$', ','], '', $request->min_price);
-            $max = (float) str_replace(['৳', '$', ','], '', $request->max_price);
+            // $min = (float) str_replace(['৳', '$', ','], '', $request->min_price);
+            // $max = (float) str_replace(['৳', '$', ','], '', $request->max_price);
+            $min = (float) preg_replace('/[^\d.]/', '', $request->min_price);
+            $max = (float) preg_replace('/[^\d.]/', '', $request->max_price);
             $query->whereRaw("
                 (CASE 
                     WHEN discount IS NOT NULL AND discount > 0 AND discount < price
@@ -54,7 +56,7 @@ class ProductFilterService
 
     public function applySorting($query, $request)
     {
-        match($request->sort) {
+        match ($request->sort) {
             'price_low'  => $query->orderBy('price', 'asc'),
             'price_high' => $query->orderBy('price', 'desc'),
             default      => $query->latest('id'),

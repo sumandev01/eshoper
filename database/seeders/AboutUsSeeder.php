@@ -19,8 +19,11 @@ class AboutUsSeeder extends Seeder
             ['key_name' => 'heading', 'key_value' => 'Our Story'],
             ['key_name' => 'description', 'key_value' => 'We started with a simple idea: to make high-quality products accessible to everyone. What began in a small garage has now grown into a full-scale e-commerce platform serving thousands of happy customers daily. <br> Our dedicated team works around the clock to source the best materials, ensure top-notch quality control, and provide customer service that makes you feel like family.'],
             ['key_name' => 'image', 'key_value' => ''],
-            ['key_name' => 'button_title', 'key_value' => 'Shop Now'],
-            ['key_name' => 'button_url', 'key_value' => '#'],
+            ['key_name' => 'button_text', 'key_value' => 'Shop Now'],
+            ['key_name' => 'button_link', 'key_value' => '#'],
+            ['key_name' => 'our_mission', 'key_value' => 'To provide exceptional value and a seamless shopping experience for every customer, every time.'],
+            ['key_name' => 'our_vision', 'key_value' => 'To become the most trusted and preferred online shopping destination globally.'],
+            ['key_name' => 'our_values', 'key_value' => 'Integrity, customer-first approach, continuous innovation, and sustainable practices.'],
         ];
 
         foreach ($data as $datum) {

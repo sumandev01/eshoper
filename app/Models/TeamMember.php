@@ -7,4 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class TeamMember extends Model
 {
     protected $guarded = ['id'];
+
+    public function media()
+    {
+        return $this->belongsTo(Media::class);
+    }
 }

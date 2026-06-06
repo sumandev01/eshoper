@@ -80,12 +80,12 @@
                     @endphp
 
                     @if (($discountPrice ?? 0) > 0)
-                        <h3 class="font-weight-semi-bold mb-0 product_main_price">৳{{ $discountPrice }}</h3>
+                        <h3 class="font-weight-semi-bold mb-0 product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>{{ $discountPrice }}</h3>
                         @if (($mainPrice ?? 0) > 0)
-                            <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳{{ $mainPrice }}</del></h4>
+                            <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del><span>{{ $siteSettings?->currency_symbol }}</span>{{ $mainPrice }}</del></h4>
                         @endif
                     @elseif(($mainPrice ?? 0) > 0)
-                        <h3 class="font-weight-semi-bold product_main_price">৳{{ $mainPrice }}</h3>
+                        <h3 class="font-weight-semi-bold product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>{{ $mainPrice }}</h3>
                     @endif
                 </div>
 
@@ -304,7 +304,7 @@
                                     style="top: 0; right: 0; z-index: 99;">
                                     @if ($item?->discount > 0 && $item?->discount < $item?->price)
                                         <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                                            Save ৳{{ $item?->price - $item?->discount }}
+                                            Save <span>{{ $siteSettings?->currency_symbol }}</span>{{ $item?->price - $item?->discount }}
                                         </p>
                                     @else
                                         <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
@@ -339,10 +339,10 @@
                                     {{ Str::limit($item?->name, 30, '...') }}</h6>
                                 <div class="d-flex justify-content-center">
                                     @if ($item?->discount > 0)
-                                        <h6>৳{{ $item?->discount }}</h6>
-                                        <h6 class="text-muted ml-2"><del>৳{{ $item?->price }}</del></h6>
+                                        <h6><span>{{ $siteSettings?->currency_symbol }}</span>{{ $item?->discount }}</h6>
+                                        <h6 class="text-muted ml-2"><del><span>{{ $siteSettings?->currency_symbol }}</span>{{ $item?->price }}</del></h6>
                                     @else
-                                        <h6>৳{{ $item?->price }}</h6>
+                                        <h6><span>{{ $siteSettings?->currency_symbol }}</span>{{ $item?->price }}</h6>
                                     @endif
                                 </div>
                             </div>
@@ -477,8 +477,8 @@
                             let finalDiscount = (response.use_main_discount == 1 || !response
                                 .discount) ? response.product_discount : response.discount;
                             let priceHtml = finalDiscount > 0 ?
-                                `<h3 class="font-weight-semi-bold mb-0 product_main_price">৳${finalDiscount}</h3><h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del>৳${finalPrice}</del></h4>` :
-                                `<h3 class="font-weight-semi-bold product_main_price">৳${finalPrice}</h3>`;
+                                `<h3 class="font-weight-semi-bold mb-0 product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>${finalDiscount}</h3><h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del><span>{{ $siteSettings?->currency_symbol }}</span>${finalPrice}</del></h4>` :
+                                `<h3 class="font-weight-semi-bold product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>${finalPrice}</h3>`;
                             priceContainer.html(priceHtml);
                         }
                     });
@@ -534,7 +534,8 @@
                 let sizeId = hasSize ? $('.variable-size-input:checked').val() : null;
                 let colorId = hasColor ? $('.variable-color-input:checked').val() : null;
                 let productMainPriceText = $('.product_main_price').first().text();
-                let productMainPrice = parseFloat(productMainPriceText.replace('৳', ''));
+                let currency_symbol = "{{ $siteSettings?->currency_symbol }}";
+                let productMainPrice = parseFloat(productMainPriceText.replace('<span>' + currency_symbol + '</span>', ''));
 
                 if ((hasSize && !sizeId) || (hasColor && !colorId)) {
                     showToast('error', 'Please select a size and color');

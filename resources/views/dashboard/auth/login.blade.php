@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -11,7 +12,13 @@
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/style.css') }}">
     <link rel="shortcut icon" href="{{ asset('dashboard/assets/images/favicon.png') }}" />
+    <style>
+        .auth .brand-logo img {
+            width: 250px !important;
+        }
+    </style>
 </head>
+
 <body>
     <div class="container-scroller">
         <div class="container-fluid page-body-wrapper full-page-wrapper">
@@ -19,8 +26,8 @@
                 <div class="row flex-grow">
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left p-5">
-                            <div class="brand-logo">
-                                <img src="../../assets/images/logo.svg">
+                            <div class="brand-logo mb-2">
+                                <img src="{{ $siteSettings?->site_logo }}">
                             </div>
                             <h4>Hello! let's get started</h4>
                             @error('loginError')
@@ -29,13 +36,18 @@
                             <h6 class="font-weight-light">Sign in to continue.</h6>
                             <form class="pt-3" method="POST" action="{{ route('admin.login') }}">
                                 @csrf
-                                <x-input id="email" class="form-control form-control-lg" placeholder="Email" type="email" name="email" :value="old('email')" autofocus />
+                                <x-input id="email" class="form-control form-control-lg" placeholder="Email"
+                                    type="email" name="email" :value="old('email')" autofocus />
                                 <div style="position: relative;">
-                                    <x-input id="password" class="form-control form-control-lg" placeholder="Password" type="password" name="password" />
-                                    <i class="mdi mdi-eye-off-outline" id="togglePassword" style="position: absolute; top: 0px; right: 15px; transform: translateY(90%); cursor: pointer;"></i>
+                                    <x-input id="password" class="form-control form-control-lg" placeholder="Password"
+                                        type="password" name="password" />
+                                    <i class="mdi mdi-eye-off-outline" id="togglePassword"
+                                        style="position: absolute; top: 0px; right: 15px; transform: translateY(90%); cursor: pointer;"></i>
                                 </div>
                                 <div class="mt-3 d-grid gap-2">
-                                    <button class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" type="submit">SIGN IN</button>
+                                    <button
+                                        class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn"
+                                        type="submit">SIGN IN</button>
                                 </div>
                                 <div class="my-2 d-flex justify-content-between align-items-center">
                                     <div class="form-check">
@@ -64,7 +76,7 @@
         const password = document.querySelector('#password');
         const togglePassword = document.querySelector('#togglePassword');
 
-        togglePassword.addEventListener('click', function (e) {
+        togglePassword.addEventListener('click', function(e) {
             if (password.type === 'password') {
                 password.type = 'text';
                 togglePassword.classList.remove('mdi-eye-off-outline');

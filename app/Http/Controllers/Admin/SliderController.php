@@ -12,7 +12,7 @@ class SliderController extends Controller
 {
     public function index()
     {
-        $sliders = Slider::orderBy('order')->get();
+        $sliders = Slider::orderBy('order', 'asc')->get();
         return view('dashboard.sliders.index', compact('sliders'));
     }
 
@@ -97,7 +97,7 @@ class SliderController extends Controller
     {
         // Reorder the sliders based on the provided order
         foreach ($request->order as $index => $id) {
-            Slider::where('id', $id)->update(['order' => $index + 1]);
+            Slider::whereId($id)->update(['order' => $index + 1]);
         }
         return response()->json(['status' => 'success']);
     }

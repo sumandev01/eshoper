@@ -18,10 +18,12 @@ use App\Enums\Permission\SubCategoryPermission;
 use App\Enums\Permission\TagPermission;
 use App\Enums\Permission\UserPermission;
 use App\Enums\Permission\UserRolePermission;
+use App\Http\Controllers\Admin\AboutPageController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ColorController;
 use App\Http\Controllers\Admin\CommentController;
+use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LocationController;
@@ -35,8 +37,10 @@ use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\TeamMemberController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\AdminAuthController;
+use App\Models\TeamMember;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(AdminAuthController::class)->prefix('admin')->group(function () {
@@ -159,6 +163,26 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
         Route::get('/comments', 'index')->name('admin.comment.index')->middleware('permission:' . CommentPermission::VIEW->value);
         Route::put('/comments/{comment}/update', 'update')->name('admin.comment.update')->middleware('permission:' . CommentPermission::UPDATE->value);
         Route::delete('/comments/{comment}', 'destroy')->name('admin.comment.destroy')->middleware('permission:' . CommentPermission::DELETE->value);
+    });
+
+    Route::controller(ContactMessageController::class)->group(function () {
+        Route::get('/contact-messages', 'index')->name('admin.contact-message.index');
+    });
+
+    Route::controller(AboutPageController::class)->group(function () {
+        Route::get('/about-page', 'index')->name('admin.about-page.index');
+        Route::put('/about-page', 'update')->name('admin.about-page.update');
+    });
+
+    Route::controller(TeamMemberController::class)->group(function () {
+        Route::get('/team-members', 'index')->name('admin.team-member.index');
+        Route::get('/team-members/add', 'add')->name('admin.team-member.add');
+        Route::post('/team-members', 'store')->name('admin.team-member.store');
+        Route::get('/team-members/{teamMember}/edit', 'edit')->name('admin.team-member.edit');
+        Route::put('/team-members/{teamMember}', 'update')->name('admin.team-member.update');
+        Route::delete('/team-members/{teamMember}', 'destroy')->name('admin.team-member.destroy');
+        // Reorder team members
+        Route::post('/team-members/reorder', 'reorder')->name('admin.team-member.reorder');
     });
 
     Route::controller(UserController::class)->group(function () {

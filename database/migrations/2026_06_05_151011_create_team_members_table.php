@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('position');
             $table->foreignIdFor(Media::class)->nullable()->constrained()->onDelete('set null');
+            $table->integer('order')->default(0);
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
     }
