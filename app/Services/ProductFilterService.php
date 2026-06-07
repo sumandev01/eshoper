@@ -13,11 +13,9 @@ class ProductFilterService
     public function filter($request)
     {
         // Initial product query with active status
-        $productsQuery = Product::where('status', 1);
+        $productsQuery = Product::whereStatus(1);
         // Price filter (Remove $ or commas from input before query)
         if ($request->filled('min_price') && $request->filled('max_price')) {
-            // $min = (float) str_replace(['৳', '$', ','], '', $request->min_price);
-            // $max = (float) str_replace(['৳', '$', ','], '', $request->max_price);
             $min = (float) preg_replace('/[^\d.]/', '', $request->min_price);
             $max = (float) preg_replace('/[^\d.]/', '', $request->max_price);
 
@@ -31,7 +29,7 @@ class ProductFilterService
                         ELSE price
                     END
                 ) BETWEEN ? AND ?
-            ", [$min, $max]);
+            ", [$min, $max], 'and');
         }
 
 
@@ -112,7 +110,7 @@ class ProductFilterService
 
     public function CategoryFilter($request, $category, $subcategory = null)
     {
-        $productsQuery = Product::where('status', 1);
+        $productsQuery = Product::whereStatus(1);
 
         // Filter products by category or subcategory
         if ($subcategory) {
@@ -127,8 +125,6 @@ class ProductFilterService
 
         // Price filter
         if ($request->filled('min_price') && $request->filled('max_price')) {
-            // $min = (float) str_replace(['৳', '$', ','], '', $request->min_price);
-            // $max = (float) str_replace(['৳', '$', ','], '', $request->max_price);
             $min = (float) preg_replace('/[^\d.]/', '', $request->min_price);
             $max = (float) preg_replace('/[^\d.]/', '', $request->max_price);
             $productsQuery->whereRaw("
@@ -137,7 +133,7 @@ class ProductFilterService
                 THEN discount
                 ELSE price
             END) BETWEEN ? AND ?
-        ", [$min, $max]);
+        ", [$min, $max], 'and');
         }
 
         // Color filter

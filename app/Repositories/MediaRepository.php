@@ -38,25 +38,6 @@ class MediaRepository
         ]);
     }
 
-    // public function updateByRequest(array $data, Media $media): Media
-    // {
-    //     $basename = $data['name'];
-    //     $newName = $basename;
-    //     $count = 1;
-    //     // Ensure the new name is unique
-    //     while (Media::where('name', $newName)->where('id', '!=', $media->id)->exists()) {
-    //         $newName = $basename . ' ' . $count;
-    //         $count++;
-    //     }
-    //     $data['name'] = $newName;
-    //     $media->update([
-    //         'name' => $data['name'],
-    //         'alt_text' => $data['alt_text'],
-    //         'description' => $data['description'] ?? null,
-    //     ]);
-    //     return $media;
-    // }
-
     public function updateByRequest(array $data, Media $media): Media
     {
         // Step 1: Get the base name from input
@@ -66,7 +47,7 @@ class MediaRepository
 
         // Step 2: Ensure the display name (name) is unique in the database
         // This will make it "Suman Profile 1", "Suman Profile 2", etc.
-        while (Media::where('name', $newName)->where('id', '!=', $media->id)->exists()) {
+        while (Media::whereName($newName)->where('id', '!=', $media->id)->exists()) {
             $newName = $basename . ' ' . $count;
             $count++;
         }

@@ -8,7 +8,7 @@ class CouponService
 {
     public function getCouponPrice($couponId, $subTotalPrice)
     {
-        $coupon = Coupon::find($couponId);
+        $coupon = Coupon::findOrFail($couponId);
 
         if (!$coupon->status == 1) {
             return redirect()->back()->with('error', 'Coupon is not valid');
@@ -47,7 +47,7 @@ class CouponService
 
     public function getAjaxCouponPrice($couponCode, $cartSubTotal)
     {
-        $coupon = Coupon::where('code', $couponCode)->where('status', 1)->first();
+        $coupon = Coupon::whereCode($couponCode)->where('status', 1)->first();
 
         if (!$coupon) {
             return ['status' => 'error', 'message' => 'Coupon not found'];

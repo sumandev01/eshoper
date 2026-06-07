@@ -17,8 +17,6 @@ class ProductFilterService
     {
         // Price filter
         if ($request->filled('min_price') && $request->filled('max_price')) {
-            // $min = (float) str_replace(['৳', '$', ','], '', $request->min_price);
-            // $max = (float) str_replace(['৳', '$', ','], '', $request->max_price);
             $min = (float) preg_replace('/[^\d.]/', '', $request->min_price);
             $max = (float) preg_replace('/[^\d.]/', '', $request->max_price);
             $query->whereRaw("
@@ -68,7 +66,7 @@ class ProductFilterService
     // =====================
     public function filter($request)
     {
-        $query = Product::where('status', 1);
+        $query = Product::whereStatus(1);
 
         // Category filter
         if ($request->filled('categories')) {
@@ -87,7 +85,7 @@ class ProductFilterService
     // =====================
     public function categoryFilter($request, $category = null, $subcategory = null)
     {
-        $query = Product::where('status', 1);
+        $query = Product::whereStatus(1);
 
         if ($subcategory) {
             $query->whereHas('details', function ($q) use ($subcategory) {

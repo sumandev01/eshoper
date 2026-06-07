@@ -20,6 +20,12 @@
                 <i class="mdi mdi-home menu-icon"></i>
             </a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" target="_blank" href="{{ route('root') }}">
+                <span class="menu-title">Website</span>
+                <i class="mdi mdi-web menu-icon"></i>
+            </a>
+        </li>
         @can(App\Enums\Permission\MediaPermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('admin.media*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#media_menu"
@@ -335,12 +341,6 @@
                 </a>
             </li>
         @endcan
-        <li class="nav-item">
-            <a class="nav-link" href="docs/documentation.html" target="_blank">
-                <span class="menu-title">Documentation</span>
-                <i class="mdi mdi-file-document-box menu-icon"></i>
-            </a>
-        </li>
     </ul>
 </nav>
 <style>

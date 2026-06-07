@@ -12,7 +12,7 @@ class ProductCartService
      */
     public function getResolvedPrice($request)
     {
-        $inventory = ProductInventory::where('product_id', $request->productId)
+        $inventory = ProductInventory::whereProductId($request->productId)
             ->where('size_id', $request->sizeId)
             ->where('color_id', $request->colorId)
             ->with('product')
