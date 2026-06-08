@@ -206,12 +206,19 @@
                 </div>
             </li>
         @endcan
+        @php
+            use App\Models\ProductReview;
+            $countComments = ProductReview::where('status', 0)->count();
+        @endphp
         @can(App\Enums\Permission\CommentPermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('admin.comment*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#comments"
                     aria-expanded="{{ request()->routeIs('admin.comment*') ? 'true' : 'false' }}"
                     aria-controls="comments">
                     <span class="menu-title">Comments</span>
+                    @if ($countComments > 0)
+                        <span class="badge badge-warning badge-pill me-2">{{ $countComments }}</span>
+                    @endif
                     <i class="menu-arrow"></i>
                     <i class="mdi mdi-comment menu-icon"></i>
                 </a>
@@ -225,36 +232,42 @@
                 </div>
             </li>
         @endcan
-        <li class="nav-item {{ request()->routeIs('admin.contact-message*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#contact-message"
-                aria-expanded="{{ request()->routeIs('admin.comment*') ? 'true' : 'false' }}"
-                aria-controls="contact-message">
-                <span class="menu-title">Contact Us</span>
-                <i class="menu-arrow"></i>
-                <i class="mdi mdi-email menu-icon"></i>
-            </a>
-            <div class="collapse {{ request()->routeIs('admin.contact-message*') ? 'show' : '' }}"
-                id="contact-message">
-                <ul class="nav flex-column sub-menu">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.contact-message.index') ? 'active' : '' }}"
-                            href="{{ route('admin.contact-message.index') }}">All Contact</a>
-                    </li>
-                </ul>
-            </div>
-        </li>
-        <li class="nav-item {{ request()->routeIs('admin.about-page.index') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.about-page.index') }}">
-                <span class="menu-title">About Page</span>
-                <i class="mdi mdi-file-document menu-icon"></i>
-            </a>
-        </li>
-        <li class="nav-item {{ request()->routeIs('admin.team-member*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.team-member.index') }}">
-                <span class="menu-title">Team Member</span>
-                <i class="mdi mdi-account-group menu-icon"></i>
-            </a>
-        </li>
+        @can(App\Enums\Permission\ContactMessagePermission::VIEW->value)
+            <li class="nav-item {{ request()->routeIs('admin.contact-message*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#contact-message"
+                    aria-expanded="{{ request()->routeIs('admin.comment*') ? 'true' : 'false' }}"
+                    aria-controls="contact-message">
+                    <span class="menu-title">Contact Us</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-email menu-icon"></i>
+                </a>
+                <div class="collapse {{ request()->routeIs('admin.contact-message*') ? 'show' : '' }}"
+                    id="contact-message">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.contact-message.index') ? 'active' : '' }}"
+                                href="{{ route('admin.contact-message.index') }}">All Contact</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        @endcan
+        @can(App\Enums\Permission\AboutPagePermission::VIEW->value)
+            <li class="nav-item {{ request()->routeIs('admin.about-page.index') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.about-page.index') }}">
+                    <span class="menu-title">About Page</span>
+                    <i class="mdi mdi-file-document menu-icon"></i>
+                </a>
+            </li>
+        @endcan
+        @can(App\Enums\Permission\TeamMemberPermission::VIEW->value)
+            <li class="nav-item {{ request()->routeIs('admin.team-member*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.team-member.index') }}">
+                    <span class="menu-title">Team Member</span>
+                    <i class="mdi mdi-account-group menu-icon"></i>
+                </a>
+            </li>
+        @endcan
         @can(App\Enums\Permission\UserPermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('admin.user*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#user" aria-expanded="false"

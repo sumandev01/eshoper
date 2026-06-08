@@ -25,8 +25,7 @@
                             </thead>
                             <tbody>
                                 @forelse ($contacts ?? [] as $key => $contact)
-                                    <tr id="row-{{ $contact->id }}"
-                                        class="{{ $contact->status == 0 ? 'fw-bold text-black' : '' }}">
+                                    <tr class="{{ $contact->status == 0 ? 'table-warning' : '' }}">
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $contact->name }}</td>
                                         <td>{{ $contact->email }}</td>
@@ -123,7 +122,6 @@
                 let subject = $(this).data('subject');
                 let message = $(this).data('message');
                 let status = $(this).data('status');
-                console.log(status);
                 let date = $(this).data('date');
 
                 $('#viewModal').modal('show');
@@ -143,10 +141,7 @@
                         data: {
                             id: id
                         },
-                        success: function(response) {
-                            console.log(response);
-                            $('#row-' + id).removeClass('fw-bold text-black');
-                        }
+                        success: function(response) {}
                     });
                 }
             });

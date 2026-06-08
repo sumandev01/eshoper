@@ -33,9 +33,18 @@
                                                     class="img-fluid" alt="Image">
                                             </td>
                                             <td class="text-end">
-                                                <a href="{{ route('admin.team-member.edit', $teamMember->id) }}" class="btn btn-primary btn-sm">
-                                                    <i class="mdi mdi-pencil"></i>
-                                                </a>
+                                                @can(App\Enums\Permission\TeamMemberPermission::UPDATE->value)
+                                                    <a href="{{ route('admin.team-member.edit', $teamMember->id) }}"
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="mdi mdi-pencil"></i>
+                                                    </a>
+                                                @endcan
+                                                @can(App\Enums\Permission\TeamMemberPermission::DELETE->value)
+                                                    <a href="{{ route('admin.team-member.destroy', $teamMember->id) }}"
+                                                        class="btn btn-danger btn-sm deleteBtn">
+                                                        <i class="mdi mdi-delete"></i>
+                                                    </a>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @empty
@@ -45,45 +54,48 @@
                                     @endforelse
                                 </tbody>
                             </table>
-                            <span class="text-danger" style="font-size: 14px;"><b>Note: </b>Drag and drop to change order</span>
+                            <span class="text-danger" style="font-size: 14px;"><b>Note: </b>Drag and drop to change
+                                order</span>
                         </div>
                     </div>
                 </div>
             </div>
             <!-- Team Member List end -->
             <!-- Add Team Member start -->
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header py-3">
-                        <h4>Add Team Member</h4>
-                        <p class="mb-0 text-muted">Add New Team Member</p>
-                    </div>
-                    <div class="card-body">
-                        <form action="{{ route('admin.team-member.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <x-input name="name" label="Name" :value="old('name')" class="fs-6" type="text"
-                                        :required="true" />
+            @can(APP\Enums\Permission\TeamMemberPermission::CREATE->value)
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header py-3">
+                            <h4>Add Team Member</h4>
+                            <p class="mb-0 text-muted">Add New Team Member</p>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{ route('admin.team-member.store') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <x-input name="name" label="Name" :value="old('name')" class="fs-6" type="text"
+                                            :required="true" />
+                                    </div>
+                                    <div class="col-md-12">
+                                        <x-input name="position" label="Position" :value="old('position')" class="fs-6"
+                                            type="text" :required="true" />
+                                    </div>
+                                    <div class="col-md-12">
+                                        <x-media-thumbnail label="Profile Image" button_label="Select Image" class="about_image"
+                                            :required="true" />
+                                    </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <x-input name="position" label="Position" :value="old('position')" class="fs-6"
-                                        type="text" :required="true" />
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <x-media-thumbnail label="Profile Image" button_label="Select Image" class="about_image"
-                                        :required="true" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endcan
             <!-- Add Team Member end -->
         </div>
     </div>

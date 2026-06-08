@@ -118,7 +118,9 @@
                                 </div>
                             </div>
                         </div>
+                        @can(App\Enums\Permission\AboutPagePermission::UPDATE->value)
                         <button type="submit" class="btn btn-primary">Update</button>
+                        @endcan
                     </form>
                 </div>
             </div>

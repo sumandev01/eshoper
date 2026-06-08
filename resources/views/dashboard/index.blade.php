@@ -22,8 +22,17 @@
                         alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Weekly Sales <i class="mdi mdi-chart-line mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">$ 15,0000</h2>
-                    <h6 class="card-text">Increased by 60%</h6>
+                    <h2 class="mb-5">{{ $siteSettings?->currency_symbol }} {{ formatBDT($thisWeekSalesSum ?? 0) }}</h2>
+                    <h6 class="card-text">
+                        @if ($salesPercentage > 0)
+                            Increased by last week {{ $salesPercentage }}%
+                        @elseif($salesPercentage < 0)
+                            Decreased by last week {{ abs($salesPercentage) }}%
+                        @else
+                            No sales from last week 0%
+                        @endif
+                    </h6>
+
                 </div>
             </div>
         </div>
@@ -35,8 +44,16 @@
                     <h4 class="font-weight-normal mb-3">Weekly Orders <i
                             class="mdi mdi-bookmark-outline mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">45,6334</h2>
-                    <h6 class="card-text">Decreased by 10%</h6>
+                    <h2 class="mb-5">{{ $thisWeekOrdersCount ?? 0 }}</h2>
+                    <h6 class="card-text">
+                        @if ($ordersPercentage > 0)
+                            Increased by last week {{ $ordersPercentage }}%
+                        @elseif($ordersPercentage < 0)
+                            Decreased by last week {{ abs($ordersPercentage) }}%
+                        @else
+                            No orders from last week 0%
+                        @endif
+                    </h6>
                 </div>
             </div>
         </div>

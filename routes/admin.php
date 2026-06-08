@@ -1,10 +1,12 @@
 <?php
 
+use App\Enums\Permission\AboutPagePermission;
 use App\Enums\Permission\AdminAccessEnums;
 use App\Enums\Permission\BrandPermission;
 use App\Enums\Permission\CategoryPermission;
 use App\Enums\Permission\ColorPermission;
 use App\Enums\Permission\CommentPermission;
+use App\Enums\Permission\ContactMessagePermission;
 use App\Enums\Permission\CouponPermission;
 use App\Enums\Permission\LocationPermission;
 use App\Enums\Permission\MediaPermission;
@@ -16,6 +18,7 @@ use App\Enums\Permission\SizePermission;
 use App\Enums\Permission\SliderPermission;
 use App\Enums\Permission\SubCategoryPermission;
 use App\Enums\Permission\TagPermission;
+use App\Enums\Permission\TeamMemberPermission;
 use App\Enums\Permission\UserPermission;
 use App\Enums\Permission\UserRolePermission;
 use App\Http\Controllers\Admin\AboutPageController;
@@ -166,23 +169,26 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
     });
 
     Route::controller(ContactMessageController::class)->group(function () {
-        Route::get('/contact-messages', 'index')->name('admin.contact-message.index');
+        Route::get('/contact-messages', 'index')->name('admin.contact-message.index')->middleware('permission:' . ContactMessagePermission::VIEW->value);
+
+        // Ajax
+        Route::get('/contact-messages/{contactMessage}/view', 'view')->name('admin.contact-message.view')->middleware('permission:' . ContactMessagePermission::VIEW->value);
     });
 
     Route::controller(AboutPageController::class)->group(function () {
-        Route::get('/about-page', 'index')->name('admin.about-page.index');
-        Route::put('/about-page', 'update')->name('admin.about-page.update');
+        Route::get('/about-page', 'index')->name('admin.about-page.index')->middleware('permission:' . AboutPagePermission::VIEW->value);
+        Route::put('/about-page', 'update')->name('admin.about-page.update')->middleware('permission:' . AboutPagePermission::UPDATE->value);
     });
 
     Route::controller(TeamMemberController::class)->group(function () {
-        Route::get('/team-members', 'index')->name('admin.team-member.index');
-        Route::get('/team-members/add', 'add')->name('admin.team-member.add');
-        Route::post('/team-members', 'store')->name('admin.team-member.store');
-        Route::get('/team-members/{teamMember}/edit', 'edit')->name('admin.team-member.edit');
-        Route::put('/team-members/{teamMember}', 'update')->name('admin.team-member.update');
-        Route::delete('/team-members/{teamMember}', 'destroy')->name('admin.team-member.destroy');
+        Route::get('/team-members', 'index')->name('admin.team-member.index')->middleware('permission:' . TeamMemberPermission::VIEW->value);
+        Route::get('/team-members/add', 'add')->name('admin.team-member.add')->middleware('permission:' . TeamMemberPermission::CREATE->value);
+        Route::post('/team-members', 'store')->name('admin.team-member.store')->middleware('permission:' . TeamMemberPermission::CREATE->value);
+        Route::get('/team-members/{teamMember}/edit', 'edit')->name('admin.team-member.edit')->middleware('permission:' . TeamMemberPermission::UPDATE->value);
+        Route::put('/team-members/{teamMember}', 'update')->name('admin.team-member.update')->middleware('permission:' . TeamMemberPermission::UPDATE->value);
+        Route::delete('/team-members/{teamMember}', 'destroy')->name('admin.team-member.destroy')->middleware('permission:' . TeamMemberPermission::DELETE->value);
         // Reorder team members
-        Route::post('/team-members/reorder', 'reorder')->name('admin.team-member.reorder');
+        Route::post('/team-members/reorder', 'reorder')->name('admin.team-member.reorder')->middleware('permission:' . TeamMemberPermission::UPDATE->value);
     });
 
     Route::controller(UserController::class)->group(function () {
@@ -222,7 +228,8 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
         Route::delete('/locations/thanas/{thana}', 'destroyThana')->name('admin.location.thana.destroy')->middleware('permission:' . LocationPermission::DELETE->value);
         });
 
-    Route::controller(SettingController::class)->group(function () {
+    
+        Route::controller(SettingController::class)->group(function () {
         Route::get('/settings', 'index')->name('admin.settings.index')->middleware('permission:' . SettingPermission::SettingAccess->value);
         Route::put('/settings', 'update')->name('admin.settings.update')->middleware('permission:' . SettingPermission::SettingAccess->value);
     });

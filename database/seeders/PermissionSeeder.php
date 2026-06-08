@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Permission\AboutPagePermission;
 use App\Enums\Permission\AdminAccessEnums;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -10,6 +11,7 @@ use App\Enums\Permission\SubCategoryPermission;
 use App\Enums\Permission\BrandPermission;
 use App\Enums\Permission\ColorPermission;
 use App\Enums\Permission\CommentPermission;
+use App\Enums\Permission\ContactMessagePermission;
 use App\Enums\Permission\SizePermission;
 use App\Enums\Permission\ProductPermission;
 use App\Enums\Permission\SliderPermission;
@@ -22,6 +24,7 @@ use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
 use App\Enums\Permission\ProductInventoryPermission;
 use App\Enums\Permission\SettingPermission;
+use App\Enums\Permission\TeamMemberPermission;
 use App\Enums\RoleEnums;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -58,6 +61,9 @@ class PermissionSeeder extends Seeder
             ...array_column(SettingPermission::cases(), 'value'),
             ...array_column(LocationPermission::cases(), 'value'),
             ...array_column(CommentPermission::cases(), 'value'),
+            ...array_column(AboutPagePermission::cases(), 'value'),
+            ...array_column(ContactMessagePermission::cases(), 'value'),
+            ...array_column(TeamMemberPermission::cases(), 'value'),
         ];
 
         $allPermissions = array_merge($userAndRolePermissions, $otherPermissions);
