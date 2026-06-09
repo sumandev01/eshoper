@@ -91,7 +91,7 @@
                         $('#deleteForm').attr('action', href).submit();
                     }
                 });
-            })
+            });
         });
     </script>
     <script>

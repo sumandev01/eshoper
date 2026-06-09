@@ -177,10 +177,7 @@
                 </div>
 
                 <!-- Product Inventory Card -->
-                @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value,
-                    \App\Enums\Permission\ProductInventoryPermission::CREATE->value,
-                    \App\Enums\Permission\ProductInventoryPermission::UPDATE->value,
-                    \App\Enums\Permission\ProductInventoryPermission::DELETE->value)
+                @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value)
                     <div class="card mb-4 shadow-sm border-0">
                         <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">Inventory & Variations</h5>
@@ -198,7 +195,7 @@
                                             <th>Size</th>
                                             <th class="text-center">Color</th>
                                             <th class="text-center">Image</th>
-                                            <th>Price</th>
+                                            <th class="text-end">Price</th>
                                             <th class="text-center">Stock</th>
                                         </tr>
                                     </thead>
@@ -211,19 +208,43 @@
                                                         <span class="fw-medium">{{ $inv?->size?->name ?? 'Default' }}</span>
                                                     </div>
                                                 </td>
-                                                <td class="d-flex justify-content-center align-items-center">
-                                                    <div class="me-2"
-                                                        style="background-color: {{ $inv?->color?->color_code ?? '#eee' }}; border: 1px solid #ddd; width: 20px; height: 20px; border-radius: 50%;"
-                                                        title="{{ $inv?->color?->name ?? '' }}"></div>
+                                                <td>
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <span class="me-2"
+                                                            style="background-color: {{ $inv?->color?->color_code ?? '#eee' }}; border: 1px solid #ddd; width: 20px; height: 20px; border-radius: 50%;"
+                                                            title="{{ $inv?->color?->name ?? '' }}"></span>
+                                                    </div>
                                                 </td>
                                                 <td class="text-center">
                                                     <img src="{{ $inv?->thumbnail }}" alt="Variant Image"
                                                         class="img-fluid rounded"
                                                         style="max-width: 50px; max-height: 50px; object-fit: cover; border: 1px solid #ccc; padding: 2px;">
                                                 </td>
-                                                <td class="fw-bold text-primary">
-                                                    {{ $siteSettings?->currency_symbol }}
-                                                    {{ number_format($inv?->price, 2) }}
+                                                <td class="fw-bold text-primary text-end">
+                                                    @php
+                                                        $displayDiscount =
+                                                            $inv?->use_main_discount == 1
+                                                                ? $inv?->product?->discount
+                                                                : $inv?->discount;
+                                                        $displayPrice =
+                                                            $inv?->use_main_price == 1
+                                                                ? $inv?->product?->price
+                                                                : $inv?->price;
+                                                    @endphp
+
+                                                    @if (!is_null($displayDiscount) && $displayDiscount > 0)
+                                                        <span style="font-weight: bold; color: red; text-decoration: line-through;">
+                                                            {{ $siteSettings?->currency_symbol }}
+                                                            {{ $displayPrice }}
+                                                        </span>
+                                                        <br>
+                                                        <span style="font-weight: bold;">
+                                                            {{ $siteSettings?->currency_symbol }}
+                                                            {{ $displayDiscount }}
+                                                        </span>
+                                                    @else
+                                                        <span style="font-weight: bold;">&#2547;{{ $displayPrice }}</span>
+                                                    @endif
                                                 </td>
                                                 <td class="text-center">
                                                     @if ($inv?->stock > 10)

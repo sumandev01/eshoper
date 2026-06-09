@@ -65,12 +65,12 @@
                                                     @endphp
 
                                                     @if (!is_null($displayDiscount) && $displayDiscount > 0)
-                                                        <span style="color: gray; text-decoration: line-through;">
+                                                        <span style="font-weight: bold; color: red; text-decoration: line-through;">
                                                             {{ $siteSettings?->currency_symbol }}
                                                             {{ $displayPrice }}
                                                         </span>
                                                         <br>
-                                                        <span style="font-weight: bold; color: red;">
+                                                        <span style="font-weight: bold;">
                                                             {{ $siteSettings?->currency_symbol }}
                                                             {{ $displayDiscount }}
                                                         </span>

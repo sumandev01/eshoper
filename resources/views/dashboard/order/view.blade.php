@@ -8,7 +8,7 @@
             <!-- Header Section -->
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
                 <div>
-                    <h2 class="fw-bold text-dark mb-1">Order Details</h2>
+                    <h2 class="fw-bold text-dark mb-1 order-title">Order Details</h2>
                     <p class="text-muted mb-0">Order ID: <strong class="text-primary">#ORD-2026-9910</strong></p>
                 </div>
                 <div class="d-flex gap-2">
@@ -190,11 +190,15 @@
                 position: absolute;
                 left: 0;
                 top: 0;
-                width: 100%;
+                width: 99%;
                 margin: 0;
                 padding: 0;
-                padding-top: 20px;
-                padding-bottom: 80px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+            .order-title {
+                font-size: 20px !important;
             }
 
             .row.g-4.mb-4>div:nth-child(1),
@@ -205,7 +209,7 @@
 
             .row.g-4.mb-4>div:nth-child(1) .card-body,
             .row.g-4.mb-4>div:nth-child(2) .card-body {
-                padding: 15px !important;
+                padding: 10px !important;
             }
 
             .row.g-4.mb-4>div:nth-child(3) {
@@ -215,7 +219,7 @@
             }
 
             .row.g-4.mb-4>div:nth-child(3) .card-body {
-                padding: 15px !important;
+                padding: 10px !important;
             }
 
             .card {
@@ -237,7 +241,7 @@
 
             @page {
                 size: A4 portrait;
-                margin: 15mm;
+                margin: 10mm;
             }
 
             .print-footer {

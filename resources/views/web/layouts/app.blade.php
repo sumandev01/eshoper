@@ -19,7 +19,6 @@
     <meta property="og:type" content="@yield('og_type', 'website')">
     <script>
         const siteCurrency = "{{ $siteSettings?->currency_symbol ?? '৳' }}";
-        console.log(siteCurrency);
     </script>
     <!-- Google Tag Manager -->
     <script>

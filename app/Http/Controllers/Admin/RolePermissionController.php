@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\Permission\AboutPagePermission;
 use App\Enums\Permission\AdminAccessEnums;
 use App\Enums\Permission\BrandPermission;
 use App\Enums\Permission\CategoryPermission;
 use App\Enums\Permission\ColorPermission;
+use App\Enums\Permission\CommentPermission;
+use App\Enums\Permission\ContactMessagePermission;
 use App\Enums\Permission\CouponPermission;
 use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
 use App\Enums\Permission\ProductInventoryPermission;
-use App\Enums\Permission\SliderPermission;
-use App\Enums\Permission\SizePermission;
-use App\Enums\Permission\SubCategoryPermission;
-use App\Enums\Permission\TagPermission;
-use App\Enums\Permission\UserPermission;
-use App\Enums\Permission\UserRolePermission;
 use App\Enums\Permission\ProductPermission;
 use App\Enums\Permission\SettingPermission;
+use App\Enums\Permission\SizePermission;
+use App\Enums\Permission\SliderPermission;
+use App\Enums\Permission\SubCategoryPermission;
+use App\Enums\Permission\TagPermission;
+use App\Enums\Permission\TeamMemberPermission;
+use App\Enums\Permission\UserPermission;
+use App\Enums\Permission\UserRolePermission;
 use App\Enums\RoleEnums;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -32,6 +36,7 @@ class RolePermissionController extends Controller
         $roles = $roles->sortByDesc(function ($role) {
             return $role->permissions->count();
         })->values();
+
         return view('dashboard.role-permission.index', compact('roles'));
     }
 
@@ -49,6 +54,10 @@ class RolePermissionController extends Controller
             'Color' => ColorPermission::cases(),
             'Slider' => SliderPermission::cases(),
             'Coupon' => CouponPermission::cases(),
+            'Comments' => CommentPermission::cases(),
+            'Contact' => ContactMessagePermission::cases(),
+            'About Page' => AboutPagePermission::cases(),
+            'Team Member' => TeamMemberPermission::cases(),
             'Tag' => TagPermission::cases(),
             'User' => UserPermission::cases(),
             'Role' => UserRolePermission::cases(),
@@ -57,6 +66,7 @@ class RolePermissionController extends Controller
             'Product Inventory' => ProductInventoryPermission::cases(),
             'Setting' => SettingPermission::cases(),
         ];
+
         return view('dashboard.role-permission.add', compact('groups', 'adminAccess'));
     }
 
@@ -67,7 +77,7 @@ class RolePermissionController extends Controller
             'permissions' => 'required|array',
         ], [
             'name.unique' => 'This role name already exists.',
-            'permissions.required' => 'Please select at least one permission.'
+            'permissions.required' => 'Please select at least one permission.',
         ]);
 
         try {
@@ -87,19 +97,25 @@ class RolePermissionController extends Controller
                 ->with('success', 'Role created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return back()->with('error', 'Something went wrong! ' . $e->getMessage());
+
+            return back()->with('error', 'Something went wrong! '.$e->getMessage());
         }
     }
 
     public function view($id)
     {
         $role = Role::with('permissions')->findOrFail($id);
+
         return view('dashboard.role-permission.view', compact('role'));
     }
 
     public function edit($id)
     {
         $role = Role::with('permissions')->findOrFail($id);
+
+        if ($role->name === RoleEnums::Super_Admin->value || $role->name === RoleEnums::User->value) {
+            return back()->with('error', 'This role cannot be edited.');
+        }
         $adminAccess = [
             'Admin Access' => AdminAccessEnums::cases(),
         ];
@@ -112,6 +128,10 @@ class RolePermissionController extends Controller
             'Color' => ColorPermission::cases(),
             'Slider' => SliderPermission::cases(),
             'Coupon' => CouponPermission::cases(),
+            'Comments' => CommentPermission::cases(),
+            'Contact' => ContactMessagePermission::cases(),
+            'About Page' => AboutPagePermission::cases(),
+            'Team Member' => TeamMemberPermission::cases(),
             'Tag' => TagPermission::cases(),
             'User' => UserPermission::cases(),
             'Role' => UserRolePermission::cases(),
@@ -120,17 +140,18 @@ class RolePermissionController extends Controller
             'Product Inventory' => ProductInventoryPermission::cases(),
             'Setting' => SettingPermission::cases(),
         ];
+
         return view('dashboard.role-permission.edit', compact('role', 'groups', 'adminAccess'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name' => 'required|string|unique:roles,name,' . $id,
+            'name' => 'required|string|unique:roles,name,'.$id,
         ], [
             'name.required' => 'Role name is required.',
             'name.unique' => 'This role name already exists.',
-            'permissions.required' => 'Please select at least one permission.'
+            'permissions.required' => 'Please select at least one permission.',
         ]);
 
         try {
@@ -145,7 +166,7 @@ class RolePermissionController extends Controller
 
             $role->update([
                 'name' => $request->name,
-                'guard_name' => 'web'
+                'guard_name' => 'web',
             ]);
 
             $permissions = $request->input('permissions', []);
@@ -160,7 +181,7 @@ class RolePermissionController extends Controller
 
             return back()
                 ->withInput()
-                ->with('error', 'Something went wrong! ' . $e->getMessage());
+                ->with('error', 'Something went wrong! '.$e->getMessage());
         }
     }
 
@@ -182,7 +203,7 @@ class RolePermissionController extends Controller
                 ->with('success', 'Role deleted successfully.');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'Something went wrong! ' . $e->getMessage());
+                ->with('error', 'Something went wrong! '.$e->getMessage());
         }
     }
 }
