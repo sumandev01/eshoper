@@ -35,6 +35,25 @@
                 height: 100% ! important;
             }
         }
+        .my-custom-toast {
+            width: auto !important;
+            min-width: 250px;
+            max-width: 350px;
+            padding: 10px 20px !important;
+        }
+
+        .my-custom-toast .swal2-title {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            margin: 0 !important;
+            font-size: 14px !important;
+        }
+
+        .my-custom-toast {
+            display: flex !important;
+            align-items: center !important;
+        }
     </style>
 </head>
 
@@ -102,6 +121,9 @@
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
+                customClass: {
+                    popup: 'my-custom-toast'
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;

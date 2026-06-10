@@ -12,6 +12,7 @@ use App\Models\ProductReview;
 use App\Models\Setting;
 use App\Models\ShippingAddress;
 use App\Models\UserAddress;
+use App\Models\Wishlist;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,7 +24,8 @@ class DashboardController extends Controller
     {
         $user = auth('web')->user();
         $orders = Order::whereUserId($user->id)->orderBy('id', 'desc')->get()->take(5);
-        return view('web.dashboard.index', compact('orders'));
+        $wishlists = Wishlist::where('user_id', $user->id)->get();
+        return view('web.dashboard.index', compact('orders', 'wishlists'));
     }
 
     public function orders()

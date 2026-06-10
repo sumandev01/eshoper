@@ -31,7 +31,7 @@ Route::controller(WebController::class)->group(function () {
     Route::get('/privacy-policy', 'privacyPolicy')->name('privacyPolicy');
     // Order Tracking
     Route::get('/order-tracking', 'orderTracking')->name('orderTracking');
-    Route::get('/order-tracking/id', 'orderTrackingDetails')->name('orderTrackingDetails');
+    Route::get('/order-tracking-result', 'orderTrackingDetails')->name('web.order-tracking-result');
 });
 
 Route::controller(AuthController::class)->group(function () {

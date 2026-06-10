@@ -30,7 +30,7 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h5>Total Orders</h5>
-                                    <h3>12</h3>
+                                    <h3>{{ $orders->count() }}</h3>
                                 </div>
                                 <i class="fas fa-shopping-cart fa-2x opacity-50"></i>
                             </div>
@@ -41,7 +41,7 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h5>Pending</h5>
-                                    <h3>02</h3>
+                                    <h3>{{ $orders->where('order_status', 'pending')->count() }}</h3>
                                 </div>
                                 <i class="fas fa-clock fa-2x opacity-50"></i>
                             </div>
@@ -52,7 +52,7 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h5>Completed</h5>
-                                    <h3>10</h3>
+                                    <h3>{{ $orders->where('order_status', 'delivered')->count() }}</h3>
                                 </div>
                                 <i class="fas fa-check-circle fa-2x opacity-50"></i>
                             </div>
@@ -63,7 +63,7 @@
                             <div class="d-flex justify-content-between">
                                 <div>
                                     <h5>Wishlist</h5>
-                                    <h3>05</h3>
+                                    <h3>{{ $wishlists->count() }}</h3>
                                 </div>
                                 <i class="fas fa-heart fa-2x opacity-50"></i>
                             </div>

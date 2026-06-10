@@ -173,4 +173,18 @@ class ProductRepository
 
         return $product;
     }
+
+    public function getOutOfStockProducts()
+    {
+        return Product::with(['inventories' => function ($query) {
+            $query->where('stock', 0)->with(['color', 'size', 'media']);
+        }])
+        ->where(function ($query) {
+            $query->where('stock', 0)
+                ->orWhereHas('inventories', function ($subQuery) {
+                    $subQuery->where('stock', 0);
+                });
+        })
+        ->get();
+    }
 }

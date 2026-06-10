@@ -251,6 +251,15 @@ class WebController extends Controller
 
     public function orderTrackingDetails(Request $request)
     {
-        return view('web.order-tracking-result');
+        $request->validate([
+            'order_number' => 'required',
+        ]);
+
+        $order = Order::where('order_number', $request->order_number)->first();
+        if ($order) {
+            return view('web.order-tracking-result', compact('order'));
+        } else {
+            return back()->with('error', 'Order not found');
+        }
     }
 }

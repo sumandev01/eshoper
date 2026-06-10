@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
     <!-- SEO Meta Tags -->
     <title>@yield('title', $siteSettings?->site_title)</title>
     <meta name="description" content="@yield('meta_description', $siteSettings?->site_description)">
@@ -122,6 +120,26 @@
         .wishlist-btn i {
             color: #ccc;
         }
+
+        .my-custom-toast {
+            width: auto !important;
+            min-width: 250px;
+            max-width: 350px;
+            padding: 10px 20px !important;
+        }
+
+        .my-custom-toast .swal2-title {
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            margin: 0 !important;
+            font-size: 14px !important;
+        }
+
+        .my-custom-toast {
+            display: flex !important;
+            align-items: center !important;
+        }
     </style>
 </head>
 
@@ -223,8 +241,11 @@
                 toast: true,
                 position: "top-end",
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 10000,
                 timerProgressBar: true,
+                customClass: {
+                    popup: 'my-custom-toast'
+                },
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
                     toast.onmouseleave = Swal.resumeTimer;

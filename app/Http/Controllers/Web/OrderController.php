@@ -52,6 +52,6 @@ class OrderController extends Controller
         $orderProducts = OrderProduct::whereOrderId($order->id)->get();
         $billingAddress = BillingAddress::whereOrderId($order->id)->first();
         $shippingAddress = ShippingAddress::whereOrderId($order->id)->first();
-        return view('web.dashboard.order-details', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
+        return view('web.welcome', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
     }
 }

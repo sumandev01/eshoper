@@ -64,7 +64,7 @@
                         alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Pending Orders <i class="mdi mdi-diamond mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">{{ formatBDT($pandingOrders ?? 0) }}</h2>
+                    <h2 class="mb-5">{{ formatBDT($pendingOrders ?? 0) }}</h2>
                 </div>
             </div>
         </div>

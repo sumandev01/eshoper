@@ -5,7 +5,7 @@
     <section class="hero-section text-center">
         <div class="container">
             <h1 class="display-4">Order Status</h1>
-            <p class="lead text-muted">Tracking details for your order #ESHOP-98745</p>
+            <p class="lead text-muted">Tracking details for your order {{ $order?->order_number }}</p>
         </div>
     </section>
 
@@ -16,35 +16,35 @@
                 <div class="col-md-10">
                     
                     <!-- Order Info Summary Cards -->
-                    <div class="row text-center mb-5">
+                    {{-- <div class="row text-center mb-5">
                         <div class="col-md-3 col-6 mb-3">
                             <div class="bg-light p-3 rounded">
                                 <span class="text-muted d-block small text-uppercase font-weight-bold">Order Date</span>
-                                <span class="font-weight-bold text-dark">June 04, 2026</span>
+                                <span class="font-weight-bold text-dark">{{ $order?->created_at->format('M d, Y') }}</span>
                             </div>
                         </div>
                         <div class="col-md-3 col-6 mb-3">
                             <div class="bg-light p-3 rounded">
                                 <span class="text-muted d-block small text-uppercase font-weight-bold">Total Amount</span>
-                                <span class="font-weight-bold text-dark">$150.00</span>
+                                <span class="font-weight-bold text-dark">{{ $siteSettings?->currency_symbol }}{{ formatBDT($order?->grand_total) }}</span>
                             </div>
                         </div>
                         <div class="col-md-3 col-6 mb-3">
                             <div class="bg-light p-3 rounded">
                                 <span class="text-muted d-block small text-uppercase font-weight-bold">Payment Method</span>
-                                <span class="font-weight-bold text-dark">Cash On Delivery</span>
+                                <span class="font-weight-bold text-dark">{{ $order?->payment_method }}</span>
                             </div>
                         </div>
                         <div class="col-md-3 col-6 mb-3">
                             <div class="bg-light p-3 rounded">
                                 <span class="text-muted d-block small text-uppercase font-weight-bold">Estimated Delivery</span>
-                                <span class="font-weight-bold text-success">June 08, 2026</span>
+                                <span class="font-weight-bold text-success">{{ $order?->created_at?->copy()->addDays(7)->format('M d, Y') }}</span>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Visual Progress Timeline -->
-                    <div class="card shadow-sm border-0 mb-5">
+                    {{-- <div class="card shadow-sm border-0 mb-5">
                         <div class="card-body p-4 p-md-5">
                             <h4 class="mb-4 font-weight-light">Shipment Progress</h4>
                             <div class="track-timeline">
@@ -96,10 +96,14 @@
                                 </div>
                             </div>
                         </div>
+                    </div> --}}
+
+                    <div class="card shadow-sm border-0 mb-5 p-4 bg-primary text-white">
+                        This section is under development for now 👀
                     </div>
 
                     <!-- Order Items Details Table -->
-                    <div class="card shadow-sm border-0">
+                    {{-- <div class="card shadow-sm border-0">
                         <div class="card-body p-4">
                             <h4 class="mb-4 font-weight-light">Product Details</h4>
                             <div class="table-responsive">
@@ -112,35 +116,29 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- Item 1 -->
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <span class="font-weight-bold text-dark">Wireless Bluetooth Headphones</span>
-                                                </div>
-                                            </td>
-                                            <td class="text-center text-muted">1</td>
-                                            <td class="text-right font-weight-bold text-dark">$90.00</td>
-                                        </tr>
-                                        <!-- Item 2 -->
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <span class="font-weight-bold text-dark">Smart Fitness Watch</span>
-                                                </div>
-                                            </td>
-                                            <td class="text-center text-muted">1</td>
-                                            <td class="text-right font-weight-bold text-dark">$60.00</td>
-                                        </tr>
+                                        @php
+                                            $orderProducts = $order->orderProducts()->get();
+                                        @endphp
+                                        @foreach ($orderProducts as $product)
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="font-weight-bold text-dark">{{ $product->product->name }}</span>
+                                                    </div>
+                                                </td>
+                                                <td class="text-center text-muted">{{ $product->quantity }}</td>
+                                                <td class="text-right font-weight-bold text-dark">${{ $product->product->price }}</td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <!-- Back to tracking button -->
                     <div class="text-center mt-4">
-                        <a href="#" class="btn btn-outline-primary px-4">Track Another Order</a>
+                        <a href="{{ route('orderTracking') }}" class="btn btn-outline-primary px-4">Track Another Order</a>
                     </div>
 
                 </div>

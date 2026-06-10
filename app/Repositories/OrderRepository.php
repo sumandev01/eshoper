@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Enums\PaymentStatusEnums;
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\ShippingCost;
 use App\Services\CouponService;
@@ -16,12 +17,13 @@ class OrderRepository
     {
         $this->couponService = $couponService;
     }
+
     public function OrderByStore($user, $request)
     {
         $userName = $user->name;
         $userEmail = $user->email;
         $shippingCost = ShippingCost::where('price', $request->shipping_charge)->first();
-        if (!$shippingCost) {
+        if (! $shippingCost) {
             return redirect()->back()->with('error', 'Shipping cost not found');
         } else {
             $shippingCostId = $shippingCost->id;
@@ -47,9 +49,9 @@ class OrderRepository
             $grandTotalPrice = $subTotalPrice + $shippingPrice;
         }
 
-        $orderNumber = '#ORD-'.date('Y').date('m').date('d') . rand(1000, 9999);
+        $orderNumber = '#ORD-'.date('Y').date('m').date('d').rand(1000, 9999);
         if (Order::where('order_number', $orderNumber)->exists()) {
-            $orderNumber = '#ORD-'.date('Y').date('m').date('d') . rand(1000, 9999);
+            $orderNumber = '#ORD-'.date('Y').date('m').date('d').rand(1000, 9999);
         }
 
         $order = Order::create([
@@ -72,11 +74,24 @@ class OrderRepository
             'note' => $request->note ?? null,
         ]);
 
+        if (! empty($couponCode)) {
+            Coupon::where('code', $couponCode)->increment('used_count');
+        }
+
         BillingRepository::storeByRequest($request, $order);
 
         ShippingRepository::storeByRequest($request, $order);
 
         OrderProductRepository::storeByRequest($request, $user, $order, $cartItems);
+
+        foreach ($cartItems as $cart) {
+            if ($cart->product_inventory_id) {
+                $cart->productInventory()->decrement('stock', $cart->quantity);
+                $cart->product()->decrement('stock', $cart->quantity);
+            } elseif ($cart->product_id) {
+                $cart->product()->decrement('stock', $cart->quantity);
+            }
+        }
 
         $cartItems->each->delete();
 
