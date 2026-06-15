@@ -270,6 +270,15 @@
             });
 
             $('.category-checkbox, .color-checkbox, .size-checkbox').on('change', function() {
+                if ($(this).is(':checked')) {
+                    if ($(this).hasClass('category-checkbox')) {
+                        $('.category-checkbox').not(this).prop('checked', false);
+                    } else if ($(this).hasClass('color-checkbox')) {
+                        $('.color-checkbox').not(this).prop('checked', false);
+                    } else if ($(this).hasClass('size-checkbox')) {
+                        $('.size-checkbox').not(this).prop('checked', false);
+                    }
+                }
                 filterProducts();
             });
 
