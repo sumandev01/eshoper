@@ -8,6 +8,7 @@ use App\Enums\Permission\ColorPermission;
 use App\Enums\Permission\CommentPermission;
 use App\Enums\Permission\ContactMessagePermission;
 use App\Enums\Permission\CouponPermission;
+use App\Enums\Permission\FaqPermission;
 use App\Enums\Permission\LocationPermission;
 use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
@@ -29,6 +30,7 @@ use App\Http\Controllers\Admin\CommentController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\OrderController;
@@ -178,6 +180,15 @@ Route::middleware(['is_admin', 'auth:web', 'can:' . AdminAccessEnums::AdminAcces
     Route::controller(AboutPageController::class)->group(function () {
         Route::get('/about-page', 'index')->name('admin.about-page.index')->middleware('permission:' . AboutPagePermission::VIEW->value);
         Route::put('/about-page', 'update')->name('admin.about-page.update')->middleware('permission:' . AboutPagePermission::UPDATE->value);
+    });
+
+    Route::controller(FaqController::class)->group(function () {
+        Route::get('/faq','index')->name('admin.faq.index')->middleware('permission:' . FaqPermission::VIEW->value);
+        Route::post('/faq','store')->name('admin.faq.store')->middleware('permission:' . FaqPermission::CREATE->value);
+        Route::get('/faq/{faq}/edit','edit')->name('admin.faq.edit')->middleware('permission:' . FaqPermission::UPDATE->value);
+        Route::put('/faq/{faq}','update')->name('admin.faq.update')->middleware('permission:' . FaqPermission::UPDATE->value);
+        Route::post('/faq/reorder','reorder')->name('admin.faq.reorder')->middleware('permission:' . FaqPermission::UPDATE->value);
+        Route::delete('/faq/{faq}','destroy')->name('admin.faq.destroy')->middleware('permission:' . FaqPermission::DELETE->value);
     });
 
     Route::controller(TeamMemberController::class)->group(function () {

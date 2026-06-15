@@ -4,8 +4,8 @@ namespace App\Enums\Permission;
 
 enum CouponPermission:string
 {
-    case VIEW = 'view_coupon';
-    case CREATE = 'create_coupon';
-    case UPDATE = 'update_coupon';
-    case DELETE = 'delete_coupon';
+    case VIEW = 'coupon_view';
+    case CREATE = 'coupon_create';
+    case UPDATE = 'coupon_update';
+    case DELETE = 'coupon_delete';
 }

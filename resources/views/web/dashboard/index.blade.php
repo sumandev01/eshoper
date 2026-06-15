@@ -21,9 +21,6 @@
         <div class="row px-xl-5">
             @include('web.dashboard.sidebar')
             <div class="col-lg-9 mb-5">
-                {{-- <div class="text-center mb-4">
-                    <h2 class="section-title px-5"><span class="px-2">Welcome to Your Dashboard</span></h2>
-                </div> --}}
                 <div class="row">
                     <div class="col-md-3">
                         <div class="card stat-card bg-primary text-white p-3 mb-3">
@@ -51,7 +48,7 @@
                         <div class="card stat-card bg-success text-white p-3 mb-3">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h5>Completed</h5>
+                                    <h5>Delivered</h5>
                                     <h3>{{ $orders->where('order_status', 'delivered')->count() }}</h3>
                                 </div>
                                 <i class="fas fa-check-circle fa-2x opacity-50"></i>

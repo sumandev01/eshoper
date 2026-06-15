@@ -4,5 +4,5 @@ namespace App\Enums\Permission;
 
 enum AdminAccessEnums:string
 {
-    case AdminAccess = 'admin-access';
+    case AdminAccess = 'admin_access';
 }

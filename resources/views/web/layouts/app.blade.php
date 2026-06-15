@@ -241,7 +241,7 @@
                 toast: true,
                 position: "top-end",
                 showConfirmButton: false,
-                timer: 10000,
+                timer: 3000,
                 timerProgressBar: true,
                 customClass: {
                     popup: 'my-custom-toast'

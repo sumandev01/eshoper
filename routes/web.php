@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\Payment\SSLCommerzController;
+use App\Http\Controllers\Payment\StripeController;
 use App\Http\Controllers\Web\CartController;
 use App\Http\Controllers\Web\CheckoutController;
 use App\Http\Controllers\Web\DashboardController;
@@ -21,6 +23,8 @@ Route::controller(WebController::class)->group(function () {
     Route::get('/contact', 'contact')->name('contact');
     Route::post('/contact', 'contactRequest')->name('contactRequest');
     Route::get('/about', 'about')->name('about');
+    Route::get('/faq', 'faq')->name('faq');
+
     Route::get('/category/{slug}', 'categoryProducts')->name('categoryProducts'); // Category Products
     Route::get('/subcategory/{slug}', 'subcategoryProducts')->name('subcategoryProducts'); // SubCategory Products
     Route::get('/brand/{slug}', 'brandProducts')->name('brandProducts'); // Brand Products
@@ -61,7 +65,6 @@ Route::middleware('auth')->group(function () {
         Route::get('user/change-password', 'changePasswordForm')->name('user.changePasswordForm');
     });
 
-
     // Cart Routes
     Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'cart')->name('cart');
@@ -98,6 +101,20 @@ Route::middleware('auth')->group(function () {
         Route::post('/add-review', 'store')->name('user.addReview');
         Route::post('/reply-review', 'reply')->name('user.replyReview');
     });
+});
+
+// Stripe Routes
+Route::controller(StripeController::class)->group(function () {
+    Route::get('/payment/stripe/success', 'success')->name('stripe.success');
+    Route::get('/payment/stripe/cancel', 'cancel')->name('stripe.cancel');
+});
+
+// SSLCommerz Routes
+Route::controller(SSLCommerzController::class)->group(function () {
+    Route::post('/payment/ssl/success', 'success')->name('ssl.success');
+    Route::post('/payment/ssl/fail', 'fail')->name('ssl.fail');
+    Route::post('/payment/ssl/cancel', 'cancel')->name('ssl.cancel');
+    Route::post('/payment/ssl/ipn', 'ipn')->name('ssl.ipn');
 });
 
 @include 'admin.php';

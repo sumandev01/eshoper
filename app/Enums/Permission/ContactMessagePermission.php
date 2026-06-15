@@ -4,7 +4,7 @@ namespace App\Enums\Permission;
 
 enum ContactMessagePermission:string
 {
-    case VIEW = 'view_contact_message';
-    case UPDATE = 'update_contact_message';
-    case DELETE = 'delete_contact_message';
+    case VIEW = 'contact_message_view';
+    case UPDATE = 'contact_message_update';
+    case DELETE = 'contact_message_delete';
 }

@@ -1,0 +1,121 @@
+<?php
+
+namespace App\Http\Controllers\Payment;
+
+use App\Enums\PaymentStatusEnums;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+
+class SSLCommerzController extends Controller
+{
+    public function success(Request $request)
+    {
+        // SSLCommerz Payment Response
+        $tran_id = $request->input('tran_id');
+        $val_id = $request->input('val_id');
+
+        // SSLCommerz Payment Verification
+        $verifyResponse = Http::get($this->getApiUrl('/validator/api/validationserverAPI.php'), [
+            'val_id' => $val_id,
+            'store_id' => config('services.sslcommerz.store_id'),
+            'store_passwd' => config('services.sslcommerz.store_password'),
+            'format' => 'json',
+        ]);
+
+        $verification = $verifyResponse->json();
+
+        // SSLCommerz Payment Verification Response
+        if (isset($verification['status']) && ($verification['status'] == 'VALID' || $verification['status'] == 'VALIDATED')) {
+
+            // order_number ID with SSLCommerz TrxID
+            $order = \App\Models\Order::where('order_number', $tran_id)->first();
+
+            if ($order) {
+                // SSLCommerz TrxID
+                $real_bank_trx_id = $verification['bank_tran_id'] ?? null;
+
+                // Update Order
+                $order->update([
+                    'payment_status' => PaymentStatusEnums::PAID->value,
+                    'transaction_id' => $real_bank_trx_id,
+                    'payment_data' => json_encode($verification),
+                ]);
+
+                //
+                return redirect()->route('web.orderDetails', ['order' => $order->id])
+                    ->with('success', 'Payment Successful! TrxID: '.$real_bank_trx_id);
+            }
+        }
+
+        //
+        return redirect()->route('cart')->with('error', 'Payment Verification Failed!');
+    }
+
+    // 1. If payment fails (e.g., insufficient balance or wrong PIN)
+    public function fail(Request $request)
+    {
+        $tran_id = $request->input('tran_id');
+
+        // You can update the order status to 'FAILED' in the database here (if it exists in your Enum)
+
+        // Redirecting the customer back to the cart page with an error message
+        return redirect()->route('cart')->with('error', 'Payment Failed! Please try again. Order ID: '.$tran_id);
+    }
+
+    // 2. If the customer cancels or goes back from the payment page
+    public function cancel(Request $request)
+    {
+        $tran_id = $request->input('tran_id');
+
+        return redirect()->route('cart')->with('error', 'Payment was canceled by you. Order ID: '.$tran_id);
+    }
+
+    // 3. IPN (Instant Payment Notification) - Background Verification
+    public function ipn(Request $request)
+    {
+        $tran_id = $request->input('tran_id');
+        $val_id = $request->input('val_id');
+        $status = $request->input('status');
+
+        // If VALID status is received from SSLCommerz
+        if ($status == 'VALID' || $status == 'VALIDATED') {
+
+            $order = \App\Models\Order::where('order_number', $tran_id)->first();
+
+            // If the order is found and it is still in UNPAID status
+            if ($order && $order->payment_status === PaymentStatusEnums::UNPAID) {
+
+                // Re-verify to confirm the payment (for security purposes)
+                $verifyResponse = Http::get($this->getApiUrl('/validator/api/validationserverAPI.php'), [
+                    'val_id' => $val_id,
+                    'store_id' => config('services.sslcommerz.store_id'),
+                    'store_passwd' => config('services.sslcommerz.store_password'),
+                    'format' => 'json',
+                ]);
+
+                $verification = $verifyResponse->json();
+
+                // If verification is successful, update the status to PAID in the background
+                if (isset($verification['status']) && ($verification['status'] == 'VALID' || $verification['status'] == 'VALIDATED')) {
+                    $order->update([
+                        'payment_status' => PaymentStatusEnums::PAID->value,
+                        'transaction_id' => $verification['bank_tran_id'] ?? null,
+                        'payment_data' => json_encode($verification),
+                    ]);
+                }
+            }
+        }
+
+        // IPN route does not redirect, it only returns a JSON response to acknowledge receipt
+        return response()->json(['message' => 'IPN Processed Successfully']);
+    }
+
+    protected function getApiUrl($endpoint)
+    {
+        $isSandbox = config('services.sslcommerz.is_sandbox');
+        $baseUrl = $isSandbox ? 'https://sandbox.sslcommerz.com' : 'https://securepay.sslcommerz.com';
+
+        return $baseUrl . $endpoint;
+    }
+}

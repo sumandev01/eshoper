@@ -123,16 +123,14 @@
                         _token: '{{ csrf_token() }}'
                     },
                     success: function(response) {
-                        console.log('Order updated successfully');
                         $('#teamMemberSortable tr').each(function(index) {
                             $(this).find('td:first').text(index + 1);
                         });
                     },
-                    error: function(xhr) {
-                        console.error('Error updating order');
-                    }
+                    error: function(xhr) {}
                 });
             }
         })
+        
     </script>
 @endpush

@@ -4,8 +4,8 @@ namespace App\Enums\Permission;
 
 enum MediaPermission:string
 {
-    case VIEW = 'media.view';
-    case CREATE = 'media.create';
-    case UPDATE = 'media.update';
-    case DELETE = 'media.delete';
+    case VIEW = 'media_view';
+    case CREATE = 'media_create';
+    case UPDATE = 'media_update';
+    case DELETE = 'media_delete';
 }

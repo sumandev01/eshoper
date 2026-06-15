@@ -19,6 +19,7 @@ use App\Enums\Permission\TagPermission;
 use App\Enums\Permission\UserPermission;
 use App\Enums\Permission\UserRolePermission;
 use App\Enums\Permission\CouponPermission;
+use App\Enums\Permission\FaqPermission;
 use App\Enums\Permission\LocationPermission;
 use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
@@ -64,6 +65,7 @@ class PermissionSeeder extends Seeder
             ...array_column(AboutPagePermission::cases(), 'value'),
             ...array_column(ContactMessagePermission::cases(), 'value'),
             ...array_column(TeamMemberPermission::cases(), 'value'),
+            ...array_column(FaqPermission::cases(), 'value'),
         ];
 
         $allPermissions = array_merge($userAndRolePermissions, $otherPermissions);

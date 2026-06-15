@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($request->is('admin') || $request->is('admin/*')) {
                 return route('admin.login');
             }
+
             return route('login');
         });
         $middleware->alias([
@@ -27,8 +28,16 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => RoleMiddleware::class,
             'is_admin' => AdminMiddleware::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            '/payment/ssl/*',
+        ]);
+
+        $middleware->validateCsrfTokens(except: [
+            '/payment/stripe/*',
+        ]);
     })
-    
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

@@ -260,6 +260,14 @@
                 </a>
             </li>
         @endcan
+        @can(App\Enums\Permission\FaqPermission::VIEW->value)
+            <li class="nav-item {{ request()->routeIs('admin.faq*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.faq.index') }}">
+                    <span class="menu-title">FAQ</span>
+                    <i class="mdi mdi-comment-question-outline menu-icon"></i>
+                </a>
+            </li>
+        @endcan
         @can(App\Enums\Permission\TeamMemberPermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('admin.team-member*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.team-member.index') }}">

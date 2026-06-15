@@ -257,7 +257,6 @@
                                         flex-shrink: 0;
                                         loading: lazy;
                                     " alt="${product.name}">
-                                    ">
                                     <div style="flex: 1; min-width: 0;">
                                         <div style="
                                             font-size: 14px;
@@ -268,10 +267,10 @@
                                         ">${product.name}</div>
                                         <div style="margin-top: 3px;">
                                             ${product.discount > 0 ? `
-                                                    <span style="color: #e74c3c; font-weight: 600; font-size: 13px;">৳${product.discount}</span>
-                                                    <span style="color: #aaa; font-size: 12px; text-decoration: line-through; margin-left: 5px;">৳${product.price}</span>
+                                                    <span style="color: #000; font-weight: 600; font-size: 13px;">৳${product.discount}</span>
+                                                    <span style="color: #e74c3c; font-size: 12px; text-decoration: line-through; margin-left: 5px;">৳${product.price}</span>
                                                 ` : `
-                                                    <span style="color: #e74c3c; font-weight: 600; font-size: 13px;">৳${product.price}</span>
+                                                    <span style="color: #000; font-weight: 600; font-size: 13px;">৳${product.price}</span>
                                                 `}
                                         </div>
                                     </div>
@@ -284,14 +283,14 @@
                                 display: block;
                                 padding: 10px 14px;
                                 text-align: center;
-                                color: #007bff;
+                                color: #fff;
                                 font-size: 13px;
                                 font-weight: 600;
                                 text-decoration: none;
-                                background: #f8f9ff;
+                                background: #D19C97;
                             "
-                            onmouseover="this.style.background='#eef0ff'"
-                            onmouseout="this.style.background='#f8f9ff'">
+                            onmouseover="this.style.background='#D19C99'"
+                            onmouseout="this.style.background='#D19C97'">
                                 <i class="fa fa-search" style="margin-right: 5px;"></i>
                                 View all results for "${search}"
                             </a>

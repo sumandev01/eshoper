@@ -4,8 +4,8 @@ namespace App\Enums\Permission;
 
 enum TagPermission:string
 {
-    case VIEW = 'view_tag';
-    case CREATE = 'create_tag';
-    case UPDATE = 'update_tag';
-    case DELETE = 'delete_tag';
+    case VIEW = 'tag_view';
+    case CREATE = 'tag_create';
+    case UPDATE = 'tag_update';
+    case DELETE = 'tag_delete';
 }

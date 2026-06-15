@@ -3,8 +3,8 @@ namespace App\Enums\Permission;
 
 enum CommentPermission:string
 {
-    case VIEW = 'view_comment';
-    case REPLY = 'reply_comment';
-    case UPDATE = 'update_comment';
-    case DELETE = 'delete_comment';
+    case VIEW = 'comment_view';
+    case REPLY = 'comment_reply';
+    case UPDATE = 'comment_update';
+    case DELETE = 'comment_delete';
 }

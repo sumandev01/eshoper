@@ -211,7 +211,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card border-secondary mb-5">
+                    {{-- <div class="card border-secondary mb-5">
                         <div class="card-header bg-secondary border-0">
                             <h4 class="font-weight-semi-bold m-0">Payment</h4>
                         </div>
@@ -246,7 +246,49 @@
                                 class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place
                                 Order</button>
                         </div>
+                    </div> --}}
+
+                    <div class="card border-secondary mb-5">
+                        <div class="card-header bg-secondary border-0">
+                            <h4 class="font-weight-semi-bold m-0">Payment</h4>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="payment" value="sslcommerz"
+                                        id="sslcommerz">
+                                    <label class="custom-control-label" for="sslcommerz">SSLCommerz (Mobile Banking /
+                                        Cards)</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="payment" value="stripe"
+                                        id="stripe">
+                                    <label class="custom-control-label" for="stripe">Stripe</label>
+                                </div>
+                            </div>
+
+                            <div class="">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" class="custom-control-input" name="payment"
+                                        value="cashOnDelivery" id="cashOnDelivery">
+                                    <label class="custom-control-label" for="cashOnDelivery">Cash on Delivery</label>
+                                </div>
+                            </div>
+
+                            @error('payment')
+                                <span class="text-danger mt-2 d-block">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        <div class="card-footer border-secondary bg-transparent">
+                            <button type="submit"
+                                class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </form>

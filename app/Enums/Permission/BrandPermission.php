@@ -4,8 +4,8 @@ namespace App\Enums\Permission;
 
 enum BrandPermission:string
 {
-    case VIEW = 'view_brand';
-    case CREATE = 'create_brand';
-    case UPDATE = 'update_brand';
-    case DELETE = 'delete_brand';
+    case VIEW = 'brand_view';
+    case CREATE = 'brand_create';
+    case UPDATE = 'brand_update';
+    case DELETE = 'brand_delete';
 }

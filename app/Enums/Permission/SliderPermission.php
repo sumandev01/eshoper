@@ -4,8 +4,8 @@ namespace App\Enums\Permission;
 
 enum SliderPermission:string
 {
-    case VIEW = 'view_slider';
-    case CREATE = 'create_slider';
-    case UPDATE = 'update_slider';
-    case DELETE = 'delete_slider';
+    case VIEW = 'slider_view';
+    case CREATE = 'slider_create';
+    case UPDATE = 'slider_update';
+    case DELETE = 'slider_delete';
 }

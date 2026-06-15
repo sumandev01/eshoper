@@ -8,6 +8,7 @@ use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\ContactMessage;
+use App\Models\Faq;
 use App\Models\Media;
 use App\Models\Order;
 use App\Models\Product;
@@ -235,6 +236,13 @@ class WebController extends Controller
     public function termsAndConditions()
     {
         return view('web.terms');
+    }
+
+    // Faq
+    public function faq()
+    {
+        $faqs = Faq::orderBy('order', 'asc')->get();
+        return view('web.faq', compact('faqs'));
     }
 
     // Privacy Policy

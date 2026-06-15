@@ -24,7 +24,6 @@
 
             <!-- Info Cards -->
             <div class="row g-4 mb-4">
-                <!-- Customer Info -->
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body">
@@ -39,7 +38,6 @@
                     </div>
                 </div>
 
-                <!-- Shipping Address -->
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm">
                         <div class="card-body">
@@ -54,17 +52,48 @@
                     </div>
                 </div>
 
-                <!-- Payment Info -->
                 <div class="col-md-4">
                     <div class="card h-100 border-0 shadow-sm border-start border-warning border-4">
                         <div class="card-body">
                             <div class="d-flex align-items-center mb-3 text-warning">
                                 <i class="fa fa-credit-card fa-lg me-2"></i>
-                                <h6 class="card-title mb-0 fw-bold">Payment Status</h6>
+                                <h6 class="card-title mb-0 fw-bold">Payment Details</h6>
                             </div>
-                            <p class="mb-1 fw-bold text-dark">Method: {{ $order?->payment_method }}</p>
-                            <span
-                                class="badge bg-success-subtle text-success border border-success px-3">{{ $order?->payment_status }}</span>
+
+                            <p class="mb-1 fw-bold text-dark">Method:
+                                <span class="text-uppercase">{{ $order?->payment_method }}</span>
+                            </p>
+                            <p class="mb-2">Status:
+                                <span
+                                    class="badge bg-success-subtle text-success border border-success px-2">{{ $order?->payment_status }}</span>
+                            </p>
+
+                            @if ($order?->payment_method == 'sslcommerz' && $order?->payment_data)
+                                @php
+                                    // JSON data decode kora hocche
+                                    $paymentData = json_decode($order->payment_data);
+                                @endphp
+
+                                <hr class="my-2 border-secondary border-opacity-25">
+
+                                <div class="small">
+                                    @if (isset($paymentData->bank_tran_id))
+                                        <p class="mb-1"><span class="text-muted">TrxID:</span> <strong
+                                                class="text-dark">{{ $paymentData->bank_tran_id }}</strong></p>
+                                    @endif
+
+                                    @if (isset($paymentData->card_issuer))
+                                        <p class="mb-1"><span class="text-muted">Paid via:</span> <span
+                                                class="text-dark">{{ $paymentData->card_issuer }}</span></p>
+                                    @endif
+
+                                    @if (isset($paymentData->card_no) && !empty($paymentData->card_no))
+                                        <p class="mb-0"><span class="text-muted">A/C No:</span> <span
+                                                class="text-dark">{{ $paymentData->card_no }}</span></p>
+                                    @endif
+                                </div>
+                            @endif
+
                         </div>
                     </div>
                 </div>

@@ -4,8 +4,8 @@ namespace App\Enums\Permission;
 
 enum ProductInventoryPermission:string
 {
-    case VIEW = 'view_product_inventory';
-    case CREATE = 'create_product_inventory';
-    case UPDATE = 'update_product_inventory';
-    case DELETE = 'delete_product_inventory';
+    case VIEW = 'product_inventory_view';
+    case CREATE = 'product_inventory_create';
+    case UPDATE = 'product_inventory_update';
+    case DELETE = 'product_inventory_delete';
 }

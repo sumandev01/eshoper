@@ -1,13 +1,13 @@
 @extends('web.layouts.app')
 @section('content')
-    <section class="hero-section text-center">
+    <div class="hero-section text-center">
         <div class="container">
             <h1 class="display-4">Contact Us</h1>
             <p class="lead text-muted">Have any questions? We would love to hear from you.</p>
         </div>
-    </section>
+    </div>
 
-    <section class="py-5">
+    <div class="py-5">
         <div class="container">
             <div class="row">
                 <div class="col-md-7 mb-5 mb-md-0">
@@ -17,30 +17,34 @@
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="name">Your Name</label>
-                                <input type="text" class="form-control" name="name" id="name" value="{{ old('name') }}" required>
+                                <input type="text" class="form-control" name="name" id="name"
+                                    value="{{ old('name') }}" required>
                                 @error('name')
                                     <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="email">Your Email</label>
-                                <input type="email" class="form-control" name="email" id="email" value="{{ old('email') }}" required>
+                                <input type="email" class="form-control" name="email" id="email"
+                                    value="{{ old('email') }}" required>
                                 @error('email')
                                     <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="form-group col-md-12">
                                 <label for="phone" class="d-block">Your Phone</label>
-                                <input type="tel" id="phone" name="phone_input" class="form-control w-100" value="{{ old('phone_input') }}" required>
+                                <input type="tel" id="phone" name="phone_input" class="form-control w-100"
+                                    value="{{ old('phone_input') }}" required>
                                 <input type="hidden" id="full_phone" name="phone" value="{{ old('phone') }}">
-                                
+
                                 @error('phone')
                                     <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                 @enderror
                             </div>
                             <div class="form-group col-md-12 mt-2">
                                 <label for="subject">Subject</label>
-                                <input type="text" class="form-control" name="subject" id="subject" value="{{ old('subject') }}" required>
+                                <input type="text" class="form-control" name="subject" id="subject"
+                                    value="{{ old('subject') }}" required>
                                 @error('subject')
                                     <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                 @enderror
@@ -97,11 +101,13 @@
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 @endsection
 
 @push('styles')
-    <link class="styles-cdn" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/css/intlTelInput.css">
+    // Phone input
+    <link class="styles-cdn" rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/css/intlTelInput.css">
     <style>
         .hero-section {
             background-color: #f8f9fa;
