@@ -236,10 +236,18 @@ function updateProductUI(element) {
     let selected = variants.find((v) => v.id == colorId);
     if (!selected) return;
 
+    let mainImage = card.find(".product-main-image");
+    let originalImage = card.attr("data-original-image");
+
+    if (selected.image) {
+        mainImage.attr("src", selected.image);
+    } else {
+        mainImage.attr("src", originalImage);
+    }
+
     let basePrice = parseFloat(selected.price);
     let discountPrice = parseFloat(selected.discount_price);
 
-    // ১. প্রাইস এবং সেভ অ্যামাউন্ট আপডেট লজিক
     if (discountPrice > 0 && discountPrice < basePrice) {
         let dPrice = parseFloat(discountPrice);
         card.find(".variant-price").text(
@@ -260,7 +268,6 @@ function updateProductUI(element) {
         card.find(".save-amount-box").addClass("d-none");
     }
 
-    // ২. স্টক অনুযায়ী বাটন আপডেট লজিক
     let addToCartBtn = card.find(".shop-add-to-cart");
     if (selected.stock <= 0) {
         addToCartBtn.addClass("disabled").text("Out of Stock");

@@ -90,7 +90,7 @@
         </div>
         <div class="row px-xl-5 pb-3">
             @forelse ($trendingProducts ?? [] as $item)
-                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1 product-card" data-original-image="{{ $item?->thumbnail }}">
                     <div class="card product-item border-0 mb-4 product-card position-relative"
                         data-product-id="{{ $item?->id }}" data-main-price="{{ $item?->price }}"
                         data-discount-price="{{ $item?->discount }}">
@@ -113,7 +113,7 @@
                                     <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
                                 @endif
                             </div>
-                            <img class="img-fluid w-100" src="{{ $item?->thumbnail }}"
+                            <img class="img-fluid w-100 product-main-image" src="{{ $item?->thumbnail }}"
                                 style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}">
                             @if ($item?->inventories->count() > 0)
                                 <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"
@@ -199,7 +199,7 @@
         </div>
         <div class="row px-xl-5 pb-3">
             @forelse ($latestProducts ?? [] as $latestProduct)
-                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1 product-card" data-original-image="{{ $latestProduct?->thumbnail }}">
                     <div class="card product-item border-0 mb-4 product-card position-relative"
                         data-product-id="{{ $latestProduct?->id }}" data-main-price="{{ $latestProduct?->price }}"
                         data-discount-price="{{ $latestProduct?->discount }}">
@@ -212,17 +212,17 @@
                                         style="font-size: 13px; color: {{ in_array($latestProduct?->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
                                 </button>
                             </div>
-                            <div class="save-amount-box @if ($item?->discount > 0 && $item?->discount < $item?->price) d-block @else d-none @endif text-center position-absolute p-0"
+                            <div class="save-amount-box @if ($latestProduct?->discount > 0 && $latestProduct?->discount < $latestProduct?->price) d-block @else d-none @endif text-center position-absolute p-0"
                                 style="top: 0; right: 0; z-index: 99;">
-                                @if ($item?->discount > 0 && $item?->discount < $item?->price)
+                                @if ($latestProduct?->discount > 0 && $latestProduct?->discount < $latestProduct?->price)
                                     <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                                        Save {{ $siteSettings?->currency_symbol }}{{ formatBDT($item?->price - $item?->discount) }}
+                                        Save {{ $siteSettings?->currency_symbol }}{{ formatBDT($latestProduct?->price - $latestProduct?->discount) }}
                                     </p>
                                 @else
                                     <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
                                 @endif
                             </div>
-                            <img class="img-fluid w-100" src="{{ $latestProduct?->thumbnail }}"
+                            <img class="img-fluid w-100 product-main-image" src="{{ $latestProduct?->thumbnail }}"
                                 style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $latestProduct?->name }}">
                             @if ($latestProduct?->inventories->count() > 0)
                                 <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"

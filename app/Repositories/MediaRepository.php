@@ -7,33 +7,49 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class MediaRepository
 {
 
     public function storeByRequest(UploadedFile $file, string $path, ?string $type = null): Media
     {
-        // Upload file to the public disk and get the file path
-        $filePath = Storage::disk('public')->put('/' . trim($path, '/'), $file);
+        $manager = new ImageManager(new Driver());
+        
         // Extra file details
         $orginalName = $file->getClientOriginalName();
         $fileName = pathinfo($orginalName, PATHINFO_FILENAME);
-        $uniqueFileName = $fileName . '_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-        // Determine the file extension
-        $extension = $file->getClientOriginalExtension();
+        $sluggedName = Str::slug($fileName) . '_' . strtolower(Str::random(8));
+        $directory = trim($path, '/');
+        
+        // Define paths
+        $mainPath = "{$directory}/{$sluggedName}.webp";
+        $thumbPath = "{$directory}/{$sluggedName}-thumb.webp";
+        $mediumPath = "{$directory}/{$sluggedName}-medium.webp";
+        $largePath = "{$directory}/{$sluggedName}-large.webp";
+
+        // Read and convert to WebP
+        $image = $manager->read($file);
+        
+        // Save variants
+        Storage::disk('public')->put($mainPath, (string) $image->toWebp(80));
+        Storage::disk('public')->put($thumbPath, (string) (clone $image)->scale(width: 300)->toWebp(80));
+        Storage::disk('public')->put($mediumPath, (string) (clone $image)->scale(width: 600)->toWebp(80));
+        Storage::disk('public')->put($largePath, (string) (clone $image)->scale(width: 1200)->toWebp(80));
 
         if (! $type) {
-            $type = in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg', 'webp']) ? 'image' : $extension;
+            $type = 'image';
         }
+
         return Media::create([
-            'name' => $uniqueFileName,
-            'file_name' => basename($filePath),
+            'name' => $sluggedName . '.webp',
+            'file_name' => $sluggedName . '.webp',
             'type' => $type,
-            'src' => $filePath,
-            'size' => $file->getSize(),
+            'src' => $mainPath,
+            'size' => Storage::disk('public')->size($mainPath),
             'alt_text' => $fileName,
             'user_id' => Auth::id(),
-            'extension' => $extension,
             'description' => null,
         ]);
     }
@@ -41,43 +57,48 @@ class MediaRepository
     public function updateByRequest(array $data, Media $media): Media
     {
         // Step 1: Get the base name from input
-        $basename = $data['name']; // Example: "Suman Profile"
+        $basename = $data['name'];
         $newName = $basename;
         $count = 1;
 
-        // Step 2: Ensure the display name (name) is unique in the database
-        // This will make it "Suman Profile 1", "Suman Profile 2", etc.
         while (Media::whereName($newName)->where('id', '!=', $media->id)->exists()) {
             $newName = $basename . ' ' . $count;
             $count++;
         }
 
-        // Step 3: Prepare for physical file renaming
+        // Step 2: Prepare for physical file renaming
         $oldPath = $media->src;
-        $extension = pathinfo($oldPath, PATHINFO_EXTENSION);
         $directory = dirname($oldPath);
-
-        // Create a slugged version of the unique display name
-        // Example: "Suman Profile 1" becomes "suman-profile-1.png"
         $sluggedName = Str::slug($newName);
-        $newFileNameOnly = $sluggedName . '.' . $extension;
+        
+        $newPath = "{$directory}/{$sluggedName}.webp";
+        $newThumbPath = "{$directory}/{$sluggedName}-thumb.webp";
+        $newMediumPath = "{$directory}/{$sluggedName}-medium.webp";
+        $newLargePath = "{$directory}/{$sluggedName}-large.webp";
 
-        // Construct the full new path
-        $newPath = ($directory === '.' || $directory === '/') ? $newFileNameOnly : $directory . '/' . $newFileNameOnly;
-
-        // Step 4: Physically rename the file in storage
+        // Rename all variations
         if (Storage::disk('public')->exists($oldPath)) {
-            // Only move if the path has actually changed
             if ($oldPath !== $newPath) {
                 Storage::disk('public')->move($oldPath, $newPath);
+                
+                // Rename variants if they exist
+                $oldBase = pathinfo($oldPath, PATHINFO_FILENAME);
+                $variants = ['-thumb', '-medium', '-large'];
+                foreach ($variants as $variant) {
+                    $oldV = "{$directory}/{$oldBase}{$variant}.webp";
+                    $newV = "{$directory}/{$sluggedName}{$variant}.webp";
+                    if (Storage::disk('public')->exists($oldV)) {
+                        Storage::disk('public')->move($oldV, $newV);
+                    }
+                }
             }
         }
 
-        // Step 5: Update the database record with everything
+        // Step 3: Update database record
         $media->update([
-            'name' => $newName, // Saves: Suman Profile 1
-            'file_name' => $newFileNameOnly, // Saves: suman-profile-1.png
-            'src' => $newPath, // Saves: path/to/suman-profile-1.png
+            'name' => $newName,
+            'file_name' => "{$sluggedName}.webp",
+            'src' => $newPath,
             'alt_text' => $data['alt_text'] ?? $newName,
             'description' => $data['description'] ?? $media->description,
         ]);

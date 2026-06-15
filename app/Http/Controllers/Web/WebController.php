@@ -61,7 +61,7 @@ class WebController extends Controller
     public function productDetails($slug)
     {
         // Make sure the product exists or not
-        $product = Product::with(['sizes', 'colors', 'tags', 'details'])
+        $product = Product::with(['sizes', 'colors', 'tags', 'details', 'media', 'inventories.media', 'inventories.color', 'inventories.size'])
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -77,6 +77,25 @@ class WebController extends Controller
         } else {
             $finalRating = 0;
         }
+
+        $inventoriesJson = $product->inventories->map(function ($inventory) use ($product) {
+            $imageUrl = null;
+            if ($inventory->media) {
+                $imageUrl = $inventory->media->medium_url;
+            }
+
+            return [
+                'id' => $inventory->id,
+                'size_id' => $inventory->size_id,
+                'color_id' => $inventory->color_id,
+                'color_name' => $inventory->color->name ?? 'N/A',
+                'stock' => $inventory->stock,
+                'price' => $inventory->use_main_price == 1 ? $product->price : $inventory->price,
+                'discount' => $inventory->use_main_discount == 1 ? $product->discount : $inventory->discount,
+                'image' => $imageUrl,
+            ];
+        });
+
         // Return view
         return view('web.single-product', [
             'product'         => $product,
@@ -85,7 +104,8 @@ class WebController extends Controller
             'tags'            => $product->tags,
             'relatedProducts' => $relatedProducts,
             'productReview'   => $productReview,
-            'finalRating'     => $finalRating
+            'finalRating'     => $finalRating,
+            'inventoriesJson' => $inventoriesJson
         ]);
     }
 

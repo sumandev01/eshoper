@@ -22,7 +22,7 @@
                         @endif
                     </div>
                     <img class="img-fluid w-100" src="{{ $product->thumbnail }}"
-                        style="aspect-ratio: 1/1; object-fit: cover;" alt="{{ $product->name }}">
+                        style="aspect-ratio: 1/1; object-fit: cover;" alt="{{ $product->name }}" loading="lazy">
                     @if ($product->inventories->count() > 0)
                         <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"
                             style="bottom: 0; left: 0; width: 100%;">

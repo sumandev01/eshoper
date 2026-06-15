@@ -26,12 +26,12 @@
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner border" id="carousel-images-container">
                         <div class="carousel-item active">
-                            <img id="main-image-preview" class="w-100 h-100" src="{{ $product?->thumbnail }}"
+                            <img id="main-image-preview" class="w-100 h-100" src="{{ $product?->media?->medium_url ?? asset('default.webp') }}"
                                 style="aspect-ratio: 1/1; object-fit: contain;" alt="Image" loading="lazy">
                         </div>
                         @foreach ($product?->galleries ?? [] as $gallery)
                             <div class="carousel-item">
-                                <img class="w-100 h-100" src="{{ Storage::url($gallery?->src) }}"
+                                <img class="w-100 h-100" src="{{ $gallery?->large_url }}"
                                     style="aspect-ratio: 1/1; object-fit: contain;" alt="Image" loading="lazy">
                             </div>
                         @endforeach
@@ -71,9 +71,9 @@
 
                         if (isset($productInventory)) {
                             $mainPrice =
-                                $productInventory?->user_main_price == 1 ? $product?->price : $productInventory?->price;
+                                $productInventory?->use_main_price == 1 ? $product?->price : $productInventory?->price;
                             $discountPrice =
-                                $productInventory?->user_main_discount == 1
+                                $productInventory?->use_main_discount == 1
                                     ? $product?->discount
                                     : $productInventory?->discount;
                         }
@@ -370,19 +370,22 @@
 @endpush
 @push('script')
     <script>
+        const productInventories = @json($inventoriesJson);
+
         $(document).ready(function() {
             const sizeInputs = $('#main-size-form .variable-size-input');
             const hasVariants = sizeInputs.length > 0;
             const productId = "{{ $product->id }}";
             let currentStock = parseInt("{{ $product->stock }}") || 0;
             let selectInventoryId = null;
-            const OrginalThumbnail = "{{ $product->thumbnail }}";
+            const OriginalThumbnail = "{{ $product?->media?->medium_url ?? asset('default.webp') }}";
+            const currencySymbol = "{{ $siteSettings?->currency_symbol }}";
 
             function toggleCartControls(enable) {
                 $('#add-to-cart-btn, #product-quantity, .btn-plus, .btn-minus').prop('disabled', !enable);
             }
 
-            if (!hasVariants && currentStock >= 0) {
+            if (!hasVariants && currentStock > 0) {
                 toggleCartControls(true);
             } else {
                 toggleCartControls(false);
@@ -396,36 +399,30 @@
                 let colorMessage = $('#color-selection-message');
 
                 colorContainer.empty();
-                colorMessage.show().text('Loading available colors...');
+                colorMessage.hide();
                 toggleCartControls(false);
                 stockDisplay.html('<span class="text-muted fw-bold">Please select color</span>');
 
-                $.ajax({
-                    url: "{{ route('getAvailableColors') }}",
-                    method: 'GET',
-                    data: {
-                        product_id: productId,
-                        size_id: sizeId
-                    },
-                    success: function(response) {
-                        colorMessage.hide();
-                        if (response.availableColors.length > 0) {
-                            let colorHtml = '';
-                            response.availableColors.forEach(function(color) {
-                                colorHtml += `
-                                    <div class="custom-control custom-radio custom-control-inline">
-                                        <input type="radio" class="custom-control-input variable-color-input"
-                                            id="color-${color.id}" name="color" value="${color.id}">
-                                        <label class="custom-control-label" for="color-${color.id}">${color.name}</label>
-                                    </div>`;
-                            });
-                            colorContainer.html(colorHtml);
-                        } else {
-                            colorMessage.show().text('No colors available').addClass(
-                                'text-danger');
-                        }
-                    }
-                });
+                // Filter colors available for this size from local JSON
+                let availableColors = productInventories.filter(inv => inv.size_id == sizeId);
+
+                if (availableColors.length > 0) {
+                    let colorHtml = '';
+                    // Use a Map to ensure unique colors are displayed
+                    let uniqueColors = [...new Map(availableColors.map(item => [item.color_id, item])).values()];
+                    
+                    uniqueColors.forEach(function(inv) {
+                        colorHtml += `
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input variable-color-input"
+                                    id="color-${inv.color_id}" name="color" value="${inv.color_id}">
+                                <label class="custom-control-label" for="color-${inv.color_id}">${inv.color_name}</label>
+                            </div>`;
+                    });
+                    colorContainer.html(colorHtml);
+                } else {
+                    colorMessage.show().text('No colors available').addClass('text-danger');
+                }
             });
 
             // Color Change
@@ -436,52 +433,53 @@
                 let stockDisplay = $('#variant-stock-display');
                 let qtyInput = $('#product-quantity');
 
+                console.log("Selected Size:", sizeId, "Selected Color:", colorId);
+
                 if (sizeId && colorId) {
-                    stockDisplay.html('<span class="text-muted fw-bold">Checking stock...</span>');
-                    $.ajax({
-                        url: "{{ route('getSignleProductVariantBySizeId') }}",
-                        method: 'GET',
-                        data: {
-                            product_id: productId,
-                            size_id: sizeId,
-                            color_id: colorId
-                        },
-                        success: function(response) {
-                            currentStock = parseInt(response.stock) || 0;
-                            qtyInput.val(1);
-                            selectInventoryId = response.inventory_id;
+                    // Find specific inventory from local JSON
+                    let variant = productInventories.find(inv => parseInt(inv.size_id) === parseInt(sizeId) && parseInt(inv.color_id) === parseInt(colorId));
 
-                            if (response.image) {
-                                $('#main-image-preview').attr('src', response.image);
-                                $('#product-carousel').carousel(0);
-                            } else {
-                                $('#main-image-preview').attr('src', OrginalThumbnail);
-                                $('#product-carousel').carousel(0);
-                            }
+                    console.log("Variant Found:", variant);
 
-                            if (currentStock > 0) {
-                                toggleCartControls(true);
-                                qtyInput.attr('max', currentStock);
-                                stockDisplay.html(
-                                    `<span class="text-success fw-bold">${currentStock} In Stock</span>`
-                                );
-                            } else {
-                                toggleCartControls(false);
-                                stockDisplay.html(
-                                    '<span class="text-danger fw-bold">Out of Stock</span>');
-                            }
+                    if (variant) {
+                        currentStock = parseInt(variant.stock) || 0;
+                        qtyInput.val(1);
+                        selectInventoryId = variant.id;
 
-                            // Price update...
-                            let finalPrice = (response.use_main_price == 1 || !response.price) ?
-                                response.product_price : response.price;
-                            let finalDiscount = (response.use_main_discount == 1 || !response
-                                .discount) ? response.product_discount : response.discount;
-                            let priceHtml = finalDiscount > 0 ?
-                                `<h3 class="font-weight-semi-bold mb-0 product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>${finalDiscount}</h3><h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del><span>{{ $siteSettings?->currency_symbol }}</span>${finalPrice}</del></h4>` :
-                                `<h3 class="font-weight-semi-bold product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>${finalPrice}</h3>`;
-                            priceContainer.html(priceHtml);
+                        // Update variant image
+                        if (variant.image) {
+                            console.log("Updating image to:", variant.image);
+                            $('#main-image-preview').attr('src', variant.image);
+                        } else {
+                            console.log("No variant image, using original:", OriginalThumbnail);
+                            $('#main-image-preview').attr('src', OriginalThumbnail);
                         }
-                    });
+                        
+                        // Move carousel to first item to show the updated image
+                        $('#product-carousel').carousel(0);
+
+                        if (currentStock > 0) {
+                            toggleCartControls(true);
+                            qtyInput.attr('max', currentStock);
+                            stockDisplay.html(
+                                `<span class="text-success fw-bold">${currentStock} In Stock</span>`
+                            );
+                        } else {
+                            toggleCartControls(false);
+                            stockDisplay.html(
+                                '<span class="text-danger fw-bold">Out of Stock</span>');
+                        }
+
+                        // Price update
+                        let priceHtml = '';
+                        if (variant.discount > 0) {
+                            priceHtml = `<h3 class="font-weight-semi-bold mb-0 product_main_price"><span>${currencySymbol}</span>${variant.discount}</h3>
+                                         <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del><span>${currencySymbol}</span>${variant.price}</del></h4>`;
+                        } else {
+                            priceHtml = `<h3 class="font-weight-semi-bold product_main_price"><span>${currencySymbol}</span>${variant.price}</h3>`;
+                        }
+                        priceContainer.html(priceHtml);
+                    }
                 }
             });
 

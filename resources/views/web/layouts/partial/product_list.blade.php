@@ -1,6 +1,6 @@
 <div class="row pb-3">
     @forelse ($products as $product)
-        <div class="col-lg-4 col-md-6 col-sm-12 pb-1 product-card">
+        <div class="col-lg-4 col-md-6 col-sm-12 pb-1 product-card" data-original-image="{{ $product->thumbnail }}">
             <div class="card product-item border-0 mb-4 product-card position-relative"
                 data-product-id="{{ $product->id }}" data-main-price="{{ $product->price }}"
                 data-discount-price="{{ $product->discount }}">
@@ -23,8 +23,8 @@
                             <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
                         @endif
                     </div>
-                    <img class="img-fluid w-100" src="{{ $product->thumbnail }}"
-                        style="aspect-ratio: 1/1; object-fit: cover;" alt="{{ $product->name }}">
+                    <img class="img-fluid w-100 product-main-image" src="{{ $product->thumbnail }}"
+                        style="aspect-ratio: 1/1; object-fit: cover;" alt="{{ $product->name }}" loading="lazy">
                     @if ($product->inventories->count() > 0)
                         <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"
                             style="bottom: 0; left: 0; width: 100%;">

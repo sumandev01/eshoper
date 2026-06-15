@@ -77,12 +77,7 @@ class MediaController extends Controller
 
     public function destroy(Media $media)
     {
-        // File delete
-        if ($media->src && Storage::disk('public')->exists($media->src)) {
-            Storage::disk('public')->delete($media->src);
-        }
-
-        // Record delete
+        // Record delete (Model event handles file cleanup)
         if ($media->delete()) {
             return redirect()->route('admin.media')->with('success', 'Media deleted successfully.');
         }

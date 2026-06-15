@@ -22,7 +22,7 @@ class ProductWebService
             ->get();
 
         return $inventories->map(function ($inventory) {
-            $mediaUrl = $inventory->media && $inventory->media->src ? Storage::url($inventory->media->src) : '';
+            $mediaUrl = $inventory->media ? $inventory->media->medium_url : '';
 
             $basePrice = ($inventory->use_main_price == 1 || $inventory->price === null)
                 ? (float)$inventory->product->price
@@ -162,7 +162,7 @@ class ProductWebService
 
     public function getTrendingProducts()
     {
-        $trendyProducts = Product::where('is_trending', 1)
+        $trendyProducts = Product::with(['media', 'inventories'])->where('is_trending', 1)
             ->where('status', 1)
             ->take(8)
             ->get();
@@ -171,7 +171,7 @@ class ProductWebService
 
         if ($remaining > 0) {
             $trendyIds = $trendyProducts->pluck('id');
-            $moreTrendy = Product::where('status', 1)
+            $moreTrendy = Product::with(['media', 'inventories'])->where('status', 1)
                 ->whereNotIn('id', $trendyIds)
                 ->inRandomOrder()
                 ->take($remaining)
