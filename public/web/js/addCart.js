@@ -21,8 +21,11 @@ $(document).ready(function () {
     $(document).on("click", ".shop-add-to-cart", function (e) {
         e.preventDefault();
 
-        let card = $(this).closest(".product-card");
-        let productId = $(this).data("product-id");
+        let $btn = $(this);
+        if ($btn.hasClass("disabled")) return;
+
+        let card = $btn.closest(".product-card");
+        let productId = $btn.data("product-id");
         let sizeId = card.find(".shop-size-selector").val();
         let colorId = card.find(".shop-color-selector").val();
 
@@ -183,39 +186,62 @@ function updateProductUI(element) {
     let selected = variants.find((v) => v.color_id == colorId && v.size_id == sizeId);
     if (!selected) return;
 
+    // --- IMAGE UPDATE LOGIC ---
+    let imgEl = card.find(".product-main-image");
+    if (imgEl.length > 0) {
+        // Save the original fallback image on first interaction
+        if (!imgEl.data("original-src")) {
+            imgEl.data("original-src", imgEl.attr("src"));
+        }
+        
+        // Swap to variant image, fallback to original if null
+        let newSrc = selected.image ? selected.image : imgEl.data("original-src");
+        
+        if (imgEl.attr("src") !== newSrc) {
+            imgEl.css("opacity", "0.6").css("transition", "opacity 0.2s");
+            imgEl.attr("src", newSrc).on('load', function() {
+                $(this).css("opacity", "1");
+            });
+        }
+    }
+
     // --- PRICE & DISCOUNT LOGIC ---
-    let basePrice = parseFloat(selected.price);
-    let discountPrice = parseFloat(selected.discount_price);
+    let basePrice = parseFloat(selected.price) || 0;
+    let discountPrice = parseFloat(selected.discount_price) || 0;
+    
+    let saveBox = card.find(".save-amount-box");
+    let saveAmountText = card.find(".save-amount");
 
     if (discountPrice > 0 && discountPrice < basePrice) {
         card.find(".variant-price").text(
-            siteCurrency + discountPrice.toLocaleString("en-IN"),
+            siteCurrency + discountPrice.toLocaleString("en-IN")
         );
         card.find(".main-price")
             .text(siteCurrency + basePrice.toLocaleString("en-IN"))
             .removeClass("d-none");
 
-        card.find(".save-amount-box").removeClass("d-none");
+        saveBox.removeClass("d-none").addClass("d-block");
         let savings = basePrice - discountPrice;
-        card.find(".save-amount").text(
-            "Save " + siteCurrency + savings.toLocaleString("en-IN"),
+        saveAmountText.text(
+            "Save " + siteCurrency + savings.toLocaleString("en-IN")
         );
     } else {
         card.find(".variant-price").text(siteCurrency + basePrice.toLocaleString('en-IN'));
         card.find(".main-price").addClass("d-none");
-        card.find(".save-amount-box").addClass("d-none");
+        
+        saveBox.removeClass("d-block").addClass("d-none");
     }
 
     // --- STOCK & BUTTON LOGIC ---
     let addToCartBtn = card.find(".shop-add-to-cart");
     if (selected.stock <= 0) {
-        addToCartBtn.addClass("disabled").text("Out of Stock");
+        addToCartBtn.addClass("disabled").text("Out of Stock").css("pointer-events", "none");
     } else {
         addToCartBtn
             .removeClass("disabled")
             .html(
-                '<i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart',
-            );
+                '<i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart'
+            ).css("pointer-events", "auto");
     }
 }
 

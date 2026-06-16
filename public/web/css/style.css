@@ -5916,7 +5916,7 @@ a.close.disabled {
   position: absolute;
   top: 0;
   bottom: 0;
-  z-index: 1;
+  z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9547,7 +9547,7 @@ a.text-dark:hover, a.text-dark:focus {
 
 .cat-item .cat-img img,
 .product-item .product-img img {
-  transition: .5s;
+  transition: .5s !important;
 }
 
 .cat-item:hover .cat-img img,

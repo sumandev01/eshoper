@@ -11,15 +11,30 @@ class Product extends Model
 {
     protected $guarded = ['id'];
 
-    // public function category()
-    // {
-    //     return $this->belongsTo(Category::class);
-    // }
+    /**
+     * Scope for active products.
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
 
-    // public function subCategory()
-    // {
-    //     return $this->belongsTo(SubCategory::class);
-    // }
+    /**
+     * Surgical eager loading for product listings.
+     * Prevents memory bloat and N+1 issues by selecting specific columns.
+     */
+    public function scopeWithListingDefaults($query)
+    {
+        return $query->select(['id', 'name', 'slug', 'price', 'discount', 'media_id', 'status'])
+            ->with([
+                'media:id,src',
+                'details:id,product_id,category_id,sub_category_id,brand_id',
+                'inventories' => function ($q) {
+                    $q->select(['id', 'product_id', 'size_id', 'color_id', 'price', 'discount', 'stock', 'media_id', 'use_main_price', 'use_main_discount'])
+                        ->with(['color:id,name', 'size:id,name', 'media:id,src']);
+                }
+            ]);
+    }
 
     public function brand()
     {

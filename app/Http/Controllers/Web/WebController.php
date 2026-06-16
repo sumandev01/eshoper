@@ -35,7 +35,7 @@ class WebController extends Controller
     }
     public function root()
     {
-        $products = Product::latest('id')->where('status', 1)->get();
+        $products = Product::active()->withListingDefaults()->latest('id')->take(20)->get();
         $latestProducts = $products->take(8);
         $trendingProducts = $this->webService->getTrendingProducts();
         $categories = Category::latest('id')->withCount('products')->get();
@@ -51,9 +51,8 @@ class WebController extends Controller
             return view('web.layouts.partial.product_list', compact('products'))->render();
         }
 
-        $allProductIds = Product::whereStatus(1)->pluck('id');
         $shopSidebarData = $filterService->shopSidebar();
-        [$minPrice, $maxPrice] = $filterService->getPriceRange($allProductIds);
+        [$minPrice, $maxPrice] = $filterService->getPriceRange();
 
         return view('web.products', compact('products', 'minPrice', 'maxPrice'), $shopSidebarData);
     }
@@ -190,10 +189,10 @@ class WebController extends Controller
             return response()->json([]);
         }
 
-        $products = Product::whereStatus(1)
+        $products = Product::active()
             ->where('name', 'like', '%' . $request->search . '%')
-            ->with('media')
             ->select('id', 'name', 'slug', 'price', 'discount', 'media_id')
+            ->with('media:id,src')
             ->limit(6)
             ->get()
             ->map(function ($product) {
@@ -214,19 +213,14 @@ class WebController extends Controller
     public function categoryProducts($slug, ProductFilterService $filterService)
     {
         $category = Category::whereSlug($slug)->firstOrFail();
-        $products = $filterService->CategoryFilter(request(), $category);
+        $products = $filterService->filter(request(), $category);
 
         if (request()->ajax()) {
             return view('web.layouts.partial.product_list', compact('products'))->render();
         }
-        // Get all product IDs for the category to fetch sidebar data and price range
-        $allProductIds = Product::whereStatus(1)
-            ->whereHas('details', function ($q) use ($category) {
-                $q->where('category_id', $category->id);
-            })->pluck('id');
 
-        $sidebarData = $filterService->categorySidebar($allProductIds);
-        [$minPrice, $maxPrice] = $filterService->getPriceRange($allProductIds);
+        $sidebarData = $filterService->shopSidebar($category);
+        [$minPrice, $maxPrice] = $filterService->getPriceRange($category);
 
         return view('web.category-products', compact('products', 'category', 'minPrice', 'maxPrice'), $sidebarData);
     }
@@ -235,19 +229,17 @@ class WebController extends Controller
     public function subcategoryProducts($slug, ProductFilterService $filterService)
     {
         $subcategory = SubCategory::whereSlug($slug)->firstOrFail();
-        $products = $filterService->CategoryFilter(request(), null, $subcategory);
+        $products = $filterService->filter(request(), null, $subcategory);
 
         if (request()->ajax()) {
             return view('web.layouts.partial.product_list', compact('products'))->render();
         }
-        // Get all product IDs for the subcategory to fetch sidebar data and price range
-        $allProductIds = Product::whereStatus(1)
-            ->whereHas('details', function ($q) use ($subcategory) {
-                $q->where('sub_category_id', $subcategory->id);
-            })->pluck('id');
 
-        $sidebarData = $filterService->categorySidebar($allProductIds);
-        [$minPrice, $maxPrice] = $filterService->getPriceRange($allProductIds);
+        // We can reuse category sidebar logic for subcategories if needed, 
+        // or just use global sidebar. Here we use the subcategory's parent category if needed.
+        $category = $subcategory->category; 
+        $sidebarData = $filterService->shopSidebar($category);
+        [$minPrice, $maxPrice] = $filterService->getPriceRange($category);
 
         return view('web.subcategory-products', compact('products', 'subcategory', 'minPrice', 'maxPrice'), $sidebarData);
     }

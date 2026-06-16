@@ -133,8 +133,9 @@ class ProductWebService
         $related = collect();
 
         if ($categoryId) {
-            $related = Product::where('id', '!=', $product->id)
-                ->where('status', 1)
+            $related = Product::active()
+                ->withListingDefaults()
+                ->where('id', '!=', $product->id)
                 ->whereHas('details', function ($detailsQuery) use ($categoryId) {
                     $detailsQuery->where('category_id', $categoryId);
                 })
@@ -148,8 +149,9 @@ class ProductWebService
 
             $excludedIds = $related->pluck('id')->push($product->id);
 
-            $randomProducts = Product::whereNotIn('id', $excludedIds)
-                ->where('status', 1)
+            $randomProducts = Product::active()
+                ->withListingDefaults()
+                ->whereNotIn('id', $excludedIds)
                 ->inRandomOrder()
                 ->limit($remaining)
                 ->get();
@@ -162,8 +164,9 @@ class ProductWebService
 
     public function getTrendingProducts()
     {
-        $trendyProducts = Product::with(['media', 'inventories'])->where('is_trending', 1)
-            ->where('status', 1)
+        $trendyProducts = Product::active()
+            ->withListingDefaults()
+            ->where('is_trending', 1)
             ->take(8)
             ->get();
 
@@ -171,7 +174,8 @@ class ProductWebService
 
         if ($remaining > 0) {
             $trendyIds = $trendyProducts->pluck('id');
-            $moreTrendy = Product::with(['media', 'inventories'])->where('status', 1)
+            $moreTrendy = Product::active()
+                ->withListingDefaults()
                 ->whereNotIn('id', $trendyIds)
                 ->inRandomOrder()
                 ->take($remaining)

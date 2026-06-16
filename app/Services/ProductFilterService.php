@@ -10,147 +10,63 @@ use Illuminate\Support\Facades\DB;
 
 class ProductFilterService
 {
-    public function filter($request)
+    /**
+     * Helper to get the effective price SQL expression (considering discounts).
+     */
+    protected function getEffectivePriceSql($table = 'products')
     {
-        // Initial product query with active status and eager loading
-        $productsQuery = Product::with(['media', 'inventories.media', 'inventories.color', 'inventories.size', 'details'])
-            ->whereStatus(1);
-            
-        // Price filter (Remove $ or commas from input before query)
+        return "(CASE 
+            WHEN {$table}.discount IS NOT NULL AND {$table}.discount > 0 AND {$table}.discount < {$table}.price 
+            THEN {$table}.discount 
+            ELSE {$table}.price 
+        END)";
+    }
+
+    /**
+     * Unified filter method for all product listing pages.
+     */
+    public function filter($request, $category = null, $subcategory = null)
+    {
+        $productsQuery = Product::withListingDefaults()
+            ->active();
+
+        // Apply Category/Subcategory context
+        if ($category || $subcategory) {
+            $productsQuery->whereHas('details', function ($q) use ($category, $subcategory) {
+                if ($subcategory) {
+                    $q->where('sub_category_id', $subcategory->id);
+                } else {
+                    $q->where('category_id', $category->id);
+                }
+            });
+        }
+
+        // Price Filter (Checks both main product and variants)
         if ($request->filled('min_price') && $request->filled('max_price')) {
             $min = (float) preg_replace('/[^\d.]/', '', $request->min_price);
             $max = (float) preg_replace('/[^\d.]/', '', $request->max_price);
 
-            $productsQuery->whereRaw("
-                (
-                    CASE 
-                        WHEN discount IS NOT NULL 
-                            AND discount > 0 
-                            AND discount < price
-                        THEN discount
-                        ELSE price
-                    END
-                ) BETWEEN ? AND ?
-            ", [$min, $max], 'and');
-        }
-
-
-        // Color filter (Support multiple colors using whereIn)
-        if ($request->filled('colors')) {
-            $productsQuery->whereHas('colors', function ($q) use ($request) {
-                $q->whereIn('color_id', (array) $request->colors);
+            $productsQuery->where(function ($query) use ($min, $max) {
+                $query->whereRaw("{$this->getEffectivePriceSql()} BETWEEN ? AND ?", [$min, $max])
+                    ->orWhereHas('inventories', function ($q) use ($min, $max) {
+                        $q->whereRaw("{$this->getEffectivePriceSql('product_inventories')} BETWEEN ? AND ?", [$min, $max]);
+                    });
             });
-        }
-
-        // Size filter (Support multiple sizes using whereIn)
-        if ($request->filled('sizes')) {
-            $productsQuery->whereHas('sizes', function ($q) use ($request) {
-                $q->whereIn('size_id', (array) $request->sizes);
-            });
-        }
-
-        // Category filter
-        if ($request->filled('categories')) {
-            $productsQuery->whereHas('categories', function ($q) use ($request) {
-                $q->whereIn('category_id', (array) $request->categories);
-            });
-        }
-
-        // Search filter by product name
-        if ($request->filled('search')) {
-            $productsQuery->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        // Sorting logic (Latest, Price Low to High, Price High to Low)
-        $this->applySorting($productsQuery, $request);
-
-        // Get final results with pagination
-        return $productsQuery->paginate(9)->withQueryString();
-    }
-
-    public function applySorting($productsQuery, $request)
-    {
-        if ($request->filled('sort')) {
-            if ($request->sort == 'price_low') {
-                $productsQuery->orderBy('price', 'asc');
-            } elseif ($request->sort == 'price_high') {
-                $productsQuery->orderBy('price', 'desc');
-            } else {
-                $productsQuery->latest('id');
-            }
-        } else {
-            // Default sorting
-            $productsQuery->latest('id');
-        }
-    }
-
-    public function shopSidebar()
-    {
-        // Fetch colors with product count
-        $colorQuery = Color::whereHas('colors', function ($query) {
-            $query->where('status', 1);
-        })->withCount(['colors' => function ($query) {
-            $query->where('status', 1)->select(DB::raw('COUNT(DISTINCT product_id)'));
-        }])->latest('id')->get();
-
-        // Fetch sizes with product count
-        $sizeQuery = Size::whereHas('sizes', function ($query) {
-            $query->where('status', 1);
-        })->withCount(['sizes' => function ($query) {
-            $query->where('status', 1)->select(DB::raw('COUNT(DISTINCT product_id)'));
-        }])->latest('id')->get();
-
-        // Fetch categories with product count
-        $categoryQuery = Category::whereHas('categories', function ($query) {
-            $query->where('status', 1);
-        })->withCount(['categories' => function ($query) {
-            $query->where('status', 1)->distinct();
-        }])->orderByDesc('categories_count')->get();
-
-        return compact('colorQuery', 'sizeQuery', 'categoryQuery');
-    }
-
-    public function CategoryFilter($request, $category, $subcategory = null)
-    {
-        $productsQuery = Product::with(['media', 'inventories.media', 'inventories.color', 'inventories.size', 'details'])
-            ->whereStatus(1);
-
-        // Filter products by category or subcategory
-        if ($subcategory) {
-            $productsQuery->whereHas('details', function ($q) use ($subcategory) {
-                $q->where('sub_category_id', $subcategory->id);
-            });
-        } else {
-            $productsQuery->whereHas('details', function ($q) use ($category) {
-                $q->where('category_id', $category->id);
-            });
-        }
-
-        // Price filter
-        if ($request->filled('min_price') && $request->filled('max_price')) {
-            $min = (float) preg_replace('/[^\d.]/', '', $request->min_price);
-            $max = (float) preg_replace('/[^\d.]/', '', $request->max_price);
-            $productsQuery->whereRaw("
-            (CASE 
-                WHEN discount IS NOT NULL AND discount > 0 AND discount < price
-                THEN discount
-                ELSE price
-            END) BETWEEN ? AND ?
-        ", [$min, $max], 'and');
         }
 
         // Color filter
         if ($request->filled('colors')) {
-            $productsQuery->whereHas('colors', function ($q) use ($request) {
-                $q->whereIn('color_id', (array) $request->colors);
-            });
+            $productsQuery->whereHas('colors', fn($q) => $q->whereIn('color_id', (array) $request->colors));
         }
 
         // Size filter
         if ($request->filled('sizes')) {
-            $productsQuery->whereHas('sizes', function ($q) use ($request) {
-                $q->whereIn('size_id', (array) $request->sizes);
-            });
+            $productsQuery->whereHas('sizes', fn($q) => $q->whereIn('size_id', (array) $request->sizes));
+        }
+
+        // Dynamic Category filter (from sidebar checkboxes)
+        if ($request->filled('categories')) {
+            $productsQuery->whereHas('details', fn($q) => $q->whereIn('category_id', (array) $request->categories));
         }
 
         // Search filter
@@ -158,65 +74,77 @@ class ProductFilterService
             $productsQuery->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Sorting
         $this->applySorting($productsQuery, $request);
 
-        return $productsQuery->paginate(9)->withQueryString();
+        return $productsQuery->paginate(12)->withQueryString();
     }
 
-    public function getPriceRange($productIds)
+    /**
+     * Handles sorting based on effective price or recency.
+     */
+    public function applySorting($productsQuery, $request)
     {
-        $productMin = DB::table('products')->whereIn('id', $productIds)
-            ->selectRaw('MIN(CASE WHEN discount IS NOT NULL AND discount > 0 AND discount < price THEN discount ELSE price END) as final_price')
-            ->value('final_price');
+        $sort = $request->get('sort');
+        $priceSql = $this->getEffectivePriceSql();
 
-        $productMax = DB::table('products')->whereIn('id', $productIds)
-            ->selectRaw('MAX(CASE WHEN discount IS NOT NULL AND discount > 0 AND discount < price THEN discount ELSE price END) as final_price')
-            ->value('final_price');
+        if ($sort === 'price_low') {
+            $productsQuery->orderByRaw("$priceSql ASC");
+        } elseif ($sort === 'price_high') {
+            $productsQuery->orderByRaw("$priceSql DESC");
+        } else {
+            $productsQuery->latest('id');
+        }
+    }
 
-        $inventoryMin = DB::table('product_inventories')->whereIn('product_id', $productIds)
-            ->whereNotNull('price')
-            ->selectRaw('MIN(CASE WHEN discount IS NOT NULL AND discount > 0 AND discount < price THEN discount ELSE price END) as final_price')
-            ->value('final_price');
-
-        $inventoryMax = DB::table('product_inventories')->whereIn('product_id', $productIds)
-            ->whereNotNull('price')
-            ->selectRaw('MAX(CASE WHEN discount IS NOT NULL AND discount > 0 AND discount < price THEN discount ELSE price END) as final_price')
-            ->value('final_price');
-
-        $minPrice = 0;
-        $maxPrice = 0;
-
-        if ($productMin !== null && $inventoryMin !== null) {
-            $minPrice = min($productMin, $inventoryMin);
-            $maxPrice = max($productMax, $inventoryMax);
-        } elseif ($productMin !== null) {
-            $minPrice = $productMin;
-            $maxPrice = $productMax;
-        } elseif ($inventoryMin !== null) {
-            $minPrice = $inventoryMin;
-            $maxPrice = $inventoryMax;
+    /**
+     * Gets the min and max prices for the current context (category or global).
+     * Now uses pure SQL for maximum performance.
+     */
+    public function getPriceRange($category = null)
+    {
+        $query = DB::table('products')->where('status', 1);
+        
+        if ($category) {
+            $query->join('product_details', 'products.id', '=', 'product_details.product_id')
+                  ->where('product_details.category_id', $category->id);
         }
 
-        return [$minPrice, $maxPrice];
+        $priceExpr = $this->getEffectivePriceSql('products');
+        $stats = $query->selectRaw("MIN($priceExpr) as min_p, MAX($priceExpr) as max_p")->first();
+
+        return [(float)($stats->min_p ?? 0), (float)($stats->max_p ?? 0)];
     }
 
-    public function categorySidebar($productIds)
+    /**
+     * Generates sidebar counts for colors, sizes, and categories.
+     */
+    public function shopSidebar($category = null)
     {
-        // Fetch colors and sizes available for the given product IDs
-        $colorQuery = Color::whereHas('colors', function ($query) use ($productIds) {
-            $query->whereIn('product_inventories.product_id', $productIds);
-        })->withCount(['colors' => function ($query) use ($productIds) {
-            $query->whereIn('product_inventories.product_id', $productIds);
-        }])->latest('id')->get();
+        // Define a base subquery for active products to avoid loading IDs
+        $activeProductsSubquery = function($query) use ($category) {
+            $query->select('id')->from('products')->where('status', 1);
+            if ($category) {
+                $query->whereIn('id', function($q) use ($category) {
+                    $q->select('product_id')->from('product_details')->where('category_id', $category->id);
+                });
+            }
+        };
 
-        // Fetch sizes available for the given product IDs
-        $sizeQuery = Size::whereHas('sizes', function ($query) use ($productIds) {
-            $query->whereIn('product_inventories.product_id', $productIds);
-        })->withCount(['sizes' => function ($query) use ($productIds) {
-            $query->whereIn('product_inventories.product_id', $productIds);
-        }])->latest('id')->get();
+        // Fetch colors with counts
+        $colorQuery = Color::whereHas('colors', fn($q) => $q->whereIn('product_id', $activeProductsSubquery))
+            ->withCount(['colors' => fn($q) => $q->whereIn('product_id', $activeProductsSubquery)])
+            ->latest('id')->get();
 
-        return compact('colorQuery', 'sizeQuery');
+        // Fetch sizes with counts
+        $sizeQuery = Size::whereHas('sizes', fn($q) => $q->whereIn('product_id', $activeProductsSubquery))
+            ->withCount(['sizes' => fn($q) => $q->whereIn('product_id', $activeProductsSubquery)])
+            ->latest('id')->get();
+
+        // Fetch categories with counts
+        $categoryQuery = Category::whereHas('categories', fn($q) => $q->where('status', 1))
+            ->withCount(['categories' => fn($q) => $q->where('status', 1)])
+            ->orderByDesc('categories_count')->get();
+
+        return compact('colorQuery', 'sizeQuery', 'categoryQuery');
     }
 }
