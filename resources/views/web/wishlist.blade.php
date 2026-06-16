@@ -35,8 +35,22 @@
                         @forelse ($wishlists ?? [] as $item)
                             <tr data-item-id="{{ $item?->id }}">
                                 <td class="" style="max-width: 100px;">
-                                    <img src="{{ $item->product?->thumbnail }}" alt="" style="width: 100px;"
-                                        loading="lazy">
+                                    <div class="img-wrapper">
+                                        <div class="img-spinner"></div>
+                                        <img class="img-fluid w-100 optimized-image" src="{{ $item->product?->thumbnail }}"
+                                            alt="{{ $item->product?->name }}" loading="lazy" 
+                                            onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
+                                            onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
+                                        <script>
+                                            (function() {
+                                                let img = document.currentScript.previousElementSibling;
+                                                if (img && img.complete) {
+                                                    img.style.opacity = '1';
+                                                    img.previousElementSibling.style.display = 'none';
+                                                }
+                                            })();
+                                        </script>
+                                    </div>
                                 </td>
                                 <td class="text-left">
                                     <a class="text-dark nav-link px-0" style="text-decoration: none;"

@@ -235,6 +235,10 @@
                         let html = '';
 
                         products.forEach(function(product) {
+                            // Prefetch images for suggestions
+                            const prefetchImg = new Image();
+                            prefetchImg.src = product.thumbnail;
+
                             html += `
                                 <a href="/product/${product.slug}" style="
                                     display: flex;
@@ -248,15 +252,18 @@
                                 "
                                 onmouseover="this.style.background='#f8f8f8'"
                                 onmouseout="this.style.background='white'">
-                                    <img src="${product.thumbnail}" style="
-                                        width: 50px;
-                                        height: 50px;
-                                        object-fit: cover;
-                                        border-radius: 6px;
-                                        border: 1px solid #eee;
-                                        flex-shrink: 0;
-                                        loading: lazy;
-                                    " alt="${product.name}">
+                                    <div class="img-wrapper" style="width: 50px; height: 50px; flex-shrink: 0; border-radius: 6px; border: 1px solid #eee;">
+                                        <div class="img-spinner" style="width: 20px; height: 20px; border-width: 2px;"></div>
+                                        <img src="${product.thumbnail}" style="
+                                            width: 100%;
+                                            height: 100%;
+                                            object-fit: cover;
+                                            opacity: 0;
+                                            transition: opacity 0.3s;
+                                        " alt="${product.name}"
+                                        onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
+                                        onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
+                                    </div>
                                     <div style="flex: 1; min-width: 0;">
                                         <div style="
                                             font-size: 14px;
@@ -267,10 +274,10 @@
                                         ">${product.name}</div>
                                         <div style="margin-top: 3px;">
                                             ${product.discount > 0 ? `
-                                                    <span style="color: #000; font-weight: 600; font-size: 13px;">৳${product.discount}</span>
-                                                    <span style="color: #e74c3c; font-size: 12px; text-decoration: line-through; margin-left: 5px;">৳${product.price}</span>
+                                                    <span style="color: #000; font-weight: 600; font-size: 13px;">${siteCurrency}${product.discount}</span>
+                                                    <span style="color: #e74c3c; font-size: 12px; text-decoration: line-through; margin-left: 5px;">${siteCurrency}${product.price}</span>
                                                 ` : `
-                                                    <span style="color: #000; font-weight: 600; font-size: 13px;">৳${product.price}</span>
+                                                    <span style="color: #000; font-weight: 600; font-size: 13px;">${siteCurrency}${product.price}</span>
                                                 `}
                                         </div>
                                     </div>

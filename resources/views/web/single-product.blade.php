@@ -26,13 +26,41 @@
                 <div id="product-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner border" id="carousel-images-container">
                         <div class="carousel-item active">
-                            <img id="main-image-preview" class="w-100 h-100" src="{{ $product?->media?->medium_url ?? asset('default.webp') }}"
-                                style="aspect-ratio: 1/1; object-fit: contain;" alt="Image" loading="lazy">
+                            <div class="img-wrapper">
+                                <div class="img-spinner"></div>
+                                <img id="main-image-preview" class="w-100 h-100 optimized-image" src="{{ $product?->media?->medium_url ?? asset('default.webp') }}"
+                                    alt="Image" loading="lazy" 
+                                    onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
+                                    onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
+                                <script>
+                                    (function() {
+                                        let img = document.getElementById('main-image-preview');
+                                        if (img && img.complete) {
+                                            img.style.opacity = '1';
+                                            img.previousElementSibling.style.display = 'none';
+                                        }
+                                    })();
+                                </script>
+                            </div>
                         </div>
                         @foreach ($product?->galleries ?? [] as $gallery)
                             <div class="carousel-item">
-                                <img class="w-100 h-100" src="{{ $gallery?->large_url }}"
-                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="Image" loading="lazy">
+                                <div class="img-wrapper">
+                                    <div class="img-spinner"></div>
+                                    <img class="w-100 h-100 optimized-image" src="{{ $gallery?->large_url }}"
+                                        alt="Image" loading="lazy" 
+                                        onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
+                                        onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
+                                    <script>
+                                        (function() {
+                                            let img = document.currentScript.previousElementSibling;
+                                            if (img && img.complete) {
+                                                img.style.opacity = '1';
+                                                img.previousElementSibling.style.display = 'none';
+                                            }
+                                        })();
+                                    </script>
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -289,7 +317,8 @@
             <div class="col">
                 <div class="owl-carousel related-carousel">
                     @foreach ($relatedProducts ?? [] as $item)
-                        <div class="card product-item border-0 product-card" data-product-id="{{ $item?->id }}">
+                        <div class="card product-item border-0 product-card" data-product-id="{{ $item?->id }}"
+                            data-variants="{{ json_encode($item?->formatted_variants) }}">
                             <div
                                 class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
                                 <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
@@ -304,18 +333,31 @@
                                     style="top: 0; right: 0; z-index: 99;">
                                     @if ($item?->discount > 0 && $item?->discount < $item?->price)
                                         <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                                            Save <span>{{ $siteSettings?->currency_symbol }}</span>{{ $item?->price - $item?->discount }}
+                                            Save <span>{{ $siteSettings?->currency_symbol }}</span>{{ formatBDT($item?->price - $item?->discount) }}
                                         </p>
                                     @else
                                         <p class="save-amount d-none p-2 bg-primary" style="font-size: 13px;"></p>
                                     @endif
                                 </div>
-                                <img class="img-fluid w-100" src="{{ $item?->thumbnail }}"
-                                    style="aspect-ratio: 1/1; object-fit: contain;" alt="{{ $item?->name }}"
-                                    loading="lazy">
+                                <div class="img-wrapper">
+                                    <div class="img-spinner"></div>
+                                    <img class="img-fluid w-100 product-main-image optimized-image" src="{{ $item?->thumbnail }}"
+                                        alt="{{ $item?->name }}" loading="lazy" 
+                                        onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
+                                        onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
+                                    <script>
+                                        (function() {
+                                            let img = document.currentScript.previousElementSibling;
+                                            if (img && img.complete) {
+                                                img.style.opacity = '1';
+                                                img.previousElementSibling.style.display = 'none';
+                                            }
+                                        })();
+                                    </script>
+                                </div>
                                 @if ($item?->inventories->count() > 0)
-                                    <div class="varient-product position-absolute d-flex justify-content-between"
-                                        style="bottom: 0; left: 0; width: 100%;">
+                                    <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"
+                                        style="bottom: 0; left: 0; width: 100%; z-index: 5;">
                                         {{-- Size dropdown --}}
                                         <select class="form-control form-control-md shop-size-selector"
                                             style="width: 100px">
@@ -326,10 +368,19 @@
                                                 </option>
                                             @endforeach
                                         </select>
-                                        {{-- Color dropdown --}}
+                                        {{-- Color dropdown (Pre-populated for the first size) --}}
+                                        @php
+                                            $firstSizeId = $item->inventories->unique('size_id')->sortBy('size.name')->first()?->size_id;
+                                            $firstSizeColors = $item->inventories->where('size_id', $firstSizeId)->unique('color_id');
+                                        @endphp
                                         <select class="form-control form-control-md shop-color-selector"
                                             style="width: 100px">
-                                            <option value="">Color</option>
+                                            <option value="" disabled>Color</option>
+                                            @foreach ($firstSizeColors as $index => $inv)
+                                                <option value="{{ $inv->color_id }}" {{ $index == 0 ? 'selected' : '' }}>
+                                                    {{ $inv->color->name ?? 'N/A' }}
+                                                </option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 @endif
@@ -369,10 +420,53 @@
     </style>
 @endpush
 @push('script')
+    <script type="application/ld+json">
+@php
+    $schema = [
+        "@context" => "https://schema.org/",
+        "@type" => "Product",
+        "name" => addslashes($product?->name ?? 'Product'),
+        "image" => url($product?->thumbnail ?? ''),
+        "description" => addslashes(Str::limit(strip_tags($product?->details?->description ?? ''), 160)),
+        "brand" => [
+            "@type" => "Brand",
+            "name" => addslashes($product?->details?->brand?->name ?? 'Generic')
+        ],
+        "sku" => $product?->sku ?? '',
+        "offers" => [
+            "@type" => "Offer",
+            "url" => url()->current(),
+            "priceCurrency" => $siteSettings?->currency_code ?? 'BDT',
+            "price" => $metaFinalPrice ?? (($product?->discount ?? 0) > 0 ? $product->discount : ($product?->price ?? 0)),
+            "availability" => "https://schema.org/" . (($product?->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock'),
+            "itemCondition" => "https://schema.org/NewCondition"
+        ]
+    ];
+
+    if (($productReview?->count() ?? 0) > 0) {
+        $schema["aggregateRating"] = [
+            "@type" => "AggregateRating",
+            "ratingValue" => $finalRating ?? 5,
+            "reviewCount" => $productReview->count()
+        ];
+    }
+@endphp
+{!! json_encode($schema) !!}
+</script>
     <script>
         const productInventories = @json($inventoriesJson);
 
         $(document).ready(function() {
+            // --- CLIENT-SIDE PREFETCHING (Main Product Only) ---
+            if (productInventories && productInventories.length > 0) {
+                productInventories.forEach(function(variant) {
+                    if (variant.image) {
+                        const img = new Image();
+                        img.src = variant.image;
+                    }
+                });
+            }
+
             const sizeInputs = $('#main-size-form .variable-size-input');
             const hasVariants = sizeInputs.length > 0;
             const productId = "{{ $product->id }}";
@@ -449,10 +543,14 @@
                         // Update variant image
                         if (variant.image) {
                             console.log("Updating image to:", variant.image);
-                            $('#main-image-preview').attr('src', variant.image);
+                            const img = $('#main-image-preview');
+                            img.css('opacity', '0').prev('.img-spinner').show();
+                            img.attr('src', variant.image);
                         } else {
                             console.log("No variant image, using original:", OriginalThumbnail);
-                            $('#main-image-preview').attr('src', OriginalThumbnail);
+                            const img = $('#main-image-preview');
+                            img.css('opacity', '0').prev('.img-spinner').show();
+                            img.attr('src', OriginalThumbnail);
                         }
                         
                         // Move carousel to first item to show the updated image

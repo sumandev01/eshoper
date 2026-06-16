@@ -144,114 +144,52 @@ function initProductVariants(context = document) {
 
 function fetchColors(element) {
     let card = element.closest(".product-card");
-    let productId = card.attr("data-product-id");
     let sizeId = element.val();
     let colorDropdown = card.find(".shop-color-selector");
+    let variants = card.data("variants");
 
-    if (!productId || !sizeId) return;
+    if (!variants || !sizeId) return;
 
-    $.ajax({
-        url: window.LaravelData.route_getColorBySize,
-        type: "POST",
-        data: {
-            productId: productId,
-            sizeId: sizeId,
-            _token: window.LaravelData.csrf_token,
-        },
-        success: function (response) {
-            card.data("variants", response.colors);
+    // Local filtering - No AJAX
+    let availableVariants = variants.filter((v) => v.size_id == sizeId);
+    let options = '<option value="" disabled>Color</option>';
 
-            let options = '<option value="" disabled>Color</option>';
+    if (availableVariants.length > 0) {
+        availableVariants.forEach(function (variant, index) {
+            let selected = index === 0 ? "selected" : "";
+            options += `<option value="${variant.color_id}" ${selected}>${variant.color_name}</option>`;
+        });
 
-            if (response.colors && response.colors.length > 0) {
-                response.colors.forEach(function (color, index) {
-                    let selected = index === 0 ? "selected" : "";
-                    options += `<option value="${color.id}" ${selected}>${color.name}</option>`;
-                });
-
-                colorDropdown
-                    .html(options)
-                    .prop("disabled", false)
-                    .trigger("change");
-            } else {
-                colorDropdown
-                    .html('<option value="">N/A</option>')
-                    .prop("disabled", true)
-                    .trigger("change");
-            }
-        },
-        error: function () {
-            console.error("Color fetch failed");
-        },
-    });
+        colorDropdown
+            .html(options)
+            .prop("disabled", false)
+            .trigger("change");
+    } else {
+        colorDropdown
+            .html('<option value="">N/A</option>')
+            .prop("disabled", true)
+            .trigger("change");
+    }
 }
-
-// function updateProductUI(element) {
-//     let card = element.closest(".product-card");
-//     let colorId = element.val();
-//     let variants = card.data("variants");
-
-//     if (!variants || !colorId) return;
-
-//     let selected = variants.find((v) => v.id == colorId);
-//     if (!selected) return;
-
-//     let basePrice = parseFloat(selected.price);
-//     let discountPrice = parseFloat(selected.discount_price);
-
-//     if (discountPrice > 0 && discountPrice < basePrice) {
-//         card.find(".variant-price").text(siteCurrency + discountPrice);
-//         card.find(".main-price")
-//             .text(siteCurrency + basePrice)
-//             .removeClass("d-none");
-
-//         card.find(".save-amount-box").removeClass("d-none");
-//         card.find(".save-amount").text("Save " + siteCurrency + (basePrice - discountPrice));
-//     } else {
-//         card.find(".variant-price").text(siteCurrency + basePrice);
-//         card.find(".main-price").addClass("d-none");
-//         card.find(".save-amount-box").addClass("d-none");
-//     }
-
-//     if (selected.stock <= 0) {
-//         card.find(".shop-add-to-cart")
-//             .addClass("disabled")
-//             .text("Out of Stock");
-//     } else {
-//         card.find(".shop-add-to-cart")
-//             .removeClass("disabled")
-//             .html(
-//                 '<i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart',
-//             );
-//     }
-// }
 
 function updateProductUI(element) {
     let card = element.closest(".product-card");
     let colorId = element.val();
+    let sizeId = card.find(".shop-size-selector").val();
     let variants = card.data("variants");
 
-    if (!variants || !colorId) return;
+    if (!variants || !colorId || !sizeId) return;
 
-    let selected = variants.find((v) => v.id == colorId);
+    let selected = variants.find((v) => v.color_id == colorId && v.size_id == sizeId);
     if (!selected) return;
 
-    let mainImage = card.find(".product-main-image");
-    let originalImage = card.attr("data-original-image");
-
-    if (selected.image) {
-        mainImage.attr("src", selected.image);
-    } else {
-        mainImage.attr("src", originalImage);
-    }
-
+    // --- PRICE & DISCOUNT LOGIC ---
     let basePrice = parseFloat(selected.price);
     let discountPrice = parseFloat(selected.discount_price);
 
     if (discountPrice > 0 && discountPrice < basePrice) {
-        let dPrice = parseFloat(discountPrice);
         card.find(".variant-price").text(
-            siteCurrency + dPrice.toLocaleString("en-IN"),
+            siteCurrency + discountPrice.toLocaleString("en-IN"),
         );
         card.find(".main-price")
             .text(siteCurrency + basePrice.toLocaleString("en-IN"))
@@ -268,6 +206,7 @@ function updateProductUI(element) {
         card.find(".save-amount-box").addClass("d-none");
     }
 
+    // --- STOCK & BUTTON LOGIC ---
     let addToCartBtn = card.find(".shop-add-to-cart");
     if (selected.stock <= 0) {
         addToCartBtn.addClass("disabled").text("Out of Stock");

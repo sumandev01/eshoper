@@ -59,6 +59,24 @@ class Product extends Model
         return $this->hasOne(ProductDetails::class);
     }
 
+    public function formattedVariants(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->inventories->map(function ($inventory) {
+                return [
+                    'id' => $inventory->id,
+                    'size_id' => $inventory->size_id,
+                    'color_id' => $inventory->color_id,
+                    'color_name' => $inventory->color->name ?? 'N/A',
+                    'stock' => $inventory->stock,
+                    'price' => $inventory->use_main_price == 1 ? $this->price : $inventory->price,
+                    'discount_price' => $inventory->use_main_discount == 1 ? $this->discount : $inventory->discount,
+                    'image' => $inventory->media ? $inventory->media->medium_url : null,
+                ];
+            }),
+        );
+    }
+
     public function colors()
     {
         return $this->belongsToMany(Color::class, 'product_inventories', 'product_id', 'color_id')->distinct();

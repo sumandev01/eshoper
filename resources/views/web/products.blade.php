@@ -12,6 +12,7 @@
                         <li>Products</li>
                     </ol>
                 </div>
+                <h1 class="h3 font-weight-semi-bold mb-4">All Products</h1>
             </div>
         </div>
     </div>

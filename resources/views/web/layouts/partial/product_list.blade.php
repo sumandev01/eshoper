@@ -1,6 +1,7 @@
 <div class="row pb-3">
     @forelse ($products as $product)
-        <div class="col-lg-4 col-md-6 col-sm-12 pb-1 product-card" data-original-image="{{ $product->thumbnail }}">
+        <div class="col-lg-4 col-md-6 col-sm-12 pb-1 product-card"
+            data-variants="{{ json_encode($product->formatted_variants) }}">
             <div class="card product-item border-0 mb-4 product-card position-relative"
                 data-product-id="{{ $product->id }}" data-main-price="{{ $product->price }}"
                 data-discount-price="{{ $product->discount }}">
@@ -23,11 +24,26 @@
                             <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
                         @endif
                     </div>
-                    <img class="img-fluid w-100 product-main-image" src="{{ $product->thumbnail }}"
-                        style="aspect-ratio: 1/1; object-fit: cover;" alt="{{ $product->name }}" loading="lazy">
+                    <div class="img-wrapper">
+                        <div class="img-spinner"></div>
+                        <img class="img-fluid w-100 product-main-image optimized-image" src="{{ $product->thumbnail }}"
+                            alt="{{ $product->name }} - {{ $siteSettings?->site_title }}" loading="lazy" 
+                            onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
+                            onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
+                        <script>
+                            // Handle cached images immediately
+                            (function() {
+                                let img = document.currentScript.previousElementSibling;
+                                if (img && img.complete) {
+                                    img.style.opacity = '1';
+                                    img.previousElementSibling.style.display = 'none';
+                                }
+                            })();
+                        </script>
+                    </div>
                     @if ($product->inventories->count() > 0)
                         <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"
-                            style="bottom: 0; left: 0; width: 100%;">
+                            style="bottom: 0; left: 0; width: 100%; z-index: 5;">
                             {{-- Size dropdown --}}
                             <select class="form-control form-control-md shop-size-selector" style="width: 100px">
                                 <option value="" disabled>Size</option>
@@ -37,9 +53,18 @@
                                     </option>
                                 @endforeach
                             </select>
-                            {{-- Color dropdown --}}
+                            {{-- Color dropdown (Pre-populated for the first size) --}}
+                            @php
+                                $firstSizeId = $product->inventories->unique('size_id')->sortBy('size.name')->first()?->size_id;
+                                $firstSizeColors = $product->inventories->where('size_id', $firstSizeId)->unique('color_id');
+                            @endphp
                             <select class="form-control form-control-md shop-color-selector" style="width: 100px">
-                                <option value="">Color</option>
+                                <option value="" disabled>Color</option>
+                                @foreach ($firstSizeColors as $index => $inv)
+                                    <option value="{{ $inv->color_id }}" {{ $index == 0 ? 'selected' : '' }}>
+                                        {{ $inv->color->name ?? 'N/A' }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
                     @endif

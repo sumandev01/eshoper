@@ -46,8 +46,22 @@
                             <tr data-product-stock="{{ $productStock }}" data-cart-id="{{ $cart?->id }}"
                                 data-product-price="{{ $price }}">
                                 <td style="max-width: 100px">
-                                    <img src="{{ Storage::url($cart?->cart_image) }}" alt=""
-                                        style="width: 100px; aspect-ratio: 1/1; object-fit: cover;" loding="lazy">
+                                    <div class="img-wrapper">
+                                        <div class="img-spinner"></div>
+                                        <img class="img-fluid w-100 optimized-image" src="{{ Storage::url($cart?->cart_image) }}"
+                                            alt="{{ $cart?->product?->name }}" loading="lazy" 
+                                            onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
+                                            onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
+                                        <script>
+                                            (function() {
+                                                let img = document.currentScript.previousElementSibling;
+                                                if (img && img.complete) {
+                                                    img.style.opacity = '1';
+                                                    img.previousElementSibling.style.display = 'none';
+                                                }
+                                            })();
+                                        </script>
+                                    </div>
                                 </td>
                                 <td class="text-left">
                                     <a class="text-dark nav-link px-0" style="text-decoration: none;"

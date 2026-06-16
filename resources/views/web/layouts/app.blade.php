@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -8,6 +8,7 @@
     <meta name="description" content="@yield('meta_description', $siteSettings?->site_description)">
     <meta name="robots" content="index, follow">
     <meta name="keywords" content="@yield('meta_keywords', $siteSettings?->site_keywords)">
+    <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Open Graph -->
     <meta property="og:title" content="@yield('og_title')">
@@ -15,6 +16,7 @@
     <meta property="og:image" content="@yield('og_image')">
     <meta property="og:url" content="@yield('og_url')">
     <meta property="og:type" content="@yield('og_type', 'website')">
+    @yield('extra_meta')
     <script>
         const siteCurrency = "{{ $siteSettings?->currency_symbol ?? '৳' }}";
     </script>
@@ -139,6 +141,44 @@
         .my-custom-toast {
             display: flex !important;
             align-items: center !important;
+        }
+
+        /* Optimized Images */
+        .optimized-image {
+            aspect-ratio: 1/1;
+            object-fit: contain;
+            width: 100%;
+            height: auto;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            position: relative;
+            z-index: 2;
+        }
+
+        .img-wrapper {
+            position: relative;
+            overflow: hidden;
+            background-color: #f1f1f1;
+            aspect-ratio: 1/1;
+        }
+
+        .img-spinner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #D19C97; /* Primary color */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            z-index: 10; /* High z-index to stay on top */
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
     </style>
 </head>

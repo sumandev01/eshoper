@@ -12,8 +12,10 @@ class ProductFilterService
 {
     public function filter($request)
     {
-        // Initial product query with active status
-        $productsQuery = Product::whereStatus(1);
+        // Initial product query with active status and eager loading
+        $productsQuery = Product::with(['media', 'inventories.media', 'inventories.color', 'inventories.size', 'details'])
+            ->whereStatus(1);
+            
         // Price filter (Remove $ or commas from input before query)
         if ($request->filled('min_price') && $request->filled('max_price')) {
             $min = (float) preg_replace('/[^\d.]/', '', $request->min_price);
@@ -110,7 +112,8 @@ class ProductFilterService
 
     public function CategoryFilter($request, $category, $subcategory = null)
     {
-        $productsQuery = Product::whereStatus(1);
+        $productsQuery = Product::with(['media', 'inventories.media', 'inventories.color', 'inventories.size', 'details'])
+            ->whereStatus(1);
 
         // Filter products by category or subcategory
         if ($subcategory) {

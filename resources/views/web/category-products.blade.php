@@ -1,5 +1,6 @@
 @extends('web.layouts.app')
-@section('title', ucfirst($category->name) . ' - ' . $siteSettings?->site_title )
+@section('title', ($category->meta_title ?? ucfirst($category->name)) . ' - ' . $siteSettings?->site_title )
+@section('meta_description', $category->meta_description ?? 'Explore our latest collection of ' . $category->name . '. Find the best prices for ' . $category->name . ' here.')
 @section('content')
     <div class="container-fluid mb-4">
         <div class="row">
@@ -11,6 +12,7 @@
                         <li>{{ $category->name }}</li>
                     </ol>
                 </div>
+                <h1 class="h3 font-weight-semi-bold mb-4">{{ $category->name }} Collection</h1>
             </div>
         </div>
     </div>
@@ -128,8 +130,8 @@
                 max: maxPriceLimit,
                 values: [minVal, maxVal],
                 slide: function(event, ui) {
-                    $("#min-price").val("৳" + ui.values[0]);
-                    $("#max-price").val("৳" + ui.values[1]);
+                    $("#min-price").val(siteCurrency + ui.values[0]);
+                    $("#max-price").val(siteCurrency + ui.values[1]);
                     minVal = ui.values[0];
                     maxVal = ui.values[1];
                 },
@@ -138,8 +140,8 @@
                 }
             });
 
-            $("#min-price").val("৳" + minVal);
-            $("#max-price").val("৳" + maxVal);
+            $("#min-price").val(siteCurrency + minVal);
+            $("#max-price").val(siteCurrency + maxVal);
 
             // Filter function
             function filterProducts(page = 1) {
@@ -281,8 +283,8 @@
 
                 let maxLimit = {{ \App\Models\Product::max('price') ?? 1000 }};
                 $("#price-range-slider").slider("option", "values", [0, maxLimit]);
-                $("#min-price").val("৳" + 0);
-                $("#max-price").val("৳" + maxLimit);
+                $("#min-price").val(siteCurrency + 0);
+                $("#max-price").val(siteCurrency + maxLimit);
 
                 minVal = 0;
                 maxVal = maxLimit;

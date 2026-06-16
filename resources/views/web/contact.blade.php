@@ -105,7 +105,6 @@
 @endsection
 
 @push('styles')
-    // Phone input
     <link class="styles-cdn" rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/css/intlTelInput.css">
     <style>
