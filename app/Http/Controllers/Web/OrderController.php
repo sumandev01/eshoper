@@ -11,7 +11,6 @@ use App\Models\ShippingAddress;
 use App\Repositories\OrderRepository;
 use App\Services\CouponService;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
@@ -39,21 +38,27 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $order = $this->orderRepository->OrderByStore($user, $request);
+
+            $redirect = null;
+            if ($order->payment_method == 'sslcommerz') {
+                $redirect = $this->orderRepository->processSSLCommerzPayment($order, $request);
+            } elseif ($order->payment_method == 'stripe') {
+                $redirect = $this->orderRepository->processStripePayment($order, $request);
+            }
+
             DB::commit();
 
-            if ($order->payment_method == 'sslcommerz') {
-                return $this->orderRepository->processSSLCommerzPayment($order, $request);
-            } elseif ($order->payment_method == 'stripe') {
-                return $this->orderRepository->processStripePayment($order, $request);
+            if ($redirect) {
+                return $redirect;
             }
+
+            return redirect()->route('web.orderDetails', ['order' => $order->id])->with('success', 'Order created successfully');
 
         } catch (\Exception $e) {
             DB::rollBack();
 
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->route('cart')->with('error', $e->getMessage());
         }
-
-        return redirect()->route('web.orderDetails', ['order' => $order->id])->with('success', 'Order created successfully');
     }
 
     public function orderDetails(Order $order)

@@ -6,6 +6,7 @@ use App\Enums\PaymentStatusEnums;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\Setting;
 use App\Models\ShippingCost;
 use App\Services\CouponService;
 use Illuminate\Support\Facades\Http;
@@ -23,17 +24,26 @@ class OrderRepository
     {
         $userName = $user->name;
         $userEmail = $user->email;
-        $shippingCost = ShippingCost::where('price', $request->shipping_charge)->first();
+
+        $shippingCost = ShippingCost::where('id', $request->shipping_charge)->first();
         if (! $shippingCost) {
-            return redirect()->back()->with('error', 'Shipping cost not found');
+            throw new \Exception('Invalid shipping method selected.');
         } else {
             $shippingCostId = $shippingCost->id;
             $shippingLocation = $shippingCost->location;
             $shippingPrice = $shippingCost->price;
         }
 
-        $cartItems = Cart::whereIn('id', $request->cart_ids)->get();
+        $cartItems = Cart::whereIn('id', $request->cart_ids)
+            ->where('user_id', $user->id)
+            ->get();
+
+        if ($cartItems->isEmpty()) {
+            throw new \Exception('Your cart is empty or items are invalid.');
+        }
+
         $subTotalPrice = $cartItems->map(function ($item) {
+            // Note: $item->cart_price accesses the model's accessor which securely calculates current price
             return $item->cart_price * $item->quantity;
         })->sum();
 
@@ -139,27 +149,34 @@ class OrderRepository
             return redirect($result['GatewayPageURL']);
         }
 
-        return redirect()->back()->with('error', 'Payment initialization failed! Check Credentials.');
+        throw new \Exception('Payment initialization failed! Check Credentials.');
     }
 
     public function processStripePayment($order, $request)
     {
-        // Stripe Secret Key সেট করা
         \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
 
         try {
-            // Stripe Checkout Session তৈরি করা
+            $siteSettings = Setting::where('key_name', 'currency_code')->first();
+            $rawCurrencyCode = $siteSettings ? strtolower(trim($siteSettings->key_value)) : 'bdt';
+
+            if ($rawCurrencyCode === 'bd' || $rawCurrencyCode === 'bdt') {
+                $stripeCurrency = 'bdt';
+            } elseif ($rawCurrencyCode === 'usd') {
+                $stripeCurrency = 'usd';
+            } else {
+                $stripeCurrency = 'bdt';
+            }
+
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
                 'line_items' => [[
                     'price_data' => [
-                        // Currency হিসেবে usd বা bdt দিতে পারেন (আপনার Stripe অ্যাকাউন্ট অনুযায়ী)
-                        'currency' => 'bdt',
+                        'currency' => $stripeCurrency,
                         'product_data' => [
                             'name' => 'Order Number: '.$order->order_number,
                             'description' => 'Payment for order at '.config('app.name'),
                         ],
-                        // Stripe টাকার পরিমাণ সেন্ট (cents) বা পয়সায় হিসাব করে, তাই ১০০ দিয়ে গুণ করতে হয়
                         'unit_amount' => round($order->grand_total * 100),
                     ],
                     'quantity' => 1,
@@ -170,11 +187,10 @@ class OrderRepository
                 'cancel_url' => route('stripe.cancel').'?order_number='.urlencode($order->order_number),
             ]);
 
-            // কাস্টমারকে Stripe-এর পেমেন্ট পেজে পাঠিয়ে দেওয়া
             return redirect()->away($session->url);
 
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Stripe Error: '.$e->getMessage());
+            throw new \Exception('Stripe Error: '.$e->getMessage());
         }
     }
 }

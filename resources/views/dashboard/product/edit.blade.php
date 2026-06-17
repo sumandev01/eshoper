@@ -60,12 +60,12 @@
                                     <x-input name="sku" type="text" placeholder="SKU-12345" label="Product SKU"
                                         :value="$product?->sku ?? ''" />
                                 </div>
-                                <div class="col-md-6 mb-3 @if ($product?->inventories->isNotEmpty()) product-quantity @endif">
+                                <div class="col-md-6 mb-3 @if ($product?->inventories->isNotEmpty()) product-quantity @endif" @if ($product?->inventories->isNotEmpty()) style="pointer-events: none" @endif>
                                     <x-input name="quantity" type="number" placeholder="0" label="Product Quantity"
                                         :value="$product?->stock ?? ''" :readonly="$product?->inventories->isNotEmpty() ? true : false" />
                                     @if ($product?->inventories->isNotEmpty())
-                                        <span class="small text-danger">
-                                            Quantity is managed through variants. Please edit variants to update stock.
+                                        <span class="small text-primary fw-bold">
+                                            Quantity is managed through variants.
                                         </span>
                                     @endif
                                 </div>
@@ -94,7 +94,7 @@
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sale_price" type="number" placeholder="0.00" :inputGroup="true"
                                         inputGroupText="{{ $siteSettings?->currency_symbol }}" label="Sale Price"
-                                        :value="$product?->price ?? ''" />
+                                        :value="$product?->price ?? ''" step="1"/>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="discount" type="number" placeholder="0.00" :inputGroup="true"

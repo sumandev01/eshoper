@@ -40,7 +40,7 @@ class ProductRequest extends FormRequest
             'discount' => 'nullable|numeric|min:0|lt:sale_price',
             'buy_price' => 'nullable|numeric|min:0',
             'tax' => 'nullable|numeric|min:0',
-            'media_id' => 'nullable|exists:media,id',
+            'media_id' => 'required|exists:media,id',
             'status' => 'required|numeric|in:0,1',
             'product_galleries' => 'nullable|array',
             'category_id' => 'required|exists:categories,id',
@@ -52,8 +52,8 @@ class ProductRequest extends FormRequest
             ],
             'brand_id' => 'nullable|exists:brands,id',
             'tag_id' => 'nullable|array',
-            'meta_title' => 'nullable|string|min:30|max:60',
-            'meta_description' => 'nullable|string|min:120|max:160',
+            'meta_title' => 'nullable|string|max:60',
+            'meta_description' => 'nullable|string|max:160',
         ];
     }
 

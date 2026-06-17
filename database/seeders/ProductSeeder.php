@@ -33,9 +33,9 @@ class ProductSeeder extends Seeder
                 'name'     => $name,
                 'slug'     => Str::slug($name) . '-' . time(),
                 'sku'      => 'SKU-' . strtoupper(Str::random(6)),
-                'price'    => 1200.50,
-                'buy_price'=> 800.00,
-                'discount' => 10,
+                'price'    => 1200,
+                'buy_price'=> 800,
+                'discount' => 1100,
                 'tax'      => 5,
                 'stock'    => 100,
                 'status'   => 1, // active
@@ -72,8 +72,8 @@ class ProductSeeder extends Seeder
                     'size_id'    => $size->id,
                     'color_id'   => $color->id,
                     'media_id'   => Media::first()?->id,
-                    'price'      => 1150.00,
-                    'stock'      => 50,
+                    'price'      => 1000,
+                    'stock'      => 700,
                 ]);
             }
         }

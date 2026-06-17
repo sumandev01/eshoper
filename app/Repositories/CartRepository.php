@@ -56,14 +56,21 @@ class CartRepository
         $qty = $request->quantity ?? 1;
         $sId = $request->sizeId ?? $request->size_id;
         $cId = $request->colorId ?? $request->color_id;
-        $price = $request->price ?? $request->cart_price;
 
         if ($inventoryId) {
-            $inventory = ProductInventory::find($inventoryId);
-            $availableStock = $inventory ? $inventory->stock : 0;
+            $inventory = ProductInventory::with('product')->findOrFail($inventoryId);
+            $availableStock = $inventory->stock;
+            
+            // Server-side authoritative price calculation
+            $basePrice = ($inventory->use_main_price == 1 || $inventory->price === null) ? (float)$inventory->product->price : (float)$inventory->price;
+            $discountPrice = ($inventory->use_main_discount == 1) ? (float)($inventory->product->discount ?? 0) : (float)($inventory->discount ?? 0);
+            $price = ($discountPrice > 0 && $discountPrice < $basePrice) ? $discountPrice : $basePrice;
         } else {
-            $product = Product::find($pId);
-            $availableStock = $product ? $product->stock : 0;
+            $product = Product::findOrFail($pId);
+            $availableStock = $product->stock;
+            
+            // Server-side authoritative price calculation
+            $price = ($product->discount > 0 && $product->discount < $product->price) ? (float)$product->discount : (float)$product->price;
         }
 
         if ($availableStock <= 0) {
@@ -112,7 +119,10 @@ class CartRepository
 
     public function updateByRequest($request)
     {
-        $cartItem = Cart::find($request->cartId);
+        $cartItem = Cart::where('id', $request->cartId)
+            ->where('user_id', auth('web')->id())
+            ->firstOrFail();
+            
         $cartItem->update(['quantity' => $request->quantity]);
         return $cartItem;
     }

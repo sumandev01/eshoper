@@ -195,7 +195,7 @@
                                         <div class="{{ !$loop->last ? 'mb-2' : '' }}">
                                             <input type="radio" class="custom-control-input shipping-input"
                                                 name="shipping_charge" id="shipping_{{ $shipping->id }}"
-                                                value="{{ $shipping->price }}" {{ $loop->first ? 'checked' : '' }}>
+                                                value="{{ $shipping->id }}" data-price="{{ $shipping->price }}" {{ $loop->first ? 'checked' : '' }}>
                                             <label class="custom-control-label"
                                                 for="shipping_{{ $shipping->id }}">{{ $shipping->location }}</label>
                                         </div>
@@ -436,7 +436,7 @@
             });
 
             function updatePricing() {
-                let shippingPrice = parseFloat($('.shipping-input:checked').val()) || 0;
+                let shippingPrice = parseFloat($('.shipping-input:checked').data('price')) || 0;
 
                 let baseTotal = parseFloat('{{ $totalPrice }}');
 
