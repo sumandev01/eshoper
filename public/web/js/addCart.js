@@ -3,18 +3,24 @@ $(document).ready(function () {
     initProductVariants();
 
     $(".product-card").each(function () {
-        let sizeElement = $(this).find(".shop-size-selector");
-        if (sizeElement.length > 0 && sizeElement.val() !== "") {
+        let sizeElement = $(this).find(".shop-size-selector.active");
+        if (sizeElement.length > 0 && sizeElement.data("value") !== "") {
             fetchColors(sizeElement);
         }
     });
 
     // ---------- EVENTS ----------
-    $(document).on("change", ".shop-size-selector", function () {
+    $(document).on("click", ".shop-size-selector", function () {
+        let card = $(this).closest(".product-card");
+        card.find(".shop-size-selector").removeClass("active");
+        $(this).addClass("active");
         fetchColors($(this));
     });
 
-    $(document).on("change", ".shop-color-selector", function () {
+    $(document).on("click", ".shop-color-selector", function () {
+        let card = $(this).closest(".product-card");
+        card.find(".shop-color-selector").removeClass("active");
+        $(this).addClass("active");
         updateProductUI($(this));
     });
 
@@ -26,8 +32,8 @@ $(document).ready(function () {
 
         let card = $btn.closest(".product-card");
         let productId = $btn.data("product-id");
-        let sizeId = card.find(".shop-size-selector").val();
-        let colorId = card.find(".shop-color-selector").val();
+        let sizeId = card.find(".shop-size-selector.active").data("value");
+        let colorId = card.find(".shop-color-selector.active").data("value");
 
         let currentPrice = card
             .find(".variant-price")
@@ -138,8 +144,8 @@ function initProductVariants(context = document) {
     $(context)
         .find(".product-card")
         .each(function () {
-            let sizeElement = $(this).find(".shop-size-selector");
-            if (sizeElement.length > 0 && sizeElement.val() !== "") {
+            let sizeElement = $(this).find(".shop-size-selector.active");
+            if (sizeElement.length > 0 && sizeElement.data("value") !== "") {
                 fetchColors(sizeElement);
             }
         });
@@ -147,38 +153,34 @@ function initProductVariants(context = document) {
 
 function fetchColors(element) {
     let card = element.closest(".product-card");
-    let sizeId = element.val();
-    let colorDropdown = card.find(".shop-color-selector");
+    let sizeId = element.data("value");
+    let colorContainer = card.find(".shop-color-container");
     let variants = card.data("variants");
 
     if (!variants || !sizeId) return;
 
     // Local filtering - No AJAX
     let availableVariants = variants.filter((v) => v.size_id == sizeId);
-    let options = '<option value="" disabled>Color</option>';
+    let html = '';
 
     if (availableVariants.length > 0) {
         availableVariants.forEach(function (variant, index) {
-            let selected = index === 0 ? "selected" : "";
-            options += `<option value="${variant.color_id}" ${selected}>${variant.color_name}</option>`;
+            let activeClass = index === 0 ? "active" : "";
+            let colorCode = variant.color_code || '#000';
+            html += `<div><span class="color shop-color-selector ${activeClass}" data-value="${variant.color_id}" style="background-color: ${colorCode}; cursor: pointer;" title="${variant.color_name}"></span></div>`;
         });
 
-        colorDropdown
-            .html(options)
-            .prop("disabled", false)
-            .trigger("change");
+        colorContainer.html(html);
+        updateProductUI(colorContainer.find('.shop-color-selector.active'));
     } else {
-        colorDropdown
-            .html('<option value="">N/A</option>')
-            .prop("disabled", true)
-            .trigger("change");
+        colorContainer.html('');
     }
 }
 
 function updateProductUI(element) {
     let card = element.closest(".product-card");
-    let colorId = element.val();
-    let sizeId = card.find(".shop-size-selector").val();
+    let colorId = element.data("value");
+    let sizeId = card.find(".shop-size-selector.active").data("value");
     let variants = card.data("variants");
 
     if (!variants || !colorId || !sizeId) return;
@@ -263,7 +265,17 @@ function addToCart(productId, sizeId, colorId, price) {
         },
         error: function (xhr) {
             if (xhr.status === 401) {
+                window.pendingCartData = {
+                    productId: productId,
+                    sizeId: sizeId,
+                    colorId: colorId,
+                    price: price
+                };
                 $("#loginModal").modal("show");
+            } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                showToast("error", xhr.responseJSON.message);
+            } else {
+                showToast("error", "Failed to add to cart.");
             }
             console.error("Add to cart failed");
         },

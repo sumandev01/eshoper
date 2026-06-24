@@ -88,6 +88,7 @@ class WebController extends Controller
                 'size_id' => $inventory->size_id,
                 'color_id' => $inventory->color_id,
                 'color_name' => $inventory->color->name ?? 'N/A',
+                'color_code' => $inventory->color->color_code ?? '#000',
                 'stock' => $inventory->stock,
                 'price' => $inventory->use_main_price == 1 ? $product->price : $inventory->price,
                 'discount' => $inventory->use_main_discount == 1 ? $product->discount : $inventory->discount,

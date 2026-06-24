@@ -4,11 +4,19 @@ namespace App\Http\Controllers\Payment;
 
 use App\Enums\PaymentStatusEnums;
 use App\Http\Controllers\Controller;
+use App\Repositories\OrderRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class SSLCommerzController extends Controller
 {
+    protected $orderRepository;
+
+    public function __construct(OrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
+
     public function success(Request $request)
     {
         // SSLCommerz Payment Response
@@ -35,14 +43,9 @@ class SSLCommerzController extends Controller
                 // SSLCommerz TrxID
                 $real_bank_trx_id = $verification['bank_tran_id'] ?? null;
 
-                // Update Order
-                $order->update([
-                    'payment_status' => PaymentStatusEnums::PAID->value,
-                    'transaction_id' => $real_bank_trx_id,
-                    'payment_data' => json_encode($verification),
-                ]);
+                // Finalize Order
+                $this->orderRepository->finalizeOrder($order, $real_bank_trx_id, $verification);
 
-                //
                 return redirect()->route('web.orderDetails', ['order' => $order->id])
                     ->with('success', 'Payment Successful! TrxID: '.$real_bank_trx_id);
             }
@@ -56,8 +59,11 @@ class SSLCommerzController extends Controller
     public function fail(Request $request)
     {
         $tran_id = $request->input('tran_id');
+        $order = \App\Models\Order::where('order_number', $tran_id)->first();
 
-        // You can update the order status to 'FAILED' in the database here (if it exists in your Enum)
+        if ($order) {
+            $this->orderRepository->failOrder($order);
+        }
 
         // Redirecting the customer back to the cart page with an error message
         return redirect()->route('cart')->with('error', 'Payment Failed! Please try again. Order ID: '.$tran_id);
@@ -67,6 +73,11 @@ class SSLCommerzController extends Controller
     public function cancel(Request $request)
     {
         $tran_id = $request->input('tran_id');
+        $order = \App\Models\Order::where('order_number', $tran_id)->first();
+
+        if ($order) {
+            $this->orderRepository->failOrder($order);
+        }
 
         return redirect()->route('cart')->with('error', 'Payment was canceled by you. Order ID: '.$tran_id);
     }
@@ -98,11 +109,7 @@ class SSLCommerzController extends Controller
 
                 // If verification is successful, update the status to PAID in the background
                 if (isset($verification['status']) && ($verification['status'] == 'VALID' || $verification['status'] == 'VALIDATED')) {
-                    $order->update([
-                        'payment_status' => PaymentStatusEnums::PAID->value,
-                        'transaction_id' => $verification['bank_tran_id'] ?? null,
-                        'payment_data' => json_encode($verification),
-                    ]);
+                    $this->orderRepository->finalizeOrder($order, $verification['bank_tran_id'] ?? null, $verification);
                 }
             }
         }

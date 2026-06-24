@@ -4,8 +4,8 @@
     $displayDiscount = $firstVariant ? $firstVariant['discount_price'] : $product->discount;
     $displayStock = $firstVariant ? $firstVariant['stock'] : $product->stock;
 @endphp
-<div class="card product-item border-0 mb-4 product-card position-relative"
-    data-product-id="{{ $product->id }}" data-variants="{{ json_encode($product->formatted_variants) }}">
+<div class="card product-item border-0 mb-4 product-card position-relative" data-product-id="{{ $product->id }}"
+    data-variants="{{ json_encode($product->formatted_variants) }}">
     <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
         <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
             <button class="btn btn-sm bg-white rounded-circle shadow-sm wishlist-btn p-1"
@@ -25,10 +25,10 @@
                 <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
             @endif
         </div>
-        <div class="img-wrapper">
+        <div class="img-wrapper position-relative">
             <div class="img-spinner"></div>
             <img class="img-fluid w-100 product-main-image optimized-image" src="{{ $product->thumbnail }}"
-                alt="{{ $product->name }} - {{ $siteSettings?->site_title ?? '' }}" loading="lazy" 
+                alt="{{ $product->name }} - {{ $siteSettings?->site_title ?? '' }}" loading="lazy"
                 onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
                 onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
             <script>
@@ -40,34 +40,38 @@
                     }
                 })();
             </script>
-        </div>
-        @if ($product->inventories->count() > 0)
-            <div class="varient-product position-absolute d-flex justify-content-between bg-transparent"
-                style="bottom: 0; left: 0; width: 100%; z-index: 5;">
-                {{-- Size dropdown --}}
-                <select class="form-control form-control-md shop-size-selector" style="width: 100px">
-                    <option value="" disabled>Size</option>
-                    @foreach ($product->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
-                        <option value="{{ $inv->size_id }}" {{ $index == 0 ? 'selected' : '' }}>
-                            {{ $inv->size->name ?? 'N/A' }}
-                        </option>
-                    @endforeach
-                </select>
-                {{-- Color dropdown (Pre-populated for the first size) --}}
+            @if ($product->inventories->count() > 0)
                 @php
                     $firstSizeId = $product->inventories->unique('size_id')->sortBy('size.name')->first()?->size_id;
                     $firstSizeColors = $product->inventories->where('size_id', $firstSizeId)->unique('color_id');
                 @endphp
-                <select class="form-control form-control-md shop-color-selector" style="width: 100px">
-                    <option value="" disabled>Color</option>
-                    @foreach ($firstSizeColors as $index => $inv)
-                        <option value="{{ $inv->color_id }}" {{ $index == 0 ? 'selected' : '' }}>
-                            {{ $inv->color->name ?? 'N/A' }}
-                        </option>
+                {{-- Dynamic size --}}
+                <div class="position-absolute shop-size-container"
+                    style="top: 50%; left: -40px; transform: translateY(-50%); z-index: 999;">
+                    @foreach ($product->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
+                        <div>
+                            <span class="size shop-size-selector {{ $index == 0 ? 'active' : '' }}"
+                                data-value="{{ $inv->size_id }}" style="cursor: pointer;"
+                                title="{{ $inv->size->name ?? 'N/A' }}">
+                                {{ $inv->size->name ?? 'N/A' }}
+                            </span>
+                        </div>
                     @endforeach
-                </select>
-            </div>
-        @endif
+                </div>
+                {{-- Dynamic color --}}
+                <div class="position-absolute shop-color-container"
+                    style="top: 50%; right: -40px; transform: translateY(-50%); z-index: 999;">
+                    @foreach ($firstSizeColors as $index => $inv)
+                        <div>
+                            <span class="color shop-color-selector {{ $index == 0 ? 'active' : '' }}"
+                                data-value="{{ $inv->color_id }}"
+                                style="background-color: {{ $inv->color->color_code ?? '#000' }}; cursor: pointer;"
+                                title="{{ $inv->color->name ?? 'N/A' }}"></span>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
     </div>
     <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
         <h6 class="text-truncate mb-3" title="{{ $product->name }}">
@@ -90,8 +94,8 @@
                 class="fas fa-eye text-primary mr-1"></i>View
             Detail</a>
         @if ($displayStock <= 0)
-            <a href="javascript:void(0);" class="btn btn-sm text-dark p-0 shop-add-to-cart disabled" style="pointer-events: none;"
-                data-product-id="{{ $product->id }}">Out of Stock</a>
+            <a href="javascript:void(0);" class="btn btn-sm text-dark p-0 shop-add-to-cart disabled"
+                style="pointer-events: none;" data-product-id="{{ $product->id }}">Out of Stock</a>
         @else
             <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart"
                 data-product-id="{{ $product->id }}"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add
@@ -99,3 +103,55 @@
         @endif
     </div>
 </div>
+@push('styles')
+    <style>
+        .shop-size-container,
+        .shop-color-container{
+            transition: 0.4s;
+        }
+        .product-item:hover .shop-size-container{
+            left: 8px !important;
+            transition: 0.4s;
+        }
+        .product-item:hover .shop-color-container{
+            right: 8px !important;
+            transition: 0.4s;
+        }
+        span.size {
+            background: var(--primary) !important;
+            color: white;
+            border: 2px solid #fff;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            margin-bottom: 10px;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            border-radius: 50%;
+        }
+
+        span.size.active {
+            width: 34px;
+            height: 34px;
+            background: #fff !important;
+            color: var(--primary) !important;
+            border-color: var(--primary) !important;
+        }
+
+        span.color {
+            width: 32px;
+            height: 32px;
+            display: block;
+            margin-bottom: 10px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        span.color.active {
+            width: 34px;
+            height: 34px;
+            border-color: var(--primary);
+        }
+    </style>
+@endpush

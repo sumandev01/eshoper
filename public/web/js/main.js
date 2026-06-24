@@ -34,8 +34,10 @@
 
 
     // Vendor carousel
-    $('.vendor-carousel').owlCarousel({
-        loop: true,
+    var $vendorCarousel = $('.vendor-carousel');
+    var vendorCount = $vendorCarousel.children().length;
+    $vendorCarousel.owlCarousel({
+        loop: vendorCount > 6,
         margin: 29,
         nav: false,
         autoplay: true,
@@ -61,8 +63,10 @@
 
 
     // Related carousel
-    $('.related-carousel').owlCarousel({
-        loop: true,
+    var $relatedCarousel = $('.related-carousel');
+    var relatedCount = $relatedCarousel.children().length;
+    $relatedCarousel.owlCarousel({
+        loop: relatedCount > 4,
         margin: 29,
         nav: false,
         autoplay: true,

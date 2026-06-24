@@ -25,13 +25,13 @@ class Product extends Model
      */
     public function scopeWithListingDefaults($query)
     {
-        return $query->select(['id', 'name', 'slug', 'price', 'discount', 'media_id', 'status'])
+        return $query->select(['id', 'name', 'slug', 'price', 'discount', 'media_id', 'stock', 'status'])
             ->with([
                 'media:id,src',
                 'details:id,product_id,category_id,sub_category_id,brand_id',
                 'inventories' => function ($q) {
                     $q->select(['id', 'product_id', 'size_id', 'color_id', 'price', 'discount', 'stock', 'media_id', 'use_main_price', 'use_main_discount'])
-                        ->with(['color:id,name', 'size:id,name', 'media:id,src']);
+                        ->with(['color:id,name,color_code', 'size:id,name', 'media:id,src']);
                 }
             ]);
     }
@@ -83,6 +83,7 @@ class Product extends Model
                     'size_id' => $inventory->size_id,
                     'color_id' => $inventory->color_id,
                     'color_name' => $inventory->color->name ?? 'N/A',
+                    'color_code' => $inventory->color->color_code ?? '#000',
                     'stock' => $inventory->stock,
                     'price' => $inventory->use_main_price == 1 ? $this->price : $inventory->price,
                     'discount_price' => $inventory->use_main_discount == 1 ? $this->discount : $inventory->discount,

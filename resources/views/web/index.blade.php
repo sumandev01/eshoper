@@ -46,7 +46,9 @@
                                 <img class="img-fluid" src="{{ $category?->image }}" alt=""
                                     style="aspect-ratio: 4/3;">
                             </a>
-                            <h5 class="font-weight-semi-bold m-0">{{ $category?->name }}</h5>
+                            <h5 class="font-weight-semi-bold m-0">
+                                {{ $category?->name }}
+                            </h5>
                         </div>
                     @endforeach
                 </div>

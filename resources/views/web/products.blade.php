@@ -12,7 +12,6 @@
                         <li>Products</li>
                     </ol>
                 </div>
-                <h1 class="h3 font-weight-semi-bold mb-4">All Products</h1>
             </div>
         </div>
     </div>
@@ -24,11 +23,11 @@
                     <div class="px-2">
                         <div id="price-range-slider" class="mb-3"></div>
                         <div class="d-flex align-items-center justify-content-between mb-2">
-                            <input type="text" id="min-price" class="form-control form-control-sm text-center mr-2"
-                                readonly>
+                            <input type="text" id="min-price"
+                                class="form-control form-control-sm bg-primary text-center mr-2" readonly>
                             <span class="text-muted">-</span>
-                            <input type="text" id="max-price" class="form-control form-control-sm text-center ml-2"
-                                readonly>
+                            <input type="text" id="max-price"
+                                class="form-control form-control-sm bg-primary text-center ml-2" readonly>
                         </div>
                     </div>
                 </div>
@@ -45,7 +44,7 @@
                                     {{ in_array($category?->id, (array) request('categories')) ? 'checked' : '' }}>
                                 <label class="custom-control-label"
                                     for="category-{{ $category?->id }}">{{ $category?->name }}</label>
-                                <span class="badge border font-weight-normal">{{ $category?->categories_count }}</span>
+                                {{-- <span class="badge border font-weight-normal">{{ $category?->categories_count }}</span> --}}
                             </div>
                         @endforeach
                     </form>
@@ -63,7 +62,7 @@
                                     {{ in_array($color?->id, (array) request('colors')) ? 'checked' : '' }}>
                                 <label class="custom-control-label"
                                     for="color-{{ $color?->id }}">{{ $color?->name }}</label>
-                                <span class="badge border font-weight-normal">{{ $color?->colors_count }}</span>
+                                {{-- <span class="badge border font-weight-normal">{{ $color?->colors_count }}</span> --}}
                             </div>
                         @endforeach
                     </form>
@@ -81,14 +80,14 @@
                                     {{ in_array($size?->id, (array) request('sizes')) ? 'checked' : '' }}>
                                 <label class="custom-control-label"
                                     for="size-{{ $size?->id }}">{{ $size?->name }}</label>
-                                <span class="badge border font-weight-normal">{{ $size?->sizes_count }}</span>
+                                {{-- <span class="badge border font-weight-normal">{{ $size?->sizes_count }}</span> --}}
                             </div>
                         @endforeach
                     </form>
                 </div>
 
                 <div class="pt-3">
-                    <button type="button" id="clear-filters" class="btn btn-primary btn-block font-weight-bold">
+                    <button type="button" id="clear-filters" class="btn btn-primary btn-block">
                         Clear All Filters
                     </button>
                 </div>
@@ -125,6 +124,25 @@
         </div>
     </div>
 @endsection
+@push('styles')
+    <style>
+        .ui-widget-header {
+            background: var(--primary) !important;
+        }
+
+        .ui-state-active,
+        .ui-widget-content .ui-state-active,
+        .ui-widget-header .ui-state-active,
+        a.ui-button:active,
+        .ui-button:active,
+        .ui-button.ui-state-active:hover {
+            border: 1px solid var(--primary) !important;
+            background: var(--primary) !important;
+            font-weight: normal;
+            color: #ffffff;
+        }
+    </style>
+@endpush
 @push('script')
     <script>
         let currentSort = '{{ request('sort', 'latest') }}';

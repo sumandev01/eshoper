@@ -113,36 +113,34 @@
                             <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del><span>{{ $siteSettings?->currency_symbol }}</span>{{ $mainPrice }}</del></h4>
                         @endif
                     @elseif(($mainPrice ?? 0) > 0)
-                        <h3 class="font-weight-semi-bold product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>{{ $mainPrice }}</h3>
+                        <h3 class="font-weight-semi-bold mb-0 product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>{{ $mainPrice }}</h3>
                     @endif
                 </div>
 
                 <p class="mb-4">{{ $product?->details?->shortDescription }}</p>
 
                 @if ($sizes && $sizes->count() > 0)
-                    <div class="d-flex mb-3">
+                    <div class="d-flex mb-3 align-items-center">
                         <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
-                        <form id="main-size-form">
-                            @foreach ($sizes->sortByDesc('name') ?? [] as $size)
-                                <div class="custom-control custom-radio custom-control-inline">
-                                    <input type="radio" class="custom-control-input variable-size-input"
-                                        id="size-{{ $size?->id }}" name="size" value="{{ $size?->id }}">
-                                    <label class="custom-control-label"
-                                        for="size-{{ $size?->id }}">{{ $size?->name }}</label>
-                                </div>
+                        <div id="main-size-form" class="d-flex flex-wrap">
+                            @foreach ($sizes->sortByDesc('name') ?? [] as $index => $size)
+                                <span class="size variable-size-input {{ $index == 0 ? 'active' : '' }}"
+                                    data-value="{{ $size?->id }}" style="cursor: pointer; margin-right: 10px; margin-bottom: 0;"
+                                    title="{{ $size?->name }}">
+                                    {{ $size?->name }}
+                                </span>
                             @endforeach
-                        </form>
+                        </div>
                     </div>
                 @endif
 
                 @if ($colors && $colors->count() > 0)
-                    <div class="d-flex mb-4">
+                    <div class="d-flex mb-4 align-items-center">
                         <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
-                        <form id="main-color-form" class="d-flex flex-wrap">
-                            <span id="color-selection-message" class="text-muted small">Please select a size to see
-                                available colors</span>
-                            <div id="dynamic-colors-container" class="d-flex"></div>
-                        </form>
+                        <div id="main-color-form" class="d-flex flex-wrap align-items-center">
+                            <span id="color-selection-message" class="text-muted small">Please select a size</span>
+                            <div id="dynamic-colors-container" class="d-flex flex-wrap"></div>
+                        </div>
                     </div>
                 @endif
 
@@ -316,8 +314,8 @@
         <div class="row px-xl-5">
             <div class="col">
                 <div class="owl-carousel related-carousel">
-                    @foreach ($relatedProducts ?? [] as $product)
-                        @include('web.layouts.partial.product_card', ['product' => $product])
+                    @foreach ($relatedProducts ?? [] as $relatedProductItem)
+                        @include('web.layouts.partial.product_card', ['product' => $relatedProductItem])
                     @endforeach
                 </div>
             </div>
@@ -329,6 +327,12 @@
     <style>
         .related-carousel .owl-nav {
             display: none !important;
+        }
+        #dynamic-colors-container span.color {
+            border-color: #000 !important;
+        }
+        #dynamic-colors-container span.color.active {
+            border-color: var(--primary) !important;
         }
     </style>
 @endpush
@@ -398,9 +402,19 @@
                 toggleCartControls(false);
             }
 
-            // Size Change
-            sizeInputs.on('change', function() {
-                let sizeId = $(this).val();
+            // Auto select the first active size on page load
+            if (hasVariants) {
+                setTimeout(() => {
+                    $('.variable-size-input.active').trigger('click');
+                }, 100);
+            }
+
+            // Size Click
+            $(document).on('click', '.variable-size-input', function() {
+                $('.variable-size-input').removeClass('active');
+                $(this).addClass('active');
+
+                let sizeId = $(this).data('value');
                 let stockDisplay = $('#variant-stock-display');
                 let colorContainer = $('#dynamic-colors-container');
                 let colorMessage = $('#color-selection-message');
@@ -418,24 +432,32 @@
                     // Use a Map to ensure unique colors are displayed
                     let uniqueColors = [...new Map(availableColors.map(item => [item.color_id, item])).values()];
                     
-                    uniqueColors.forEach(function(inv) {
+                    uniqueColors.forEach(function(inv, index) {
+                        let colorCode = inv.color_code || (inv.color && inv.color.code) || '#000';
                         colorHtml += `
-                            <div class="custom-control custom-radio custom-control-inline">
-                                <input type="radio" class="custom-control-input variable-color-input"
-                                    id="color-${inv.color_id}" name="color" value="${inv.color_id}">
-                                <label class="custom-control-label" for="color-${inv.color_id}">${inv.color_name}</label>
-                            </div>`;
+                            <span class="color variable-color-input" 
+                                  data-value="${inv.color_id}" 
+                                  style="background-color: ${colorCode}; cursor: pointer; margin-right: 10px; margin-bottom: 0;" 
+                                  title="${inv.color_name}"></span>`;
                     });
                     colorContainer.html(colorHtml);
+
+                    // Auto-select first color
+                    setTimeout(() => {
+                        $('.variable-color-input').first().trigger('click');
+                    }, 50);
                 } else {
                     colorMessage.show().text('No colors available').addClass('text-danger');
                 }
             });
 
-            // Color Change
-            $(document).on('change', '.variable-color-input', function() {
-                let sizeId = $('.variable-size-input:checked').val();
-                let colorId = $(this).val();
+            // Color Click
+            $(document).on('click', '.variable-color-input', function() {
+                $('.variable-color-input').removeClass('active');
+                $(this).addClass('active');
+
+                let sizeId = $('.variable-size-input.active').data('value');
+                let colorId = $(this).data('value');
                 let priceContainer = $('#price-container');
                 let stockDisplay = $('#variant-stock-display');
                 let qtyInput = $('#product-quantity');
@@ -487,7 +509,7 @@
                             priceHtml = `<h3 class="font-weight-semi-bold mb-0 product_main_price"><span>${currencySymbol}</span>${variant.discount}</h3>
                                          <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del><span>${currencySymbol}</span>${variant.price}</del></h4>`;
                         } else {
-                            priceHtml = `<h3 class="font-weight-semi-bold product_main_price"><span>${currencySymbol}</span>${variant.price}</h3>`;
+                            priceHtml = `<h3 class="font-weight-semi-bold mb-0 product_main_price"><span>${currencySymbol}</span>${variant.price}</h3>`;
                         }
                         priceContainer.html(priceHtml);
                     }
@@ -540,8 +562,8 @@
                 // ... rest of your existing ajax call ...
                 let hasSize = $('.variable-size-input').length > 0;
                 let hasColor = $('.variable-color-input').length > 0;
-                let sizeId = hasSize ? $('.variable-size-input:checked').val() : null;
-                let colorId = hasColor ? $('.variable-color-input:checked').val() : null;
+                let sizeId = hasSize ? $('.variable-size-input.active').data('value') : null;
+                let colorId = hasColor ? $('.variable-color-input.active').data('value') : null;
                 let productMainPriceText = $('.product_main_price').first().text();
                 let currency_symbol = "{{ $siteSettings?->currency_symbol }}";
                 let productMainPrice = parseFloat(productMainPriceText.replace('<span>' + currency_symbol + '</span>', ''));
@@ -583,25 +605,7 @@
                 });
             });
 
-            $('.owl-carousel').owlCarousel({
-                loop: true,
-                margin: 10,
-                nav: true,
-                dots: false,
-                autoplay: true,
-                autoplayHoverPause: true,
-                responsive: {
-                    0: {
-                        items: 1
-                    },
-                    600: {
-                        items: 2
-                    },
-                    1000: {
-                        items: 4
-                    }
-                }
-            });
+
 
             $(document).on('click', '.star-btn', function() {
                 let value = $(this).data('value');

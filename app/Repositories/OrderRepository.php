@@ -2,13 +2,17 @@
 
 namespace App\Repositories;
 
+use App\Enums\OrderStatusEnums;
 use App\Enums\PaymentStatusEnums;
 use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\Order;
+use App\Models\Product;
+use App\Models\ProductInventory;
 use App\Models\Setting;
 use App\Models\ShippingCost;
 use App\Services\CouponService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 
 class OrderRepository
@@ -80,14 +84,10 @@ class OrderRepository
             'grand_total' => $grandTotalPrice,
             'payment_method' => $request->payment,
             'payment_status' => PaymentStatusEnums::UNPAID->value,
-            'order_status' => 'pending',
+            'order_status' => OrderStatusEnums::PENDING->value,
             'transaction_id' => $request->transaction_id ?? null,
             'note' => $request->note ?? null,
         ]);
-
-        if (! empty($couponCode)) {
-            Coupon::where('code', $couponCode)->increment('used_count');
-        }
 
         BillingRepository::storeByRequest($request, $order);
 
@@ -95,17 +95,67 @@ class OrderRepository
 
         OrderProductRepository::storeByRequest($request, $user, $order, $cartItems);
 
-        foreach ($cartItems as $cart) {
-            if ($cart->product_inventory_id) {
-                $cart->productInventory()->decrement('stock', $cart->quantity);
-                $cart->product()->decrement('stock', $cart->quantity);
-            } elseif ($cart->product_id) {
-                $cart->product()->decrement('stock', $cart->quantity);
-            }
-        }
-        $cartItems->each->delete();
-
         return $order;
+    }
+
+    public function finalizeOrder($order, $transactionId, $paymentData)
+    {
+        return DB::transaction(function () use ($order, $transactionId, $paymentData) {
+            // Row-level lock to prevent race conditions during Webhook/Success callback concurrency
+            $order = Order::where('id', $order->id)->lockForUpdate()->first();
+
+            if ($order->payment_status === PaymentStatusEnums::PAID) {
+                return $order;
+            }
+
+            // 1. Update Order Status
+            $order->update([
+                'order_status' => OrderStatusEnums::CONFIRMED->value,
+                'payment_status' => PaymentStatusEnums::PAID->value,
+                'transaction_id' => $transactionId,
+                'payment_data' => is_array($paymentData) ? json_encode($paymentData) : $paymentData,
+            ]);
+
+            // 2. Process Stock Deduction
+            foreach ($order->orderProducts as $item) {
+                // Find specific inventory by matching size and color names
+                $inventory = ProductInventory::where('product_id', $item->product_id)
+                    ->when($item->size_name, fn($q) => $q->whereHas('size', fn($sq) => $sq->where('name', $item->size_name)))
+                    ->when($item->color_name, fn($q) => $q->whereHas('color', fn($cq) => $cq->where('name', $item->color_name)))
+                    ->first();
+
+                if ($inventory) {
+                    $inventory->decrement('stock', $item->quantity);
+                }
+                Product::where('id', $item->product_id)->decrement('stock', $item->quantity);
+            }
+
+            // 3. Increment Coupon usage
+            if ($order->coupon_code) {
+                Coupon::where('code', $order->coupon_code)->increment('used_count');
+            }
+
+            // 4. Clear Cart for this order's products
+            Cart::where('user_id', $order->user_id)
+                ->whereIn('product_id', $order->orderProducts->pluck('product_id'))
+                ->delete();
+
+            return $order;
+        });
+    }
+
+    public function failOrder($order)
+    {
+        $orderId = Order::findOrFail($order->id);
+        // if($orderId){
+        //     $orderId->delete();
+        // }
+        if ($order->order_status === OrderStatusEnums::PENDING) {
+            $order->update([
+                'order_status' => OrderStatusEnums::FAILED->value,
+                'payment_status' => PaymentStatusEnums::FAILED->value,
+            ]);
+        }
     }
 
     public function processSSLCommerzPayment($order, $request)
@@ -113,11 +163,20 @@ class OrderRepository
         $isSandbox = config('services.sslcommerz.is_sandbox');
         $baseUrl = $isSandbox ? 'https://sandbox.sslcommerz.com' : 'https://securepay.sslcommerz.com';
 
+        $siteSettings = Setting::where('key_name', 'currency_code')->first();
+        $rawCurrencyCode = $siteSettings ? strtolower(trim($siteSettings->key_value)) : 'bdt';
+
+        if ($rawCurrencyCode === 'bd' || $rawCurrencyCode === 'bdt') {
+            $sslCurrency = 'BDT';
+        } else {
+            $sslCurrency = strtoupper($rawCurrencyCode);
+        }
+
         $post_data = [
             'store_id' => config('services.sslcommerz.store_id'),
             'store_passwd' => config('services.sslcommerz.store_password'),
             'total_amount' => $order->grand_total,
-            'currency' => 'BDT',
+            'currency' => $sslCurrency,
             'tran_id' => $order->order_number,
 
             // Callbacks URL
@@ -182,7 +241,6 @@ class OrderRepository
                     'quantity' => 1,
                 ]],
                 'mode' => 'payment',
-                // পেমেন্ট সফল হলে Stripe এই URL এ session_id এবং order_number ফেরত পাঠাবে
                 'success_url' => route('stripe.success').'?session_id={CHECKOUT_SESSION_ID}&order_number='.urlencode($order->order_number),
                 'cancel_url' => route('stripe.cancel').'?order_number='.urlencode($order->order_number),
             ]);

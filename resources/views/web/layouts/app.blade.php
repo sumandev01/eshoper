@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -170,15 +171,22 @@
             width: 40px;
             height: 40px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #D19C97; /* Primary color */
+            border-top: 4px solid #D19C97;
+            /* Primary color */
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            z-index: 10; /* High z-index to stay on top */
+            z-index: 10;
+            /* High z-index to stay on top */
         }
 
         @keyframes spin {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
         }
     </style>
 </head>
