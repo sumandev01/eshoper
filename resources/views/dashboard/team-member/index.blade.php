@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Team Members')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Team Members')
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -29,7 +29,7 @@
                                             <td>{{ $teamMember->name }}</td>
                                             <td>{{ $teamMember->position }}</td>
                                             <td class="text-center">
-                                                <img src="{{ $teamMember->media ? Storage::url($teamMember->media->src) : asset('default.webp') }}"
+                                                <img src="{{ $teamMember->media ? Storage::url($teamMember->media?->src) : asset('default.webp') }}"
                                                     class="img-fluid" alt="Image">
                                             </td>
                                             <td class="text-end">
@@ -134,3 +134,5 @@
         
     </script>
 @endpush
+
+

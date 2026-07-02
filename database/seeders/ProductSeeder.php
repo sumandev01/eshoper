@@ -16,21 +16,47 @@ use App\Models\ProductDetails;
 use App\Models\ProductInventory;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\Traits\SeedsDummyImages;
 
 class ProductSeeder extends Seeder
 {
+    use SeedsDummyImages;
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $faker = Faker::create();
+        $faker = Faker::create('en_US');
+
+        $productNames = [
+            'Premium Cotton Crewneck T-Shirt',
+            'Men\'s Classic Vintage Leather Jacket',
+            'Women\'s High-Waisted Skinny Jeans',
+            'Air Max 270 Lifestyle Sneakers',
+            'Ultraboost Performance Running Shoes',
+            'Casual Oxford Button-Down Shirt',
+            'Elegant Evening Chiffon Maxi Dress',
+            'Classic Blue Denim Trucker Jacket',
+            'Seamless High-Waist Yoga Leggings',
+            'Polarized Classic Aviator Sunglasses',
+            'Genuine Leather Crossbody Messenger Bag',
+            'Heavyweight Waterproof Winter Parka',
+            'Men\'s Slim Fit Stretch Chino Pants',
+            'Cozy Oversized Knitted Winter Sweater',
+            'Formal Genuine Leather Oxford Shoes',
+            'Sporty Fleece Lined Pullover Hoodie',
+            'Summer Floral Wrap Sundress',
+            'Athletic Moisture-Wicking Performance Shorts',
+            'Minimalist Quartz Stainless Steel Watch',
+            'Heavy-Duty Canvas Weekend Duffle Bag',
+        ];
 
         // Creating 20 sample products with details, galleries, tags, and inventory
         for ($i = 1; $i <= 20; $i++) {
             
-            $name = ucwords($faker->words(rand(2, 4), true));
-            $price = $faker->randomElement([500, 800, 1200, 1500, 2000, 2500, 3000, 4500, 5000]);
+            $name = $productNames[$i - 1] ?? ucwords($faker->words(3, true));
+            $price = $faker->randomElement([49.99, 89.99, 129.50, 150.00, 200.00, 25.99, 39.95, 45.00, 59.99]);
             
             // 60% chance to have a discount (10% to 30% off)
             $discount = $price;
@@ -42,7 +68,7 @@ class ProductSeeder extends Seeder
             // 1. Create product
             $product = Product::create([
                 'name'     => $name,
-                'slug'     => Str::slug($name) . '-' . time() . rand(10, 99),
+                'slug'     => Str::slug($name) . '-' . rand(100, 999),
                 'sku'      => 'SKU-' . strtoupper(Str::random(6)),
                 'price'    => $price,
                 'buy_price'=> $price * 0.7,
@@ -50,7 +76,7 @@ class ProductSeeder extends Seeder
                 'tax'      => 5,
                 'stock'    => $faker->numberBetween(10, 100),
                 'status'   => 1, // active
-                'media_id' => Media::inRandomOrder()->first()?->id, 
+                'media_id' => $this->seedImage(800, 800, 'image', 'product', 10), 
             ]);
 
             // 2. Create product details
@@ -59,11 +85,11 @@ class ProductSeeder extends Seeder
                 'category_id'       => Category::inRandomOrder()->first()?->id,
                 'sub_category_id'   => SubCategory::inRandomOrder()->first()?->id,
                 'brand_id'          => Brand::inRandomOrder()->first()?->id,
-                'shortDescription'  => $faker->text(150),
-                'description'       => '<p>' . $faker->paragraphs(3, true) . '</p>',
-                'information'       => $faker->text(200),
-                'meta_title'        => $name . ' | Premium Quality',
-                'meta_description'  => $faker->text(100),
+                'shortDescription'  => 'Experience the perfect blend of style, comfort, and durability with this premium ' . strtolower($name) . '.',
+                'description'       => '<p>Upgrade your lifestyle with our <strong>' . $name . '</strong>. Meticulously designed for the modern trendsetter, this product offers unparalleled comfort and exceptional quality.</p><p>Features include premium materials, precise stitching, and a design that never goes out of style. Whether you are dressing up for a special occasion or keeping it casual, this is the perfect addition to your collection.</p><ul><li>High-quality materials</li><li>Durable and long-lasting</li><li>Modern and stylish design</li><li>Easy to clean and maintain</li></ul>',
+                'information'       => 'Care Instructions: Machine wash cold with like colors. Tumble dry low. Do not bleach. Material: 100% Premium Quality Fabric.',
+                'meta_title'        => $name . ' | Buy Online',
+                'meta_description'  => 'Shop the best ' . strtolower($name) . ' online. Enjoy premium quality, fast shipping, and secure checkout.',
             ]);
 
             // 3. Product Tags (Many-to-Many)
@@ -84,7 +110,7 @@ class ProductSeeder extends Seeder
                         'product_id' => $product->id,
                         'size_id'    => $size->id,
                         'color_id'   => $color->id,
-                        'media_id'   => Media::inRandomOrder()->first()?->id,
+                        'media_id'   => $this->seedImage(800, 800, 'image', 'product_variant', 5),
                         'price'      => $price,
                         'discount'   => $discount,
                         'stock'      => $faker->numberBetween(5, 30),

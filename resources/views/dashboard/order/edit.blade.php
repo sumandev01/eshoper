@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Edit Order - ' . $order->order_number)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Edit Order - ' . $order->order_number)
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -64,3 +64,4 @@
         </div>
     </div>
 @endsection
+

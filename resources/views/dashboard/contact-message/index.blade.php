@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Contact Us')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Contact Us')
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -159,3 +159,4 @@
         });
     </script>
 @endpush
+

@@ -134,6 +134,12 @@
                 </div>
             </li>
         @endcan
+        <li class="nav-item {{ request()->routeIs('admin.settings.offers') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.settings.offers') }}">
+                <span class="menu-title">Offers</span>
+                <i class="mdi mdi-gift menu-icon"></i>
+            </a>
+        </li>
         @can(App\Enums\Permission\OrderPermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('order*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#order"

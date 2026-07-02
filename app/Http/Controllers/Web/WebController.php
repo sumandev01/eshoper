@@ -239,8 +239,8 @@ class WebController extends Controller
         // We can reuse category sidebar logic for subcategories if needed, 
         // or just use global sidebar. Here we use the subcategory's parent category if needed.
         $category = $subcategory->category; 
-        $sidebarData = $filterService->shopSidebar($category);
-        [$minPrice, $maxPrice] = $filterService->getPriceRange($category);
+        $sidebarData = $filterService->shopSidebar(null, $subcategory);
+        [$minPrice, $maxPrice] = $filterService->getPriceRange(null, $subcategory);
 
         return view('web.subcategory-products', compact('products', 'subcategory', 'minPrice', 'maxPrice'), $sidebarData);
     }

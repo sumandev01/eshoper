@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Edit Team Member - ' . $teamMember?->name)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Edit Team Member - ' . $teamMember?->name)
 @section('content')
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -31,7 +31,7 @@
                             </div>
                             <div class="col-md-12">
                                 @php
-                                    $teamMemberImage = Storage::url($teamMember->media->src);
+                                    $teamMemberImage = Storage::url($teamMember->media?->src);
                                 @endphp
                                 <x-media-thumbnail label="Profile Image" button_label="Select Image" input_name="media_id" :existing_image="$teamMemberImage" :existing_id="$teamMember->media_id" />
                             </div>
@@ -47,3 +47,5 @@
         </div>
     </div>
 @endsection
+
+

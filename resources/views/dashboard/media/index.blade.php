@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Media Gallery')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Media Gallery')
 @section('content')
     <div class="page-header flex-wrap">
         <div class="header-left">
@@ -121,3 +121,4 @@
         });
     </script>
 @endsection
+

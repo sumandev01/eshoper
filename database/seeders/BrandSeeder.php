@@ -5,9 +5,12 @@ namespace Database\Seeders;
 use App\Models\Brand;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Traits\SeedsDummyImages;
 
 class BrandSeeder extends Seeder
 {
+    use SeedsDummyImages;
+
     /**
      * Run the database seeds.
      */
@@ -57,6 +60,9 @@ class BrandSeeder extends Seeder
         ];
 
         foreach ($data as $brand) {
+            $mediaId = $this->seedImage(200, 200, 'image', 'brand', 4);
+            $brand['media_id'] = $mediaId;
+
             Brand::updateOrCreate(
                 ['name' => $brand['name']],
                 $brand

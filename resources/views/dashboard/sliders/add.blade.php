@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Add Slider')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Add Slider')
 @section('content')
     <div class="row">
         <div class="col-lg-8 mx-auto">
@@ -54,3 +54,4 @@
         }
     </style>
 @endpush
+

@@ -65,7 +65,7 @@ class FaqController extends Controller
 
     public function reorder(Request $request)
     {
-        // dd($request->order);
+
 
         foreach ($request->order as $index => $id) {
             $faq = Faq::find($id);

@@ -1,6 +1,6 @@
 @extends('web.layouts.app')
 @section('content')
-    <h1 class="d-none">{{ $siteSettings?->site_title }} - Quality Products and Trending Fashion</h1>
+    <h1 class="d-none">{{ ($siteSettings->site_title ?? null) }} - Quality Products and Trending Fashion</h1>
     <!-- Featured Start -->
     <div class="container-fluid pt-5">
         <div class="row px-xl-5 pb-3">
@@ -61,26 +61,49 @@
     <!-- Offer Start -->
     <div class="container-fluid offer pt-5">
         <div class="row px-xl-5">
+            @if(isset($siteSettings->offer1_status) && $siteSettings->offer1_status == '1')
             <div class="col-md-6 pb-4">
                 <div class="position-relative bg-secondary text-center text-md-right text-white mb-2 py-5 px-5">
-                    <img src="{{ asset('web/img/offer-1.png') }}" alt="">
+                    @php
+                        $offer1Img = asset('web/img/offer-1.png');
+                        if (is_numeric($siteSettings->offer1_image ?? null)) {
+                            $media1 = \App\Models\Media::find($siteSettings->offer1_image);
+                            if ($media1) $offer1Img = Storage::url($media1->src);
+                        } elseif (isset($siteSettings->offer1_image)) {
+                            $offer1Img = asset($siteSettings->offer1_image);
+                        }
+                    @endphp
+                    <img src="{{ $offer1Img }}" alt="">
                     <div class="position-relative" style="z-index: 1;">
-                        <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
-                        <h1 class="mb-4 font-weight-semi-bold">Spring Collection</h1>
-                        <a href="" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
+                        <h5 class="text-uppercase text-primary mb-3">{{ $siteSettings->offer1_subtitle ?? '20% off the all order' }}</h5>
+                        <h1 class="mb-4 font-weight-semi-bold">{{ $siteSettings->offer1_title ?? 'Spring Collection' }}</h1>
+                        <a href="{{ $siteSettings->offer1_link ?? '/shop' }}" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
                     </div>
                 </div>
             </div>
+            @endif
+            
+            @if(isset($siteSettings->offer2_status) && $siteSettings->offer2_status == '1')
             <div class="col-md-6 pb-4">
                 <div class="position-relative bg-secondary text-center text-md-left text-white mb-2 py-5 px-5">
-                    <img src="{{ asset('web/img/offer-2.png') }}" alt="">
+                    @php
+                        $offer2Img = asset('web/img/offer-2.png');
+                        if (is_numeric($siteSettings->offer2_image ?? null)) {
+                            $media2 = \App\Models\Media::find($siteSettings->offer2_image);
+                            if ($media2) $offer2Img = Storage::url($media2->src);
+                        } elseif (isset($siteSettings->offer2_image)) {
+                            $offer2Img = asset($siteSettings->offer2_image);
+                        }
+                    @endphp
+                    <img src="{{ $offer2Img }}" alt="">
                     <div class="position-relative" style="z-index: 1;">
-                        <h5 class="text-uppercase text-primary mb-3">20% off the all order</h5>
-                        <h1 class="mb-4 font-weight-semi-bold">Winter Collection</h1>
-                        <a href="" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
+                        <h5 class="text-uppercase text-primary mb-3">{{ $siteSettings->offer2_subtitle ?? '20% off the all order' }}</h5>
+                        <h1 class="mb-4 font-weight-semi-bold">{{ $siteSettings->offer2_title ?? 'Winter Collection' }}</h1>
+                        <a href="{{ $siteSettings->offer2_link ?? '/shop' }}" class="btn btn-outline-primary py-md-2 px-md-3">Shop Now</a>
                     </div>
                 </div>
             </div>
+            @endif
         </div>
     </div>
     <!-- Offer End -->
@@ -199,3 +222,4 @@
         });
     </script>
 @endpush
+

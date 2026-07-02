@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', ucfirst(Route::currentRouteName()) . ' - ' . $siteSettings?->site_title)
+@section('title', ucfirst(Route::currentRouteName()) . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">
@@ -138,3 +138,4 @@
         });
     </script>
 @endpush
+

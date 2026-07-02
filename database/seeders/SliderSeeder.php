@@ -5,9 +5,12 @@ namespace Database\Seeders;
 use App\Models\Media;
 use App\Models\Slider;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Traits\SeedsDummyImages;
 
 class SliderSeeder extends Seeder
 {
+    use SeedsDummyImages;
+
     /**
      * Run the database seeds.
      */
@@ -41,9 +44,7 @@ class SliderSeeder extends Seeder
         ];
 
         foreach ($sliders as $sliderData) {
-            // Pick a random media id if available
-            $sliderData['media_id'] = Media::inRandomOrder()->first()?->id;
-            
+            $sliderData['media_id'] = $this->seedImage(1920, 800, 'image', 'slider', 3);
             Slider::create($sliderData);
         }
     }

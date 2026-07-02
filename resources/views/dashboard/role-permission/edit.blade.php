@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Edit Role - ' . $role->name)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Edit Role - ' . $role->name)
 @section('content')
     <div class="container-fluid">
         <div class="row justify-content-center">
@@ -152,3 +152,4 @@
         });
     </script>
 @endpush
+

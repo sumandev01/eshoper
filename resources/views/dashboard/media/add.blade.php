@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Add New Media')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Add New Media')
 @section('content')
     <div class="row">
         <div class="col-12 grid-margin stretch-card">
@@ -48,3 +48,4 @@
         </div>
     </div>
 @endsection
+

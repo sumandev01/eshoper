@@ -5,7 +5,7 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{{ $siteSettings?->site_title }} - Admin Login</title>
+    <title>{{ ($siteSettings->site_title ?? null) }} - Admin Login</title>
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/ti-icons/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/css/vendor.bundle.base.css') }}">
@@ -27,7 +27,7 @@
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left p-5">
                             <div class="brand-logo mb-2">
-                                <img src="{{ $siteSettings?->site_logo }}">
+                                <img src="{{ ($siteSettings->site_logo ?? null) }}">
                             </div>
                             <h4>Hello! let's get started</h4>
                             @error('loginError')
@@ -91,3 +91,4 @@
 </body>
 
 </html>
+

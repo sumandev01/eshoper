@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'View Product - ' . $product?->name)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'View Product - ' . $product?->name)
 @section('content')
     <div class="container-fluid">
         <!-- Page Header -->
@@ -106,21 +106,21 @@
                             <div class="col-md-3 border-end">
                                 <label class="text-muted small d-block">Sale Price</label>
                                 <h4 class="text-primary mb-0">
-                                    {{ $siteSettings?->currency_symbol }}
+                                    {{ ($siteSettings->currency_symbol ?? null) }}
                                     {{ number_format($product?->price ?? 0, 2) }}
                                 </h4>
                             </div>
                             <div class="col-md-3 border-end">
                                 <label class="text-muted small d-block">Discount Price</label>
                                 <h4 class="text-danger mb-0">
-                                    {{ $siteSettings?->currency_symbol }}
+                                    {{ ($siteSettings->currency_symbol ?? null) }}
                                     {{ number_format($product?->discount ?? 0, 2) }}
                                 </h4>
                             </div>
                             <div class="col-md-3 border-end">
                                 <label class="text-muted small d-block">Buy Price</label>
                                 <h4 class="text-dark mb-0">
-                                    {{ $siteSettings?->currency_symbol }}
+                                    {{ ($siteSettings->currency_symbol ?? null) }}
                                     {{ number_format($product?->buy_price ?? 0, 2) }}
                                 </h4>
                             </div>
@@ -234,12 +234,12 @@
 
                                                     @if (!is_null($displayDiscount) && $displayDiscount > 0)
                                                         <span style="font-weight: bold; color: red; text-decoration: line-through;">
-                                                            {{ $siteSettings?->currency_symbol }}
+                                                            {{ ($siteSettings->currency_symbol ?? null) }}
                                                             {{ $displayPrice }}
                                                         </span>
                                                         <br>
                                                         <span style="font-weight: bold;">
-                                                            {{ $siteSettings?->currency_symbol }}
+                                                            {{ ($siteSettings->currency_symbol ?? null) }}
                                                             {{ $displayDiscount }}
                                                         </span>
                                                     @else
@@ -368,3 +368,4 @@
         }
     </style>
 @endpush
+

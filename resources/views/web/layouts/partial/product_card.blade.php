@@ -19,7 +19,7 @@
             style="top: 0; right: 0; z-index: 99;">
             @if ($displayDiscount > 0 && $displayDiscount < $displayPrice)
                 <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                    Save {{ $siteSettings?->currency_symbol }}{{ formatBDT($displayPrice - $displayDiscount) }}
+                    Save {{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($displayPrice - $displayDiscount) }}
                 </p>
             @else
                 <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
@@ -28,7 +28,7 @@
         <div class="img-wrapper position-relative">
             <div class="img-spinner"></div>
             <img class="img-fluid w-100 product-main-image optimized-image" src="{{ $product->thumbnail }}"
-                alt="{{ $product->name }} - {{ $siteSettings?->site_title ?? '' }}" loading="lazy"
+                alt="{{ $product->name }} - {{ ($siteSettings->site_title ?? null) ?? '' }}" loading="lazy"
                 onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
                 onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
             <script>
@@ -52,8 +52,8 @@
                         <div>
                             <span class="size shop-size-selector {{ $index == 0 ? 'active' : '' }}"
                                 data-value="{{ $inv->size_id }}" style="cursor: pointer;"
-                                title="{{ $inv->size->name ?? 'N/A' }}">
-                                {{ $inv->size->name ?? 'N/A' }}
+                                title="{{ $inv->size?->name ?? 'N/A' }}">
+                                {{ $inv->size?->name ?? 'N/A' }}
                             </span>
                         </div>
                     @endforeach
@@ -65,8 +65,8 @@
                         <div>
                             <span class="color shop-color-selector {{ $index == 0 ? 'active' : '' }}"
                                 data-value="{{ $inv->color_id }}"
-                                style="background-color: {{ $inv->color->color_code ?? '#000' }}; cursor: pointer;"
-                                title="{{ $inv->color->name ?? 'N/A' }}"></span>
+                                style="background-color: {{ $inv->color?->color_code ?? '#000' }}; cursor: pointer;"
+                                title="{{ $inv->color?->name ?? 'N/A' }}"></span>
                         </div>
                     @endforeach
                 </div>
@@ -78,13 +78,13 @@
             {{ Str::limit($product->name, 20, '...') }}</h6>
         <div class="d-flex justify-content-center">
             @if ($displayDiscount > 0 && $displayDiscount != $displayPrice)
-                <h6 class="variant-price">{{ $siteSettings?->currency_symbol }}{{ formatBDT($displayDiscount) }}
+                <h6 class="variant-price">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($displayDiscount) }}
                 </h6>
                 <h6 class="text-muted ml-2"><del
-                        class="main-price">{{ $siteSettings?->currency_symbol }}{{ formatBDT($displayPrice) }}</del>
+                        class="main-price">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($displayPrice) }}</del>
                 </h6>
             @else
-                <h6 class="variant-price">{{ $siteSettings?->currency_symbol }}{{ formatBDT($displayPrice) }}</h6>
+                <h6 class="variant-price">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($displayPrice) }}</h6>
                 <h6 class="text-muted ml-2"><del class="main-price d-none"></del></h6>
             @endif
         </div>
@@ -155,3 +155,5 @@
         }
     </style>
 @endpush
+
+

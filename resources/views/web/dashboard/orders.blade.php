@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'Order' . ' - ' . $siteSettings?->site_title)
+@section('title', 'Order' . ' - ' . ($siteSettings->site_title ?? null))
 @section('title', 'Order')
 @section('content')
     <!-- Page Header Start -->
@@ -57,7 +57,7 @@
                                             </td>
                                             <td class="text-end">
                                                 <div class="d-flex justify-content-end align-items-center gap-1">
-                                                    <span>{{ $siteSettings?->currency_symbol }}</span>
+                                                    <span>{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                                 <span>{{ formatBDT($order?->grand_total) }}</span>
                                                 </div>
                                             </td>
@@ -78,3 +78,4 @@
     </div>
     <!-- Dashboard End -->
 @endsection
+

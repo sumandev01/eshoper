@@ -4,14 +4,16 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>@yield('title', ($siteSettings?->site_title ?? 'Ecommerce') . ' - Admin')</title>
+    <title>@yield('title', (($siteSettings->site_title ?? null) ?? 'Ecommerce') . ' - Admin')</title>
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/ti-icons/css/themify-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/css/vendor.bundle.base.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/style.css') }}">
-    <link rel="shortcut icon" href="{{ $siteSettings?->site_favicon }}" />
+    @if(!empty($siteSettings->site_favicon) && !str_contains($siteSettings->site_favicon, 'default.webp'))
+        <link rel="shortcut icon" href="{{ $siteSettings->site_favicon }}" />
+    @endif
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/custom.css') }}">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/dataTables.min.css') }}">
@@ -157,3 +159,4 @@
 </body>
 
 </html>
+

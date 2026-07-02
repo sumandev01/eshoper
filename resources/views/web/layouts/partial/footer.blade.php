@@ -3,15 +3,15 @@
         <div class="col-lg-4 col-md-12 mb-5 pr-3 pr-xl-5">
             <a href="{{ route('root') }}" class="text-decoration-none">
                 <h1 class="mb-4 display-5 font-weight-semi-bold">
-                    <img src="{{ $siteSettings->site_logo }}" class="img-fluid" style="width: auto; max-height: 80px;"
+                    <img src="{{ ($siteSettings->site_logo ?? null) }}" class="img-fluid" style="width: auto; max-height: 80px;"
                         alt="Logo" loading="lazy">
                 </h1>
             </a>
-            <p>{!! $siteSettings?->site_description !!}</p>
+            <p>{!! ($siteSettings->site_description ?? null) !!}</p>
             <p class="mb-2"><i
-                    class="fa fa-map-marker-alt text-primary mr-3"></i>{{ $siteSettings?->contact_address }}</p>
-            <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>{{ $siteSettings?->contact_email }}</p>
-            <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>{{ $siteSettings?->contact_phone }}</p>
+                    class="fa fa-map-marker-alt text-primary mr-3"></i>{{ ($siteSettings->contact_address ?? null) }}</p>
+            <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>{{ ($siteSettings->contact_email ?? null) }}</p>
+            <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>{{ ($siteSettings->contact_phone ?? null) }}</p>
         </div>
         <div class="col-lg-8 col-md-12">
             <div class="row">
@@ -58,8 +58,8 @@
             <p class="mb-md-0 text-center text-md-left text-dark">
                 {!! str_replace(
                     ['{year}', '{site_title}', '&copy;'],
-                    [date('Y'), e($siteSettings?->site_title), '©'],
-                    $siteSettings?->footer_text,
+                    [date('Y'), e(($siteSettings->site_title ?? null)), '©'],
+                    ($siteSettings->footer_text ?? null),
                 ) !!}
             </p>
         </div>
@@ -69,3 +69,5 @@
     </div>
 </div>
 <!-- Footer End -->
+
+

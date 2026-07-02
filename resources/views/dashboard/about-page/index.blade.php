@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'About Page')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'About Page')
 @section('content')
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -168,3 +168,4 @@
         }
     </style>
 @endpush
+

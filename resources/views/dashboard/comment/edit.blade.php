@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Comment Edit')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Comment Edit')
 @section('content')
 
 @endsection

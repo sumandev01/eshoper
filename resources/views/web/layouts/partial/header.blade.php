@@ -29,7 +29,7 @@
         <div class="col-lg-3 d-none d-lg-block">
             <a href="{{ route('root') }}" class="text-decoration-none">
                 <h1 class="m-0 display-5 font-weight-semi-bold">
-                    <img src="{{ $siteSettings?->site_logo }}" class="img-fluid" style="width: auto; max-height: 80px;"
+                    <img src="{{ ($siteSettings->site_logo ?? null) }}" class="img-fluid" style="width: auto; max-height: 80px;"
                         alt="Logo" loading="lazy">
                 </h1>
             </a>
@@ -344,3 +344,4 @@
         });
     </script>
 @endpush
+

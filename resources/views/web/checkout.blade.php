@@ -2,7 +2,7 @@
     $userEmail = auth('web')->user() ? auth('web')->user()->email : '';
 @endphp
 @extends('web.layouts.app')
-@section('title', 'Checkout' . ' - ' . $siteSettings?->site_title)
+@section('title', 'Checkout' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">
@@ -139,12 +139,12 @@
                                                     hidden>
                                             </td>
                                             <td class="d-flex">
-                                                <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                                <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                                 <span class="cart-item-price">{{ formatBDT($item?->cart_price) }}</span>
                                                 <span class="text-muted"> x {{ $item?->quantity }}</span>
                                             </td>
                                             <td class="text-right">
-                                                <span>{{ $siteSettings?->currency_symbol }}{{ formatBDT($item?->cart_price * $item?->quantity) }}</span>
+                                                <span>{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($item?->cart_price * $item?->quantity) }}</span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -154,7 +154,7 @@
                             <div class="d-flex justify-content-between mb-3 pt-1">
                                 <h6 class="font-weight-medium">Subtotal</h6>
                                 <h6 class="font-weight-medium">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span class="cart-subtotal">{{ formatBDT($subTotalPrice) }}</span>
                                 </h6>
                             </div>
@@ -162,14 +162,14 @@
                                 <input type="text" name="coupon_code" value="{{ $coupon?->id }}" hidden>
                                 <h6 class="font-weight-medium">Discount</h6>
                                 <h6 class="font-weight-medium">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span class="coupon-discount">{{ formatBDT($couponDiscount) }}</span>
                                 </h6>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h6 class="font-weight-medium">Shipping</h6>
                                 <h6 class="font-weight-medium">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span class="shipping-charge"></span>
                                 </h6>
                             </div>
@@ -178,7 +178,7 @@
                             <div class="d-flex justify-content-between mt-2">
                                 <h5 class="font-weight-bold">Total</h5>
                                 <h5 class="font-weight-bold">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span class="total-price">{{ formatBDT($totalPrice) }}</span>
                                 </h5>
                             </div>
@@ -200,7 +200,7 @@
                                                 for="shipping_{{ $shipping->id }}">{{ $shipping->location }}</label>
                                         </div>
                                         <div>
-                                            <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                            <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                             <span class="shipping-cost">{{ $shipping->price }}</span>
                                         </div>
                                     </div>
@@ -449,3 +449,4 @@
         });
     </script>
 @endpush
+

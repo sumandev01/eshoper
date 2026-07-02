@@ -5,7 +5,7 @@
     <div class="carousel-inner">
         @foreach ($sliders as $key => $slider)
             <div class="carousel-item {{ $key == 0 ? 'active' : '' }}" style="height: 410px;">
-                <img class="img-fluid" src="{{ Storage::url($slider->media->src) }}" alt="Image">
+                <img class="img-fluid" src="{{ Storage::url($slider->media?->src) }}" alt="Image">
                 <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                     <div class="p-3" style="max-width: 700px;">
                         <h4 class="text-light text-uppercase font-weight-medium mb-3">{{ $slider->title }}
@@ -29,3 +29,4 @@
         </div>
     </a>
 </div>
+

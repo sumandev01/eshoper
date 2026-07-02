@@ -7,9 +7,12 @@ use App\Models\TeamMember;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\Traits\SeedsDummyImages;
 
 class TeamMemberSeeder extends Seeder
 {
+    use SeedsDummyImages;
+
     /**
      * Run the database seeds.
      */
@@ -28,9 +31,7 @@ class TeamMemberSeeder extends Seeder
 
         foreach ($positions as $index => $position) {
             
-            // Reusing an existing media or generating one could be done, 
-            // but picking a random existing media is safer for performance.
-            $mediaId = Media::inRandomOrder()->first()?->id;
+            $mediaId = $this->seedImage(400, 400, 'image', 'team', 3);
 
             TeamMember::create([
                 'name'      => $faker->name(),

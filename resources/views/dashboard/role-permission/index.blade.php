@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Role Permissions')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Role Permissions')
 @section('content')
     <div class="container-fluid">
         <!-- Role Permission Table Card -->
@@ -91,3 +91,4 @@
         </div>
     </div>
 @endsection
+

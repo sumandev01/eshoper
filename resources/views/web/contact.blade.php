@@ -70,7 +70,7 @@
                         </div>
                         <div>
                             <h5>Address</h5>
-                            <p class="text-muted">{{ $siteSettings->contact_address }}</p>
+                            <p class="text-muted">{{ ($siteSettings->contact_address ?? null) }}</p>
                         </div>
                     </div>
 
@@ -80,7 +80,7 @@
                         </div>
                         <div>
                             <h5>Phone</h5>
-                            <p class="text-muted">{{ $siteSettings->contact_phone }}</p>
+                            <p class="text-muted">{{ ($siteSettings->contact_phone ?? null) }}</p>
                         </div>
                     </div>
 
@@ -90,13 +90,13 @@
                         </div>
                         <div>
                             <h5>Email</h5>
-                            <p class="text-muted">{{ $siteSettings->contact_email }}</p>
+                            <p class="text-muted">{{ ($siteSettings->contact_email ?? null) }}</p>
                         </div>
                     </div>
 
                     <h4 class="font-weight-light mb-3">Find Us on Map</h4>
                     <div class="map-container rounded shadow-sm">
-                        {!! $siteSettings->google_map !!}
+                        {!! ($siteSettings->google_map ?? null) !!}
                     </div>
                 </div>
             </div>
@@ -178,3 +178,5 @@
         });
     </script>
 @endpush
+
+

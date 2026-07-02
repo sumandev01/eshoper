@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'Order Status' . ' - ' . $siteSettings?->site_title)
+@section('title', 'Order Status' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page header section -->
     <section class="hero-section text-center">
@@ -26,7 +26,7 @@
                         <div class="col-md-3 col-6 mb-3">
                             <div class="bg-light p-3 rounded">
                                 <span class="text-muted d-block small text-uppercase font-weight-bold">Total Amount</span>
-                                <span class="font-weight-bold text-dark">{{ $siteSettings?->currency_symbol }}{{ formatBDT($order?->grand_total) }}</span>
+                                <span class="font-weight-bold text-dark">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($order?->grand_total) }}</span>
                             </div>
                         </div>
                         <div class="col-md-3 col-6 mb-3">
@@ -123,11 +123,11 @@
                                             <tr>
                                                 <td>
                                                     <div class="d-flex align-items-center">
-                                                        <span class="font-weight-bold text-dark">{{ $product->product->name }}</span>
+                                                        <span class="font-weight-bold text-dark">{{ $product->product?->name }}</span>
                                                     </div>
                                                 </td>
                                                 <td class="text-center text-muted">{{ $product->quantity }}</td>
-                                                <td class="text-right font-weight-bold text-dark">${{ $product->product->price }}</td>
+                                                <td class="text-right font-weight-bold text-dark">${{ $product->product?->price }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -216,3 +216,4 @@
         }
     </style>
 @endpush
+

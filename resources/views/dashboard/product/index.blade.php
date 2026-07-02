@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Product List')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Product List')
 @section('content')
     <div class="container-fluid">
         <!-- Product Table Card -->
@@ -66,14 +66,14 @@
                                             <td class="text-end">
                                                 @if ($product?->discount > 0)
                                                     <div class="fw-bold text-dark">
-                                                        {{ $siteSettings?->currency_symbol }}
+                                                        {{ ($siteSettings->currency_symbol ?? null) }}
                                                         {{ number_format($product?->discount, 2) }}</div>
                                                     <del class="text-muted small">
-                                                        {{ $siteSettings?->currency_symbol }}
+                                                        {{ ($siteSettings->currency_symbol ?? null) }}
                                                         {{ number_format($product?->price, 2) }}</del>
                                                 @else
                                                     <div class="fw-bold text-dark">
-                                                        {{ $siteSettings?->currency_symbol }}
+                                                        {{ ($siteSettings->currency_symbol ?? null) }}
                                                         {{ number_format($product?->price, 2) }}
                                                     </div>
                                                 @endif
@@ -215,3 +215,4 @@
         });
     </script>
 @endpush
+

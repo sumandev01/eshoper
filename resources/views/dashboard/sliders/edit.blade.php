@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Edit Slider - ' . $slider->title)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Edit Slider - ' . $slider->title)
 @section('content')
     <div class="row">
         <div class="col-lg-8 mx-auto">
@@ -25,7 +25,7 @@
                             :required='false' />
                         <x-input label="Button Link" name="button_link" type="text" :value="$slider->button_link" placeholder="www.example.com"
                             :required='false' />
-                        <x-media-thumbnail label="Image" class="slider_image" target_id="main-thumb" :existing_image="Storage::url($slider->media->src) ?? null" :existing_id="$slider->media_id"
+                        <x-media-thumbnail label="Image" class="slider_image" target_id="main-thumb" :existing_image="Storage::url($slider->media?->src) ?? null" :existing_id="$slider->media_id"
                             input_name="media_id" />
                         <x-select label="Status" name="is_active">
                             <option value="1" {{ $slider->is_active == 1 ? 'selected' : '' }}>Active</option>
@@ -59,3 +59,5 @@
         }
     </style>
 @endpush
+
+

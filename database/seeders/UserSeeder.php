@@ -7,9 +7,12 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Database\Seeders\Traits\SeedsDummyImages;
 
 class UserSeeder extends Seeder
 {
+    use SeedsDummyImages;
+
     /**
      * Run the database seeds.
      */
@@ -38,13 +41,16 @@ class UserSeeder extends Seeder
         ];
 
         foreach($users as $data) {
+            $mediaId = $this->seedImage(400, 400, 'image', 'user', 2);
+            
             $user = User::updateOrCreate(
                 ['email' => $data['email']], [
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'password' => $data['password'],
+                    'media_id' => $mediaId,
                 ]);
-            $user ->assignRole($data['role']);
+            $user->assignRole($data['role']);
         }
     }
 }

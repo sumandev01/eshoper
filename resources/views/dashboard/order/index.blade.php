@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Order List')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Order List')
 @section('content')
     <div class="container-fluid">
         <!-- Product Table Card -->
@@ -53,7 +53,7 @@
                                             <td>{{ $order->user_name }}</td>
                                             <td>{{ $order->orderProducts->count() }}</td>
                                             <td class="text-end">
-                                                {{ $siteSettings?->currency_symbol }}
+                                                {{ ($siteSettings->currency_symbol ?? null) }}
                                                 {{ formatBDT($order->grand_total) }}
                                             </td>
                                             <td class="text-center">
@@ -96,3 +96,4 @@
         </div>
     </div>
 @endsection
+

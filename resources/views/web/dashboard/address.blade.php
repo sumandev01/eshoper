@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'Address' . ' - ' . $siteSettings?->site_title)
+@section('title', 'Address' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">
@@ -288,3 +288,4 @@
         });
     </script>
 @endpush
+

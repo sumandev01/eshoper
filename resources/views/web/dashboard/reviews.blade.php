@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'Product Reviews' . ' - ' . $siteSettings?->site_title)
+@section('title', 'Product Reviews' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">
@@ -40,7 +40,7 @@
                                         <tr>
                                             <td>{{ $product->id }}</td>
                                             <td>{{ $product->order_id }}</td>
-                                            <td>{{ $product->product->name }}</td>
+                                            <td>{{ $product->product?->name }}</td>
                                             <td><a class="btn" href="">View</a></td>
                                         </tr>
                                     @endforeach
@@ -54,3 +54,5 @@
     </div>
     <!-- Dashboard End -->
 @endsection
+
+

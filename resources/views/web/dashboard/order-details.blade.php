@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>{{ $siteSettings?->site_title }} - {{ $order?->order_number }}</title>
+    <title>{{ ($siteSettings->site_title ?? null) }} - {{ $order?->order_number }}</title>
     <link rel="stylesheet" href="{{ asset('dashboard/assets/vendors/font-awesome/css/font-awesome.min.css') }}">
     <style>
         body {
@@ -145,7 +145,7 @@
                                 <h2 style="margin: 0;">
                                     <a href="{{ route('root') }}" target="_blank"
                                         style="color: #D19C97 !important; text-decoration: none;">
-                                        <img src="{{ $siteSettings?->site_logo }}" alt="Logo"
+                                        <img src="{{ ($siteSettings->site_logo ?? null) }}" alt="Logo"
                                             style="max-width: 250px;">
                                     </a>
                                 </h2>
@@ -166,9 +166,9 @@
                         <tr>
                             <td>
                                 <strong>From:</strong><br>
-                                {{ $siteSettings?->site_title }}<br>
-                                {{ $siteSettings?->contact_address }}<br>
-                                {{ $siteSettings?->contact_phone }}
+                                {{ ($siteSettings->site_title ?? null) }}<br>
+                                {{ ($siteSettings->contact_address ?? null) }}<br>
+                                {{ ($siteSettings->contact_phone ?? null) }}
                             </td>
                             <td>
                                 <strong>To:</strong><br>
@@ -210,13 +210,13 @@
                                     @endif
                                 </td>
                                 <td style="white-space: nowrap;">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span>{{ formatBDT($orderProduct?->price) }}</span>
                                     *
                                     <span>{{ $orderProduct->quantity }}</span>
                                 </td>
                                 <td style="text-align: right; white-space: nowrap;">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span>{{ formatBDT($orderProduct?->price * $orderProduct?->quantity) }}</span>
                                 </td>
                             </tr>
@@ -233,7 +233,7 @@
                                 Subtotal:
                             </td>
                             <td>
-                                <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                 <span class="cart-subtotal">{{ formatBDT($order?->sub_total) }}</span>
                             </td>
                         </tr>
@@ -242,7 +242,7 @@
                                 Delivery Charge:
                             </td>
                             <td>
-                                <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                 <span class="shipping-charge">{{ formatBDT($order?->shipping_charge) }}</span>
                             </td>
                         </tr>
@@ -256,7 +256,7 @@
                                 @if ($order?->coupon_code)
                                     <span>-</span>
                                 @endif
-                                <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                 <span class="coupon-discount">{{ formatBDT($order?->coupon_discount) }}</span>
                             </td>
                         </tr>
@@ -265,7 +265,7 @@
                                 Total:
                             </td>
                             <td>
-                                <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                 <span class="grand-total">{{ formatBDT($order?->grand_total) }}</span>
                             </td>
                         </tr>
@@ -277,9 +277,10 @@
         <div class="footer">
             <div class="status-paid">{{ $order?->payment_status }}</div>
             <p>Thank you for your business! If you have any questions about this invoice, please contact us at
-                <b>{{ $siteSettings?->contact_email }}</b></p>
+                <b>{{ ($siteSettings->contact_email ?? null) }}</b></p>
             <p><i>This is a computer-generated invoice. No signature required.</i></p>
         </div>
     </div>
 </body>
 </html>
+

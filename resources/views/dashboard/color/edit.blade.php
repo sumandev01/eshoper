@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Edit Color - ' . $color?->name)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Edit Color - ' . $color?->name)
 @section('content')
     <div class="row">
         <div class="col-lg-8 mx-auto">
@@ -39,3 +39,4 @@
         </div>
     </div>
 @endsection
+

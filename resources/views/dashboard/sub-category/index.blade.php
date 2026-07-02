@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Sub Categories')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Sub Categories')
 @section('content')
     <div class="row">
         <div class="col-lg-7">
@@ -27,7 +27,7 @@
                                         <td class="text-start">{{ $key + 1 }}</td>
                                         <td style="word-break: break-all; white-space: normal;">{{ $subCategory->name }}
                                         </td>
-                                        <td>{{ $subCategory->category->name }}</td>
+                                        <td>{{ $subCategory->category?->name }}</td>
                                         <td style="word-break: break-word; white-space: normal; vertical-align: middle;">
                                             {{ $subCategory->slug }}</td>
                                         <td class="text-center">
@@ -104,3 +104,5 @@
         });
     </script>
 @endpush
+
+

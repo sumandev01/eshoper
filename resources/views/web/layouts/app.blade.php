@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <!-- SEO Meta Tags -->
-    <title>@yield('title', $siteSettings?->site_title)</title>
-    <meta name="description" content="@yield('meta_description', $siteSettings?->site_description)">
+    <title>@yield('title', ($siteSettings->site_title ?? null))</title>
+    <meta name="description" content="@yield('meta_description', ($siteSettings->site_description ?? null))">
     <meta name="robots" content="index, follow">
-    <meta name="keywords" content="@yield('meta_keywords', $siteSettings?->site_keywords)">
+    <meta name="keywords" content="@yield('meta_keywords', ($siteSettings->site_keywords ?? null))">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Open Graph -->
@@ -19,7 +19,7 @@
     <meta property="og:type" content="@yield('og_type', 'website')">
     @yield('extra_meta')
     <script>
-        const siteCurrency = "{{ $siteSettings?->currency_symbol ?? '৳' }}";
+        const siteCurrency = "{{ ($siteSettings->currency_symbol ?? null) ?? '৳' }}";
     </script>
     <!-- Google Tag Manager -->
     <script>
@@ -36,7 +36,7 @@
             j.src =
                 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
             f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', '{{ $siteSettings?->google_analytics }}');
+        })(window, document, 'script', 'dataLayer', '{{ ($siteSettings->google_analytics ?? null) }}');
     </script>
     <!-- End Google Tag Manager -->
 
@@ -60,14 +60,16 @@
             s.parentNode.insertBefore(t, s)
         }(window, document, 'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '{{ $siteSettings?->facebook_pixel }}');
+        fbq('init', '{{ ($siteSettings->facebook_pixel ?? null) }}');
         fbq('track', 'PageView');
     </script>
     <!-- End Facebook Pixel Code -->
 
 
     <!-- Favicon -->
-    <link href="{{ $siteSettings?->site_favicon }}" rel="icon">
+    @if(!empty($siteSettings->site_favicon) && !str_contains($siteSettings->site_favicon, 'default.webp'))
+        <link rel="icon" href="{{ $siteSettings->site_favicon }}">
+    @endif
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
@@ -274,11 +276,11 @@
     <!-- Facebook Pixel Code -->
     <noscript>
         <img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id={{ $siteSettings?->facebook_pixel }}&ev=PageView&noscript=1" />
+            src="https://www.facebook.com/tr?id={{ ($siteSettings->facebook_pixel ?? null) }}&ev=PageView&noscript=1" />
     </noscript>
     <!-- End Facebook Pixel Code -->
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $siteSettings?->google_analytics }}"
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ ($siteSettings->google_analytics ?? null) }}"
             height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
@@ -321,3 +323,4 @@
 </body>
 
 </html>
+

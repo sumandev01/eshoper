@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Edit Faq - ' . $faq?->question)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Edit Faq - ' . $faq?->question)
 @section('content')
     <div class="container-fluid">
         <div class="row justify-content-center">
@@ -31,3 +31,4 @@
         </div>
     </div>
 @endsection
+

@@ -114,9 +114,9 @@
             <tr>
                 <td style="width: 50%;">
                     <strong>From:</strong><br>
-                    {{ $siteSettings?->site_title }}<br>
-                    {{ $siteSettings?->contact_address }}<br>
-                    {{ $siteSettings?->contact_phone }}
+                    {{ ($siteSettings->site_title ?? null) }}<br>
+                    {{ ($siteSettings->contact_address ?? null) }}<br>
+                    {{ ($siteSettings->contact_phone ?? null) }}
                 </td>
                 <td style="width: 50%; text-align: right;">
                     <strong>To:</strong><br>
@@ -153,12 +153,12 @@
                         </td>
                         <td style="text-align: center;">
                             <span
-                                class="currency">{{ $siteSettings?->currency_symbol }}</span>{{ formatBDT($orderProduct?->price) }}
+                                class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($orderProduct?->price) }}
                             * {{ $orderProduct->quantity }}
                         </td>
                         <td style="text-align: right;">
                             <span
-                                class="currency">{{ $siteSettings?->currency_symbol }}</span>{{ formatBDT($orderProduct?->price * $orderProduct?->quantity) }}
+                                class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($orderProduct?->price * $orderProduct?->quantity) }}
                         </td>
                     </tr>
                 @endforeach
@@ -175,14 +175,14 @@
                             <td style="text-align: right;">Subtotal:</td>
                             <td style="text-align: right;">
                                 <span
-                                    class="currency">{{ $siteSettings?->currency_symbol }}</span>{{ formatBDT($order?->sub_total) }}
+                                    class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($order?->sub_total) }}
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align: right;">Delivery Charge:</td>
                             <td style="text-align: right;">
                                 <span
-                                    class="currency">{{ $siteSettings?->currency_symbol }}</span>{{ formatBDT($order?->shipping_charge) }}
+                                    class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($order?->shipping_charge) }}
                             </td>
                         </tr>
                         <tr>
@@ -196,14 +196,14 @@
                                     <span>-</span>
                                 @endif
                                 <span
-                                    class="currency">{{ $siteSettings?->currency_symbol }}</span>{{ formatBDT($order?->coupon_discount) }}
+                                    class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($order?->coupon_discount) }}
                             </td>
                         </tr>
                         <tr style="font-weight: bold; font-size: 16px; border-top: 1px solid #333;">
                             <td style="text-align: right; padding-top: 10px;">Total:</td>
                             <td style="text-align: right; padding-top: 10px;">
                                 <span
-                                    class="currency">{{ $siteSettings?->currency_symbol }}</span>{{ formatBDT($order?->grand_total) }}
+                                    class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($order?->grand_total) }}
                             </td>
                         </tr>
                     </table>
@@ -213,7 +213,7 @@
 
         <div class="footer">
             <div class="status-badge">{{ $order?->payment_status }}</div>
-            <p>Thank you for your business! For any queries, contact us at <b>{{ $siteSettings?->contact_email }}</b>
+            <p>Thank you for your business! For any queries, contact us at <b>{{ ($siteSettings->contact_email ?? null) }}</b>
             </p>
             <p><i>This is a computer-generated invoice. No signature required.</i></p>
         </div>
@@ -221,3 +221,4 @@
 </body>
 
 </html>
+

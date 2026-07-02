@@ -15,12 +15,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Clean up media directory to prevent orphaned files during migrate:fresh --seed
+        $mediaPath = storage_path('app/public/media');
+        if (\Illuminate\Support\Facades\File::exists($mediaPath)) {
+            \Illuminate\Support\Facades\File::cleanDirectory($mediaPath);
+        }
+
         // User::factory(10)->create();
         $this->call([
             // Core Settings and Access Control
             SettingSeeder::class,
             PermissionSeeder::class,
-            RoleSeeder::class,
             UserSeeder::class,
 
             // E-commerce Settings

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thank You - {{ $siteSettings?->site_title }}</title>    
+    <title>Thank You - {{ ($siteSettings->site_title ?? null) }}</title>    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ asset('web/css/style.css') }}" rel="stylesheet">
@@ -75,20 +75,20 @@
                             <div class="summary-box p-3 h-100">
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-muted">Subtotal ({{ $order->orderProducts->count() }} items)</span>
-                                    <span class="fw-semibold">{{ $siteSettings?->currency_symbol }} {{ formatBDT($order?->sub_total) }}</span>
+                                    <span class="fw-semibold">{{ ($siteSettings->currency_symbol ?? null) }} {{ formatBDT($order?->sub_total) }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-muted">Shipping</span>
-                                    <span class="fw-semibold">{{ $siteSettings?->currency_symbol }} {{ formatBDT($order?->shipping_charge) }}</span>
+                                    <span class="fw-semibold">{{ ($siteSettings->currency_symbol ?? null) }} {{ formatBDT($order?->shipping_charge) }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
                                     <span class="text-muted">Discount</span>
-                                    <span class="fw-semibold">{{ $siteSettings?->currency_symbol }} {{ formatBDT($order?->coupon_discount ?? 0) }}</span>
+                                    <span class="fw-semibold">{{ ($siteSettings->currency_symbol ?? null) }} {{ formatBDT($order?->coupon_discount ?? 0) }}</span>
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between">
                                     <span class="fw-bold text-dark fs-5">Total</span>
-                                    <span class="fw-bold text-primary fs-5">{{ $siteSettings?->currency_symbol }} {{ formatBDT($order?->grand_total) }}</span>
+                                    <span class="fw-bold text-primary fs-5">{{ ($siteSettings->currency_symbol ?? null) }} {{ formatBDT($order?->grand_total) }}</span>
                                 </div>
                             </div>
                         </div>

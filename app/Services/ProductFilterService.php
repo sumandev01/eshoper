@@ -100,13 +100,17 @@ class ProductFilterService
      * Gets the min and max prices for the current context (category or global).
      * Now uses pure SQL for maximum performance.
      */
-    public function getPriceRange($category = null)
+    public function getPriceRange($category = null, $subcategory = null)
     {
         $query = DB::table('products')->where('status', 1);
         
-        if ($category) {
-            $query->join('product_details', 'products.id', '=', 'product_details.product_id')
-                  ->where('product_details.category_id', $category->id);
+        if ($category || $subcategory) {
+            $query->join('product_details', 'products.id', '=', 'product_details.product_id');
+            if ($subcategory) {
+                $query->where('product_details.sub_category_id', $subcategory->id);
+            } else {
+                $query->where('product_details.category_id', $category->id);
+            }
         }
 
         $priceExpr = $this->getEffectivePriceSql('products');
@@ -118,14 +122,19 @@ class ProductFilterService
     /**
      * Generates sidebar counts for colors, sizes, and categories.
      */
-    public function shopSidebar($category = null)
+    public function shopSidebar($category = null, $subcategory = null)
     {
         // Define a base subquery for active products to avoid loading IDs
-        $activeProductsSubquery = function($query) use ($category) {
+        $activeProductsSubquery = function($query) use ($category, $subcategory) {
             $query->select('id')->from('products')->where('status', 1);
-            if ($category) {
-                $query->whereIn('id', function($q) use ($category) {
-                    $q->select('product_id')->from('product_details')->where('category_id', $category->id);
+            if ($category || $subcategory) {
+                $query->whereIn('id', function($q) use ($category, $subcategory) {
+                    $q->select('product_id')->from('product_details');
+                    if ($subcategory) {
+                        $q->where('sub_category_id', $subcategory->id);
+                    } else {
+                        $q->where('category_id', $category->id);
+                    }
                 });
             }
         };

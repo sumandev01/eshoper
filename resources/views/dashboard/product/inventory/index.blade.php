@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Product Inventory - ' . $product?->name)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Product Inventory - ' . $product?->name)
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -66,12 +66,12 @@
 
                                                     @if (!is_null($displayDiscount) && $displayDiscount > 0)
                                                         <span style="font-weight: bold; color: red; text-decoration: line-through;">
-                                                            {{ $siteSettings?->currency_symbol }}
+                                                            {{ ($siteSettings->currency_symbol ?? null) }}
                                                             {{ $displayPrice }}
                                                         </span>
                                                         <br>
                                                         <span style="font-weight: bold;">
-                                                            {{ $siteSettings?->currency_symbol }}
+                                                            {{ ($siteSettings->currency_symbol ?? null) }}
                                                             {{ $displayDiscount }}
                                                         </span>
                                                     @else
@@ -275,3 +275,4 @@
         });
     </script>
 @endpush
+

@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'Track Your Order' . ' - ' . $siteSettings?->site_title)
+@section('title', 'Track Your Order' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page header section -->
     <section class="hero-section text-center">

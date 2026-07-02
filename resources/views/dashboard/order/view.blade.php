@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Order Details - ' . $order->order_number)
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Order Details - ' . $order->order_number)
 @section('content')
     <!-- Main Content Area -->
     <div id="printableArea">
@@ -120,7 +120,7 @@
                                         <td class="ps-4 py-3">
                                             <div class="d-flex align-items-center">
                                                 <div>
-                                                    <div class="fw-bold text-dark">{{ $orderProduct->product->name }}</div>
+                                                    <div class="fw-bold text-dark">{{ $orderProduct->product?->name }}</div>
                                                     @if ($orderProduct?->size_name !== null || $orderProduct?->color_name !== null)
                                                         <small class="text-muted pt-2 d-block">
                                                             @if ($orderProduct->size_name)
@@ -138,13 +138,13 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                            <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                             <span>{{ formatBDT($orderProduct->price) }}</span>
                                             *
                                             <span>{{ $orderProduct->quantity }}</span>
                                         </td>
                                         <td class="text-end pe-4 fw-bold text-dark">
-                                            <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                            <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                             <span>{{ formatBDT($orderProduct?->price * $orderProduct?->quantity) }}</span>
                                         </td>
                                     </tr>
@@ -161,21 +161,21 @@
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Subtotal:</span>
                                 <span class="fw-bold">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span>{{ formatBDT($order?->sub_total) }}</span>
                                 </span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Shipping:</span>
                                 <span class="fw-bold">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span>{{ formatBDT($order?->shipping_charge) }}</span>
                                 </span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="text-muted">Discount(-):</span>
                                 <span class="fw-bold">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span>{{ formatBDT($order?->coupon_discount) }}</span>
                                 </span>
                             </div>
@@ -183,7 +183,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="h6 fw-bold mb-0 text-dark">Grand Total:</span>
                                 <span class="h5 fw-bold mb-0 text-primary">
-                                    <span class="currency">{{ $siteSettings?->currency_symbol }}</span>
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span>{{ formatBDT($order?->grand_total) }}</span>
                                 </span>
                             </div>
@@ -295,3 +295,5 @@
         }
     </script>
 @endpush
+
+

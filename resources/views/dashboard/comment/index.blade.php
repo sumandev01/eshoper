@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Comments')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Comments')
 @section('content')
     <div class="row">
         <div class="col-12 grid-margin stretch-card">
@@ -26,8 +26,8 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>
-                                            <h5 title="{{ $review->product->name }}">
-                                                {{ Str::limit($review->product->name, 20) }}</h5>
+                                            <h5 title="{{ $review->product?->name }}">
+                                                {{ Str::limit($review->product?->name, 20) }}</h5>
                                             <div class="star-group">
                                                 <input type="hidden" class="rating-value-active"
                                                     value="{{ $review->rating ?? 0 }}">
@@ -46,7 +46,7 @@
                                             <span
                                                 title="{{ $review->review_text }}">{{ Str::limit($review->review_text, 50) }}</span>
                                         </td>
-                                        <td class="text-center">{{ $review->user->name }}</td>
+                                        <td class="text-center">{{ $review->user?->name }}</td>
                                         <td>{{ $review->created_at->format('Y-m-d') }}</td>
                                         <td class="text-center">
                                             @if ($review->status === 1)
@@ -190,3 +190,5 @@
         });
     </script>
 @endpush
+
+

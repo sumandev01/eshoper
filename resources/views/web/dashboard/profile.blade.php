@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'User Profile' . ' - ' . $siteSettings?->site_title)
+@section('title', 'User Profile' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">
@@ -47,3 +47,4 @@
     </div>
     <!-- Dashboard End -->
 @endsection
+

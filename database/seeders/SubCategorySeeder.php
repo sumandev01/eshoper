@@ -7,9 +7,12 @@ use App\Models\SubCategory;
 use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
+use Database\Seeders\Traits\SeedsDummyImages;
 
 class SubCategorySeeder extends Seeder
 {
+    use SeedsDummyImages;
+
     /**
      * Run the database seeds.
      */
@@ -37,12 +40,14 @@ class SubCategorySeeder extends Seeder
             );
 
             foreach ($subCategories as $subCategoryName) {
+                $mediaId = $this->seedImage(300, 300, 'image', 'subcategory', 5);
+                
                 SubCategory::updateOrCreate(
                     ['name' => $subCategoryName],
                     [
                         'category_id' => $category->id,
                         'slug'        => Str::slug($subCategoryName),
-                        'media_id'    => null,
+                        'media_id'    => $mediaId,
                     ]
                 );
             }

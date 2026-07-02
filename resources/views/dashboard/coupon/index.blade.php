@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Coupons')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Coupons')
 @section('content')
     <div class="container-fluid">
         <div class="row">
@@ -124,3 +124,4 @@
         });
     </script>
 @endpush
+

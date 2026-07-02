@@ -22,7 +22,7 @@
                         alt="circle-image" />
                     <h4 class="font-weight-normal mb-3">Weekly Sales <i class="mdi mdi-chart-line mdi-24px float-end"></i>
                     </h4>
-                    <h2 class="mb-5">{{ $siteSettings?->currency_symbol }} {{ formatBDT($thisWeekSalesSum ?? 0) }}</h2>
+                    <h2 class="mb-5">{{ ($siteSettings->currency_symbol ?? null) }} {{ formatBDT($thisWeekSalesSum ?? 0) }}</h2>
                     <h6 class="card-text">
                         @if ($salesPercentage > 0)
                             Increased by last week {{ $salesPercentage }}%
@@ -96,11 +96,11 @@
                                         <div class="carousel-item {{ $isFirst ? 'active' : '' }}">
                                             @php $isFirst = false; @endphp
                                             @if ($inventory->media_id !== null)
-                                                <img src="{{ Storage::url($inventory->media->src) }}" class="img-fluid"
+                                                <img src="{{ Storage::url($inventory->media?->src) }}" class="img-fluid"
                                                     style="max-height: 250px; object-fit: contain; aspect-ratio: 4 / 4;"
                                                     alt="{{ $product->name }}">
                                             @else
-                                                <img src="{{ $product->media ? Storage::url($product->media->src) : asset('default-image.png') }}"
+                                                <img src="{{ $product->media ? Storage::url($product->media?->src) : asset('default-image.png') }}"
                                                     class="img-fluid"
                                                     style="max-height: 250px; object-fit: contain; aspect-ratio: 4 / 4;"
                                                     alt="{{ $product->name }}">
@@ -114,8 +114,8 @@
                                                 <span class="badge bg-warning text-dark mb-2">Variant Out of
                                                     Stock</span><br>
 
-                                                Color: <strong>{{ $inventory->color->color_code ?? 'N/A' }}</strong> <br>
-                                                Size: <strong>{{ $inventory->size->name ?? 'N/A' }}</strong>
+                                                Color: <strong>{{ $inventory->color?->color_code ?? 'N/A' }}</strong> <br>
+                                                Size: <strong>{{ $inventory->size?->name ?? 'N/A' }}</strong>
                                             </div>
                                         </div>
                                     @endforeach
@@ -124,7 +124,7 @@
                                     <div class="carousel-item {{ $isFirst ? 'active' : '' }}">
                                         @php $isFirst = false; @endphp
 
-                                        <img src="{{ $product->media ? Storage::url($product->media->src) : asset('default-image.png') }}"
+                                        <img src="{{ $product->media ? Storage::url($product->media?->src) : asset('default-image.png') }}"
                                             class="img-fluid"
                                             style="max-height: 250px; object-fit: contain; aspect-ratio: 4 / 4;"
                                             alt="{{ $product->name }}">
@@ -193,7 +193,7 @@
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $order->order_number }}</td>
                                         <td class="text-end">
-                                            {{ $siteSettings->currency_symbol }}{{ formatBDT($order->grand_total) }}</td>
+                                            {{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($order->grand_total) }}</td>
                                         <td class="text-center">
                                             <span class="badge rounded-pill bg-{{ $order?->payment_status?->color() }}">
                                                 {{ ucfirst($order?->payment_status?->value) }}
@@ -221,7 +221,7 @@
     <script src="{{ asset('dashboard/assets/js/apexcharts.js') }}"></script>
     <script>
         $(document).ready(function() {
-            let siteCurrency = "{{ $siteSettings?->currency_symbol ?? '৳' }}";
+            let siteCurrency = "{{ ($siteSettings->currency_symbol ?? null) ?? '৳' }}";
             var options = {
                 series: [{
                         name: 'Orders',
@@ -383,3 +383,7 @@
         });
     </script>
 @endpush
+
+
+
+

@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Add User')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Add User')
 @section('content')
     <div class="container-fluid">
         <!-- User Table Card -->
@@ -59,3 +59,4 @@
         })
     </script>
 @endpush
+

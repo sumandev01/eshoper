@@ -46,10 +46,22 @@ class AppServiceProvider extends ServiceProvider
                 ];
 
                 $logoId = $siteSettings->site_logo ?? null;
-                $faviconId = $siteSettings->site_favicon ?? null;
+                $logo = asset('default.webp');
+                if (is_numeric($logoId)) {
+                    $media = Media::find($logoId);
+                    $logo = $media ? Storage::url($media->src) : asset('default.webp');
+                } elseif ($logoId) {
+                    $logo = asset($logoId);
+                }
 
-                $logo = Storage::url(optional(Media::find($logoId, ['*']))->src ?? asset('default.webp'));
-                $favicon = Storage::url(optional(Media::find($faviconId, ['*']))->src ?? asset('default.webp'));
+                $faviconId = $siteSettings->site_favicon ?? null;
+                $favicon = asset('default.webp');
+                if (is_numeric($faviconId)) {
+                    $media = Media::find($faviconId);
+                    $favicon = $media ? Storage::url($media->src) : asset('default.webp');
+                } elseif ($faviconId) {
+                    $favicon = asset($faviconId);
+                }
 
                 $siteSettings->site_logo = $logo;
                 $siteSettings->site_favicon = $favicon;

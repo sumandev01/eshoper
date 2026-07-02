@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'FAQ' . ' - ' . $siteSettings?->site_title)
+@section('title', 'FAQ' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
 
     <div class="hero-section text-center pt-5">
@@ -127,3 +127,4 @@
         }
     </style>
 @endpush
+

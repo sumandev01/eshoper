@@ -15,3 +15,12 @@ function formatBDT($amount)
 
     return $lastThree;
 }
+
+if (!function_exists('clean_html')) {
+    function clean_html($html)
+    {
+        if (empty($html)) return $html;
+        $allowed_tags = '<p><a><b><i><strong><em><ul><li><ol><br><img><h1><h2><h3><h4><h5><h6><span><div><table><tr><td><th><tbody><thead><tfoot><hr><blockquote>';
+        return strip_tags($html, $allowed_tags);
+    }
+}

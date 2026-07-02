@@ -1,8 +1,8 @@
 @extends('web.layouts.app')
-@section('title', ($product?->details?->meta_title ?? $product?->name) . ' - ' . $siteSettings?->site_title)
+@section('title', ($product?->details?->meta_title ?? $product?->name) . ' - ' . ($siteSettings->site_title ?? null))
 @section('meta_description', $product?->details?->meta_description ??
     Str::limit(strip_tags($product?->details?->description ?? ''), 160))
-@section('meta_keywords', $siteSettings?->site_keywords)
+@section('meta_keywords', ($siteSettings->site_keywords ?? null))
 @section('og_image', url($product?->thumbnail))
 @section('og_url', route('productDetails', $product?->slug))
 @section('content')
@@ -108,12 +108,12 @@
                     @endphp
 
                     @if (($discountPrice ?? 0) > 0)
-                        <h3 class="font-weight-semi-bold mb-0 product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>{{ $discountPrice }}</h3>
+                        <h3 class="font-weight-semi-bold mb-0 product_main_price"><span>{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ $discountPrice }}</h3>
                         @if (($mainPrice ?? 0) > 0)
-                            <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del><span>{{ $siteSettings?->currency_symbol }}</span>{{ $mainPrice }}</del></h4>
+                            <h4 class="font-weight-semi-bold text-muted mb-0 ml-2"><del><span>{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ $mainPrice }}</del></h4>
                         @endif
                     @elseif(($mainPrice ?? 0) > 0)
-                        <h3 class="font-weight-semi-bold mb-0 product_main_price"><span>{{ $siteSettings?->currency_symbol }}</span>{{ $mainPrice }}</h3>
+                        <h3 class="font-weight-semi-bold mb-0 product_main_price"><span>{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ $mainPrice }}</h3>
                     @endif
                 </div>
 
@@ -353,7 +353,7 @@
         "offers" => [
             "@type" => "Offer",
             "url" => url()->current(),
-            "priceCurrency" => $siteSettings?->currency_code ?? 'BDT',
+            "priceCurrency" => ($siteSettings->currency_code ?? null) ?? 'BDT',
             "price" => $metaFinalPrice ?? (($product?->discount ?? 0) > 0 ? $product->discount : ($product?->price ?? 0)),
             "availability" => "https://schema.org/" . (($product?->stock ?? 0) > 0 ? 'InStock' : 'OutOfStock'),
             "itemCondition" => "https://schema.org/NewCondition"
@@ -390,7 +390,7 @@
             let currentStock = parseInt("{{ $product->stock }}") || 0;
             let selectInventoryId = null;
             const OriginalThumbnail = "{{ $product?->media?->medium_url ?? asset('default.webp') }}";
-            const currencySymbol = "{{ $siteSettings?->currency_symbol }}";
+            const currencySymbol = "{{ ($siteSettings->currency_symbol ?? null) }}";
 
             function toggleCartControls(enable) {
                 $('#add-to-cart-btn, #product-quantity, .btn-plus, .btn-minus').prop('disabled', !enable);
@@ -565,7 +565,7 @@
                 let sizeId = hasSize ? $('.variable-size-input.active').data('value') : null;
                 let colorId = hasColor ? $('.variable-color-input.active').data('value') : null;
                 let productMainPriceText = $('.product_main_price').first().text();
-                let currency_symbol = "{{ $siteSettings?->currency_symbol }}";
+                let currency_symbol = "{{ ($siteSettings->currency_symbol ?? null) }}";
                 let productMainPrice = parseFloat(productMainPriceText.replace('<span>' + currency_symbol + '</span>', ''));
 
                 if ((hasSize && !sizeId) || (hasColor && !colorId)) {
@@ -648,3 +648,4 @@
         });
     </script>
 @endpush
+

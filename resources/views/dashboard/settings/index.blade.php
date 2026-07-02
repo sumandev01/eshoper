@@ -1,5 +1,5 @@
 @extends('dashboard.layouts.app')
-@section('title', $siteSettings?->site_title . ' - ' . 'Settings')
+@section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Settings')
 @section('content')
     <div class="container-fluid">
         <div class="card shadow-sm border-0">
@@ -21,7 +21,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="site_title" class="fs-6" type="text" :value="$siteSettings?->site_title"
+                                <x-input name="site_title" class="fs-6" type="text" :value="$siteSettings->site_title ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
                                 <x-media-thumbnail button_label="Select Logo" input_name="site_logo" :existing_image="$siteLogo"
-                                    :target_id="'logo'"/>
+                                    :target_id="'logo'" />
                             </div>
                         </div>
                         <div class="row align-items-center mb-4 gy-3">
@@ -53,7 +53,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings?->site_description"
+                                <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings->site_description ?? null"
                                     :required="false" :rows="3" />
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="site_keywords" class="fs-6" type="text" :value="$siteSettings?->site_keywords"
+                                <x-input name="site_keywords" class="fs-6" type="text" :value="$siteSettings->site_keywords ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="contact_email" class="fs-6" type="email" :value="$siteSettings?->contact_email"
+                                <x-input name="contact_email" class="fs-6" type="email" :value="$siteSettings->contact_email ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -86,7 +86,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="contact_phone" class="fs-6" type="text" :value="$siteSettings?->contact_phone"
+                                <x-input name="contact_phone" class="fs-6" type="text" :value="$siteSettings->contact_phone ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -97,7 +97,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="contact_address" class="fs-6" type="text" :value="$siteSettings?->contact_address"
+                                <x-input name="contact_address" class="fs-6" type="text" :value="$siteSettings->contact_address ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -109,7 +109,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="footer_text" class="fs-6" type="text" :value="$siteSettings?->footer_text"
+                                <x-input name="footer_text" class="fs-6" type="text" :value="$siteSettings->footer_text ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -126,7 +126,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="facebook_pixel" class="fs-6" type="text" :value="$siteSettings?->facebook_pixel"
+                                <x-input name="facebook_pixel" class="fs-6" type="text" :value="$siteSettings->facebook_pixel ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="google_analytics" class="fs-6" type="text" :value="$siteSettings?->google_analytics"
+                                <x-input name="google_analytics" class="fs-6" type="text" :value="$siteSettings->google_analytics ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -161,7 +161,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="currency_symbol" class="fs-6" type="text" :value="$siteSettings?->currency_symbol"
+                                <x-input name="currency_symbol" class="fs-6" type="text" :value="$siteSettings->currency_symbol ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="currency_code" class="fs-6" type="text" :value="$siteSettings?->currency_code"
+                                <x-input name="currency_code" class="fs-6" type="text" :value="$siteSettings->currency_code ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -190,7 +190,7 @@
                             </div>
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
-                                <x-input name="google_map" class="fs-6" type="text" :value="$siteSettings?->google_map"
+                                <x-input name="google_map" class="fs-6" type="text" :value="$siteSettings->google_map ?? null"
                                     :required="false" />
                             </div>
                         </div>
@@ -220,9 +220,9 @@
             margin-left: 10px;
         }
 
-        #media-preview-main_thumb {
+        [id^="media-preview-"] {
             padding: 0 !important;
-            margin-bottom: 0 !important;
+            margin-bottom: 10px !important;
         }
 
         .preview-image-wrapper {

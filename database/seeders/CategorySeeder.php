@@ -5,9 +5,12 @@ namespace Database\Seeders;
 use App\Models\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Database\Seeders\Traits\SeedsDummyImages;
 
 class CategorySeeder extends Seeder
 {
+    use SeedsDummyImages;
+
     /**
      * Run the database seeds.
      */
@@ -56,7 +59,11 @@ class CategorySeeder extends Seeder
                 'slug' => 'dresses'
             ]
         ];
+        
         foreach ($data as $category) {
+            $mediaId = $this->seedImage(300, 300, 'image', 'category', 3);
+            $category['media_id'] = $mediaId;
+            
             Category::UpdateOrCreate(
                 ['name' => $category['name']],
                 $category

@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', ucfirst(Route::currentRouteName()) . ' - ' . $siteSettings?->site_title)
+@section('title', ucfirst(Route::currentRouteName()) . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">
@@ -110,7 +110,7 @@
                                         <span class="badge badge-danger p-2 rounded">Out of Stock</span>
                                     @endif
                                 </td>
-                                <td class="align-middle">{{ $siteSettings?->currency_symbol }}{{ formatBDT($price) }}</td>
+                                <td class="align-middle">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($price) }}</td>
                                 <td class="align-middle">
                                     <div class="input-group quantity mx-auto" style="width: 100px;">
                                         <div class="input-group-btn">
@@ -128,7 +128,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="align-middle product-subtotal">{{ $siteSettings?->currency_symbol }}{{ formatBDT($subTotal) }}</td>
+                                <td class="align-middle product-subtotal">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($subTotal) }}</td>
                                 <td class="align-middle">
                                     <button onclick="window.location.href = '{{ route('removeFromCart', $cart->id) }}';"
                                         class="btn btn-sm btn-primary btn-remove">
@@ -160,7 +160,7 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium cart-subtotal">{{ $siteSettings?->currency_symbol }}{{ formatBDT($subTotalPrice) }}</h6>
+                            <h6 class="font-weight-medium cart-subtotal">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($subTotalPrice) }}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Discount</h6>
@@ -170,7 +170,7 @@
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold grand-total">{{ $siteSettings?->currency_symbol }}{{ formatBDT($subTotalPrice) }}</h5>
+                            <h5 class="font-weight-bold grand-total">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($subTotalPrice) }}</h5>
                         </div>
                         <form action="{{ route('checkout.index') }}" method="get">
                             @csrf
@@ -301,3 +301,4 @@
         })
     </script>
 @endpush
+

@@ -1,5 +1,5 @@
 @extends('web.layouts.app')
-@section('title', 'Address' . ' - ' . $siteSettings?->site_title)
+@section('title', 'Address' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
     <div class="container-fluid mb-4">
@@ -42,7 +42,7 @@
                                             <td class="text-center">{{ $key + 1 }}</td>
                                             <td style="max-width: 350px;">
                                                 <a class="text-decoration-none text-dark font-weight-bold"
-                                                    href="{{ route('productDetails', $product->product->slug) }}">
+                                                    href="{{ route('productDetails', $product->product?->slug) }}">
                                                     {{ $product->product?->name }}
                                                 </a>
                                                 <div>
@@ -219,3 +219,5 @@
         });
     </script>
 @endpush
+
+
