@@ -19,36 +19,73 @@ class StripeController extends Controller
 
     public function success(Request $request)
     {
-        $sessionId = $request->get('session_id');
         $orderNumber = $request->get('order_number');
 
-        if (!$sessionId || !$orderNumber) {
+        if (!$orderNumber) {
             return redirect()->route('cart')->with('error', 'Invalid Payment Request.');
         }
 
-        \Stripe\Stripe::setApiKey(config('services.stripe.secret'));
+        $order = Order::where('order_number', $orderNumber)->first();
+
+        if (!$order) {
+            return redirect()->route('cart')->with('error', 'Order not found.');
+        }
+
+        // If the order is already paid (webhook processed it super fast)
+        if ($order->payment_status === PaymentStatusEnums::PAID->value) {
+            return redirect()->route('web.orderDetails', ['order' => $order->id])
+                             ->with('success', 'Payment Successful! TrxID: ' . $order->transaction_id);
+        }
+
+        // Otherwise, show the processing view
+        return view('web.payment.processing', compact('order'));
+    }
+
+    public function status($orderNumber)
+    {
+        $order = Order::where('order_number', $orderNumber)->first();
+
+        if (!$order) {
+            return response()->json(['status' => 'not_found'], 404);
+        }
+
+        return response()->json([
+            'payment_status' => $order->payment_status,
+            'redirect_url' => route('web.orderDetails', ['order' => $order->id])
+        ]);
+    }
+
+    public function webhook(Request $request)
+    {
+        $endpoint_secret = config('services.stripe.webhook_secret');
+
+        $payload = @file_get_contents('php://input');
+        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
 
         try {
-            $session = \Stripe\Checkout\Session::retrieve($sessionId);
-            $order = Order::where('order_number', $orderNumber)->first();
-
-            if ($session->payment_status === 'paid' && $order) {
-                $this->orderRepository->finalizeOrder($order, $session->payment_intent, $session);
-
-                return redirect()->route('web.orderDetails', ['order' => $order->id])
-                                 ->with('success', 'Stripe Payment Successful! TrxID: ' . $session->payment_intent);
-            }
-
-            if ($order) {
-                return redirect()->route('web.orderDetails', ['order' => $order->id])
-                                 ->with('error', 'Payment not completed or already processed.');
-            }
-
-            return redirect()->route('cart')->with('error', 'Payment not completed or already processed.');
-
-        } catch (\Exception $e) {
-            return redirect()->route('cart')->with('error', 'Stripe Error: ' . $e->getMessage());
+            $event = \Stripe\Webhook::constructEvent(
+                $payload, $sig_header, $endpoint_secret
+            );
+        } catch(\UnexpectedValueException $e) {
+            return response()->json(['error' => 'Invalid payload'], 400);
+        } catch(\Stripe\Exception\SignatureVerificationException $e) {
+            return response()->json(['error' => 'Invalid signature'], 400);
         }
+
+        if ($event->type === 'checkout.session.completed') {
+            $session = $event->data->object;
+            $orderNumber = $session->metadata->order_number ?? null;
+
+            if ($orderNumber) {
+                $order = Order::where('order_number', $orderNumber)->first();
+
+                if ($order && $session->payment_status === 'paid') {
+                    $this->orderRepository->finalizeOrder($order, $session->payment_intent, $session);
+                }
+            }
+        }
+
+        return response()->json(['status' => 'success']);
     }
 
     public function cancel(Request $request)

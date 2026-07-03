@@ -2,18 +2,7 @@
 @section('title', ucfirst(Route::currentRouteName()) . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <ol class="wpo-breadcumb-wrap">
-                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li>Wishlist</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('web.layouts.partial.breadcrumb', ['title' => 'Wishlist'])
     <!-- Page Header End -->
     <!-- Cart Start -->
     <div class="container-fluid">

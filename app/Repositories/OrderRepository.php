@@ -14,6 +14,8 @@ use App\Models\ShippingCost;
 use App\Services\CouponService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderConfirmedMail;
 
 class OrderRepository
 {
@@ -100,11 +102,13 @@ class OrderRepository
 
     public function finalizeOrder($order, $transactionId, $paymentData)
     {
-        return DB::transaction(function () use ($order, $transactionId, $paymentData) {
+        $orderUpdated = false;
+        
+        $order = DB::transaction(function () use ($order, $transactionId, $paymentData, &$orderUpdated) {
             // Row-level lock to prevent race conditions during Webhook/Success callback concurrency
             $order = Order::where('id', $order->id)->lockForUpdate()->first();
 
-            if ($order->payment_status === PaymentStatusEnums::PAID) {
+            if ($order->payment_status === PaymentStatusEnums::PAID->value) {
                 return $order;
             }
 
@@ -140,8 +144,20 @@ class OrderRepository
                 ->whereIn('product_id', $order->orderProducts->pluck('product_id'))
                 ->delete();
 
+            $orderUpdated = true;
             return $order;
         });
+
+        if ($orderUpdated && $order->user_email) {
+            try {
+                Mail::to($order->user_email)->send(new OrderConfirmedMail($order));
+            } catch (\Exception $e) {
+                // Log the exception if mail fails, but don't fail the order
+                \Illuminate\Support\Facades\Log::error('Order Confirmation Email failed: ' . $e->getMessage());
+            }
+        }
+
+        return $order;
     }
 
     public function failOrder($order)
@@ -240,8 +256,11 @@ class OrderRepository
                     ],
                     'quantity' => 1,
                 ]],
+                'metadata' => [
+                    'order_number' => $order->order_number,
+                ],
                 'mode' => 'payment',
-                'success_url' => route('stripe.success').'?session_id={CHECKOUT_SESSION_ID}&order_number='.urlencode($order->order_number),
+                'success_url' => route('stripe.success').'?order_number='.urlencode($order->order_number),
                 'cancel_url' => route('stripe.cancel').'?order_number='.urlencode($order->order_number),
             ]);
 

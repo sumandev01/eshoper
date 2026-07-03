@@ -5,19 +5,7 @@
 @section('title', 'Checkout' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <ol class="wpo-breadcumb-wrap">
-                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li><a class="nav-link p-0" href="{{ route('cart') }}">Cart</a></li>
-                        <li>Checkout</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('web.layouts.partial.breadcrumb', ['title' => 'Checkout'])
     <!-- Page Header End -->
     <!-- Checkout Start -->
     <div class="container-fluid pt-2">

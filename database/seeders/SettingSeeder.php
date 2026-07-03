@@ -57,6 +57,12 @@ class SettingSeeder extends Seeder
             ['key_name' => 'offer2_subtitle', 'key_value' => '20% off the all order'],
             ['key_name' => 'offer2_link', 'key_value' => '/shop'],
             ['key_name' => 'offer2_image', 'key_value' => 'web/img/offer-2.png'],
+            
+            // Theme Colors
+            ['key_name' => 'theme_color_primary', 'key_value' => '#D19C97'],
+            ['key_name' => 'theme_color_primary_hover', 'key_value' => '#c17a74'],
+            ['key_name' => 'theme_color_secondary', 'key_value' => '#EDF1FF'],
+            ['key_name' => 'theme_color_dark', 'key_value' => '#1C1C1C'],
         ];
 
         foreach ($data as $datum) {

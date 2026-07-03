@@ -45,19 +45,21 @@ class AuthController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:8'
         ]);
+        $remember = $request->has('remember');
 
-        if (Auth::attempt($request->only('email', 'password'))) {
+        if (Auth::attempt($request->only('email', 'password'), $remember)) {
             $user = Auth::user();
 
-            
-                if ($request->ajax()) {
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Logged in successfully'
-                    ], 200);
-                }
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Logged in successfully',
+                    'csrf_token' => csrf_token(),
+                    'header_html' => view('web.layouts.partial.header')->render()
+                ], 200);
+            }
 
-                return redirect()->route('root')->with('success', 'Logged in successfully');
+            return redirect()->route('root')->with('success', 'Logged in successfully');
 
             Auth::logout();
 

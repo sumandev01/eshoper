@@ -19,40 +19,26 @@ class SSLCommerzController extends Controller
 
     public function success(Request $request)
     {
-        // SSLCommerz Payment Response
         $tran_id = $request->input('tran_id');
-        $val_id = $request->input('val_id');
 
-        // SSLCommerz Payment Verification
-        $verifyResponse = Http::get($this->getApiUrl('/validator/api/validationserverAPI.php'), [
-            'val_id' => $val_id,
-            'store_id' => config('services.sslcommerz.store_id'),
-            'store_passwd' => config('services.sslcommerz.store_password'),
-            'format' => 'json',
-        ]);
-
-        $verification = $verifyResponse->json();
-
-        // SSLCommerz Payment Verification Response
-        if (isset($verification['status']) && ($verification['status'] == 'VALID' || $verification['status'] == 'VALIDATED')) {
-
-            // order_number ID with SSLCommerz TrxID
-            $order = \App\Models\Order::where('order_number', $tran_id)->first();
-
-            if ($order) {
-                // SSLCommerz TrxID
-                $real_bank_trx_id = $verification['bank_tran_id'] ?? null;
-
-                // Finalize Order
-                $this->orderRepository->finalizeOrder($order, $real_bank_trx_id, $verification);
-
-                return redirect()->route('web.orderDetails', ['order' => $order->id])
-                    ->with('success', 'Payment Successful! TrxID: '.$real_bank_trx_id);
-            }
+        if (!$tran_id) {
+            return redirect()->route('cart')->with('error', 'Invalid Payment Request.');
         }
 
-        //
-        return redirect()->route('cart')->with('error', 'Payment Verification Failed!');
+        $order = \App\Models\Order::where('order_number', $tran_id)->first();
+
+        if (!$order) {
+            return redirect()->route('cart')->with('error', 'Order not found.');
+        }
+
+        // If the order is already paid (webhook/IPN processed it super fast)
+        if ($order->payment_status === PaymentStatusEnums::PAID->value) {
+            return redirect()->route('web.orderDetails', ['order' => $order->id])
+                             ->with('success', 'Payment Successful! TrxID: ' . $order->transaction_id);
+        }
+
+        // Otherwise, show the processing view
+        return view('web.payment.processing', compact('order'));
     }
 
     // 1. If payment fails (e.g., insufficient balance or wrong PIN)

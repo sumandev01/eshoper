@@ -70,8 +70,12 @@ $(document).ready(function () {
 
         let formData = $(this).serialize();
         let submitBtn = $(this).find('button[type="submit"]');
+        let btnText = submitBtn.find('.btn-text');
+        let spinner = submitBtn.find('.spinner-border');
 
-        submitBtn.prop("disabled", true).text("Checking...");
+        submitBtn.prop("disabled", true);
+        btnText.text("Logging in...");
+        spinner.removeClass('d-none');
 
         $.ajax({
             url: "/login",
@@ -79,8 +83,30 @@ $(document).ready(function () {
             data: formData,
             dataType: "json",
             success: function (response) {
+                // Update CSRF token globally to prevent 419 errors on subsequent requests
+                if(response.csrf_token) {
+                    window.LaravelData.csrf_token = response.csrf_token;
+                    $('meta[name="csrf-token"]').attr('content', response.csrf_token);
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': response.csrf_token
+                        }
+                    });
+                    $('input[name="_token"]').val(response.csrf_token);
+                }
+
+                // Update Header HTML without reloading
+                if(response.header_html) {
+                    $('#main-header-wrapper').html(response.header_html);
+                }
+
                 $("#loginModal").modal("hide");
                 showToast("success", response.message);
+
+                // Reset button state
+                submitBtn.prop("disabled", false);
+                btnText.text("Login");
+                spinner.addClass('d-none');
 
                 if (window.pendingCartData) {
                     const { productId, sizeId, colorId, price } =
@@ -88,13 +114,11 @@ $(document).ready(function () {
                     addToCart(productId, sizeId, colorId, price);
                     window.pendingCartData = null;
                 }
-
-                setTimeout(function () {
-                    location.reload();
-                }, 1000);
             },
             error: function (xhr) {
-                submitBtn.prop("disabled", false).text("Login");
+                submitBtn.prop("disabled", false);
+                btnText.text("Login");
+                spinner.addClass('d-none');
 
                 let errorMsg = "Login failed. Please try again.";
                 if (xhr.responseJSON && xhr.responseJSON.message) {
@@ -237,13 +261,17 @@ function updateProductUI(element) {
     // --- STOCK & BUTTON LOGIC ---
     let addToCartBtn = card.find(".shop-add-to-cart");
     if (selected.stock <= 0) {
-        addToCartBtn.addClass("disabled").text("Out of Stock").css("pointer-events", "none");
+        addToCartBtn
+            .addClass("disabled")
+            .html('<i class="fas fa-shopping-cart mr-2"></i> out of stock')
+            .attr("title", "Out of Stock")
+            .css("pointer-events", "none");
     } else {
         addToCartBtn
             .removeClass("disabled")
-            .html(
-                '<i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart'
-            ).css("pointer-events", "auto");
+            .html('<i class="fas fa-shopping-cart mr-2"></i> add to cart')
+            .attr("title", "Add To Cart")
+            .css("pointer-events", "auto");
     }
 }
 

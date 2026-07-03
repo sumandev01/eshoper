@@ -202,7 +202,50 @@
                                 </span>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary px-4 py-3 mb-2">
+                        <!-- Theme Colors -->
+                        <h4 class="mt-5 mb-3 border-bottom pb-2">Theme Colors</h4>
+                        
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Primary Color</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <input type="color" name="theme_color_primary" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_color_primary ?? '#D19C97' }}" title="Choose primary color">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Primary Hover Color</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <input type="color" name="theme_color_primary_hover" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_color_primary_hover ?? '#c17a74' }}" title="Choose primary hover color">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Secondary Color</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <input type="color" name="theme_color_secondary" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_color_secondary ?? '#EDF1FF' }}" title="Choose secondary color">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Dark Color</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <input type="color" name="theme_color_dark" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_color_dark ?? '#1C1C1C' }}" title="Choose dark color">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary px-4 py-3 mb-2 mt-3">
                             <i class="mdi mdi-content-save me-1"></i> Save Settings
                         </button>
                     </div>

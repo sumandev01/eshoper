@@ -8,7 +8,7 @@
     data-variants="{{ json_encode($product->formatted_variants) }}">
     <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
         <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
-            <button class="btn btn-sm bg-white rounded-circle shadow-sm wishlist-btn p-1"
+            <button class="btn btn-sm bg-white rounded-circle shadow-lg wishlist-btn p-1"
                 data-product-id="{{ $product->id }}" style="width: 32px; height: 32px; line-height: 1;">
                 <i class="fas fa-heart"
                     style="font-size: 13px; color: {{ in_array($product->id, $wishlistIds ?? []) ? '#e74c3c' : '#ccc' }};"></i>
@@ -19,7 +19,7 @@
             style="top: 0; right: 0; z-index: 99;">
             @if ($displayDiscount > 0 && $displayDiscount < $displayPrice)
                 <p class="save-amount text-dark p-2 bg-primary" style="font-size: 13px;">
-                    Save {{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($displayPrice - $displayDiscount) }}
+                    Save {{ $siteSettings->currency_symbol ?? null }}{{ formatBDT($displayPrice - $displayDiscount) }}
                 </p>
             @else
                 <p class="save-amount p-2 bg-primary text-dark" style="font-size: 13px;"></p>
@@ -28,7 +28,7 @@
         <div class="img-wrapper position-relative">
             <div class="img-spinner"></div>
             <img class="img-fluid w-100 product-main-image optimized-image" src="{{ $product->thumbnail }}"
-                alt="{{ $product->name }} - {{ ($siteSettings->site_title ?? null) ?? '' }}" loading="lazy"
+                alt="{{ $product->name }} - {{ $siteSettings->site_title ?? (null ?? '') }}" loading="lazy"
                 onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
                 onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
             <script>
@@ -73,50 +73,64 @@
             @endif
         </div>
     </div>
-    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-        <h6 class="text-truncate mb-3" title="{{ $product->name }}">
-            {{ Str::limit($product->name, 20, '...') }}</h6>
-        <div class="d-flex justify-content-center">
+    <div class="card-body border-left border-right border-bottom p-3 position-relative">
+        <h6 class="text-primary mb-2" style="font-size: 13px;">
+            {{ $product->details?->category?->name ?? '' }}
+        </h6>
+        <h6 class="text-truncate mb-2" title="{{ $product->name }}">
+            <a href="{{ route('productDetails', $product->slug) }}" class="nav-link text-dark p-0">
+                {{ Str::limit($product->name, 20, '...') }}
+            </a>
+        </h6>
+        <div class="d-flex align-items-center justify-content-start mb-2">
             @if ($displayDiscount > 0 && $displayDiscount != $displayPrice)
-                <h6 class="variant-price">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($displayDiscount) }}
+                <h6 class="variant-price mb-0 text-primary">
+                    {{ $siteSettings->currency_symbol ?? null }}{{ formatBDT($displayDiscount) }}
                 </h6>
-                <h6 class="text-muted ml-2"><del
-                        class="main-price">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($displayPrice) }}</del>
+                <h6 class="ml-2 mb-0 text-primary" style="opacity: 0.6;"><del
+                        class="main-price">{{ $siteSettings->currency_symbol ?? null }}{{ formatBDT($displayPrice) }}</del>
                 </h6>
             @else
-                <h6 class="variant-price">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($displayPrice) }}</h6>
-                <h6 class="text-muted ml-2"><del class="main-price d-none"></del></h6>
+                <h6 class="variant-price mb-0 text-primary">
+                    {{ $siteSettings->currency_symbol ?? null }}{{ formatBDT($displayPrice) }}
+                </h6>
+                <h6 class="ml-2 mb-0 text-primary" style="opacity: 0.6;"><del class="main-price d-none"></del></h6>
             @endif
         </div>
-    </div>
-    <div class="card-footer d-flex justify-content-between bg-light border">
-        <a href="{{ route('productDetails', $product->slug) }}" class="btn btn-sm text-dark p-0"><i
-                class="fas fa-eye text-primary mr-1"></i>View
-            Detail</a>
         @if ($displayStock <= 0)
-            <a href="javascript:void(0);" class="btn btn-sm text-dark p-0 shop-add-to-cart disabled"
-                style="pointer-events: none;" data-product-id="{{ $product->id }}">Out of Stock</a>
+            <a href="javascript:void(0);"
+                class="btn btn-primary py-2 rounded shadow-sm disabled d-flex justify-content-center align-items-center shop-add-to-cart"
+                style="pointer-events: none;" data-product-id="{{ $product->id }}">
+                <i class="fas fa-shopping-cart mr-2"></i>
+                out of stock
+            </a>
         @else
-            <a href="" class="btn btn-sm text-dark p-0 shop-add-to-cart"
-                data-product-id="{{ $product->id }}"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add
-                To Cart</a>
+            <a href=""
+                class="btn btn-primary py-2 rounded shadow-sm shop-add-to-cart d-flex justify-content-center align-items-center"
+                data-product-id="{{ $product->id }}">
+                <i class="fas fa-shopping-cart mr-2"></i>
+                add to cart
+            </a>
         @endif
     </div>
 </div>
 @push('styles')
     <style>
         .shop-size-container,
-        .shop-color-container{
+        .shop-color-container {
             transition: 0.4s;
         }
-        .product-item:hover .shop-size-container{
+
+        .product-item:hover .shop-size-container {
             left: 8px !important;
             transition: 0.4s;
         }
-        .product-item:hover .shop-color-container{
+
+        .product-item:hover .shop-color-container {
             right: 8px !important;
             transition: 0.4s;
         }
+
         span.size {
             background: var(--primary) !important;
             color: white;
@@ -155,5 +169,3 @@
         }
     </style>
 @endpush
-
-

@@ -1,6 +1,6 @@
 <div class="row pb-3">
     @forelse ($products as $product)
-        <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pb-1">
             @include('web.layouts.partial.product_card', ['product' => $product])
         </div>
     @empty

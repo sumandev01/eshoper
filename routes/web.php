@@ -107,6 +107,8 @@ Route::middleware('auth')->group(function () {
 Route::controller(StripeController::class)->group(function () {
     Route::get('/payment/stripe/success', 'success')->name('stripe.success');
     Route::get('/payment/stripe/cancel', 'cancel')->name('stripe.cancel');
+    Route::post('/payment/stripe/webhook', 'webhook')->name('stripe.webhook');
+    Route::get('/payment/stripe/status/{orderNumber}', 'status')->name('stripe.status');
 });
 
 // SSLCommerz Routes

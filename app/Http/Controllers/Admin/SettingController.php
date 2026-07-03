@@ -39,6 +39,10 @@ class SettingController extends Controller
             'currency_symbol' => 'required',
             'currency_code' => 'required',
             'google_map' => 'nullable',
+            'theme_color_primary' => 'required|string',
+            'theme_color_primary_hover' => 'required|string',
+            'theme_color_secondary' => 'required|string',
+            'theme_color_dark' => 'required|string',
         ]);
 
         if (! empty($inputs['logo'])) {

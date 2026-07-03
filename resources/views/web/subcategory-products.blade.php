@@ -2,19 +2,7 @@
 @section('title', ($subcategory?->meta_title ?? ucfirst($subcategory?->name)) . ' - ' . ($siteSettings->site_title ?? null))
 @section('meta_description', $subcategory?->meta_description ?? 'Explore our latest collection of ' . $subcategory?->name . '. Find the best prices for ' . $subcategory?->name . ' here.')
 @section('content')
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <ol class="wpo-breadcumb-wrap">
-                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li>Sub Category</li>
-                        <li>{{ $subcategory?->name }}</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('web.layouts.partial.breadcrumb', ['title' => $subcategory?->name])
     <div class="container-fluid pt-2">
         <div class="row px-xl-5">
             <div class="col-lg-3 col-md-12">

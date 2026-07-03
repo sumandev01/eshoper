@@ -2,27 +2,18 @@
 @section('title', ucfirst(Route::currentRouteName()) . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <ol class="wpo-breadcumb-wrap">
-                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li>Cart</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('web.layouts.partial.breadcrumb', ['title' => 'Cart'])
     <!-- Page Header End -->
 
 
     <!-- Cart Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
-            <div class="col-lg-8 table-responsive mb-5">
+            <div class="col-12">
                 <h4 class="font-weight-semi-bold mb-2">Your Cart</h4>
                 <p>There are {{ count($carts) }} products in this list</p>
+            </div>
+            <div class="col-lg-8 table-responsive mb-5">
                 <table class="table table-bordered text-center mb-0">
                     <thead class="bg-secondary text-dark">
                         <tr>
@@ -67,14 +58,18 @@
                                     <a class="text-dark nav-link px-0" style="text-decoration: none;"
                                         href="{{ route('productDetails', $cart?->product?->slug) }}"
                                         title="{{ $cart?->product?->name }}">{{ Str::limit($cart?->product?->name, 30, '...') }}</a>
-                                    <div>
+                                    <div class="my-2 d-flex align-items-center">
                                         @if ($cart?->size_id)
-                                            <span class="p-1 text-white bg-primary">Size:
-                                                {{ $cart?->size?->name ?? '' }}</span>
+                                            <span class="badge rounded-circle d-inline-flex justify-content-center align-items-center mr-2 shadow-sm" 
+                                                  style="width: 24px; height: 24px; font-size: 11px; background-color: #D19C97; color: #fff; font-weight: 600;" 
+                                                  title="Size: {{ $cart?->size?->name ?? '' }}">
+                                                {{ $cart?->size?->name ?? '' }}
+                                            </span>
                                         @endif
                                         @if ($cart?->color_id)
-                                            <span class="p-1 text-white bg-primary">Color:
-                                                {{ $cart?->color?->name ?? '' }}</span>
+                                            <span class="rounded-circle d-inline-block shadow-sm" 
+                                                  style="width: 24px; height: 24px; background-color: {{ $cart?->color?->color_code ?? '#000' }}; border: 1px solid #e0e0e0; box-shadow: 0 0 2px rgba(0,0,0,0.2);" 
+                                                  title="Color: {{ $cart?->color?->name ?? '' }}" data-toggle="tooltip"></span>
                                         @endif
                                     </div>
                                     @php

@@ -6,19 +6,7 @@
 @section('og_image', url($product?->thumbnail))
 @section('og_url', route('productDetails', $product?->slug))
 @section('content')
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <ol class="wpo-breadcumb-wrap">
-                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li><a class="nav-link p-0" href="{{ route('products') }}">Products</a></li>
-                        <li>Single Product</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('web.layouts.partial.breadcrumb', ['title' => 'Single Product'])
     <div class="container-fluid py-5">
         <div class="row px-xl-5">
             <!-- Product Gallery Start -->
