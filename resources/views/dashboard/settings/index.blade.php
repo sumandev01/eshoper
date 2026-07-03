@@ -202,6 +202,60 @@
                                 </span>
                             </div>
                         </div>
+                        
+                        <!-- Social Media Links -->
+                        <h4 class="mt-5 mb-3 border-bottom pb-2">Social Media Links</h4>
+                        
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Facebook URL</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="social_facebook" class="fs-6" type="url" :value="$siteSettings->social_facebook ?? null" :required="false" placeholder="https://facebook.com/..." />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Twitter URL</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="social_twitter" class="fs-6" type="url" :value="$siteSettings->social_twitter ?? null" :required="false" placeholder="https://twitter.com/..." />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">LinkedIn URL</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="social_linkedin" class="fs-6" type="url" :value="$siteSettings->social_linkedin ?? null" :required="false" placeholder="https://linkedin.com/in/..." />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Instagram URL</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="social_instagram" class="fs-6" type="url" :value="$siteSettings->social_instagram ?? null" :required="false" placeholder="https://instagram.com/..." />
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">YouTube URL</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <x-input name="social_youtube" class="fs-6" type="url" :value="$siteSettings->social_youtube ?? null" :required="false" placeholder="https://youtube.com/..." />
+                            </div>
+                        </div>
+                        
                         <!-- Theme Colors -->
                         <h4 class="mt-5 mb-3 border-bottom pb-2">Theme Colors</h4>
                         
@@ -242,6 +296,49 @@
                             <div class="col-auto px-0 fs-5 fw-bold">:</div>
                             <div class="col-md-8">
                                 <input type="color" name="theme_color_dark" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_color_dark ?? '#1C1C1C' }}" title="Choose dark color">
+                            </div>
+                        </div>
+
+                        <!-- Button Colors -->
+                        <h4 class="mt-5 mb-3 border-bottom pb-2">Button Colors</h4>
+                        
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Button Background Color</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <input type="color" name="theme_button_bg" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_button_bg ?? '#D19C97' }}" title="Choose button background color">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Button Text Color</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <input type="color" name="theme_button_text" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_button_text ?? '#212529' }}" title="Choose button text color">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Button Hover Background Color</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <input type="color" name="theme_button_hover_bg" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_button_hover_bg ?? '#c17a74' }}" title="Choose button hover background color">
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4 gy-3">
+                            <div class="col-md-3 col-10 text-start">
+                                <label class="form-label mb-0">Button Hover Text Color</label>
+                            </div>
+                            <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                            <div class="col-md-8">
+                                <input type="color" name="theme_button_hover_text" class="form-control form-control-color w-100" style="max-width: 150px;" value="{{ $siteSettings->theme_button_hover_text ?? '#ffffff' }}" title="Choose button hover text color">
                             </div>
                         </div>
 

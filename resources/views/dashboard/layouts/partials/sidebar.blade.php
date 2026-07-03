@@ -360,6 +360,13 @@
                 </div>
             </li>
         @endcan
+        <li class="nav-item {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.pages.index') }}">
+                <span class="menu-title">Pages</span>
+                <i class="mdi mdi-file-document-outline menu-icon"></i>
+            </a>
+        </li>
+
         @can(\App\Enums\Permission\SettingPermission::SettingAccess->value)
             <li class="nav-item {{ request()->routeIs('admin.settings.index') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.settings.index') }}">

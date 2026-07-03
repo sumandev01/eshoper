@@ -12,6 +12,24 @@
                     class="fa fa-map-marker-alt text-primary mr-3"></i>{{ ($siteSettings->contact_address ?? null) }}</p>
             <p class="mb-2"><i class="fa fa-envelope text-primary mr-3"></i>{{ ($siteSettings->contact_email ?? null) }}</p>
             <p class="mb-0"><i class="fa fa-phone-alt text-primary mr-3"></i>{{ ($siteSettings->contact_phone ?? null) }}</p>
+            
+            <div class="d-flex mt-4">
+                @if(!empty($siteSettings->social_facebook) && $siteSettings->social_facebook != '#')
+                    <a class="text-dark mb-2" href="{{ $siteSettings->social_facebook }}" target="_blank"><i class="fab fa-facebook-f text-primary mr-3 fs-5"></i></a>
+                @endif
+                @if(!empty($siteSettings->social_twitter) && $siteSettings->social_twitter != '#')
+                    <a class="text-dark mb-2" href="{{ $siteSettings->social_twitter }}" target="_blank"><i class="fab fa-twitter text-primary mr-3 fs-5"></i></a>
+                @endif
+                @if(!empty($siteSettings->social_linkedin) && $siteSettings->social_linkedin != '#')
+                    <a class="text-dark mb-2" href="{{ $siteSettings->social_linkedin }}" target="_blank"><i class="fab fa-linkedin-in text-primary mr-3 fs-5"></i></a>
+                @endif
+                @if(!empty($siteSettings->social_instagram) && $siteSettings->social_instagram != '#')
+                    <a class="text-dark mb-2" href="{{ $siteSettings->social_instagram }}" target="_blank"><i class="fab fa-instagram text-primary mr-3 fs-5"></i></a>
+                @endif
+                @if(!empty($siteSettings->social_youtube) && $siteSettings->social_youtube != '#')
+                    <a class="text-dark mb-2" href="{{ $siteSettings->social_youtube }}" target="_blank"><i class="fab fa-youtube text-primary mr-3 fs-5"></i></a>
+                @endif
+            </div>
         </div>
         <div class="col-lg-8 col-md-12">
             <div class="row">
@@ -27,8 +45,12 @@
                 <div class="col-md-4 mb-5">
                     <h5 class="font-weight-bold text-dark mb-4">Support</h5>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-dark mb-2" href="{{ route('termsAndConditions') }}"><i class="fa fa-angle-right mr-2"></i>Terms & Condition</a>
-                        <a class="text-dark mb-2" href="{{ route('privacyPolicy') }}"><i class="fa fa-angle-right mr-2"></i>Privacy Policy</a>
+                        @php
+                            $dynamicPages = \App\Models\Page::where('status', 1)->get();
+                        @endphp
+                        @foreach($dynamicPages as $dPage)
+                            <a class="text-dark mb-2" href="{{ route('page', $dPage->slug) }}"><i class="fa fa-angle-right mr-2"></i>{{ $dPage->title }}</a>
+                        @endforeach
                         <a class="text-dark mb-2" href="{{ route('faq') }}"><i class="fa fa-angle-right mr-2"></i>FAQs</a>
                         <a class="text-dark mb-2" href="{{ route('orderTracking') }}"><i class="fa fa-angle-right mr-2"></i>Order Tracking</a>
                     </div>

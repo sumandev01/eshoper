@@ -273,7 +273,7 @@
                         </div>
                         <div class="card-footer border-secondary bg-transparent">
                             <button type="submit"
-                                class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
+                                class="btn btn-md btn-block btn-primary my-3 py-3">Place Order</button>
                         </div>
                     </div>
 

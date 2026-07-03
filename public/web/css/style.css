@@ -9556,7 +9556,7 @@ a.text-dark:hover, a.text-dark:focus {
 }
 
 .product-item .btn:hover {
-  color: var(--primary) !important;
+  color: var(--primary);
 }
 
 .contact-form .help-block ul {

@@ -43,6 +43,10 @@ class SettingController extends Controller
             'theme_color_primary_hover' => 'required|string',
             'theme_color_secondary' => 'required|string',
             'theme_color_dark' => 'required|string',
+            'theme_button_bg' => 'required|string',
+            'theme_button_text' => 'required|string',
+            'theme_button_hover_bg' => 'required|string',
+            'theme_button_hover_text' => 'required|string',
         ]);
 
         if (! empty($inputs['logo'])) {

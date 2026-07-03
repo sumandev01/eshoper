@@ -42,6 +42,13 @@ class SettingSeeder extends Seeder
             ['key_name' => 'currency_symbol', 'key_value' => '৳'],
             ['key_name' => 'currency_code', 'key_value' => 'BDT'],
             ['key_name' => 'google_map', 'key_value' => '<iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d1683.4716418868045!2d91.50980138952988!3d24.294198585414446!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sbd!4v1780639829558!5m2!1sen!2sbd" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>'],
+            
+            // Social Media Links
+            ['key_name' => 'social_facebook', 'key_value' => '#'],
+            ['key_name' => 'social_twitter', 'key_value' => '#'],
+            ['key_name' => 'social_linkedin', 'key_value' => '#'],
+            ['key_name' => 'social_instagram', 'key_value' => '#'],
+            ['key_name' => 'social_youtube', 'key_value' => '#'],
             ['key_name' => 'terms_conditions', 'key_value' => '<h3>Terms and Conditions</h3><p>' . implode('</p><p>', $faker->paragraphs(5)) . '</p>'],
             ['key_name' => 'privacy_policy', 'key_value' => '<h3>Privacy Policy</h3><p>' . implode('</p><p>', $faker->paragraphs(5)) . '</p>'],
 
@@ -63,6 +70,12 @@ class SettingSeeder extends Seeder
             ['key_name' => 'theme_color_primary_hover', 'key_value' => '#c17a74'],
             ['key_name' => 'theme_color_secondary', 'key_value' => '#EDF1FF'],
             ['key_name' => 'theme_color_dark', 'key_value' => '#1C1C1C'],
+            
+            // Button Colors
+            ['key_name' => 'theme_button_bg', 'key_value' => '#D19C97'],
+            ['key_name' => 'theme_button_text', 'key_value' => '#212529'],
+            ['key_name' => 'theme_button_hover_bg', 'key_value' => '#c17a74'],
+            ['key_name' => 'theme_button_hover_text', 'key_value' => '#ffffff'],
         ];
 
         foreach ($data as $datum) {

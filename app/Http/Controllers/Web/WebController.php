@@ -245,10 +245,11 @@ class WebController extends Controller
         return view('web.subcategory-products', compact('products', 'subcategory', 'minPrice', 'maxPrice'), $sidebarData);
     }
 
-    // Terms and Conditions
-    public function termsAndConditions()
+    // Dynamic Page
+    public function page($slug)
     {
-        return view('web.terms');
+        $page = \App\Models\Page::where('slug', $slug)->where('status', 1)->firstOrFail();
+        return view('web.page', compact('page'));
     }
 
     // Faq
@@ -256,12 +257,6 @@ class WebController extends Controller
     {
         $faqs = Faq::orderBy('order', 'asc')->get();
         return view('web.faq', compact('faqs'));
-    }
-
-    // Privacy Policy
-    public function privacyPolicy()
-    {
-        return view('web.privacy-policy');
     }
 
     // Order Tracking

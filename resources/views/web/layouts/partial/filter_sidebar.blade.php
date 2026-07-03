@@ -4,10 +4,10 @@
         <div id="price-range-slider" class="mb-3"></div>
         <div class="d-flex align-items-center justify-content-between mb-2">
             <input type="text" id="min-price"
-                class="form-control form-control-sm bg-primary text-center mr-2 text-white" readonly>
+                class="form-control form-control-md bg-primary text-center mr-2 text-white" readonly>
             <span class="text-muted">-</span>
             <input type="text" id="max-price"
-                class="form-control form-control-sm bg-primary text-center ml-2 text-white" readonly>
+                class="form-control form-control-md bg-primary text-center ml-2 text-white" readonly>
         </div>
     </div>
 </div>
@@ -77,7 +77,8 @@
 </div>
 
 <div class="pt-3">
-    <button type="button" id="clear-filters" class="btn btn-primary btn-block font-weight-bold">
-        Clear All Filters
+    <button type="button" id="clear-filters" class="btn btn-primary btn-block">
+        <i class="fas fa-times-circle mr-2"></i>
+        Clear Filters
     </button>
 </div>

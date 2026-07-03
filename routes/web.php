@@ -30,9 +30,8 @@ Route::controller(WebController::class)->group(function () {
     Route::get('/brand/{slug}', 'brandProducts')->name('brandProducts'); // Brand Products
     Route::get('/search-suggestions', 'searchSuggestions')->name('searchSuggestions'); // Search Suggestions
 
-    // Terms & Conditions
-    Route::get('/terms-and-conditions', 'termsAndConditions')->name('termsAndConditions');
-    Route::get('/privacy-policy', 'privacyPolicy')->name('privacyPolicy');
+    // Dynamic Pages
+    Route::get('/page/{slug}', 'page')->name('page');
     // Order Tracking
     Route::get('/order-tracking', 'orderTracking')->name('orderTracking');
     Route::get('/order-tracking-result', 'orderTrackingDetails')->name('web.order-tracking-result');

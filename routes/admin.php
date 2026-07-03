@@ -244,6 +244,16 @@ Route::middleware(['is_admin', 'auth:web', 'can:'.AdminAccessEnums::AdminAccess-
         Route::get('/settings/offers', 'offers')->name('admin.settings.offers');
         Route::post('/settings/offers', 'updateOffers')->name('admin.settings.offers.update');
     });
+
+    // Pages routes
+    Route::controller(\App\Http\Controllers\Admin\PageController::class)->group(function () {
+        Route::get('/pages', 'index')->name('admin.pages.index');
+        Route::get('/pages/create', 'create')->name('admin.pages.create');
+        Route::post('/pages', 'store')->name('admin.pages.store');
+        Route::get('/pages/{page}/edit', 'edit')->name('admin.pages.edit');
+        Route::put('/pages/{page}', 'update')->name('admin.pages.update');
+        Route::delete('/pages/{page}', 'destroy')->name('admin.pages.destroy');
+    });
 });
 
 Route::controller(LocationController::class)->group(function () {

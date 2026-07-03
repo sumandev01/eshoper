@@ -94,6 +94,30 @@
             --primary-dark: {{ $siteSettings->theme_color_primary_hover ?? '#c17a74' }};
             --secondary: {{ $siteSettings->theme_color_secondary ?? '#EDF1FF' }};
             --dark: {{ $siteSettings->theme_color_dark ?? '#1C1C1C' }};
+            
+            --btn-bg: {{ $siteSettings->theme_button_bg ?? '#D19C97' }};
+            --btn-text: {{ $siteSettings->theme_button_text ?? '#212529' }};
+            --btn-hover-bg: {{ $siteSettings->theme_button_hover_bg ?? '#c17a74' }};
+            --btn-hover-text: {{ $siteSettings->theme_button_hover_text ?? '#ffffff' }};
+        }
+
+        a.btn-primary, button.btn-primary, .btn-primary {
+            background-color: var(--btn-bg) !important;
+            border-color: var(--btn-bg) !important;
+            color: var(--btn-text) !important;
+        }
+
+        a.btn-primary:hover, button.btn-primary:hover, .btn-primary:hover,
+        a.btn-primary:focus, button.btn-primary:focus, .btn-primary:focus,
+        a.btn-primary:active, button.btn-primary:active, .btn-primary:active,
+        a.btn-primary.active, button.btn-primary.active, .btn-primary.active {
+            background-color: var(--btn-hover-bg) !important;
+            border-color: var(--btn-hover-bg) !important;
+            color: var(--btn-hover-text) !important;
+        }
+        
+        .btn-primary i, .btn-primary span {
+            color: inherit !important;
         }
 
         .navbarShadow {
