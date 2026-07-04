@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::controller(WebController::class)->group(function () {
     Route::get('/', 'root')->name('root');
-    Route::get('/products', 'products')->name('products');
+    Route::get('/shop', 'shop')->name('shop');
     Route::get('/product/{slug}', 'productDetails')->name('productDetails');
     Route::post('/get-color-by-size', 'getColorBySize')->name('getColorBySize');
     Route::get('/check-available-color', 'getAvailableColors')->name('getAvailableColors');

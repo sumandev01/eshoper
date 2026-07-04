@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Architecture Documentation</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8f9fa; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Styles */
+        .sidebar { width: 260px; background-color: #2c3e50; color: #ecf0f1; padding: 20px 0; overflow-y: auto; flex-shrink: 0; }
+        .sidebar h2 { text-align: center; font-size: 1.2rem; margin-bottom: 20px; color: #3498db; border-bottom: 1px solid #34495e; padding-bottom: 15px; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar li { margin: 0; }
+        .sidebar a { display: block; padding: 12px 20px; color: #ecf0f1; text-decoration: none; border-left: 4px solid transparent; transition: all 0.3s; }
+        .sidebar a:hover { background-color: #34495e; border-left: 4px solid #3498db; color: #fff; }
+
+        /* Main Content Styles */
+        .main-content { flex-grow: 1; padding: 30px 40px; overflow-y: auto; }
+        .main-content h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; }
+        .main-content h2 { color: #34495e; margin-top: 40px; border-bottom: 1px solid #ddd; padding-bottom: 5px; scroll-margin-top: 20px; }
+        
+        .component-card { background: #fff; border: 1px solid #e1e4e8; border-radius: 6px; padding: 20px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .prop-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .prop-table th, .prop-table td { border: 1px solid #e1e4e8; padding: 10px; text-align: left; }
+        .prop-table th { background-color: #f1f8ff; color: #24292e; }
+        code { background-color: #f6f8fa; padding: 3px 6px; border-radius: 3px; font-family: 'Courier New', Courier, monospace; color: #e83e8c; font-size: 0.9em; }
+        pre { background-color: #282c34; color: #abb2bf; padding: 15px; border-radius: 6px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <h2>E-Shopper Docs</h2>
+        <ul>
+            <li><a href="#how-it-works">1. How the Flow Works</a></li>
+            <li><a href="#code-locations">2. Code Locations</a></li>
+            <li><a href="#how-to-edit">3. How to Edit/Update</a></li>
+            <li><a href="#api-keys">4. API Keys & Setup</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <h1>Payment Architecture Documentation</h1>
+        <p>A complete guide to understanding, modifying, and managing the Stripe & SSLCommerz payment integration v2.0 (Webhook-First).</p>
+
+        <!-- Section 1 -->
+        <div class="component-card" id="how-it-works">
+            <h2>1. How the Payment Flow Works (Webhook-First)</h2>
+            <p>This project uses a highly reliable <strong>Server-to-Server (Webhook-First)</strong> architecture. This means we do not rely on the user's browser returning to our success page to finalize the order. Instead, the payment gateways communicate directly with our server in the background.</p>
+            
+            <ol style="line-height: 1.8;">
+                <li><strong>Checkout:</strong> User clicks "Pay". System creates an order in <code>PENDING/UNPAID</code> state and redirects to Stripe/SSLCommerz.</li>
+                <li><strong>Payment:</strong> User completes the payment on the gateway's secure page.</li>
+                <li><strong>Background Webhook (Crucial Step):</strong> 
+                    <ul>
+                        <li>Stripe silently sends a POST request to <code>/payment/stripe/webhook</code>.</li>
+                        <li>SSLCommerz silently sends an IPN to <code>/payment/ssl/ipn</code>.</li>
+                        <li>The server verifies this signal, updates the database, deducts stock, and sends a Success Email.</li>
+                    </ul>
+                </li>
+                <li><strong>User Redirection (Frontend UI):</strong> Meanwhile, the user is redirected back to our website's <code>/success</code> page. Because the background webhook might take a few seconds, the UI shows a "Processing Your Payment" spinner.</li>
+                <li><strong>AJAX Polling:</strong> The UI pings our server every 3 seconds to check if the background webhook finished. Once confirmed, it redirects the user to their final Thank You screen.</li>
+            </ol>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="component-card" id="code-locations">
+            <h2>2. Code Locations (Where is what?)</h2>
+            
+            <table class="prop-table">
+                <tr><th>Component</th><th>File Path</th><th>Responsibility</th></tr>
+                <tr><td>Routes</td><td><code>routes/web.php</code></td><td>Defines the endpoints (success, cancel, webhook, status) for gateways.</td></tr>
+                <tr><td>Stripe Controller</td><td><code>app/Http/Controllers/Payment/StripeController.php</code></td><td>Handles Stripe Webhook signature verification and AJAX status checking.</td></tr>
+                <tr><td>SSL Controller</td><td><code>app/Http/Controllers/Payment/SSLCommerzController.php</code></td><td>Handles SSL IPN (Instant Payment Notification) verification.</td></tr>
+                <tr><td>Database Logic</td><td><code>app/Repositories/OrderRepository.php</code></td><td>The <code>finalizeOrder()</code> method handles stock deduction, DB updates, and triggers the Email.</td></tr>
+                <tr><td>Processing UI</td><td><code>resources/views/web/payment/processing.blade.php</code></td><td>The "Loading" screen that polls the server via Javascript.</td></tr>
+                <tr><td>Success Email</td><td><code>app/Mail/OrderConfirmedMail.php</code><br><code>resources/views/emails/order_confirmed.blade.php</code></td><td>The backend class and the HTML template for the email sent to the user.</td></tr>
+                <tr><td>CSRF Exception</td><td><code>bootstrap/app.php</code></td><td>Ensures Laravel does not block the POST webhooks due to missing CSRF tokens.</td></tr>
+            </table>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="component-card" id="how-to-edit">
+            <h2>3. How to Edit or Update Features</h2>
+            
+            <h3>Modifying the Success Email Design</h3>
+            <p>To change how the email looks, open <code>resources/views/emails/order_confirmed.blade.php</code>. It is a standard HTML file with inline CSS (required for emails) and Blade variables (like <code>$order->order_number</code>).</p>
+
+            <h3>Adding a New Payment Gateway</h3>
+            <p>If you add a new gateway (e.g., PayPal), follow the Webhook-First rule:</p>
+            <ul>
+                <li>The user should be redirected to the gateway via <code>OrderRepository</code>.</li>
+                <li>Create a Webhook/IPN endpoint that verifies the payment in the background and calls <code>$this->orderRepository->finalizeOrder()</code>.</li>
+                <li>The user's success redirect should simply return <code>view('web.payment.processing')</code>.</li>
+            </ul>
+
+            <h3>Modifying Post-Payment Database Logic</h3>
+            <p>If you need to give the user points, deduct wallet balance, or notify an admin after a successful payment, add your logic inside <code>app/Repositories/OrderRepository.php</code> inside the <code>finalizeOrder()</code> method.</p>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="component-card" id="api-keys">
+            <h2>4. API Keys & Setup Instructions</h2>
+            
+            <h3>Stripe Setup</h3>
+            <p><strong>1. Get Public & Secret Keys</strong></p>
+            <ul>
+                <li>Go to Stripe Dashboard -> Developers -> API Keys.</li>
+                <li>Copy the Publishable key and Secret key into your <code>.env</code> file.</li>
+            </ul>
+            
+            <p><strong>2. Get Webhook Secret</strong></p>
+            <ul>
+                <li>Go to Stripe Dashboard -> Developers -> Webhooks.</li>
+                <li>Click "Add endpoint".</li>
+                <li>URL: <code>https://yourdomain.com/payment/stripe/webhook</code></li>
+                <li>Events: Select <code>checkout.session.completed</code>.</li>
+                <li>Click "Add endpoint", then click "Reveal" next to Signing secret.</li>
+                <li>Copy the <code>whsec_...</code> key into your <code>.env</code> file.</li>
+            </ul>
+
+<pre><code class="language-ini">STRIPE_KEY=pk_test_...
+STRIPE_SECRET=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...</code></pre>
+
+            <h3>SSLCommerz Setup</h3>
+            <ul>
+                <li>You get the Store ID and Store Password via email when you register on SSLCommerz.</li>
+                <li>For Sandbox (Test Mode), set <code>SSLCOMMERZ_IS_SANDBOX=true</code>. For Live, set it to <code>false</code>.</li>
+            </ul>
+<pre><code class="language-ini">SSLCOMMERZ_STORE_ID=your_store_id
+SSLCOMMERZ_STORE_PASSWORD=your_store_password
+SSLCOMMERZ_IS_SANDBOX=true</code></pre>
+        </div>
+    </div>
+
+    <!-- PrismJS for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-monokai.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-ini.min.js"></script>
+
+</body>
+</html>

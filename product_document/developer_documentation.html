@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Documentation - Menu Builder Architecture</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 0 auto; padding: 20px; background-color: #f4f7f6; }
+        .container { background-color: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 30px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        h3 { color: #c0392b; margin-top: 25px; }
+        ul { margin-bottom: 20px; }
+        li { margin-bottom: 8px; }
+        code { background-color: #f8f9fa; padding: 3px 6px; border-radius: 4px; font-family: 'Courier New', Courier, monospace; color: #e83e8c; border: 1px solid #e9ecef; }
+        pre { background-color: #272822; color: #f8f8f2; padding: 15px; border-radius: 5px; overflow-x: auto; font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace; }
+        pre code { background-color: transparent; color: inherit; padding: 0; border: none; }
+        .keyword { color: #f92672; }
+        .string { color: #e6db74; }
+        .comment { color: #75715e; }
+        .function { color: #a6e22e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Developer Documentation - Menu Builder Architecture</h1>
+        <p>This document provides technical insights into the Menu Builder system implemented in the eShopper CMS.</p>
+
+        <h2>Database Schema</h2>
+        <p>The Menu Builder is built on a two-table relationship: <code>menus</code> and <code>menu_items</code>.</p>
+
+        <h3>1. <code>menus</code> Table</h3>
+        <p>Stores the structural menu blocks/locations.</p>
+        <ul>
+            <li><code>id</code> (PK)</li>
+            <li><code>name</code>: Display name in the admin panel (e.g., "Main Header Menu").</li>
+            <li><code>location</code>: The unique string identifier used to fetch the menu in Blade templates (e.g., <code>header_main</code>, <code>footer_company</code>).</li>
+            <li><code>status</code>: Boolean to toggle visibility.</li>
+        </ul>
+
+        <h3>2. <code>menu_items</code> Table</h3>
+        <p>Stores the actual links inside a menu.</p>
+        <ul>
+            <li><code>id</code> (PK)</li>
+            <li><code>menu_id</code>: FK to <code>menus.id</code> (Cascades on delete).</li>
+            <li><code>title</code>: Display text of the anchor tag.</li>
+            <li><code>type</code>: Enum/String defining the resolution strategy.
+                <ul>
+                    <li><code>system</code>: Hardcoded application routes (e.g., Home, Products).</li>
+                    <li><code>page</code>: Dynamically generated CMS pages.</li>
+                    <li><code>category</code>: Product categories.</li>
+                    <li><code>custom</code>: Direct URL strings.</li>
+                </ul>
+            </li>
+            <li><code>reference_id</code>: Contextual data based on <code>type</code>.
+                <ul>
+                    <li>If <code>type=system</code>, stores the route name (e.g., <code>root</code>, <code>about</code>).</li>
+                    <li>If <code>type=page</code>, stores <code>Page::id</code>.</li>
+                    <li>If <code>type=category</code>, stores <code>Category::id</code>.</li>
+                </ul>
+            </li>
+            <li><code>url</code>: Stores the URL string only if <code>type=custom</code>.</li>
+            <li><code>order</code>: Integer for sorting items ascending.</li>
+        </ul>
+
+        <h2>MVC Implementation</h2>
+        <ul>
+            <li><strong>Models:</strong> 
+                <ul>
+                    <li><code>App\Models\Menu</code> (hasMany <code>items</code>)</li>
+                    <li><code>App\Models\MenuItem</code> (belongsTo <code>menu</code>)</li>
+                </ul>
+            </li>
+            <li><strong>Controller:</strong> <code>App\Http\Controllers\Admin\MenuController</code>
+                <ul>
+                    <li>Handles <code>index</code> (viewing the split layout).</li>
+                    <li>Handles <code>store</code> (creating new menu locations).</li>
+                    <li>Handles <code>storeItem</code> (adding links based on the 4 form types).</li>
+                    <li>Handles <code>destroyItem</code> (removing a link).</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>Frontend Rendering Strategy</h2>
+        <p>All hardcoded static links have been removed from <code>header.blade.php</code> and <code>footer.blade.php</code>. To render a menu, we query the <code>Menu</code> model by its <code>location</code> column.</p>
+
+        <h3>Example Rendering Loop (Header Main):</h3>
+        <pre><code><span class="comment">@php</span>
+    $headerMenu = \App\Models\Menu::with([<span class="string">'items'</span> => <span class="keyword">function</span>($q) { $q->orderBy(<span class="string">'order'</span>); }])->where(<span class="string">'location'</span>, <span class="string">'header_main'</span>)->first();
+<span class="comment">@endphp</span>
+
+<span class="comment">@if</span>($headerMenu)
+    <span class="comment">@foreach</span>($headerMenu->items <span class="keyword">as</span> $item)
+        <span class="comment">@php</span>
+            $linkUrl = <span class="string">'#'</span>;
+            <span class="keyword">if</span> ($item->type == <span class="string">'custom'</span>) {
+                $linkUrl = $item->url;
+            } <span class="keyword">elseif</span> ($item->type == <span class="string">'system'</span>) {
+                $linkUrl = $item->reference_id == <span class="string">'root'</span> ? route(<span class="string">'root'</span>) : route($item->reference_id);
+            } <span class="keyword">elseif</span> ($item->type == <span class="string">'page'</span>) {
+                $page = \App\Models\Page::find($item->reference_id);
+                $linkUrl = $page ? route(<span class="string">'page'</span>, $page->slug) : <span class="string">'#'</span>;
+            } <span class="keyword">elseif</span> ($item->type == <span class="string">'category'</span>) {
+                $cat = \App\Models\Category::find($item->reference_id);
+                $linkUrl = $cat ? route(<span class="string">'categoryProducts'</span>, $cat->slug) : <span class="string">'#'</span>;
+            }
+        <span class="comment">@endphp</span>
+        &lt;a href="{{ $linkUrl }}"&gt;{{ $item->title }}&lt;/a&gt;
+    <span class="comment">@endforeach</span>
+<span class="comment">@endif</span></code></pre>
+
+        <h2>Seeding</h2>
+        <p>The default menus and their initial structure are populated via <code>database/seeders/MenuSeeder.php</code>. This ensures that when a new user installs the project, the header and footer aren't empty.</p>
+    </div>
+</body>
+</html>

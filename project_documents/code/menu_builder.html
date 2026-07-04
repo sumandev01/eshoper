@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu Builder Architecture</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8f9fa; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Styles */
+        .sidebar { width: 260px; background-color: #2c3e50; color: #ecf0f1; padding: 20px 0; overflow-y: auto; flex-shrink: 0; }
+        .sidebar h2 { text-align: center; font-size: 1.2rem; margin-bottom: 20px; color: #3498db; border-bottom: 1px solid #34495e; padding-bottom: 15px; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar li { margin: 0; }
+        .sidebar a { display: block; padding: 12px 20px; color: #ecf0f1; text-decoration: none; border-left: 4px solid transparent; transition: all 0.3s; }
+        .sidebar a:hover { background-color: #34495e; border-left: 4px solid #3498db; color: #fff; }
+
+        /* Main Content Styles */
+        .main-content { flex-grow: 1; padding: 30px 40px; overflow-y: auto; }
+        .main-content h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; }
+        .main-content h2 { color: #34495e; margin-top: 40px; border-bottom: 1px solid #ddd; padding-bottom: 5px; scroll-margin-top: 20px; }
+        
+        .component-card { background: #fff; border: 1px solid #e1e4e8; border-radius: 6px; padding: 20px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .prop-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .prop-table th, .prop-table td { border: 1px solid #e1e4e8; padding: 10px; text-align: left; }
+        .prop-table th { background-color: #f1f8ff; color: #24292e; }
+        code { background-color: #f6f8fa; padding: 3px 6px; border-radius: 3px; font-family: 'Courier New', Courier, monospace; color: #e83e8c; font-size: 0.9em; }
+        pre { background-color: #282c34; color: #abb2bf; padding: 15px; border-radius: 6px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <h2>E-Shopper Docs</h2>
+        <ul>
+            <li><a href="#database-schema">1. Database Schema</a></li>
+            <li><a href="#mvc-implementation">2. MVC Implementation</a></li>
+            <li><a href="#frontend-rendering">3. Frontend Rendering</a></li>
+            <li><a href="#seeding">4. Default Seeding</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <h1>Menu Builder Architecture</h1>
+        <p>Technical insights into the dynamic Menu Builder system implemented in the E-Shopper CMS.</p>
+
+        <!-- Section 1 -->
+        <div class="component-card" id="database-schema">
+            <h2>1. Database Schema</h2>
+            <p>The Menu Builder is built on a two-table relationship structure.</p>
+            
+            <h3><code>menus</code> Table</h3>
+            <p>Stores the structural menu blocks/locations.</p>
+            <ul>
+                <li><code>id</code> (PK)</li>
+                <li><code>name</code>: Display name in the admin panel (e.g., "Main Header Menu").</li>
+                <li><code>location</code>: The unique string identifier used to fetch the menu in Blade templates (e.g., <code>header_main</code>, <code>footer_company</code>).</li>
+                <li><code>status</code>: Boolean to toggle visibility.</li>
+            </ul>
+
+            <br>
+            <h3><code>menu_items</code> Table</h3>
+            <p>Stores the actual links inside a menu.</p>
+            <ul>
+                <li><code>id</code> (PK)</li>
+                <li><code>menu_id</code>: FK to <code>menus.id</code> (Cascades on delete).</li>
+                <li><code>title</code>: Display text of the anchor tag.</li>
+                <li><code>type</code>: Enum/String defining the resolution strategy (<code>system</code>, <code>page</code>, <code>category</code>, <code>custom</code>).</li>
+                <li><code>reference_id</code>: Contextual data based on <code>type</code> (route name, page id, category id).</li>
+                <li><code>url</code>: Stores the URL string only if <code>type=custom</code>.</li>
+                <li><code>order</code>: Integer for sorting items ascending.</li>
+            </ul>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="component-card" id="mvc-implementation">
+            <h2>2. MVC Implementation</h2>
+            
+            <h3>Models</h3>
+            <ul>
+                <li><code>App\Models\Menu</code> (hasMany <code>items</code>)</li>
+                <li><code>App\Models\MenuItem</code> (belongsTo <code>menu</code>)</li>
+            </ul>
+
+            <h3>Controller</h3>
+            <p><code>App\Http\Controllers\Admin\MenuController</code></p>
+            <ul>
+                <li>Handles <code>index</code> (viewing the split layout).</li>
+                <li>Handles <code>store</code> (creating new menu locations).</li>
+                <li>Handles <code>storeItem</code> (adding links based on the 4 form types).</li>
+                <li>Handles <code>destroyItem</code> (removing a link).</li>
+            </ul>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="component-card" id="frontend-rendering">
+            <h2>3. Frontend Rendering Strategy</h2>
+            <p>All hardcoded static links have been removed from the Blade templates. To render a menu, we query the <code>Menu</code> model by its <code>location</code> column. Below is an example of the Header Main menu.</p>
+            
+<pre><code class="language-php">@php
+    $headerMenu = \App\Models\Menu::with(['items' => function($q) { 
+        $q->orderBy('order'); 
+    }])->where('location', 'header_main')->first();
+@endphp
+
+@if($headerMenu)
+    @foreach($headerMenu->items as $item)
+        @php
+            $linkUrl = '#';
+            if ($item->type == 'custom') {
+                $linkUrl = $item->url;
+            } elseif ($item->type == 'system') {
+                $linkUrl = $item->reference_id == 'root' ? route('root') : route($item->reference_id);
+            } elseif ($item->type == 'page') {
+                $page = \App\Models\Page::find($item->reference_id);
+                $linkUrl = $page ? route('page', $page->slug) : '#';
+            } elseif ($item->type == 'category') {
+                $cat = \App\Models\Category::find($item->reference_id);
+                $linkUrl = $cat ? route('categoryProducts', $cat->slug) : '#';
+            }
+        @endphp
+        &lt;a href="{{ $linkUrl }}"&gt;{{ $item->title }}&lt;/a&gt;
+    @endforeach
+@endif</code></pre>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="component-card" id="seeding">
+            <h2>4. Default Seeding</h2>
+            <p>The default menus and their initial structure are populated via <code>database/seeders/MenuSeeder.php</code>. This ensures that when a new user installs the project, the header and footer aren't empty and the basic structure (Home, Products, About) is pre-configured.</p>
+        </div>
+
+    </div>
+
+    <!-- PrismJS for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-monokai.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+
+</body>
+</html>

@@ -43,7 +43,7 @@ class WebController extends Controller
         return view('web.index', compact('products', 'latestProducts', 'trendingProducts', 'categories', 'brands'));
     }
 
-    public function products(Request $request, ProductFilterService $filterService)
+    public function shop(Request $request, ProductFilterService $filterService)
     {
         $products = $filterService->filter($request);
 
@@ -54,7 +54,7 @@ class WebController extends Controller
         $shopSidebarData = $filterService->shopSidebar();
         [$minPrice, $maxPrice] = $filterService->getPriceRange();
 
-        return view('web.products', compact('products', 'minPrice', 'maxPrice'), $shopSidebarData);
+        return view('web.shop', compact('products', 'minPrice', 'maxPrice'), $shopSidebarData);
     }
 
     public function productDetails($slug)

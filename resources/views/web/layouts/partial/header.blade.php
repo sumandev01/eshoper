@@ -7,11 +7,32 @@
     <div class="row bg-secondary py-2 px-xl-5">
         <div class="col-lg-6 d-none d-lg-block">
             <div class="d-inline-flex align-items-center">
-                <a class="text-dark" href="">FAQs</a>
-                <span class="text-muted px-2">|</span>
-                <a class="text-dark" href="">Help</a>
-                <span class="text-muted px-2">|</span>
-                <a class="text-dark" href="">Support</a>
+                @php
+                    $headerTopMenu = \App\Models\Menu::with(['items' => function($q) { $q->orderBy('order'); }])->where('location', 'header_top')->first();
+                @endphp
+                
+                @if($headerTopMenu)
+                    @foreach($headerTopMenu->items as $index => $item)
+                        @php
+                            $linkUrl = '#';
+                            if ($item->type == 'custom') {
+                                $linkUrl = $item->url;
+                            } elseif ($item->type == 'system') {
+                                $linkUrl = $item->reference_id == 'root' ? route('root') : route($item->reference_id);
+                            } elseif ($item->type == 'page') {
+                                $page = \App\Models\Page::find($item->reference_id);
+                                $linkUrl = $page ? route('page', $page->slug) : '#';
+                            } elseif ($item->type == 'category') {
+                                $cat = \App\Models\Category::find($item->reference_id);
+                                $linkUrl = $cat ? route('categoryProducts', $cat->slug) : '#';
+                            }
+                        @endphp
+                        <a class="text-dark" href="{{ $linkUrl }}">{{ $item->title }}</a>
+                        @if(!$loop->last)
+                            <span class="text-muted px-2">|</span>
+                        @endif
+                    @endforeach
+                @endif
             </div>
         </div>
         <div class="col-lg-6 text-center text-lg-right">
@@ -132,14 +153,32 @@
                 </button>
                 <div class="collapse navbar-collapse justify-content-between" id="navbarCollapse">
                     <div class="navbar-nav mr-auto py-0">
-                        <a href="{{ route('root') }}"
-                            class="nav-item nav-link {{ request()->routeIs('root') ? 'active' : '' }}">Home</a>
-                        <a href="{{ route('products') }}"
-                            class="nav-item nav-link {{ request()->routeIs('products') ? 'active' : '' }}">Product</a>
-                        <a href="{{ route('about') }}"
-                            class="nav-item nav-link {{ request()->routeIs('about') ? 'active' : '' }}">About</a>
-                        <a href="{{ route('contact') }}"
-                            class="nav-item nav-link {{ request()->routeIs('contact') ? 'active' : '' }}">Contact</a>
+                        @php
+                            $headerMenu = \App\Models\Menu::with(['items' => function($q) { $q->orderBy('order'); }])->where('location', 'header_main')->first();
+                        @endphp
+                        
+                        @if($headerMenu)
+                            @foreach($headerMenu->items as $item)
+                                @php
+                                    $linkUrl = '#';
+                                    if ($item->type == 'custom') {
+                                        $linkUrl = $item->url;
+                                    } elseif ($item->type == 'system') {
+                                        $linkUrl = $item->reference_id == 'root' ? route('root') : route($item->reference_id);
+                                    } elseif ($item->type == 'page') {
+                                        $page = \App\Models\Page::find($item->reference_id);
+                                        $linkUrl = $page ? route('page', $page->slug) : '#';
+                                    } elseif ($item->type == 'category') {
+                                        $cat = \App\Models\Category::find($item->reference_id);
+                                        $linkUrl = $cat ? route('categoryProducts', $cat->slug) : '#';
+                                    }
+                                    
+                                    $isActive = request()->url() == $linkUrl;
+                                @endphp
+                                <a href="{{ $linkUrl }}"
+                                    class="nav-item nav-link {{ $isActive ? 'active' : '' }}">{{ $item->title }}</a>
+                            @endforeach
+                        @endif
                     </div>
                     <div class="navbar-nav ml-auto py-0">
                         @if ($user)
@@ -286,7 +325,7 @@
                         });
 
                         html += `
-                            <a href="{{ route('products') }}?search=${search}" style="
+                            <a href="{{ route('shop') }}?search=${search}" style="
                                 display: block;
                                 padding: 10px 14px;
                                 text-align: center;
@@ -316,7 +355,7 @@
                     e.preventDefault();
                     let search = $(this).val().trim();
                     if (search.length > 0) {
-                        window.location.href = "{{ route('products') }}?search=" + encodeURIComponent(
+                        window.location.href = "{{ route('shop') }}?search=" + encodeURIComponent(
                             search);
                     }
                 }
@@ -328,7 +367,7 @@
             $('.input-group-text').on('click', function() {
                 let search = $('#header-search').val().trim();
                 if (search.length > 0) {
-                    window.location.href = "{{ route('products') }}?search=" + encodeURIComponent(search);
+                    window.location.href = "{{ route('shop') }}?search=" + encodeURIComponent(search);
                 }
             });
 

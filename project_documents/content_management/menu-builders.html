@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Content Management | E-Shopper</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .section-title { position: relative; padding-bottom: 0.5rem; margin-top: 3rem; margin-bottom: 1.5rem; color: #0f172a; font-weight: 700; font-size: 1.5rem; border-bottom: 2px solid #e2e8f0; }
+        .sidebar-link { display: block; padding: 0.5rem 1rem; color: #475569; border-radius: 0.375rem; transition: all 0.2s; }
+        .sidebar-link:hover { background-color: #f1f5f9; color: #0f172a; }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center font-bold text-xl text-indigo-600">
+                    E-Shopper Docs
+                </div>
+                <div>
+                    <span class="text-sm text-slate-500">Website Content Management</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 flex-shrink-0">
+            <div class="sticky top-24 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+                <h3 class="font-semibold text-slate-900 mb-4 px-4">On this page</h3>
+                <nav class="space-y-1 text-sm font-medium">
+                    <a href="#introduction" class="sidebar-link">1. Introduction</a>
+                    <a href="#manage-menus" class="sidebar-link">2. Managing Menus</a>
+                    <a href="#manage-pages" class="sidebar-link">3. Managing Pages</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 bg-white p-8 rounded-xl border border-slate-200 shadow-sm">
+            
+            <div class="mb-10 text-center md:text-left">
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Content Management Guide</h1>
+                <p class="mt-2 text-lg text-slate-600">A step-by-step guide for non-developers on how to edit, add, and delete website content from the Admin Panel.</p>
+            </div>
+
+            <!-- Section 1 -->
+            <section id="introduction">
+                <h2 class="section-title">1. Introduction</h2>
+                <p class="mb-4 text-slate-600 leading-relaxed">
+                    Welcome to the E-Shopper Content Management Guide. You do not need any coding knowledge to use these features. The Admin Panel gives you full control over what appears on your website.
+                </p>
+            </section>
+
+            <!-- Section 2 -->
+            <section id="manage-menus">
+                <h2 class="section-title">2. Managing Menus (Menu Builder)</h2>
+                <p class="mb-4 text-slate-600 leading-relaxed">
+                    The Menu Builder allows you to fully control all navigation links on your website (Header, Footer, etc.).
+                </p>
+                
+                <div class="mb-8">
+                    <img src="images/menu-builder.png" alt="Menu Builder Interface" class="w-full rounded-lg shadow-md border border-slate-200">
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-6">
+                        <h4 class="font-bold text-indigo-800 mb-2">How to Add a Link to a Menu</h4>
+                        <ol class="list-decimal pl-5 space-y-2 text-slate-700 text-sm">
+                            <li>Log in to your Admin Dashboard and click on <strong>"Menu Builder"</strong>.</li>
+                            <li>On the <strong>left side</strong>, select the menu you want to edit from the <strong>dropdown</strong> at the top of the "Menu Structure" box.</li>
+                            <li>Use the <strong>"Add Menu Item"</strong> form on the <strong>right side</strong> to add a link. Choose from one of the four tabs:
+                                <ul class="list-disc pl-5 mt-2 space-y-1 text-slate-600">
+                                    <li><strong>System Pages:</strong> For standard pages like Home, Products, or Contact Us.</li>
+                                    <li><strong>Dynamic Pages:</strong> For custom pages you created (like Privacy Policy).</li>
+                                    <li><strong>Categories:</strong> For linking directly to product categories.</li>
+                                    <li><strong>Custom Link:</strong> For external links like Facebook.</li>
+                                </ul>
+                            </li>
+                            <li>Click <strong>"Add to Menu"</strong>. The link will instantly appear on your website!</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-lg p-6">
+                        <h4 class="font-bold text-slate-800 mb-2">How to Edit or Delete a Link</h4>
+                        <ol class="list-decimal pl-5 space-y-2 text-slate-700 text-sm">
+                            <li>Select the menu you want to edit from the left dropdown.</li>
+                            <li>Look at the <strong>left side</strong> of the screen where all active links are listed.</li>
+                            <li>Click the blue <strong>Pencil (Edit)</strong> icon to rename the link.</li>
+                            <li>Click the red <strong>Trash Can (Delete)</strong> icon to remove the link permanently.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 3 -->
+            <section id="manage-pages">
+                <h2 class="section-title">3. Managing Pages</h2>
+                <p class="mb-4 text-slate-600 leading-relaxed">
+                    You can create unlimited custom pages like "Terms & Conditions" or "Return Policy" using the Pages module.
+                </p>
+
+                <div class="space-y-6">
+                    <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-6">
+                        <h4 class="font-bold text-indigo-800 mb-2">How to Create a New Page</h4>
+                        <ol class="list-decimal pl-5 space-y-2 text-slate-700 text-sm">
+                            <li>Go to the Admin Dashboard and click <strong>"Pages"</strong>.</li>
+                            <li>Click the <strong>"Add New Page"</strong> button.</li>
+                            <li>Enter the <strong>Page Title</strong>.</li>
+                            <li>Use the rich text editor to write your <strong>Page Content</strong>. You can format text, add lists, and make it look beautiful.</li>
+                            <li>Make sure <strong>Active Status</strong> is checked.</li>
+                            <li>Click <strong>"Save Page"</strong>.</li>
+                            <li><em>Note:</em> To show this page on the website, go to the <strong>Menu Builder</strong> and add it!</li>
+                        </ol>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-lg p-6">
+                        <h4 class="font-bold text-slate-800 mb-2">How to Edit or Delete a Page</h4>
+                        <ol class="list-decimal pl-5 space-y-2 text-slate-700 text-sm">
+                            <li>Go to <strong>"Pages"</strong> in the Admin Dashboard.</li>
+                            <li>You will see a table of all your created pages.</li>
+                            <li>Click the blue <strong>Edit</strong> button to change the text/content.</li>
+                            <li>Click the red <strong>Delete</strong> button to permanently remove the page.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8 text-center text-slate-500 text-sm">
+        <p>Created for E-Shopper Project Documentation.</p>
+    </footer>
+
+</body>
+</html>

@@ -360,6 +360,13 @@
                 </div>
             </li>
         @endcan
+        <li class="nav-item {{ request()->routeIs('admin.menus.*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.menus.index') }}">
+                <span class="menu-title">Menu Builder</span>
+                <i class="mdi mdi-menu menu-icon"></i>
+            </a>
+        </li>
+
         <li class="nav-item {{ request()->routeIs('admin.pages.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.pages.index') }}">
                 <span class="menu-title">Pages</span>

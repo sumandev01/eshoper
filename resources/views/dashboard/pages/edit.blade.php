@@ -14,7 +14,7 @@
                     <div class="card-body px-4 pb-0">
                         <x-input label="Page Title" name="title" type="text" :value="$page->title" :required='true' />
                         
-                        <x-textarea label="Page Content" name="content" class="summernote" :value="$page->content" />
+                        <x-textarea label="Page Content" name="content" :editor="true" :value="$page->content" />
 
                         <div class="mb-3 form-check form-switch">
                             <input class="form-check-input" type="checkbox" role="switch" id="status" name="status" {{ $page->status ? 'checked' : '' }} value="1">

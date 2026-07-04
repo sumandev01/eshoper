@@ -41,5 +41,5 @@
         </div>
     </div>
 @endsection
-@include('web.layouts.partial.filter_scripts', ['filterUrl' => route('products')])
+@include('web.layouts.partial.filter_scripts', ['filterUrl' => route('shop')])
 

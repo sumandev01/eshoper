@@ -36,23 +36,55 @@
                 <div class="col-md-4 mb-5">
                     <h5 class="font-weight-bold text-dark mb-4">Company</h5>
                     <div class="d-flex flex-column justify-content-start">
-                        <a class="text-dark mb-2" href="{{ route('root') }}"><i class="fa fa-angle-right mr-2"></i>Home</a>
-                        <a class="text-dark mb-2" href="{{ route('products') }}"><i class="fa fa-angle-right mr-2"></i>Our Shop</a>
-                        <a class="text-dark mb-2" href="{{ route('about') }}"><i class="fa fa-angle-right mr-2"></i>About Us</a>
-                        <a class="text-dark mb-2" href="{{ route('contact') }}"><i class="fa fa-angle-right mr-2"></i>Contack Us</a>
+                        @php
+                            $companyMenu = \App\Models\Menu::with(['items' => function($q) { $q->orderBy('order'); }])->where('location', 'footer_company')->first();
+                        @endphp
+                        @if($companyMenu)
+                            @foreach($companyMenu->items as $item)
+                                @php
+                                    $linkUrl = '#';
+                                    if ($item->type == 'custom') {
+                                        $linkUrl = $item->url;
+                                    } elseif ($item->type == 'system') {
+                                        $linkUrl = $item->reference_id == 'root' ? route('root') : route($item->reference_id);
+                                    } elseif ($item->type == 'page') {
+                                        $page = \App\Models\Page::find($item->reference_id);
+                                        $linkUrl = $page ? route('page', $page->slug) : '#';
+                                    } elseif ($item->type == 'category') {
+                                        $cat = \App\Models\Category::find($item->reference_id);
+                                        $linkUrl = $cat ? route('categoryProducts', $cat->slug) : '#';
+                                    }
+                                @endphp
+                                <a class="text-dark mb-2" href="{{ $linkUrl }}"><i class="fa fa-angle-right mr-2"></i>{{ $item->title }}</a>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
                 <div class="col-md-4 mb-5">
                     <h5 class="font-weight-bold text-dark mb-4">Support</h5>
                     <div class="d-flex flex-column justify-content-start">
                         @php
-                            $dynamicPages = \App\Models\Page::where('status', 1)->get();
+                            $supportMenu = \App\Models\Menu::with(['items' => function($q) { $q->orderBy('order'); }])->where('location', 'footer_support')->first();
                         @endphp
-                        @foreach($dynamicPages as $dPage)
-                            <a class="text-dark mb-2" href="{{ route('page', $dPage->slug) }}"><i class="fa fa-angle-right mr-2"></i>{{ $dPage->title }}</a>
-                        @endforeach
-                        <a class="text-dark mb-2" href="{{ route('faq') }}"><i class="fa fa-angle-right mr-2"></i>FAQs</a>
-                        <a class="text-dark mb-2" href="{{ route('orderTracking') }}"><i class="fa fa-angle-right mr-2"></i>Order Tracking</a>
+                        @if($supportMenu)
+                            @foreach($supportMenu->items as $item)
+                                @php
+                                    $linkUrl = '#';
+                                    if ($item->type == 'custom') {
+                                        $linkUrl = $item->url;
+                                    } elseif ($item->type == 'system') {
+                                        $linkUrl = $item->reference_id == 'root' ? route('root') : route($item->reference_id);
+                                    } elseif ($item->type == 'page') {
+                                        $page = \App\Models\Page::find($item->reference_id);
+                                        $linkUrl = $page ? route('page', $page->slug) : '#';
+                                    } elseif ($item->type == 'category') {
+                                        $cat = \App\Models\Category::find($item->reference_id);
+                                        $linkUrl = $cat ? route('categoryProducts', $cat->slug) : '#';
+                                    }
+                                @endphp
+                                <a class="text-dark mb-2" href="{{ $linkUrl }}"><i class="fa fa-angle-right mr-2"></i>{{ $item->title }}</a>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
                 <div class="col-md-4 mb-5">

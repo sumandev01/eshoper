@@ -99,7 +99,7 @@
                         <a href="{{ route('orderTracking') }}" class="btn btn-primary btn-lg px-4 gap-3">
                             <i class="bi bi-truck me-2"></i>Track Order
                         </a>
-                        <a href="{{ route('products') }}" class="btn btn-outline-secondary text-primary btn-lg px-4">
+                        <a href="{{ route('shop') }}" class="btn btn-outline-secondary text-primary btn-lg px-4">
                             <i class="bi bi-cart me-2"></i>Continue Shopping
                         </a>
                     </div>

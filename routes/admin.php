@@ -254,6 +254,15 @@ Route::middleware(['is_admin', 'auth:web', 'can:'.AdminAccessEnums::AdminAccess-
         Route::put('/pages/{page}', 'update')->name('admin.pages.update');
         Route::delete('/pages/{page}', 'destroy')->name('admin.pages.destroy');
     });
+
+    // Menus routes
+    Route::controller(\App\Http\Controllers\Admin\MenuController::class)->group(function () {
+        Route::get('/menus', 'index')->name('admin.menus.index');
+        Route::post('/menus', 'store')->name('admin.menus.store');
+        Route::post('/menus/{menu}/items', 'storeItem')->name('admin.menus.items.store');
+        Route::put('/menus/items/{menuItem}', 'updateItem')->name('admin.menus.items.update');
+        Route::delete('/menus/items/{menuItem}', 'destroyItem')->name('admin.menus.items.destroy');
+    });
 });
 
 Route::controller(LocationController::class)->group(function () {

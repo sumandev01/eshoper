@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blade Components Documentation</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8f9fa; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* Sidebar Styles */
+        .sidebar { width: 260px; background-color: #2c3e50; color: #ecf0f1; padding: 20px 0; overflow-y: auto; flex-shrink: 0; }
+        .sidebar h2 { text-align: center; font-size: 1.2rem; margin-bottom: 20px; color: #3498db; border-bottom: 1px solid #34495e; padding-bottom: 15px; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar li { margin: 0; }
+        .sidebar a { display: block; padding: 12px 20px; color: #ecf0f1; text-decoration: none; border-left: 4px solid transparent; transition: all 0.3s; }
+        .sidebar a:hover { background-color: #34495e; border-left: 4px solid #3498db; color: #fff; }
+
+        /* Main Content Styles */
+        .main-content { flex-grow: 1; padding: 30px 40px; overflow-y: auto; }
+        .main-content h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-top: 0; }
+        .main-content h2 { color: #34495e; margin-top: 40px; border-bottom: 1px solid #ddd; padding-bottom: 5px; scroll-margin-top: 20px; }
+        
+        .component-card { background: #fff; border: 1px solid #e1e4e8; border-radius: 6px; padding: 20px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .prop-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .prop-table th, .prop-table td { border: 1px solid #e1e4e8; padding: 10px; text-align: left; }
+        .prop-table th { background-color: #f1f8ff; color: #24292e; }
+        code { background-color: #f6f8fa; padding: 3px 6px; border-radius: 3px; font-family: 'Courier New', Courier, monospace; color: #e83e8c; font-size: 0.9em; }
+        pre { background-color: #282c34; color: #abb2bf; padding: 15px; border-radius: 6px; overflow-x: auto; }
+        .badge { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 0.8em; font-weight: bold; background-color: #e1e4e8; color: #586069; }
+        .badge-required { background-color: #ffeef0; color: #cb2431; }
+    </style>
+</head>
+<body>
+
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <h2>Blade Components</h2>
+        <ul>
+            <li><a href="#comp-input">1. Input Component</a></li>
+            <li><a href="#comp-textarea">2. Textarea Component</a></li>
+            <li><a href="#comp-select">3. Select Component</a></li>
+            <li><a href="#comp-color">4. Color Picker Component</a></li>
+            <li><a href="#comp-media">5. Media Components</a></li>
+        </ul>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <h1>Code Documentation</h1>
+        <p>This document provides a guide on how to use the custom Blade components located in <code>resources/views/components</code>.</p>
+
+        <!-- INPUT COMPONENT -->
+        <div class="component-card" id="comp-input">
+            <h2>1. Input (<code>&lt;x-input /&gt;</code>)</h2>
+            <p>A versatile text input component that handles labels, validation errors, old input values, and optional Bootstrap input groups.</p>
+            
+            <h3>Properties</h3>
+            <table class="prop-table">
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>name</code> <span class="badge badge-required">Required</span></td><td>String</td><td>The name attribute of the input field.</td></tr>
+                <tr><td><code>label</code></td><td>String</td><td>The text label for the input.</td></tr>
+                <tr><td><code>type</code></td><td>String</td><td>HTML input type (e.g., text, number, email). Default: <code>text</code>.</td></tr>
+                <tr><td><code>value</code></td><td>String</td><td>Default value of the input.</td></tr>
+                <tr><td><code>required</code></td><td>Boolean</td><td>Adds HTML5 required validation and a red asterisk to the label.</td></tr>
+                <tr><td><code>inputGroup</code></td><td>Boolean</td><td>Wraps the input in a Bootstrap input-group.</td></tr>
+                <tr><td><code>inputGroupText</code></td><td>String</td><td>The text/icon to show in the input group addon.</td></tr>
+            </table>
+
+            <h3>Usage Example</h3>
+<pre><code class="language-html">&lt;x-input 
+    label="Product Name" 
+    name="title" 
+    type="text" 
+    placeholder="Enter product name" 
+    :required="true" 
+    :value="$product->title" 
+/&gt;</code></pre>
+        </div>
+
+        <!-- TEXTAREA COMPONENT -->
+        <div class="component-card" id="comp-textarea">
+            <h2>2. Textarea (<code>&lt;x-textarea /&gt;</code>)</h2>
+            <p>A smart textarea component that functions as either a standard HTML textarea (with live character counting) or a fully featured Rich Text Editor (Quill.js).</p>
+            
+            <h3>Properties</h3>
+            <table class="prop-table">
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>name</code> <span class="badge badge-required">Required</span></td><td>String</td><td>The name attribute of the textarea.</td></tr>
+                <tr><td><code>label</code></td><td>String</td><td>The text label for the textarea.</td></tr>
+                <tr><td><code>editor</code></td><td>Boolean</td><td>If <code>true</code>, initializes Quill.js Rich Text Editor. Default: <code>false</code>.</td></tr>
+                <tr><td><code>value</code></td><td>String</td><td>Default text/HTML value.</td></tr>
+                <tr><td><code>maxlength</code></td><td>Integer</td><td>Maximum allowed characters.</td></tr>
+                <tr><td><code>rows</code></td><td>Integer</td><td>Height of the editor/textarea in rows. Default: <code>5</code>.</td></tr>
+            </table>
+
+            <h3>Usage Example</h3>
+<pre><code class="language-html">&lt;!-- Standard Textarea --&gt;
+&lt;x-textarea label="Short Description" name="short_desc" /&gt;
+
+&lt;!-- Rich Text Editor (Quill) --&gt;
+&lt;x-textarea label="Page Content" name="content" :editor="true" /&gt;</code></pre>
+        </div>
+
+        <!-- SELECT COMPONENT -->
+        <div class="component-card" id="comp-select">
+            <h2>3. Select (<code>&lt;x-select /&gt;</code>)</h2>
+            <p>A dropdown select component that loops through an array or collection of options automatically.</p>
+            
+            <h3>Properties</h3>
+            <table class="prop-table">
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>name</code> <span class="badge badge-required">Required</span></td><td>String</td><td>The name attribute of the select field.</td></tr>
+                <tr><td><code>label</code></td><td>String</td><td>The text label for the select dropdown.</td></tr>
+                <tr><td><code>options</code></td><td>Array</td><td>Associative array for dropdown options.</td></tr>
+                <tr><td><code>value</code></td><td>String</td><td>The currently selected option value.</td></tr>
+            </table>
+
+            <h3>Usage Example</h3>
+<pre><code class="language-html">&lt;x-select 
+    label="Category" 
+    name="category_id" 
+    :options="[1 => 'Electronics', 2 => 'Fashion']" 
+    value="2" 
+/&gt;</code></pre>
+        </div>
+
+        <!-- COLOR PICKER COMPONENT -->
+        <div class="component-card" id="comp-color">
+            <h2>4. Color Picker (<code>&lt;x-color-picker /&gt;</code>)</h2>
+            <p>A custom UI component for selecting colors.</p>
+            
+            <h3>Usage Example</h3>
+<pre><code class="language-html">&lt;x-color-picker 
+    label="Product Theme Color" 
+    name="theme_color" 
+    value="#ff0000" 
+/&gt;</code></pre>
+        </div>
+
+        <!-- MEDIA COMPONENTS -->
+        <div class="component-card" id="comp-media">
+            <h2>5. Media Gallery & Thumbnail (<code>&lt;x-media-gallery /&gt;</code> & <code>&lt;x-media-thumbnail /&gt;</code>)</h2>
+            <p>Custom components designed to integrate with the system's media manager. Used for uploading or selecting single thumbnails or multiple gallery images.</p>
+            
+            <h3>Properties</h3>
+            <table class="prop-table">
+                <tr><th>Property</th><th>Type</th><th>Description</th></tr>
+                <tr><td><code>label</code></td><td>String</td><td>Label for the upload button/area.</td></tr>
+                <tr><td><code>target_id</code></td><td>String</td><td>The DOM ID to link with the media manager script.</td></tr>
+            </table>
+
+            <h3>Usage Example</h3>
+<pre><code class="language-html">&lt;!-- Single Image --&gt;
+&lt;x-media-thumbnail label="Upload Product Image" target_id="main_thumb" /&gt;
+
+&lt;!-- Multiple Images --&gt;
+&lt;x-media-gallery label="Product Gallery" target_id="gallerys" /&gt;</code></pre>
+        </div>
+    </div>
+
+    <!-- PrismJS for Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-monokai.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup-templating.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-php.min.js"></script>
+
+</body>
+</html>
