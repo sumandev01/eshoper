@@ -68,6 +68,10 @@ class AppServiceProvider extends ServiceProvider
 
                 View::share('siteSettings', $siteSettings);
             }
+
+            if (!app()->runningInConsole() && Schema::hasTable('payment_methods')) {
+                View::share('paymentMethods', \App\Models\PaymentMethod::orderBy('order')->get());
+            }
         } catch (\Exception $e) {
             if (app()->runningInConsole()) {
                 throw $e;

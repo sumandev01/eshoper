@@ -259,9 +259,34 @@ Route::middleware(['is_admin', 'auth:web', 'can:'.AdminAccessEnums::AdminAccess-
     Route::controller(\App\Http\Controllers\Admin\MenuController::class)->group(function () {
         Route::get('/menus', 'index')->name('admin.menus.index');
         Route::post('/menus', 'store')->name('admin.menus.store');
+        Route::get('/menus/{menu}/builder', 'builder')->name('admin.menus.builder');
         Route::post('/menus/{menu}/items', 'storeItem')->name('admin.menus.items.store');
         Route::put('/menus/items/{menuItem}', 'updateItem')->name('admin.menus.items.update');
         Route::delete('/menus/items/{menuItem}', 'destroyItem')->name('admin.menus.items.destroy');
+    });
+
+    // Newsletter Routes
+    Route::get('/newsletters', [App\Http\Controllers\NewsletterController::class, 'adminIndex'])->name('admin.newsletter.index');
+    Route::delete('/newsletters/{newsletter}', [App\Http\Controllers\NewsletterController::class, 'destroy'])->name('admin.newsletter.destroy');
+
+    // Payment Methods Routes
+    Route::controller(\App\Http\Controllers\Admin\PaymentMethodController::class)->group(function () {
+        Route::get('/payment-methods', 'index')->name('admin.payment-methods.index');
+        Route::post('/payment-methods', 'store')->name('admin.payment-methods.store');
+        Route::get('/payment-methods/{paymentMethod}/edit', 'edit')->name('admin.payment-methods.edit');
+        Route::put('/payment-methods/{paymentMethod}', 'update')->name('admin.payment-methods.update');
+        Route::delete('/payment-methods/{paymentMethod}', 'destroy')->name('admin.payment-methods.destroy');
+        Route::post('/payment-methods/reorder', 'reorder')->name('admin.payment-methods.reorder');
+    });
+
+    // Store Features Routes
+    Route::controller(\App\Http\Controllers\Admin\StoreFeatureController::class)->group(function () {
+        Route::get('/store-features', 'index')->name('admin.store-features.index');
+        Route::post('/store-features', 'store')->name('admin.store-features.store');
+        Route::get('/store-features/{storeFeature}/edit', 'edit')->name('admin.store-features.edit');
+        Route::put('/store-features/{storeFeature}', 'update')->name('admin.store-features.update');
+        Route::delete('/store-features/{storeFeature}', 'destroy')->name('admin.store-features.destroy');
+        Route::post('/store-features/reorder', 'reorder')->name('admin.store-features.reorder');
     });
 });
 

@@ -137,7 +137,7 @@
 
         #media-preview-media_id {
             padding-left: 0 !important;
-            margin-bottom: 0 !important;
+            margin-bottom: 10px !important;
         }
 
         #media-preview-main_thumb {

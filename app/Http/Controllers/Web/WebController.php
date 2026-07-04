@@ -40,7 +40,8 @@ class WebController extends Controller
         $trendingProducts = $this->webService->getTrendingProducts();
         $categories = Category::latest('id')->withCount('products')->get();
         $brands = Brand::latest('id')->get();
-        return view('web.index', compact('products', 'latestProducts', 'trendingProducts', 'categories', 'brands'));
+        $storeFeatures = \App\Models\StoreFeature::orderBy('order')->get();
+        return view('web.index', compact('products', 'latestProducts', 'trendingProducts', 'categories', 'brands', 'storeFeatures'));
     }
 
     public function shop(Request $request, ProductFilterService $filterService)

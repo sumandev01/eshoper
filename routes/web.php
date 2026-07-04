@@ -32,6 +32,8 @@ Route::controller(WebController::class)->group(function () {
 
     // Dynamic Pages
     Route::get('/page/{slug}', 'page')->name('page');
+    // Newsletter
+    Route::post('/subscribe', [App\Http\Controllers\NewsletterController::class, 'subscribe'])->name('subscribe');
     // Order Tracking
     Route::get('/order-tracking', 'orderTracking')->name('orderTracking');
     Route::get('/order-tracking-result', 'orderTrackingDetails')->name('web.order-tracking-result');

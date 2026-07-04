@@ -7,10 +7,10 @@
     <!-- Cart Start -->
     <div class="container-fluid">
         <div class="row px-xl-5">
-            <div class="col-md-12 mx-auto table-responsive mb-5">
+            <div class="col-md-8 table-responsive mb-5">
                 <h4 class="font-weight-semi-bold mb-2">Your Wishlist</h4>
                 <p>There are {{ count($wishlists) }} products in this list</p>
-                <table class="table table-bordered table-hover text-center mb-0">
+                <table class="table table-bordered table-hover text-center mb-0" id="wishlistTable">
                     <thead class="bg-secondary text-dark">
                         <tr>
                             <th>Image</th>
@@ -23,11 +23,11 @@
                     <tbody class="">
                         @forelse ($wishlists ?? [] as $item)
                             <tr data-item-id="{{ $item?->id }}">
-                                <td class="" style="max-width: 100px;">
+                                <td class="" style="width: 50px; height: 50px;">
                                     <div class="img-wrapper">
                                         <div class="img-spinner"></div>
                                         <img class="img-fluid w-100 optimized-image" src="{{ $item->product?->thumbnail }}"
-                                            alt="{{ $item->product?->name }}" loading="lazy" 
+                                            alt="{{ $item->product?->name }}" loading="lazy"
                                             onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
                                             onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
                                         <script>
@@ -37,12 +37,13 @@
                                                     img.style.opacity = '1';
                                                     img.previousElementSibling.style.display = 'none';
                                                 }
-                                            })();
+                                            })
+                                            ();
                                         </script>
                                     </div>
                                 </td>
                                 <td class="text-left">
-                                    <a class="text-dark nav-link px-0" style="text-decoration: none;"
+                                    <a class="text-dark nav-link px-0 pb-0" style="text-decoration: none;"
                                         href="{{ route('productDetails', $item?->product?->slug) }}"
                                         title="{{ $item?->product?->name }}">{{ Str::limit($item?->product?->name, 30, '...') }}</a>
                                     @php
@@ -54,7 +55,7 @@
                                             $finalRating = round($reviewSum / $reviewCount);
                                         }
                                     @endphp
-                                    <div class="d-flex mb-3">
+                                    <div class="d-flex">
                                         <div class="star-group">
                                             <input type="hidden" class="rating-value-active" value="{{ $finalRating }}">
                                             <button type="button" class="star-btn-active far fa-star" data-value="1"
@@ -82,17 +83,16 @@
                                 <td class="align-middle">
                                     <button
                                         onclick="window.location.href = '{{ route('productDetails', $item->product?->slug) }}';"
-                                        class="btn btn-sm btn-primary btn-add p-2 rounded">
+                                        class="btn btn-sm btn-primary btn-add rounded">
                                         <i class="fa fa-shopping-cart"></i>
                                         Buy Now
                                     </button>
                                 </td>
                                 <td class="align-middle">
-                                    <button
-                                        onclick="window.location.href = '{{ route('removeFromWishlist', $item->id) }}';"
-                                        class="btn btn-sm btn-primary btn-remove">
-                                        <i class="fa fa-times"></i>
-                                    </button>
+                                    <a href="{{ route('removeFromWishlist', $item->id) }}"
+                                        class="btn btn-danger btn-sm deleteBtn">
+                                        <i class="mdi mdi-delete"></i>
+                                    </a>
                                 </td>
                             </tr>
                         @empty
@@ -127,4 +127,3 @@
         });
     </script>
 @endpush
-

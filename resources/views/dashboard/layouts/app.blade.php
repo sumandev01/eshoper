@@ -56,6 +56,20 @@
             display: flex !important;
             align-items: center !important;
         }
+
+        [id^="media-preview-"] {
+            padding: 0 !important;
+            margin-bottom: 10px !important;
+        }
+
+        .preview-image-wrapper {
+            padding-left: 0 !important;
+            margin-bottom: 0 !important;
+        }
+
+        .imagePreviewSingle {
+            margin-bottom: 0 !important;
+        }
     </style>
 </head>
 

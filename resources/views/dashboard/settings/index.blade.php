@@ -360,20 +360,6 @@
             margin-left: 10px;
         }
 
-        [id^="media-preview-"] {
-            padding: 0 !important;
-            margin-bottom: 10px !important;
-        }
-
-        .preview-image-wrapper {
-            padding-left: 0 !important;
-            margin-bottom: 0 !important;
-        }
-
-        .imagePreviewSingle {
-            margin-bottom: 0 !important;
-        }
-
         @media (max-width: 767px) {
             .form-group {
                 margin-left: 0 !important;

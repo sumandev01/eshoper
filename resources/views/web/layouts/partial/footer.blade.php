@@ -35,7 +35,7 @@
             <div class="row">
                 <div class="col-md-4 mb-5">
                     <h5 class="font-weight-bold text-dark mb-4">Company</h5>
-                    <div class="d-flex flex-column justify-content-start">
+                    <div class="">
                         @php
                             $companyMenu = \App\Models\Menu::with(['items' => function($q) { $q->orderBy('order'); }])->where('location', 'footer_company')->first();
                         @endphp
@@ -55,14 +55,16 @@
                                         $linkUrl = $cat ? route('categoryProducts', $cat->slug) : '#';
                                     }
                                 @endphp
-                                <a class="text-dark mb-2" href="{{ $linkUrl }}"><i class="fa fa-angle-right mr-2"></i>{{ $item->title }}</a>
+                                <li class="nav-item list-unstyled {{ !$loop->last ? 'mb-2' : '' }}">
+                                    <a class="text-dark mb-2" href="{{ $linkUrl }}"><i class="fa fa-angle-right mr-2"></i>{{ $item->title }}</a>
+                                </li>
                             @endforeach
                         @endif
                     </div>
                 </div>
                 <div class="col-md-4 mb-5">
                     <h5 class="font-weight-bold text-dark mb-4">Support</h5>
-                    <div class="d-flex flex-column justify-content-start">
+                    <div class="">
                         @php
                             $supportMenu = \App\Models\Menu::with(['items' => function($q) { $q->orderBy('order'); }])->where('location', 'footer_support')->first();
                         @endphp
@@ -82,21 +84,26 @@
                                         $linkUrl = $cat ? route('categoryProducts', $cat->slug) : '#';
                                     }
                                 @endphp
-                                <a class="text-dark mb-2" href="{{ $linkUrl }}"><i class="fa fa-angle-right mr-2"></i>{{ $item->title }}</a>
+                                <li class="nav-item list-unstyled {{ !$loop->last ? 'mb-2' : '' }}">
+                                    <a class="text-dark mb-2" href="{{ $linkUrl }}"><i class="fa fa-angle-right mr-2"></i>{{ $item->title }}</a>
+                                </li>
                             @endforeach
                         @endif
                     </div>
                 </div>
                 <div class="col-md-4 mb-5">
                     <h5 class="font-weight-bold text-dark mb-4">Newsletter</h5>
-                    <form action="">
+                    <form action="{{ route('subscribe') }}" method="POST">
+                        @csrf
                         <div class="form-group">
-                            <input type="text" class="form-control border-0 py-4" placeholder="Your Name"
+                            <input type="email" name="email" class="form-control border-0 py-4" placeholder="Your Email"
                                 required="required" />
-                        </div>
-                        <div class="form-group">
-                            <input type="email" class="form-control border-0 py-4" placeholder="Your Email"
-                                required="required" />
+                            @error('email')
+                                <span class="text-danger small mt-1 d-block">{{ $message }}</span>
+                            @enderror
+                            @if(session('success'))
+                                <span class="text-success small mt-1 d-block">{{ session('success') }}</span>
+                            @endif
                         </div>
                         <div>
                             <button class="btn btn-primary btn-block border-0 py-3" type="submit">Subscribe
@@ -118,7 +125,15 @@
             </p>
         </div>
         <div class="col-md-6 px-xl-0 text-center text-md-right">
-            <img class="img-fluid" src="{{ asset('web/img/payments.png') }}" alt="" loading="lazy">
+            @if(isset($paymentMethods) && $paymentMethods->count() > 0)
+                @foreach($paymentMethods as $paymentMethod)
+                    @if($paymentMethod->media)
+                        <img class="img-fluid mr-2" src="{{ Storage::url($paymentMethod->media->src) }}" alt="{{ $paymentMethod->name }}" style="max-height: 30px;" loading="lazy">
+                    @endif
+                @endforeach
+            @else
+                <img class="img-fluid" src="{{ asset('web/img/payments.png') }}" alt="Payments" loading="lazy">
+            @endif
         </div>
     </div>
 </div>

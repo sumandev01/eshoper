@@ -169,6 +169,7 @@
         }
 
         [id^="media-preview-"] {
+            width: 100% !important;
             padding-left: 0 !important;
             padding-right: 0 !important;
             padding-top: 0 !important;
@@ -178,8 +179,8 @@
 
         .preview-image-wrapper,
         .imagePreviewSingle {
-            width: 500px !important;
-            aspect-ratio: 4/2 !important;
+            width: 100% !important;
+            aspect-ratio: 6/2 !important;
             padding-left: 0 !important;
             margin-bottom: 0 !important;
         }

@@ -238,6 +238,28 @@
                 </div>
             </li>
         @endcan
+
+        <li class="nav-item {{ request()->routeIs('admin.newsletter*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.newsletter.index') }}">
+                <span class="menu-title">Newsletters</span>
+                <i class="mdi mdi-email-open menu-icon"></i>
+            </a>
+        </li>
+
+        <li class="nav-item {{ request()->routeIs('admin.payment-methods*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.payment-methods.index') }}">
+                <span class="menu-title">Payment Methods</span>
+                <i class="mdi mdi-credit-card menu-icon"></i>
+            </a>
+        </li>
+
+        <li class="nav-item {{ request()->routeIs('admin.store-features*') ? 'active' : '' }}">
+            <a class="nav-link" href="{{ route('admin.store-features.index') }}">
+                <span class="menu-title">Store Features</span>
+                <i class="mdi mdi-star menu-icon"></i>
+            </a>
+        </li>
+
         @can(App\Enums\Permission\ContactMessagePermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('admin.contact-message*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#contact-message"
@@ -387,5 +409,9 @@
 <style>
     .sidebar .nav.sub-menu {
         margin-bottom: 0 !important;
+    }
+
+    #sidebar ul.nav>li.nav-item:last-child {
+        margin-bottom: 25px !important;
     }
 </style>

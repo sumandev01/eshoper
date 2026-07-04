@@ -4,30 +4,41 @@
     <!-- Featured Start -->
     <div class="container-fluid pt-5">
         <div class="row px-xl-5 pb-3">
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
-                    <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+            @if(isset($storeFeatures) && $storeFeatures->count() > 0)
+                @foreach($storeFeatures as $feature)
+                    <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                        <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                            <h1 class="{{ str_starts_with($feature->icon, 'fas ') || str_starts_with($feature->icon, 'fab ') ? $feature->icon : 'fa ' . $feature->icon }} text-primary m-0 mr-3"></h1>
+                            <h5 class="font-weight-semi-bold m-0">{{ $feature->title }}</h5>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                    <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                        <h1 class="fa fa-check text-primary m-0 mr-3"></h1>
+                        <h5 class="font-weight-semi-bold m-0">Quality Product</h5>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
-                    <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
-                    <h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                    <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                        <h1 class="fa fa-shipping-fast text-primary m-0 mr-2"></h1>
+                        <h5 class="font-weight-semi-bold m-0">Free Shipping</h5>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
-                    <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                    <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                        <h1 class="fas fa-exchange-alt text-primary m-0 mr-3"></h1>
+                        <h5 class="font-weight-semi-bold m-0">14-Day Return</h5>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
-                    <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
-                    <h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+                <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                    <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
+                        <h1 class="fa fa-phone-volume text-primary m-0 mr-3"></h1>
+                        <h5 class="font-weight-semi-bold m-0">24/7 Support</h5>
+                    </div>
                 </div>
-            </div>
+            @endif
         </div>
     </div>
     <!-- Featured End -->
@@ -138,13 +149,20 @@
                     <p>Amet lorem at rebum amet dolores. Elitr lorem dolor sed amet diam labore at justo ipsum eirmod duo
                         labore labore.</p>
                 </div>
-                <form action="">
+                <form action="{{ route('subscribe') }}" method="POST">
+                    @csrf
                     <div class="input-group">
-                        <input type="text" class="form-control border-white p-4" placeholder="Email Goes Here">
+                        <input type="email" name="email" class="form-control border-white p-4" placeholder="Email Goes Here" required>
                         <div class="input-group-append">
-                            <button class="btn btn-primary px-4">Subscribe</button>
+                            <button class="btn btn-primary px-4" type="submit">Subscribe</button>
                         </div>
                     </div>
+                    @error('email')
+                        <span class="text-danger small mt-1 d-block text-left">{{ $message }}</span>
+                    @enderror
+                    @if(session('success'))
+                        <span class="text-success small mt-1 d-block text-left">{{ session('success') }}</span>
+                    @endif
                 </form>
             </div>
         </div>

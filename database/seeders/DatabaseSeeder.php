@@ -27,11 +27,14 @@ class DatabaseSeeder extends Seeder
             SettingSeeder::class,
             PermissionSeeder::class,
             UserSeeder::class,
+            MenuSeeder::class,
+            PageSeeder::class,
 
             // E-commerce Settings
             LocationSeeder::class,
             ShippingCostSeeder::class,
             CouponSeeder::class,
+            PaymentMethodSeeder::class,
 
             // Product Attributes & Categories
             CategorySeeder::class,
@@ -47,6 +50,7 @@ class DatabaseSeeder extends Seeder
 
             // CMS Pages & Info
             SliderSeeder::class,
+            StoreFeatureSeeder::class,
             AboutUsSeeder::class,
             FaqSeeder::class,
             TeamMemberSeeder::class,
