@@ -27,7 +27,7 @@ class BrandController extends Controller
     public function store(BrandRequest $request) {
         $brands = $this->brandRepo->storeByRequest($request);
         if ($brands) {
-            return redirect()->route('brand.index')->with('success', 'Brand created successfully');
+            return redirect()->route('admin.brand.index')->with('success', 'Brand created successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to create brand');
         }
@@ -43,7 +43,7 @@ class BrandController extends Controller
     public function update(BrandRequest $request, Brand $brand) {
         $brands = $this->brandRepo->updateByRequest($request, $brand);
         if ($brands) {
-            return redirect()->route('brand.index')->with('success', 'Brand updated successfully');
+            return redirect()->route('admin.brand.index')->with('success', 'Brand updated successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to update brand');
         }
@@ -51,6 +51,6 @@ class BrandController extends Controller
 
     public function destroy(Brand $brand) {
         $brand->delete($brand);
-        return redirect()->route('brand.index')->with('success', 'Brand deleted successfully');
+        return redirect()->route('admin.brand.index')->with('success', 'Brand deleted successfully');
     }
 }

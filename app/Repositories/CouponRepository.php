@@ -15,6 +15,7 @@ class CouponRepository
             'min_order_amount' => $request->min_order_amount,
             'max_discount' => $request->max_discount,
             'usage_limit' => $request->usage_limit,
+            'limit_per_user' => $request->limit_per_user,
             'start_date' => $request->start_date,
             'expire_date' => $request->expire_date,
             'status' => $request->status
@@ -28,6 +29,7 @@ class CouponRepository
             'min_order_amount' => $request->min_order_amount,
             'max_discount' => $request->max_discount,
             'usage_limit' => $request->usage_limit,
+            'limit_per_user' => $request->limit_per_user,
             'start_date' => $request->start_date,
             'expire_date' => $request->expire_date,
             'status' => $request->status

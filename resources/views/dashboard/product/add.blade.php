@@ -8,7 +8,7 @@
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">Add New Product</h4>
-                            <a href="{{ route('product.index') }}" class="btn btn-primary btn-sm">
+                            <a href="{{ route('admin.product.index') }}" class="btn btn-primary btn-sm">
                                 <i class="mdi mdi-arrow-left me-1"></i>
                                 <span>Back to List</span>
                             </a>
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.product.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="row mt-3">
                 <!-- Left Side: Basic Info & Description -->
@@ -80,10 +80,6 @@
                                     <x-input name="buy_price" type="number" placeholder="0.00" :inputGroup="true"
                                         inputGroupText="{{ ($siteSettings->currency_symbol ?? null) }}" label="Buy Price" />
                                 </div>
-                                <div class="col-md-6 mb-3">
-                                    <x-input name="tax" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="%" label="Tax" />
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -104,6 +100,7 @@
                         </div>
                         <div class="card-body">
                             <x-textarea name="meta_title" label="Meta Title" :value="$item->meta_title ?? ''" :maxlength="60" :wordcount="true" :rows="1" />
+                            <x-textarea name="meta_keyword" label="Meta Keywords (Comma separated)" :value="$item->meta_keyword ?? ''" :rows="2" />
                             <x-textarea name="meta_description" label="Meta Description" :value="$item->meta_description ?? ''" :maxlength="160" :wordcount="true" :rows="2" />
                         </div>
                     </div>
@@ -229,7 +226,7 @@
             try {
                 // 1. Fetch data if not cached
                 if (!cachedSubCategories) {
-                    const response = await fetch("{{ route('getAllSubCategory') }}");
+                    const response = await fetch("{{ route('admin.getAllSubCategory') }}");
                     cachedSubCategories = await response.json();
                 }
 

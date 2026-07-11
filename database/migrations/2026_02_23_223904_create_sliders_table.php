@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('subtitle')->nullable();
             $table->foreignIdFor(Media::class)->nullable()->constrained()->onDelete('set null');
             $table->string('button_text')->nullable();
-            $table->string('button_link')->nullable();
+            $table->string('link_type')->nullable();
+            $table->string('link_ref_id')->nullable();
             $table->integer('order')->default(0);
             $table->boolean('is_active')->default(1);
             $table->timestamps();

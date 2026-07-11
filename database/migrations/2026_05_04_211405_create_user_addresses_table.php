@@ -1,8 +1,5 @@
 <?php
 
-use App\Models\District;
-use App\Models\Division;
-use App\Models\Thana;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -22,9 +19,9 @@ return new class extends Migration
             $table->string('address_default')->default('0'); // 0 for not default, 1 for default
             $table->string('name')->nullable();
             $table->string('mobile')->nullable();
-            $table->foreignIdFor(Division::class)->nullable()->constrained()->onDelete('set null');
-            $table->foreignIdFor(District::class)->nullable()->constrained()->onDelete('set null');
-            $table->foreignIdFor(Thana::class)->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('country_id')->nullable()->constrained('countries')->onDelete('set null');
+            $table->foreignId('state_id')->nullable()->constrained('states')->onDelete('set null');
+            $table->string('city')->nullable();
             $table->text('address')->nullable();
             $table->string('zip')->nullable();
             $table->timestamps();

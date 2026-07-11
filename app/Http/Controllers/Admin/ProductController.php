@@ -44,7 +44,7 @@ class ProductController extends Controller
     {
         $product = $productRepository->storeByRequest($request);
         if ($product) {
-            return redirect()->route('product.index')->with('success', 'Product created successfully.');
+            return redirect()->route('admin.product.index')->with('success', 'Product created successfully.');
         }
         return redirect()->back()->with('error', 'Failed to create product. Please try again.');
 
@@ -79,7 +79,7 @@ class ProductController extends Controller
 
         $updated = $productRepository->updateByRequest($request, $product);
         if ($updated) {
-            return redirect()->route('product.index')->with('success', 'Product updated successfully.');
+            return redirect()->route('admin.product.index')->with('success', 'Product updated successfully.');
         }
         return redirect()->back()->with('error', 'Failed to update product. Please try again.');
     }

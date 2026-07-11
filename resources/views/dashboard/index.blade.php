@@ -108,7 +108,7 @@
 
                                             <div class="text-center mt-4">
                                                 <h5 class="text-secondary fw-normal mb-2" style="font-size: 1rem;">
-                                                    <a href="{{ route('product.view', $product->id) }}"
+                                                    <a href="{{ route('admin.product.view', $product->id) }}"
                                                         class="text-decoration-none">{{ Str::limit($product->name, 30) }}</a>
                                                 </h5>
                                                 <span class="badge bg-warning text-dark mb-2">Variant Out of
@@ -131,7 +131,7 @@
 
                                         <div class="text-center mt-4">
                                             <h5 class="text-secondary fw-normal mb-2" style="font-size: 1rem;">
-                                                <a href="{{ route('product.view', $product->id) }}"
+                                                <a href="{{ route('admin.product.view', $product->id) }}"
                                                     class="text-decoration-none">{{ Str::limit($product->name, 30) }}</a>
                                             </h5>
 
@@ -165,11 +165,61 @@
         </div>
     </div>
     <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card shadow-sm border-0 bg-white">
+                <div class="card-header py-3">
+                    <h4 class="title mb-0">Order Status</h4>
+                </div>
+                <div class="card-body px-3">
+                    <div id="statusPieChart"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0 bg-white">
+                <div class="card-header py-3">
+                    <h4 class="title mb-0">Top Selling Products</h4>
+                </div>
+                <div class="card-body px-3">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th class="text-center">Total Sold</th>
+                                    <th class="text-end">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($topSellingProducts ?? [] as $product)
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ $product->media ? Storage::url($product->media?->src) : asset('default-image.png') }}" class="rounded me-3" style="width: 40px; height: 40px; object-fit: cover;">
+                                                <a href="{{ route('admin.product.view', $product->id) }}" class="text-dark text-decoration-none fw-bold" style="margin-left: 10px;">{{ Str::limit($product->name, 40) }}</a>
+                                            </div>
+                                        </td>
+                                        <td class="text-center align-middle"><span class="badge bg-success rounded-pill">{{ $product->total_sold }} Items</span></td>
+                                        <td class="text-end align-middle">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($product->discount_price > 0 ? $product->discount_price : $product->price) }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center py-4">No sales data found</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-12 grid-margin">
             <div class="card">
                 <div class="card-header py-3 d-flex justify-content-between align-items-center">
                     <h4 class="card-title mb-0">Recent Order</h4>
-                    <a href="{{ route('order.index') }}" class="btn btn-primary btn-sm">View all</a>
+                    <a href="{{ route('admin.order.index') }}" class="btn btn-primary btn-sm">View all</a>
                 </div>
                 <div class="card-body">
                     <div class="d-flex align-items-center justify-content-between">
@@ -205,7 +255,7 @@
                                             </span>
                                         </td>
                                         <td class="text-end">{{ $order->created_at->format('d-M-Y') }}</td>
-                                        <td class="text-end"><a href="{{ route('order.view', $order->id) }}"
+                                        <td class="text-end"><a href="{{ route('admin.order.view', $order->id) }}"
                                                 class="btn btn-primary btn-sm">View</a></td>
                                     </tr>
                                 @endforeach
@@ -380,6 +430,42 @@
 
             var chart = new ApexCharts(document.querySelector('#chart'), options);
             chart.render();
+
+            // Order Status Pie Chart
+            var pieOptions = {
+                series: [
+                    {{ $orderStatusStats['pending'] ?? 0 }},
+                    {{ $orderStatusStats['processing'] ?? 0 }},
+                    {{ $orderStatusStats['confirmed'] ?? 0 }},
+                    {{ $orderStatusStats['shipped'] ?? 0 }},
+                    {{ $orderStatusStats['delivered'] ?? 0 }},
+                    {{ $orderStatusStats['canceled'] ?? 0 }}
+                ],
+                chart: {
+                    type: 'donut',
+                    height: 350
+                },
+                labels: ['Pending', 'Processing', 'Confirmed', 'Shipped', 'Delivered', 'Canceled'],
+                colors: ['#f39c12', '#3498db', '#9b59b6', '#34495e', '#2ecc71', '#e74c3c'],
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val) {
+                        return val.toFixed(1) + "%"
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            size: '65%'
+                        }
+                    }
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            };
+            var pieChart = new ApexCharts(document.querySelector("#statusPieChart"), pieOptions);
+            pieChart.render();
         });
     </script>
 @endpush

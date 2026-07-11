@@ -247,10 +247,8 @@ function updateProductUI(element) {
             .removeClass("d-none");
 
         saveBox.removeClass("d-none").addClass("d-block");
-        let savings = basePrice - discountPrice;
-        saveAmountText.text(
-            "Save " + siteCurrency + savings.toLocaleString("en-IN")
-        );
+        let percentage = Math.round(((basePrice - discountPrice) / basePrice) * 100);
+        saveAmountText.text("-" + percentage + "%");
     } else {
         card.find(".variant-price").text(siteCurrency + basePrice.toLocaleString('en-IN'));
         card.find(".main-price").addClass("d-none");
@@ -263,13 +261,13 @@ function updateProductUI(element) {
     if (selected.stock <= 0) {
         addToCartBtn
             .addClass("disabled")
-            .html('<i class="fas fa-shopping-cart mr-2"></i> out of stock')
+            .html('<i class="fas fa-shopping-cart me-2"></i> Out of Stock')
             .attr("title", "Out of Stock")
             .css("pointer-events", "none");
     } else {
         addToCartBtn
             .removeClass("disabled")
-            .html('<i class="fas fa-shopping-cart mr-2"></i> add to cart')
+            .html('<i class="fas fa-shopping-cart me-2"></i> Add to Cart')
             .attr("title", "Add To Cart")
             .css("pointer-events", "auto");
     }

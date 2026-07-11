@@ -10,7 +10,7 @@
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">Product List</h4>
                             @can(\App\Enums\Permission\ProductPermission::CREATE->value)
-                                <a href="{{ route('product.add') }}" class="btn btn-primary">
+                                <a href="{{ route('admin.product.add') }}" class="btn btn-primary">
                                     <i class="mdi mdi-plus me-1"></i>
                                     <span>Add New Product</span>
                                 </a>
@@ -107,19 +107,19 @@
                                                         </a>
                                                     @endcan
                                                     @can(\App\Enums\Permission\ProductPermission::VIEW->value)
-                                                        <a href="{{ route('product.view', $product?->id) }}"
+                                                        <a href="{{ route('admin.product.view', $product?->id) }}"
                                                             class="btn btn-sm btn-outline-secondary me-1" title="View">
                                                             <i class="mdi mdi-eye"></i>
                                                         </a>
                                                     @endcan
                                                     @can(\App\Enums\Permission\ProductPermission::UPDATE->value)
-                                                        <a href="{{ route('product.edit', $product?->id) }}"
+                                                        <a href="{{ route('admin.product.edit', $product?->id) }}"
                                                             class="btn btn-sm btn-outline-info me-1" title="Edit">
                                                             <i class="mdi mdi-square-edit-outline"></i>
                                                         </a>
                                                     @endcan
                                                     @can(\App\Enums\Permission\ProductPermission::DELETE->value)
-                                                        <a href="{{ route('product.destroy', $product?->id) }}"
+                                                        <a href="{{ route('admin.product.destroy', $product?->id) }}"
                                                             class="btn btn-danger btn-sm deleteBtn me-1">
                                                             <i class="mdi mdi-delete"></i>
                                                         </a>
@@ -197,7 +197,7 @@
                 let isChecked = $(this).is(':checked');
 
                 $.ajax({
-                    url: '{{ route('product.update.trendy', ':id') }}'.replace(':id', productId),
+                    url: '{{ route('admin.product.update.trendy', ':id') }}'.replace(':id', productId),
                     method: 'PUT',
                     data: {
                         _token: '{{ csrf_token() }}',

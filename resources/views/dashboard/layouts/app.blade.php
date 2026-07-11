@@ -153,12 +153,16 @@
     </script>
     @if (session('success'))
         <script>
-            showToast('success', '{{ session('success') }}');
+            if (performance.navigation.type !== 2) {
+                showToast('success', '{{ session('success') }}');
+            }
         </script>
     @endif
     @if (session('error'))
         <script>
-            showToast('error', '{{ session('error') }}');
+            if (performance.navigation.type !== 2) {
+                showToast('error', '{{ session('error') }}');
+            }
         </script>
     @endif
 

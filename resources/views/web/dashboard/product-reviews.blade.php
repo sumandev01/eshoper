@@ -2,25 +2,13 @@
 @section('title', 'Order' . ' - ' . ($siteSettings->site_title ?? null))
 @section('title', 'Order')
 @section('content')
-    <!-- Page Header Start -->
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <ol class="wpo-breadcumb-wrap">
-                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li><a class="nav-link p-0" href="{{ route('user.dashboard') }}">User Dashboard</a></li>
-                        <li>Order</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Page Header End -->
+    <!-- Page Breadcrumb Start -->
+    @include('web.components.breadcrumb', ['title' => 'Product Reviews'])
+    <!-- Page Breadcrumb End -->
 
     <!-- Dashboard Start -->
-    <div class="container-fluid pt-2">
-        <div class="row px-xl-5">
+    <div class="container pt-2">
+        <div class="row">
             @include('web.dashboard.sidebar')
             <div class="col-lg-9 mb-2">
                 <div class="card border-0 shadow">
@@ -61,7 +49,7 @@
                                                 <span>{{ formatBDT($order?->grand_total) }}</span>
                                                 </div>
                                             </td>
-                                            <td class="text-center"><a class="btn btn-sm btn-primary" href="{{ route('user.orderDetails', $order->id) }}">View</a></td>
+                                            <td class="text-center"><a class="btn btn-sm btn-primary" href="{{ route('user.order.details', $order->id) }}">View</a></td>
                                         </tr>
                                     @empty
                                         <tr>
@@ -78,5 +66,7 @@
     </div>
     <!-- Dashboard End -->
 @endsection
+
+
 
 

@@ -30,7 +30,7 @@
                                             </button>
                                         @endcan
                                         @can(\App\Enums\Permission\TagPermission::DELETE->value)
-                                            <a href="{{ route('tag.destroy', $tag?->id) }}"
+                                            <a href="{{ route('admin.tag.destroy', $tag?->id) }}"
                                                 class="btn btn-danger btn-sm deleteBtn">
                                                 <i class="mdi mdi-delete"></i>
                                             </a>
@@ -50,7 +50,7 @@
         @can(\App\Enums\Permission\TagPermission::CREATE->value)
             <div class="col-lg-5">
                 <div class="card">
-                    <form action="{{ route('tag.store') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('admin.tag.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="card-header pt-4">
                             <h4 class="card-title">Add New Tag</h4>
@@ -117,7 +117,7 @@
                 $('#edit_name').val(name);
 
                 // Form action update
-                var url = "{{ route('tag.update', ':id') }}";
+                var url = "{{ route('admin.tag.update', ':id') }}";
                 url = url.replace(':id', id);
                 $('#editTagForm').attr('action', url);
             });

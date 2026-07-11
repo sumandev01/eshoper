@@ -3,222 +3,109 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\District;
-use App\Models\Division;
-use App\Models\Thana;
+use App\Models\Country;
+use App\Models\State;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Http;
 
 class LocationController extends Controller
 {
     public function index()
     {
-        $locations = Division::with('districts.thanas')->get();
-        $districts = District::with('division')->get();
-        $thanas = Thana::with('district')->get();
-        return view('dashboard.location.index', compact('locations', 'districts', 'thanas'));
+        $countries = Country::with('states')->get();
+        return view('dashboard.location.index', compact('countries'));
     }
 
     public function create()
     {
-        $divisions = Division::all();
-        $districts = District::with('division')->get();
-        $thanas = Thana::with('district')->get();
-        return view('dashboard.location.add', compact('divisions', 'districts', 'thanas'));
+        $countries = Country::all();
+        return view('dashboard.location.add', compact('countries'));
     }
 
-    public function store(Request $request)
+    public function storeCountry(Request $request)
     {
         $request->validate([
-            'division'    => 'required|string|max:255',
-            'division_id' => 'nullable|integer|exists:divisions,id',
-            'district'    => 'required|string|max:255',
-            'district_id' => 'nullable|integer|exists:districts,id',
-            'thana'       => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:countries,name',
+            'code' => 'nullable|string|max:5',
         ]);
 
-        $divisionId   = $request->input('division_id');
-        $divisionName = trim($request->input('division'));
+        Country::create([
+            'name' => $request->name,
+            'code' => strtoupper($request->code),
+            'status' => $request->status ?? 1,
+        ]);
 
-        $districtId   = $request->input('district_id');
-        $districtName = trim($request->input('district'));
-        $thanaName    = trim($request->input('thana'));
+        return redirect()->route('admin.location.index')->with('success', 'Country created successfully.');
+    }
+
+    public function storeState(Request $request)
+    {
+        $request->validate([
+            'country_id' => 'required|exists:countries,id',
+            'name' => 'required|string|max:255',
+        ]);
+
+        State::create([
+            'country_id' => $request->country_id,
+            'name' => $request->name,
+            'status' => $request->status ?? 1,
+        ]);
+
+        return redirect()->route('admin.location.index')->with('success', 'State created successfully.');
+    }
+
+    public function syncStatesOnline(Request $request)
+    {
+        $request->validate([
+            'country_id' => 'required|exists:countries,id',
+        ]);
+
+        $country = Country::findOrFail($request->country_id);
 
         try {
-            if ($divisionId) {
-                $division = Division::findOrFail($divisionId);
-            } else {
-                $division = Division::firstOrCreate([
-                    'name' => $divisionName,
-                ]);
-            }
-
-            if ($districtId) {
-                $district = District::findOrFail($districtId);
-            } else {
-                $district = District::firstOrCreate([
-                    'name'        => $districtName,
-                    'division_id' => $division->id
-                ]);
-            }
-
-            $existingThana = Thana::whereName($thanaName)
-                ->where('district_id', $district->id)
-                ->first();
-
-            if ($existingThana) {
-                return redirect()->route('admin.location.index')->with('error', 'This Thana already exists in this District.');
-            }
-
-            Thana::create([
-                'name'        => $thanaName,
-                'district_id' => $district->id,
+            $response = Http::post('https://countriesnow.space/api/v0.1/countries/states', [
+                'country' => $country->name
             ]);
 
-            return redirect()->route('admin.location.index')->with('success', 'Location saved successfully.');
+            if ($response->successful() && !$response->json('error')) {
+                $states = $response->json('data.states');
+                $count = 0;
+                foreach ($states as $stateData) {
+                    $state = State::firstOrCreate([
+                        'country_id' => $country->id,
+                        'name' => $stateData['name']
+                    ]);
+                    if ($state->wasRecentlyCreated) {
+                        $count++;
+                    }
+                }
+                return back()->with('success', $count . ' new states synced successfully from online for ' . $country->name . '!');
+            }
+
+            return back()->with('error', 'Could not sync states. The API might not support this country name.');
         } catch (\Exception $e) {
-            return redirect()->route('admin.location.index')->with('error', 'Failed to save location: ' . $e->getMessage());
+            return back()->with('error', 'Online API is unreachable at the moment.');
         }
     }
 
-    public function updateDivision(Request $request, Division $division)
+    public function destroyCountry($id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:divisions,name,' . $division->id,
-        ], [
-            'name.required' => 'Name is required.',
-            'name.string' => 'Name must be a string.',
-            'name.max' => 'Name cannot exceed 255 characters.',
-            'name.unique' => 'The name already exists.',
-        ]);
-        if ($validator->fails()) {
-            return redirect()->route('admin.location.index')->withErrors($validator)->withInput();
-        }
-        $divisionName = $request->input('name');
-        try {
-            $division->update(['name' => $divisionName]);
-            return redirect()->route('admin.location.index')->with('success', 'Division updated successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.location.index')->with('error', 'Failed to update division.');
-        }
+        $country = Country::findOrFail($id);
+        $country->delete();
+        return back()->with('success', 'Country deleted successfully.');
     }
 
-    public function updateDistrict(Request $request, District $district)
+    public function destroyState($id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255|unique:districts,name,' . $district->id,
-            'division_id' => 'required|integer|exists:divisions,id',
-        ], [
-            'name.required' => 'Name is required.',
-            'name.string' => 'Name must be a string.',
-            'name.max' => 'Name cannot exceed 255 characters.',
-            'name.unique' => 'The name already exists.',
-            'division_id.required' => 'Division field is required.',
-            'division_id.integer' => 'Division ID must be an integer.',
-            'division_id.exists' => 'Selected division does not exist.',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->route('admin.location.index')->withErrors($validator)->withInput();
-        }
-
-        $districtName = $request->input('name');
-        $divisionId = $request->input('division_id');
-        try {
-            $district->update(['name' => $districtName, 'division_id' => $divisionId]);
-            return redirect()->route('admin.location.index')->with('success', 'District updated successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.location.index')->with('error', 'Failed to update district.');
-        }
+        $state = State::findOrFail($id);
+        $state->delete();
+        return back()->with('success', 'State deleted successfully.');
     }
 
-    public function updateThana(Request $request, Thana $thana)
+    // AJAX Endpoint for Checkout Page
+    public function getStatesByCountry($country_id)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('thanas', 'name')
-                    ->where('district_id', $request->input('district_id'))
-                    ->ignore($thana->id)
-            ],
-            'district_id' => 'required|integer|exists:districts,id',
-        ], [
-            'name.required'         => 'Name is required.',
-            'name.string'           => 'Name must be a string.',
-            'name.max'              => 'Name cannot exceed 255 characters.',
-            'name.unique'           => 'The Thana name already exists in this District.',
-            'district_id.required'  => 'District field is required.',
-            'district_id.integer'   => 'District ID must be an integer.',
-            'district_id.exists'    => 'Selected district does not exist.',
-        ]);
-
-        if ($validator->fails()) {
-            $firstError = $validator->errors()->first();
-
-            return redirect()->route('admin.location.index')
-                ->with('error', $firstError)
-                ->withInput();
-        }
-
-        try {
-            $thana->update([
-                'name'        => trim($request->input('name')),
-                'district_id' => $request->input('district_id'),
-            ]);
-
-            return redirect()->route('admin.location.index')->with('success', 'Thana updated successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.location.index')->with('error', 'Failed to update thana.');
-        }
-    }
-
-    public function destroyDivision(Division $division)
-    {
-        try {
-            $division->delete($division->id);
-            return redirect()->route('admin.location.index')->with('success', 'Division deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.location.index')->with('error', 'Failed to delete division.');
-        }
-    }
-
-    public function destroyDistrict(District $district)
-    {
-        try {
-            $district->delete($district->id);
-            return redirect()->route('admin.location.index')->with('success', 'District deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.location.index')->with('error', 'Failed to delete district.');
-        }
-    }
-
-    public function destroyThana(Thana $thana)
-    {
-        try {
-            $thana->delete($thana->id);
-            return redirect()->route('admin.location.index')->with('success', 'Thana deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('admin.location.index')->with('error', 'Failed to delete thana.');
-        }
-    }
-
-    public function destroy()
-    {
-        // Logic to delete a location
-    }
-
-    public function ajaxStoreDistrict(Request $request)
-    {
-        $districts = District::where('division_id', '=', $request->division_id, 'and')->get(['id', 'name', 'division_id']);
-        return response()->json($districts);
-    }
-
-    public function ajaxStoreThana(Request $request)
-    {
-        $thanas = Thana::where('district_id', '=', $request->district_id, 'and')->get(['id', 'name', 'district_id']);
-        return response()->json($thanas);
+        $states = State::with('shippingCost')->where('country_id', $country_id)->where('status', 1)->get();
+        return response()->json($states);
     }
 }

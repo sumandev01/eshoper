@@ -60,36 +60,56 @@
                                 <h6 class="card-title mb-0 fw-bold">Payment Details</h6>
                             </div>
 
+                            @php
+                                $paymentMethodStr = strtoupper($order->payment_method ?? 'N/A');
+                                $paymentData = $order->payment_data ? json_decode($order->payment_data) : null;
+                                
+                                if ($order->payment_method === 'sslcommerz' && $paymentData && isset($paymentData->card_type)) {
+                                    $brand = explode('-', $paymentData->card_type)[0] ?? $paymentData->card_type;
+                                    $paymentMethodStr = 'SSLCOMMERZ - ' . strtoupper($brand);
+                                } elseif ($order->payment_method === 'manual' && $paymentData && isset($paymentData->sender_number)) {
+                                    $paymentMethodStr = 'MANUAL';
+                                } elseif ($order->payment_method === 'cashOnDelivery') {
+                                    $paymentMethodStr = 'CASH ON DELIVERY';
+                                }
+                            @endphp
+
                             <p class="mb-1 fw-bold text-dark">Method:
-                                <span class="text-uppercase">{{ $order?->payment_method }}</span>
+                                <span class="text-uppercase">{{ $paymentMethodStr }}</span>
                             </p>
                             <p class="mb-2">Status:
                                 <span
                                     class="badge bg-success-subtle text-success border border-success px-2">{{ $order?->payment_status }}</span>
                             </p>
 
-                            @if ($order?->payment_method == 'sslcommerz' && $order?->payment_data)
-                                @php
-                                    // JSON data decode kora hocche
-                                    $paymentData = json_decode($order->payment_data);
-                                @endphp
-
+                            @if ($paymentData)
                                 <hr class="my-2 border-secondary border-opacity-25">
 
                                 <div class="small">
-                                    @if (isset($paymentData->bank_tran_id))
-                                        <p class="mb-1"><span class="text-muted">TrxID:</span> <strong
-                                                class="text-dark">{{ $paymentData->bank_tran_id }}</strong></p>
-                                    @endif
+                                    @if ($order->payment_method === 'sslcommerz')
+                                        @if (isset($paymentData->bank_tran_id))
+                                            <p class="mb-1"><span class="text-muted">TrxID:</span> <strong
+                                                    class="text-dark">{{ $paymentData->bank_tran_id }}</strong></p>
+                                        @endif
 
-                                    @if (isset($paymentData->card_issuer))
-                                        <p class="mb-1"><span class="text-muted">Paid via:</span> <span
-                                                class="text-dark">{{ $paymentData->card_issuer }}</span></p>
-                                    @endif
+                                        @if (isset($paymentData->card_issuer))
+                                            <p class="mb-1"><span class="text-muted">Paid via:</span> <span
+                                                    class="text-dark">{{ $paymentData->card_issuer }}</span></p>
+                                        @endif
 
-                                    @if (isset($paymentData->card_no) && !empty($paymentData->card_no))
-                                        <p class="mb-0"><span class="text-muted">A/C No:</span> <span
-                                                class="text-dark">{{ $paymentData->card_no }}</span></p>
+                                        @if (isset($paymentData->card_no) && !empty($paymentData->card_no))
+                                            <p class="mb-0"><span class="text-muted">A/C No:</span> <span
+                                                    class="text-dark">{{ $paymentData->card_no }}</span></p>
+                                        @endif
+                                    @elseif ($order->payment_method === 'manual')
+                                        @if (isset($paymentData->sender_number))
+                                            <p class="mb-1"><span class="text-muted">Sender Number:</span> <strong
+                                                    class="text-dark">{{ $paymentData->sender_number }}</strong></p>
+                                        @endif
+                                        @if ($order->transaction_id)
+                                            <p class="mb-1"><span class="text-muted">TrxID:</span> <strong
+                                                    class="text-dark">{{ $order->transaction_id }}</strong></p>
+                                        @endif
                                     @endif
                                 </div>
                             @endif

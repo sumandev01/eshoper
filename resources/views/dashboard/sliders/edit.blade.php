@@ -4,13 +4,13 @@
     <div class="row">
         <div class="col-lg-8 mx-auto">
             <div class="card">
-                <form action="{{ route('slider.update', $slider->id) }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('admin.slider.update', $slider->id) }}" method="post" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">Edit Slider</h4>
-                            <a href="{{ route('slider.index') }}" class="btn btn-primary">
+                            <a href="{{ route('admin.slider.index') }}" class="btn btn-primary">
                                 <i class="mdi mdi-arrow-left btn-icon-prepend me-1"></i>
                                 Back to Sliders
                             </a>
@@ -23,8 +23,7 @@
                             :required='false' />
                         <x-input label="Button Text" name="button_text" type="text" :value="$slider->button_text" placeholder="Shop Now"
                             :required='false' />
-                        <x-input label="Button Link" name="button_link" type="text" :value="$slider->button_link" placeholder="www.example.com"
-                            :required='false' />
+                        <x-link-selector label="Button Link" :selectedType="$slider->link_type" :selectedRef="$slider->link_ref_id" />
                         <x-media-thumbnail label="Image" class="slider_image" target_id="main-thumb" :existing_image="Storage::url($slider->media?->src) ?? null" :existing_id="$slider->media_id"
                             input_name="media_id" />
                         <x-select label="Status" name="is_active">
@@ -56,6 +55,10 @@
             height: auto !important;
             aspect-ratio: 16 / 9 !important;
             object-fit: cover !important;
+        }
+        .link-selector-wrapper .form-label {
+            font-size: 0.875rem;
+            font-weight: 600;
         }
     </style>
 @endpush

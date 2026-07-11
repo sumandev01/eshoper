@@ -32,7 +32,8 @@ class SliderController extends Controller
             'title' => 'required|string|max:40|unique:sliders,title',
             'subtitle' => 'required|string|max:50|unique:sliders,subtitle',
             'button_text' => 'required|string|max:20',
-            'button_link' => 'required|max:255',
+            'link_type' => 'required|string',
+            'link_ref_id' => 'required|string',
             'media_id' => 'required|exists:media,id',
         ]);
 
@@ -42,13 +43,14 @@ class SliderController extends Controller
             'title' => $request->title,
             'subtitle' => $request->subtitle,
             'button_text' => $request->button_text,
-            'button_link' => $request->button_link,
+            'link_type' => $request->link_type,
+            'link_ref_id' => $request->link_ref_id,
             'media_id' => $request->media_id,
             'status' => 1,
             'order' => $OrderList,
         ]);
 
-        return redirect()->route('slider.index')->with('success', 'Slider created successfully.');
+        return redirect()->route('admin.slider.index')->with('success', 'Slider created successfully.');
     }
 
     public function edit($id)
@@ -69,7 +71,8 @@ class SliderController extends Controller
             'title'       => 'required|string|max:40|unique:sliders,title,' . $slider->id,
             'subtitle'    => 'required|string|max:50|unique:sliders,subtitle,' . $slider->id,
             'button_text' => 'required|string|max:20',
-            'button_link' => 'required|max:255',
+            'link_type'   => 'required|string',
+            'link_ref_id' => 'required|string',
             'media_id'    => 'required|exists:media,id',
             'is_active'   => 'required|boolean',
         ]);
@@ -78,19 +81,20 @@ class SliderController extends Controller
             'title'       => $request->title,
             'subtitle'    => $request->subtitle,
             'button_text' => $request->button_text,
-            'button_link' => $request->button_link,
+            'link_type'   => $request->link_type,
+            'link_ref_id' => $request->link_ref_id,
             'media_id'    => $request->media_id,
             'is_active'   => $request->is_active,
         ]);
 
-        return redirect()->route('slider.index')->with('success', 'Slider updated successfully.');
+        return redirect()->route('admin.slider.index')->with('success', 'Slider updated successfully.');
     }
 
     public function destroy($id)
     {
         $slider = Slider::findOrFail($id);
         $slider->delete();
-        return redirect()->route('slider.index')->with('success', 'Slider deleted successfully.');
+        return redirect()->route('admin.slider.index')->with('success', 'Slider deleted successfully.');
     }
 
     public function reorder(Request $request)

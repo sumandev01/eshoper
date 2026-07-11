@@ -31,12 +31,12 @@
                                     </td>
                                     <td class="text-end">
                                         @can(\App\Enums\Permission\BrandPermission::UPDATE->value)
-                                            <a href="{{ route('brand.edit', $brand?->id) }}" class="btn btn-info btn-sm">
+                                            <a href="{{ route('admin.brand.edit', $brand?->id) }}" class="btn btn-info btn-sm">
                                             <i class="mdi mdi-square-edit-outline"></i>
                                         </a>
                                         @endcan
                                         @can(\App\Enums\Permission\BrandPermission::DELETE->value)
-                                            <a href="{{ route('brand.destroy', $brand?->id) }}"
+                                            <a href="{{ route('admin.brand.destroy', $brand?->id) }}"
                                                 class="btn btn-danger btn-sm deleteBtn">
                                                 <i class="mdi mdi-delete"></i>
                                             </a>
@@ -56,7 +56,7 @@
         @can(\App\Enums\Permission\BrandPermission::CREATE->value)
             <div class="col-lg-5">
             <div class="card">
-                <form action="{{ route('brand.store') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('admin.brand.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="card-header pt-4">
                         <h4 class="card-title">Add New Brand</h4>

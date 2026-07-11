@@ -14,7 +14,7 @@ class WishlistController extends Controller
         $user = auth('web')->user();
         $wishlists = $user->wishlists()->with('product')->orderBy('id', 'desc')->paginate(10);
         $productReviews = ProductReview::whereStatus(1)->get();
-        return view('web.wishlist', compact('wishlists', 'productReviews'));
+        return view('web.shop.wishlist', compact('wishlists', 'productReviews'));
     }
 
     public function wishlistToggle(Request $request)

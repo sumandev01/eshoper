@@ -22,7 +22,7 @@ class ColorController extends Controller
             'color_code' => $request->color_code
         ]);
         if ($color) {
-            return redirect()->route('color.index')->with('success', 'Color created successfully');
+            return redirect()->route('admin.color.index')->with('success', 'Color created successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to create color');
         }
@@ -40,7 +40,7 @@ class ColorController extends Controller
             'color_code' => $request->color_code
         ]);
         if ($color) {
-            return redirect()->route('color.index')->with('success', 'Color updated successfully');
+            return redirect()->route('admin.color.index')->with('success', 'Color updated successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to update color');
         }
@@ -49,6 +49,6 @@ class ColorController extends Controller
     public function destroy(Color $color)
     {
         $color->delete();
-        return redirect()->route('color.index')->with('success', 'Color deleted successfully');
+        return redirect()->route('admin.color.index')->with('success', 'Color deleted successfully');
     }
 }

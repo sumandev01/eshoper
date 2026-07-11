@@ -11,7 +11,7 @@
                                 <h5 class="mb-1 fw-semibold">Edit Coupon</h5>
                                 <p class="text-muted small mb-0">Fill in the details to create a new coupon</p>
                             </div>
-                            <a href="{{ route('coupon.index') }}"
+                            <a href="{{ route('admin.coupon.index') }}"
                                 class="btn btn-primary btn-sm d-flex align-items-center gap-1">
                                 <i class="mdi mdi-arrow-left"></i>
                                 <span>Back to List</span>
@@ -20,7 +20,7 @@
                     </div>
 
                     <div class="card-body p-4">
-                        <form action="{{ route('coupon.update', $coupon?->id) }}" method="POST">
+                        <form action="{{ route('admin.coupon.update', $coupon?->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             {{-- Basic Info --}}
@@ -70,6 +70,10 @@
                                         <x-input label="Coupon Limit" name="usage_limit" :value="$coupon?->usage_limit" type="number"
                                             placeholder="0" :required='true' />
                                     </div>
+                                    <div class="col-lg-6">
+                                        <x-input label="Limit Per User" name="limit_per_user" :value="$coupon?->limit_per_user ?? 1" type="number"
+                                            placeholder="1" :required='true' />
+                                    </div>
                                 </div>
                             </div>
 
@@ -108,7 +112,7 @@
                             </div>
 
                             <div class="border-top pt-3 d-flex justify-content-end gap-2">
-                                <a href="{{ route('coupon.index') }}" class="btn btn-light px-4">Cancel</a>
+                                <a href="{{ route('admin.coupon.index') }}" class="btn btn-light px-4">Cancel</a>
                                 @can(\App\Enums\Permission\CouponPermission::UPDATE->value)
                                     <button type="submit" class="btn btn-primary px-4">
                                         <i class="mdi mdi-content-save me-1"></i> Update Coupon

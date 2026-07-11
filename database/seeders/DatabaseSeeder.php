@@ -28,7 +28,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             UserSeeder::class,
             MenuSeeder::class,
-            PageSeeder::class,
+            // PageSeeder::class,
 
             // E-commerce Settings
             LocationSeeder::class,
@@ -54,6 +54,9 @@ class DatabaseSeeder extends Seeder
             AboutUsSeeder::class,
             FaqSeeder::class,
             TeamMemberSeeder::class,
+            
+            // New Modules
+            BlogSeeder::class,
         ]);
     }
 }

@@ -99,7 +99,7 @@
                                                     </button>
                                                 @endcan
                                                 @can(\App\Enums\Permission\ProductInventoryPermission::DELETE->value)
-                                                    <a href="{{ route('inventory.destroy', $item?->id) }}"
+                                                    <a href="{{ route('admin.inventory.destroy', $item?->id) }}"
                                                         class="btn btn-danger btn-sm deleteBtn">
                                                         <i class="mdi mdi-delete"></i>
                                                     </a>
@@ -122,7 +122,7 @@
             @can(\App\Enums\Permission\ProductInventoryPermission::CREATE->value)
                 <div class="col-lg-4">
                     <div class="card">
-                        <form action="{{ route('inventory.store') }}" method="post" enctype="multipart/form-data">
+                        <form action="{{ route('admin.inventory.store') }}" method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="card-header pt-4">
                                 <h4 class="card-title">Add New Inventory</h4>

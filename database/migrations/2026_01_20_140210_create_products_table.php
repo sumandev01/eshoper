@@ -20,7 +20,6 @@ return new class extends Migration
             $table->float('price');
             $table->float('buy_price')->nullable()->default(0);
             $table->float('discount')->nullable()->default(0);
-            $table->float('tax')->nullable()->default(0);
             $table->float('stock')->default(0);
             $table->integer('rating')->default(0);
             $table->integer('is_trending')->default(0);

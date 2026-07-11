@@ -4,14 +4,14 @@
     <div class="row">
         <div class="col-lg-8 mx-auto">
             <div class="card">
-                <form action="{{ route('sub-category.update', $subCategory->id) }}" method="post"
+                <form action="{{ route('admin.sub-category.update', $subCategory->id) }}" method="post"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="card-header pt-4">
                         <div class="card-title d-md-flex justify-content-between align-items-center">
                             <h4 class="">Edit Sub Category</h4>
-                            <a href="{{ route('sub-category.index') }}" class="btn btn-primary mr-2 btn-icon-text">
+                            <a href="{{ route('admin.sub-category.index') }}" class="btn btn-primary mr-2 btn-icon-text">
                                 <i class="mdi mdi-arrow-left btn-icon-prepend me-2"></i>
                                 <span>Back</span>
                             </a>
@@ -32,7 +32,7 @@
                             <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
                             <span>Save</span>
                         </button>
-                        <a href="{{ route('sub-category.index') }}" class="btn btn-danger btn-icon-text mt-2">
+                        <a href="{{ route('admin.sub-category.index') }}" class="btn btn-danger btn-icon-text mt-2">
                             <i class="mdi mdi-close btn-icon-prepend me-2"></i>
                             <span>Cancel</span>
                         </a>

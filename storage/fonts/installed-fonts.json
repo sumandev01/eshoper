@@ -9,5 +9,8 @@
         "bold": "D:\\laragon\\www\\eshopper\\storage\\fonts\/noto_sans_bengali_bold_af66e0edcf4032410da861b5d5d294f6",
         "800": "D:\\laragon\\www\\eshopper\\storage\\fonts\/noto_sans_bengali_800_7da9a0a82f9fbb256d9d4df02fa15a22",
         "900": "noto_sans_bengali_900_181a1a0699873698c0346e9fbe15a496"
+    },
+    "nirmala": {
+        "normal": "nirmala_normal_69cb052d8097f149baaf906bbfec29f4"
     }
 }

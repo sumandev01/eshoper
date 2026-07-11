@@ -12,4 +12,9 @@ class Slider extends Model
     {
         return $this->belongsTo(Media::class, 'media_id');
     }
+
+    public function getLinkAttribute()
+    {
+        return \App\Services\UrlGeneratorService::resolve($this->link_type, $this->link_ref_id);
+    }
 }

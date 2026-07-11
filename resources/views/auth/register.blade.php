@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <form class="wpo-accountWrapper" action="{{ route('registerRequest') }}" method="POST">
+                    <form class="wpo-accountWrapper" action="{{ route('register.submit') }}" method="POST">
                         @csrf
                         <div class="wpo-accountInfo">
                             <div class="wpo-accountInfoHeader">
@@ -73,6 +73,20 @@
                                     <button type="submit" class="wpo-accountBtn">Signup</button>
                                 </div>
                             </div>
+                            
+                            <h4 class="or"><span>OR</span></h4>
+                            <ul class="wpo-socialLoginBtn">
+                                <li>
+                                    <a href="{{ route('social.login', 'google') }}" class="bg-danger d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px; border-radius: 5px;">
+                                        <span><i class="ti-google"></i></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('social.login', 'facebook') }}" class="bg-primary d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px; border-radius: 5px;">
+                                        <span><i class="ti-facebook"></i></span>
+                                    </a>
+                                </li>
+                            </ul>
 
                             <p class="subText">Sign into your pages account <a href="{{ route('login') }}">Login</a></p>
                         </div>

@@ -12,7 +12,7 @@
                                 <p class="text-muted small mb-0">Manage all your coupons</p>
                             </div>
                             @can(\App\Enums\Permission\CouponPermission::CREATE->value)
-                                <a href="{{ route('coupon.add') }}"
+                                <a href="{{ route('admin.coupon.add') }}"
                                     class="btn btn-primary btn-sm d-flex align-items-center gap-1">
                                     <i class="mdi mdi-plus"></i>
                                     <span>Add New Coupon</span>
@@ -87,13 +87,13 @@
                                             <td>
                                                 <div class="d-flex gap-2">
                                                     @can(\App\Enums\Permission\CouponPermission::UPDATE->value)
-                                                        <a href="{{ route('coupon.edit', $coupon?->id) }}"
+                                                        <a href="{{ route('admin.coupon.edit', $coupon?->id) }}"
                                                             class="btn btn-info btn-sm">
                                                             <i class="mdi mdi-square-edit-outline"></i>
                                                         </a>
                                                     @endcan
                                                     @can(\App\Enums\Permission\CouponPermission::DELETE->value)
-                                                        <a href="{{ route('coupon.destroy', $coupon?->id) }}"
+                                                        <a href="{{ route('admin.coupon.destroy', $coupon?->id) }}"
                                                             class="btn btn-danger btn-sm deleteBtn">
                                                             <i class="mdi mdi-delete"></i>
                                                         </a>

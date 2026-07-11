@@ -8,7 +8,7 @@
                     <h5 class="modal-title" id="editInventoryModalLabel{{ $inv?->id }}">Edit Inventory</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form class="ajax-inventory-form" action="{{ route('inventory.update', $inv?->id) }}" method="post"
+                <form class="ajax-inventory-form" action="{{ route('admin.inventory.update', $inv?->id) }}" method="post"
                     enctype="multipart/form-data">
                     @csrf
                     @method('PUT')

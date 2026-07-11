@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
-use App\Models\Division;
 use App\Models\Product;
 use App\Models\ProductInventory;
 use App\Models\ShippingCost;
@@ -22,6 +21,10 @@ class CheckoutController extends Controller
 
         $cartItems = auth('web')->user()->cartItems;
 
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart')->with('error', 'Your cart is completely empty! Please add some products to checkout.');
+        }
+
         $validItems = $cartItems->filter(function ($item) {
             if ($item->product_inventory_id) {
                 $inventory = ProductInventory::find($item->product_inventory_id);
@@ -31,6 +34,10 @@ class CheckoutController extends Controller
             $product = Product::find($item->product_id);
             return $product && $product->stock > 0;
         });
+
+        if ($validItems->isEmpty()) {
+            return redirect()->route('cart')->with('error', 'The items in your cart are currently out of stock or invalid.');
+        }
 
         $subTotalPrice = $validItems->map(function ($item) {
             return $item->cart_price * $item->quantity;
@@ -47,10 +54,10 @@ class CheckoutController extends Controller
 
         $billingAddress = UserAddress::where('user_id', $userId)->where('type', 'billing')->first();
         $shippingAddress = UserAddress::where('user_id', $userId)->where('type', 'shipping')->first();
-        $divisions = Division::all();
+        $countries = \App\Models\Country::all();
 
-        $shippingCost = ShippingCost::orderBy('id', 'asc')->get();
+        $shippingCost = \App\Models\ShippingCost::orderBy('id', 'asc')->get();
 
-        return view('web.checkout', compact('coupon', 'userId', 'validItems', 'subTotalPrice', 'couponDiscount', 'totalPrice', 'billingAddress', 'shippingAddress', 'divisions', 'shippingCost'));
+        return view('web.shop.checkout', compact('coupon', 'userId', 'validItems', 'subTotalPrice', 'couponDiscount', 'totalPrice', 'billingAddress', 'shippingAddress', 'countries', 'shippingCost'));
     }
 }

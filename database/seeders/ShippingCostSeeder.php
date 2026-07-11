@@ -15,18 +15,18 @@ class ShippingCostSeeder extends Seeder
     {
         $data = [
             [
-                'location' => 'Inside Dhaka',
+                'name' => 'Inside Dhaka',
                 'price' => 60,
             ],
             [
-                'location' => 'Outside Dhaka',
+                'name' => 'Outside Dhaka',
                 'price' => 100,
             ]
         ];
 
         foreach ($data as $shippingCost) {
             ShippingCost::updateOrCreate(
-                ['location' => $shippingCost['location']],
+                ['name' => $shippingCost['name']],
                 $shippingCost
             );
         }

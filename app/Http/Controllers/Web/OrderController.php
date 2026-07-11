@@ -52,7 +52,9 @@ class OrderController extends Controller
                 return $redirect;
             }
 
-            return redirect()->route('web.orderDetails', ['order' => $order->id])->with('success', 'Order created successfully');
+            return redirect()->route('web.orderDetails', ['order' => $order->id])
+                             ->with('checkout_success_order_id', $order->id)
+                             ->with('success', 'Order created successfully');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -63,10 +65,15 @@ class OrderController extends Controller
 
     public function orderDetails(Order $order)
     {
+        // One-time view security: Prevent direct URL access to the success page
+        if (session('checkout_success_order_id') != $order->id) {
+            return redirect()->route('user.orders');
+        }
+
         $orderProducts = OrderProduct::whereOrderId($order->id)->get();
         $billingAddress = BillingAddress::whereOrderId($order->id)->first();
         $shippingAddress = ShippingAddress::whereOrderId($order->id)->first();
 
-        return view('web.welcome', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
+        return view('web.payment.success', compact('order', 'orderProducts', 'billingAddress', 'shippingAddress'));
     }
 }

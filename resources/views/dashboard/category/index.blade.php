@@ -31,12 +31,12 @@
                                     </td>
                                     <td class="text-end">
                                         @can(\App\Enums\Permission\CategoryPermission::UPDATE->value)
-                                            <a href="{{ route('category.edit', $Category?->id) }}" class="btn btn-info btn-sm">
+                                            <a href="{{ route('admin.category.edit', $Category?->id) }}" class="btn btn-info btn-sm">
                                                 <i class="mdi mdi-square-edit-outline"></i>
                                             </a>
                                         @endcan
                                         @can(\App\Enums\Permission\CategoryPermission::DELETE->value)
-                                            <a href="{{ route('category.destroy', $Category?->id) }}"
+                                            <a href="{{ route('admin.category.destroy', $Category?->id) }}"
                                                 class="btn btn-danger btn-sm deleteBtn">
                                                 <i class="mdi mdi-delete"></i>
                                             </a>
@@ -56,7 +56,7 @@
         @can(\App\Enums\Permission\CategoryPermission::CREATE->value)
             <div class="col-lg-5">
                 <div class="card">
-                    <form action="{{ route('category.store') }}" method="post" enctype="multipart/form-data">
+                    <form action="{{ route('admin.category.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="card-header pt-4">
                             <h4 class="card-title">Add New Category</h4>

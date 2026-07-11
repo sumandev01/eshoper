@@ -28,8 +28,11 @@ class AboutPageController extends Controller
             'media_id' => 'nullable|numeric',
             'button_text' => 'required',
             'button_link' => 'required',
+            'mission_header' => 'required|string|max:100',
             'our_mission' => 'required|string|max:150',
+            'vision_header' => 'required|string|max:100',
             'our_vision' => 'required|string|max:150',
+            'values_header' => 'required|string|max:100',
             'our_values' => 'required|string|max:150',
         ]);
 

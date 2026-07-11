@@ -58,16 +58,20 @@
                                                         </a>
                                                     @endcan
                                                     @can(\App\Enums\Permission\UserRolePermission::UPDATE->value)
-                                                        <a href="{{ route('admin.role.edit', $role?->id) }}"
-                                                            class="btn btn-sm btn-outline-info me-1" title="Edit">
-                                                            <i class="mdi mdi-square-edit-outline"></i>
-                                                        </a>
+                                                        @if(!in_array($role->name, [\App\Enums\RoleEnums::Super_Admin->value, \App\Enums\RoleEnums::User->value]))
+                                                            <a href="{{ route('admin.role.edit', $role?->id) }}"
+                                                                class="btn btn-sm btn-outline-info me-1" title="Edit">
+                                                                <i class="mdi mdi-square-edit-outline"></i>
+                                                            </a>
+                                                        @endif
                                                     @endcan
                                                     @can(\App\Enums\Permission\UserRolePermission::DELETE->value)
-                                                        <a href="{{ route('admin.role.destroy', $role?->id) }}"
-                                                            class="btn btn-danger btn-sm deleteBtn me-1">
-                                                            <i class="mdi mdi-delete"></i>
-                                                        </a>
+                                                        @if(!in_array($role->name, [\App\Enums\RoleEnums::Super_Admin->value, \App\Enums\RoleEnums::Admin->value, \App\Enums\RoleEnums::User->value]))
+                                                            <a href="{{ route('admin.role.destroy', $role?->id) }}"
+                                                                class="btn btn-danger btn-sm deleteBtn me-1">
+                                                                <i class="mdi mdi-delete"></i>
+                                                            </a>
+                                                        @endif
                                                     @endcan
                                                 </div>
                                             </td>

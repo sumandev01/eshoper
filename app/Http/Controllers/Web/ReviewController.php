@@ -28,9 +28,9 @@ class ReviewController extends Controller
                 'status' => 0, // Assuming 1 means approved, 0 means pending review
             ]);
 
-            return redirect()->route('user.orderProducts')->with('success', 'Review submitted for approval.');
+            return redirect()->route('user.order.products')->with('success', 'Review submitted for approval.');
         } catch (\Exception $e) {
-            return redirect()->route('user.orderProducts')->with('error', 'Failed to submit review: ' . $e->getMessage());
+            return redirect()->route('user.order.products')->with('error', 'Failed to submit review: ' . $e->getMessage());
         }
     }
 

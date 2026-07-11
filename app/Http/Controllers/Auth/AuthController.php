@@ -55,7 +55,7 @@ class AuthController extends Controller
                     'success' => true,
                     'message' => 'Logged in successfully',
                     'csrf_token' => csrf_token(),
-                    'header_html' => view('web.layouts.partial.header')->render()
+                    'header_html' => view('web.layouts.partials.header')->render()
                 ], 200);
             }
 

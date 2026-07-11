@@ -18,8 +18,8 @@
     <!-- Page Header End -->
 
     <!-- Dashboard Start -->
-    <div class="container-fluid pt-2">
-        <div class="row px-xl-5">
+    <div class="container pt-1">
+        <div class="row">
             @include('web.dashboard.sidebar')
             <div class="col-lg-9 mb-2">
                 <div class="card border-0 shadow-sm">
@@ -54,5 +54,7 @@
     </div>
     <!-- Dashboard End -->
 @endsection
+
+
 
 

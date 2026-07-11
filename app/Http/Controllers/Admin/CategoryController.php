@@ -26,7 +26,7 @@ class CategoryController extends Controller
     {
         $Category = $this->categoryRepo->storeByRequest($request);
         if ($Category) {
-            return redirect()->route('category.index')->with('success', 'Category created successfully');
+            return redirect()->route('admin.category.index')->with('success', 'Category created successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to create category');
         }
@@ -41,7 +41,7 @@ class CategoryController extends Controller
     {
         $category = $this->categoryRepo->updateByRequest($request, $category);
         if ($category) {
-            return redirect()->route('category.index')->with('success', 'Category updated successfully');
+            return redirect()->route('admin.category.index')->with('success', 'Category updated successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to update category');
         }
@@ -50,7 +50,7 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         $category->delete($category);
-        return redirect()->route('category.index')->with('success', 'Category deleted successfully');
+        return redirect()->route('admin.category.index')->with('success', 'Category deleted successfully');
     }
 
     public function categoryApi()

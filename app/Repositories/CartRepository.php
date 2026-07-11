@@ -65,12 +65,14 @@ class CartRepository
             $basePrice = ($inventory->use_main_price == 1 || $inventory->price === null) ? (float)$inventory->product->price : (float)$inventory->price;
             $discountPrice = ($inventory->use_main_discount == 1) ? (float)($inventory->product->discount ?? 0) : (float)($inventory->discount ?? 0);
             $price = ($discountPrice > 0 && $discountPrice < $basePrice) ? $discountPrice : $basePrice;
+            
         } else {
             $product = Product::findOrFail($pId);
             $availableStock = $product->stock;
             
             // Server-side authoritative price calculation
             $price = ($product->discount > 0 && $product->discount < $product->price) ? (float)$product->discount : (float)$product->price;
+
         }
 
         if ($availableStock <= 0) {

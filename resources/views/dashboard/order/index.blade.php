@@ -9,7 +9,7 @@
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
                             <h4 class="mb-0">
-                                <a class="btn btn-primary btn-md" href="{{ route('order.index') }}">All Order List</a>
+                                <a class="btn btn-primary btn-md" href="{{ route('admin.order.index') }}">All Order List</a>
                             </h4>
                             <form action="">
                                 <div class="row justify-content-end">
@@ -69,9 +69,9 @@
                                             <td class="text-end">{{ $order->created_at->format('d-M-Y') }}</td>
                                             <td class="text-center">
                                                 <a class="btn btn-sm btn-primary"
-                                                    href="{{ route('order.view', $order->id) }}">View</a>
+                                                    href="{{ route('admin.order.view', $order->id) }}">View</a>
                                                 <a class="btn btn-sm btn-primary"
-                                                    href="{{ route('order.edit', $order->id) }}">Edit</a>
+                                                    href="{{ route('admin.order.edit', $order->id) }}">Edit</a>
                                             </td>
                                         </tr>
                                     @empty

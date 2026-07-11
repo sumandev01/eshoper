@@ -9,6 +9,7 @@ use App\Models\BillingAddress;
 use App\Models\Order;
 use App\Models\OrderProduct;
 use App\Models\ShippingAddress;
+use App\Models\Courier;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -54,7 +55,8 @@ class OrderController extends Controller
         $order = Order::findOrFail($order);
         $orderStatusEnums = OrderStatusEnums::cases();
         $paymentStatusEnums = PaymentStatusEnums::cases();
-        return view('dashboard.order.edit', compact('order', 'orderStatusEnums', 'paymentStatusEnums'));
+        $couriers = Courier::where('status', 1)->get();
+        return view('dashboard.order.edit', compact('order', 'orderStatusEnums', 'paymentStatusEnums', 'couriers'));
     }
 
     public function update(Request $request, $order)
@@ -64,13 +66,28 @@ class OrderController extends Controller
         $request->validate([
             'order_status' => ['required', Rule::enum(OrderStatusEnums::class)],
             'payment_status' => ['required', Rule::enum(PaymentStatusEnums::class)],
+            'courier_id' => 'nullable|exists:couriers,id',
+            'courier_tracking_id' => 'nullable|string|max:255',
         ]);
 
-        $order->update([
+        $updateData = [
             'order_status' => $request->order_status,
             'payment_status' => $request->payment_status,
-        ]);
+        ];
 
-        return redirect()->route('order.index')->with('success', 'Order updated successfully.');
+        // Check if marking as delivered but not paid
+        if ($request->order_status === OrderStatusEnums::DELIVERED->value && $request->payment_status !== PaymentStatusEnums::PAID->value) {
+            return back()->with('error', 'Order cannot be marked as Delivered unless Payment Status is Paid!');
+        }
+
+        // Only update courier info if status is shipped
+        if ($request->order_status === OrderStatusEnums::SHIPPED->value) {
+            $updateData['courier_id'] = $request->courier_id;
+            $updateData['courier_tracking_id'] = $request->courier_tracking_id;
+        }
+
+        $order->update($updateData);
+
+        return redirect()->route('admin.order.index')->with('success', 'Order updated successfully.');
     }
 }

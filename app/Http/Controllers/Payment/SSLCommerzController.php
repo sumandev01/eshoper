@@ -31,13 +31,33 @@ class SSLCommerzController extends Controller
             return redirect()->route('cart')->with('error', 'Order not found.');
         }
 
-        // If the order is already paid (webhook/IPN processed it super fast)
-        if ($order->payment_status === PaymentStatusEnums::PAID->value) {
+        // If it's UNPAID, let's try to validate it right here (essential for Localhost/Laragon testing where IPN fails)
+        if ($order->payment_status === PaymentStatusEnums::UNPAID && $request->input('val_id')) {
+            $val_id = $request->input('val_id');
+            $verifyResponse = Http::get($this->getApiUrl('/validator/api/validationserverAPI.php'), [
+                'val_id' => $val_id,
+                'store_id' => config('services.sslcommerz.store_id'),
+                'store_passwd' => config('services.sslcommerz.store_password'),
+                'format' => 'json',
+            ]);
+
+            $verification = $verifyResponse->json();
+
+            if (isset($verification['status']) && ($verification['status'] == 'VALID' || $verification['status'] == 'VALIDATED')) {
+                $this->orderRepository->finalizeOrder($order, $verification['bank_tran_id'] ?? null, $verification);
+                // Refresh order to get updated status
+                $order->refresh();
+            }
+        }
+
+        // If the order is paid
+        if ($order->payment_status === PaymentStatusEnums::PAID) {
             return redirect()->route('web.orderDetails', ['order' => $order->id])
+                             ->with('checkout_success_order_id', $order->id)
                              ->with('success', 'Payment Successful! TrxID: ' . $order->transaction_id);
         }
 
-        // Otherwise, show the processing view
+        // Otherwise, show the processing view (if somehow validation failed)
         return view('web.payment.processing', compact('order'));
     }
 

@@ -12,12 +12,12 @@
                     </div>
                     <div>
                         @can(\App\Enums\Permission\ProductPermission::VIEW->value)
-                            <a href="{{ route('product.index') }}" class="btn btn-secondary btn-sm me-2">
+                            <a href="{{ route('admin.product.index') }}" class="btn btn-secondary btn-sm me-2">
                                 <i class="mdi mdi-arrow-left me-1"></i> Back to List
                             </a>
                         @endcan
                         @can(\App\Enums\Permission\ProductPermission::UPDATE->value)
-                            <a href="{{ route('product.edit', $product?->id) }}" class="btn btn-primary btn-sm">
+                            <a href="{{ route('admin.product.edit', $product?->id) }}" class="btn btn-primary btn-sm">
                                 <i class="mdi mdi-pencil me-1"></i> Edit Product
                             </a>
                         @endcan
@@ -99,7 +99,7 @@
                 <!-- Pricing Card -->
                 <div class="card mb-4 shadow-sm border-0">
                     <div class="card-header bg-white py-3">
-                        <h5 class="card-title mb-0">Pricing & Tax</h5>
+                        <h5 class="card-title mb-0">Pricing</h5>
                     </div>
                     <div class="card-body bg-light-subtle">
                         <div class="row text-center">
@@ -117,16 +117,12 @@
                                     {{ number_format($product?->discount ?? 0, 2) }}
                                 </h4>
                             </div>
-                            <div class="col-md-3 border-end">
+                            <div class="col-md-4">
                                 <label class="text-muted small d-block">Buy Price</label>
                                 <h4 class="text-dark mb-0">
                                     {{ ($siteSettings->currency_symbol ?? null) }}
                                     {{ number_format($product?->buy_price ?? 0, 2) }}
                                 </h4>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="text-muted small d-block">Tax</label>
-                                <h4 class="text-secondary mb-0">{{ $product?->tax ?? 0 }}%</h4>
                             </div>
                         </div>
                     </div>
@@ -164,6 +160,12 @@
                                 <label class="text-muted small text-uppercase fw-bold">Meta Title</label>
                                 <p class="text-dark">
                                     {{ $product?->details?->meta_title ?? 'No meta title provided.' }}
+                                </p>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="text-muted small text-uppercase fw-bold">Meta Keyword</label>
+                                <p class="text-dark">
+                                    {{ $product?->details?->meta_keyword ?? 'No meta keyword provided.' }}
                                 </p>
                             </div>
                             <div class="col-md-12">

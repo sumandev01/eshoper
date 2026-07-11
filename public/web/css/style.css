@@ -2364,40 +2364,40 @@ fieldset:disabled a.btn {
 }
 
 .btn-primary {
-  color: #212529;
-  background-color: var(--primary);
-  border-color: var(--primary);
+  color: var(--btn-text);
+  background-color: var(--btn-bg);
+  border-color: var(--btn-bg);
 }
 
 .btn-primary:hover {
-  color: #fff;
-  background-color: #c5837c;
-  border-color: var(--primary-dark);
+  color: var(--btn-hover-text);
+  background-color: var(--btn-hover-bg);
+  border-color: var(--btn-hover-bg);
 }
 
 .btn-primary:focus, .btn-primary.focus {
-  color: #fff;
-  background-color: #c5837c;
-  border-color: var(--primary-dark);
-  box-shadow: 0 0 0 0.2rem rgba(183, 138, 135, 0.5);
+  color: var(--btn-hover-text);
+  background-color: var(--btn-hover-bg);
+  border-color: var(--btn-hover-bg);
+  box-shadow: 0 0 0 0.2rem var(--primary-soft);
 }
 
 .btn-primary.disabled, .btn-primary:disabled {
-  color: #212529;
-  background-color: var(--primary);
-  border-color: var(--primary);
+  color: var(--btn-text);
+  background-color: var(--btn-bg);
+  border-color: var(--btn-bg);
 }
 
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
 .show > .btn-primary.dropdown-toggle {
-  color: #fff;
-  background-color: var(--primary-dark);
-  border-color: #bd726b;
+  color: var(--btn-hover-text);
+  background-color: var(--btn-hover-bg);
+  border-color: var(--btn-hover-bg);
 }
 
 .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
 .show > .btn-primary.dropdown-toggle:focus {
-  box-shadow: 0 0 0 0.2rem rgba(183, 138, 135, 0.5);
+  box-shadow: 0 0 0 0.2rem var(--primary-soft);
 }
 
 .btn-secondary {
@@ -9614,4 +9614,61 @@ a.text-dark:hover, a.text-dark:focus {
 .custom-sidebar-nav .dropdown-menu .custom-sub-link:hover {
     background-color: transparent !important;
     color: var(--primary) !important;
+}
+
+/* =========================================================
+   GLOBAL DYNAMIC HOVER STYLES (Added as part of color plan)
+   ========================================================= */
+
+/* Menus and Links */
+.navbar-nav .nav-link:hover, 
+.navbar-nav .dropdown-item:hover, 
+a.text-dark:hover, 
+.dash-sidebar a:hover {
+    color: var(--primary) !important;
+    text-decoration: none !important;
+    transition: 0.3s;
+}
+
+/* Slider Navigation Arrows */
+.carousel-control-prev .btn:hover, 
+.carousel-control-next .btn:hover {
+    background-color: var(--primary) !important;
+    opacity: 1 !important;
+    transition: 0.3s;
+}
+
+/* Global Product & Blog Titles */
+.product-item h6:hover,
+.product-item h6 a:hover,
+.blog-card h5:hover,
+.blog-card h5 a:hover,
+h5.text-truncate:hover,
+h5.text-truncate a:hover,
+a.text-decoration-none h5:hover,
+h5 a.text-dark:hover {
+    color: var(--primary) !important;
+    text-decoration: none !important;
+    transition: color 0.3s;
+}
+
+/* Offer Buttons ("Shop Now") */
+.btn-outline-primary:hover {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    transition: 0.3s;
+}
+
+/* Dashboard Specifics */
+.dash-table.table-hover tbody tr:hover {
+    background-color: var(--primary-soft) !important;
+}
+.dash-table .btn-light:hover {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+    transition: 0.3s;
+}
+.dash-table .btn-light:hover i {
+    color: #fff !important;
 }

@@ -32,8 +32,9 @@ class StripeController extends Controller
         }
 
         // If the order is already paid (webhook processed it super fast)
-        if ($order->payment_status === PaymentStatusEnums::PAID->value) {
+        if ($order->payment_status === PaymentStatusEnums::PAID) {
             return redirect()->route('web.orderDetails', ['order' => $order->id])
+                             ->with('checkout_success_order_id', $order->id)
                              ->with('success', 'Payment Successful! TrxID: ' . $order->transaction_id);
         }
 

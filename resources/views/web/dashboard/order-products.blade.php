@@ -2,35 +2,28 @@
 @section('title', 'Address' . ' - ' . ($siteSettings->site_title ?? null))
 @section('content')
     <!-- Page Header Start -->
-    <div class="container-fluid mb-4">
-        <div class="row">
-            <div class="col col-xs-12">
-                <div class="wpo-breadcumb-wrap">
-                    <ol class="wpo-breadcumb-wrap">
-                        <li><a class="nav-link p-0" href="{{ route('root') }}">Home</a></li>
-                        <li><a class="nav-link p-0" href="{{ route('user.dashboard') }}">User Dashboard</a></li>
-                        <li>Product Reviews</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('web.components.breadcrumb', [
+        'breadcrumbs' => [
+            ['name' => 'User Dashboard', 'url' => route('user.dashboard')],
+            ['name' => 'Product Reviews', 'url' => '']
+        ]
+    ])
     <!-- Page Header End -->
 
     <!-- Dashboard Start -->
-    <div class="container-fluid pt-2">
-        <div class="row px-xl-5">
+    <div class="container pt-1">
+        <div class="row">
             @include('web.dashboard.sidebar')
             <div class="col-lg-9 mb-2">
-                <div class="card border-0 shadow-sm">
+                <div class="dash-card">
                     <div class="card-body p-4">
                         <div class="table-responsive">
-                            <h5 class="font-weight-semi-bold mb-4">All Orders Products</h5>
-                            <table class="table table-bordered table-hover mb-0">
-                                <thead class="table-primary">
+                            <h5 class="font-weight-semi-bold mb-4" style="color: color-mix(in srgb, var(--primary) 60%, #111); font-size: 1.2rem;">All Orders Products</h5>
+                            <table class="table dash-table table-hover mb-0">
+                                <thead>
                                     <tr class="text-center align-middle">
                                         <th>#</th>
-                                        <th>Product Name</th>
+                                        <th class="text-start">Product Name</th>
                                         <th>Order Date</th>
                                         <th class="text-center">Delivery status</th>
                                         <th>Review</th>
@@ -38,62 +31,63 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($orderProducts ?? [] as $key => $product)
-                                        <tr>
-                                            <td class="text-center">{{ $key + 1 }}</td>
+                                        <tr class="align-middle">
+                                            <td class="text-center text-muted">{{ $key + 1 }}</td>
                                             <td style="max-width: 350px;">
-                                                <a class="text-decoration-none text-dark font-weight-bold"
-                                                    href="{{ route('productDetails', $product->product?->slug) }}">
+                                                <a class="text-decoration-none text-dark font-weight-semi-bold"
+                                                    href="{{ route('product.details', $product->product?->slug) }}">
                                                     {{ $product->product?->name }}
                                                 </a>
-                                                <div>
+                                                <div class="mt-2">
                                                     @if (isset($productReviews[$product->product_id]))
-                                                        <div class="review-rating-box">
-                                                            <div class="star-group">
+                                                        <div class="review-rating-box bg-light p-2 rounded">
+                                                            <div class="star-group mb-1">
                                                                 <input type="hidden" class="rating-value-active"
                                                                     value="{{ $productReviews[$product->product_id]->rating ?? 0 }}">
                                                                 <button type="button" class="star-btn-active far fa-star"
                                                                     data-value="1"
-                                                                    style="background: none; border: none; font-size: 15px; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                                    style="background: none; border: none; font-size: 13px; color: #ffc107; cursor: default; pointer-events: none; padding: 0;"></button>
                                                                 <button type="button" class="star-btn-active far fa-star"
                                                                     data-value="2"
-                                                                    style="background: none; border: none; font-size: 15px; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                                    style="background: none; border: none; font-size: 13px; color: #ffc107; cursor: default; pointer-events: none; padding: 0;"></button>
                                                                 <button type="button" class="star-btn-active far fa-star"
                                                                     data-value="3"
-                                                                    style="background: none; border: none; font-size: 15px; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                                    style="background: none; border: none; font-size: 13px; color: #ffc107; cursor: default; pointer-events: none; padding: 0;"></button>
                                                                 <button type="button" class="star-btn-active far fa-star"
                                                                     data-value="4"
-                                                                    style="background: none; border: none; font-size: 15px; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                                    style="background: none; border: none; font-size: 13px; color: #ffc107; cursor: default; pointer-events: none; padding: 0;"></button>
                                                                 <button type="button" class="star-btn-active far fa-star"
                                                                     data-value="5"
-                                                                    style="background: none; border: none; font-size: 15px; color: #ffc107; cursor: default; pointer-events: none;"></button>
+                                                                    style="background: none; border: none; font-size: 13px; color: #ffc107; cursor: default; pointer-events: none; padding: 0;"></button>
                                                             </div>
-                                                            <span class="text-muted">{{ $productReviews[$product->product_id]->review_text }}</span>
+                                                            <span class="text-muted small d-block" style="line-height: 1.4;">{{ $productReviews[$product->product_id]->review_text }}</span>
                                                         </div>
                                                     @else
-                                                        <span class="text-muted">No review submitted yet</span>
+                                                        <span class="text-muted small"><i class="fas fa-info-circle me-1"></i>No review submitted yet</span>
                                                     @endif
                                                 </div>
                                             </td>
-                                            <td class="text-right">{{ $product->order->created_at->format('d-M-Y') }}</td>
+                                            <td class="text-center text-muted">{{ $product->order->created_at->format('d-M-Y') }}</td>
                                             <td class="text-center">
-                                                <span
-                                                    class="badge rounded-pill px-3 py-2 text-white bg-{{ $product?->order?->order_status?->color() }}">
+                                                <span class="badge rounded-pill dash-badge badge-soft-{{ $product?->order?->order_status?->color() === 'success' ? 'success' : ($product?->order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2">
                                                     {{ ucfirst($product?->order?->order_status?->value) }}
                                                 </span>
                                             </td>
                                             <td class="text-center">
                                                 @if ($product->order->order_status->value === \App\Enums\OrderStatusEnums::DELIVERED->value)
                                                     @if (isset($productReviews[$product->product_id]))
-                                                        <span class="text-success">Submitted</span>
-                                                    @else<button class="btn btn-transparent editBtn"
+                                                        <span class="badge badge-soft-success rounded-pill px-2 py-1"><i class="fas fa-check me-1"></i>Submitted</span>
+                                                    @else
+                                                        <button class="btn btn-primary theme-shadow transition-all hover-up editBtn px-3 py-1"
+                                                            style="border-radius: 8px; font-weight: 500;"
                                                             data-product_id="{{ $product->product_id }}"
-                                                            data-name="{{ $product->product?->name }}" data-toggle="modal"
-                                                            data-target="#editTagModal">
-                                                            <i class="fas fa-comment-dots"></i>
+                                                            data-name="{{ $product->product?->name }}" data-bs-toggle="modal"
+                                                            data-bs-target="#editTagModal">
+                                                            <i class="fas fa-star me-1"></i> Review
                                                         </button>
                                                     @endif
                                                 @else
-                                                    <span class="text-muted">Not Available</span>
+                                                    <span class="text-muted small">Not Available</span>
                                                 @endif
                                             </td>
                                         </tr>
@@ -120,12 +114,12 @@
                     @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="editTagModalLabel">Product Review</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group mb-3">
+                        <div class="mb-3 mb-3">
                             <input type="hidden" name="product_id" id="product_id" value="">
                             <label for="rating_value" class="form-label">Your Rating</label>
                             <div class="rating-container">
@@ -160,7 +154,7 @@
                             <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
                             <span>Save</span>
                         </button>
-                        <button type="button" class="btn btn-danger btn-icon-text" data-dismiss="modal">
+                        <button type="button" class="btn btn-danger btn-icon-text" data-bs-dismiss="modal">
                             <i class="mdi mdi-close btn-icon-prepend me-2"></i>
                             <span>Close</span>
                         </button>
@@ -177,7 +171,7 @@
         }
     </style>
 @endpush
-@push('script')
+@push('scripts')
     <script>
         $(document).ready(function() {
 
@@ -187,7 +181,7 @@
 
                 $('#reviewForm').find('input[name=product_id]').val(id);
 
-                let url = "{{ route('user.addReview') }}";
+                let url = "{{ route('review.store') }}";
                 $('#reviewForm').attr('action', url);
             });
 
@@ -219,5 +213,7 @@
         });
     </script>
 @endpush
+
+
 
 

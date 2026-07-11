@@ -31,10 +31,14 @@ class OrderRepository
         $userName = $user->name;
         $userEmail = $user->email;
 
-        $shippingCost = ShippingCost::where('id', $request->shipping_charge)->first();
-        if (! $shippingCost) {
-            throw new \Exception('Invalid shipping method selected.');
+        // Calculate shipping cost directly from the state to prevent Inspect Element tampering
+        $state_id = $request->shipto == 1 ? $request->shipping_state_id : $request->billing_state_id;
+        $state = \App\Models\State::with('shippingCost')->find($state_id);
+
+        if (!$state || !$state->shippingCost) {
+            throw new \Exception('Invalid shipping state or shipping cost not configured for this state.');
         } else {
+            $shippingCost = $state->shippingCost;
             $shippingCostId = $shippingCost->id;
             $shippingLocation = $shippingCost->location;
             $shippingPrice = $shippingCost->price;
@@ -61,43 +65,89 @@ class OrderRepository
             $grandTotalPrice = $finalDiscountPrice + $shippingCost->price;
             $couponCode = $couponResult['couponCode'];
         } else {
+            $couponId = null;
             $couponCode = null;
             $couponDiscount = 0;
             $grandTotalPrice = $subTotalPrice + $shippingPrice;
         }
 
-        $orderNumber = '#ORD-'.date('Y').date('m').date('d').rand(1000, 9999);
-        if (Order::where('order_number', $orderNumber)->exists()) {
+        return DB::transaction(function () use ($user, $request, $userName, $userEmail, $shippingCostId, $shippingLocation, $shippingPrice, $cartItems, $subTotalPrice, $couponId, $couponCode, $couponDiscount, $grandTotalPrice) {
             $orderNumber = '#ORD-'.date('Y').date('m').date('d').rand(1000, 9999);
-        }
+            if (Order::where('order_number', $orderNumber)->exists()) {
+                $orderNumber = '#ORD-'.date('Y').date('m').date('d').rand(1000, 9999);
+            }
 
-        $order = Order::create([
-            'order_number' => $orderNumber,
-            'user_id' => $user->id,
-            'user_name' => $userName,
-            'user_email' => $userEmail,
-            'sub_total' => $subTotalPrice,
-            'coupon_id' => $couponId ?? null,
-            'coupon_code' => $couponCode,
-            'coupon_discount' => $couponDiscount,
-            'shipping_cost_id' => $shippingCostId,
-            'shipping_location' => $shippingLocation,
-            'shipping_charge' => $shippingPrice,
-            'grand_total' => $grandTotalPrice,
-            'payment_method' => $request->payment,
-            'payment_status' => PaymentStatusEnums::UNPAID->value,
-            'order_status' => OrderStatusEnums::PENDING->value,
-            'transaction_id' => $request->transaction_id ?? null,
-            'note' => $request->note ?? null,
-        ]);
+            $order = Order::create([
+                'order_number' => $orderNumber,
+                'user_id' => $user->id,
+                'user_name' => $userName,
+                'user_email' => $userEmail,
+                'sub_total' => $subTotalPrice,
+                'coupon_id' => $couponId ?? null,
+                'coupon_code' => $couponCode,
+                'coupon_discount' => $couponDiscount,
+                'shipping_cost_id' => $shippingCostId,
+                'shipping_location' => $shippingLocation,
+                'shipping_charge' => $shippingPrice,
+                'grand_total' => $grandTotalPrice,
+                'payment_method' => $request->payment,
+                'payment_status' => PaymentStatusEnums::UNPAID->value,
+                'order_status' => OrderStatusEnums::PENDING->value,
+                'transaction_id' => $request->transaction_id ?? null,
+                'note' => $request->note ?? null,
+                'payment_data' => $request->payment === 'manual' && $request->sender_number 
+                                    ? json_encode(['sender_number' => $request->sender_number]) 
+                                    : null,
+            ]);
 
-        BillingRepository::storeByRequest($request, $order);
+            BillingRepository::storeByRequest($request, $order);
+            ShippingRepository::storeByRequest($request, $order);
+            OrderProductRepository::storeByRequest($request, $user, $order, $cartItems);
 
-        ShippingRepository::storeByRequest($request, $order);
+            // Process Stock Deduction Immediately
+            foreach ($order->orderProducts as $item) {
+                $inventory = ProductInventory::where('product_id', $item->product_id)
+                    ->when($item->size_name, fn($q) => $q->whereHas('size', fn($sq) => $sq->where('name', $item->size_name)))
+                    ->when($item->color_name, fn($q) => $q->whereHas('color', fn($cq) => $cq->where('name', $item->color_name)))
+                    ->lockForUpdate()
+                    ->first();
 
-        OrderProductRepository::storeByRequest($request, $user, $order, $cartItems);
+                if ($inventory) {
+                    if ($inventory->stock < $item->quantity) {
+                        throw new \Exception("Not enough stock for {$item->product_name}");
+                    }
+                    $inventory->decrement('stock', $item->quantity);
+                }
+                
+                $product = Product::where('id', $item->product_id)->lockForUpdate()->first();
+                if ($product && $product->stock < $item->quantity) {
+                    throw new \Exception("Not enough stock for {$item->product_name}");
+                }
+                if ($product) {
+                    $product->decrement('stock', $item->quantity);
+                }
+            }
 
-        return $order;
+            // Clear Cart for this order's products
+            Cart::where('user_id', $order->user_id)
+                ->whereIn('product_id', $order->orderProducts->pluck('product_id'))
+                ->delete();
+
+            // Record Coupon Usage
+            if ($order->coupon_code) {
+                $coupon = Coupon::where('code', $order->coupon_code)->first();
+                if ($coupon) {
+                    $coupon->increment('used_count');
+                    \App\Models\CouponUsage::create([
+                        'coupon_id' => $coupon->id,
+                        'user_id' => $order->user_id,
+                        'order_id' => $order->id,
+                    ]);
+                }
+            }
+
+            return $order;
+        });
     }
 
     public function finalizeOrder($order, $transactionId, $paymentData)
@@ -108,7 +158,7 @@ class OrderRepository
             // Row-level lock to prevent race conditions during Webhook/Success callback concurrency
             $order = Order::where('id', $order->id)->lockForUpdate()->first();
 
-            if ($order->payment_status === PaymentStatusEnums::PAID->value) {
+            if ($order->payment_status === PaymentStatusEnums::PAID) {
                 return $order;
             }
 
@@ -120,29 +170,11 @@ class OrderRepository
                 'payment_data' => is_array($paymentData) ? json_encode($paymentData) : $paymentData,
             ]);
 
-            // 2. Process Stock Deduction
-            foreach ($order->orderProducts as $item) {
-                // Find specific inventory by matching size and color names
-                $inventory = ProductInventory::where('product_id', $item->product_id)
-                    ->when($item->size_name, fn($q) => $q->whereHas('size', fn($sq) => $sq->where('name', $item->size_name)))
-                    ->when($item->color_name, fn($q) => $q->whereHas('color', fn($cq) => $cq->where('name', $item->color_name)))
-                    ->first();
+            // 2. Process Stock Deduction (Moved to OrderByStore for immediate reservation)
 
-                if ($inventory) {
-                    $inventory->decrement('stock', $item->quantity);
-                }
-                Product::where('id', $item->product_id)->decrement('stock', $item->quantity);
-            }
+            // 3. Coupon usage (Moved to OrderByStore for immediate consumption)
 
-            // 3. Increment Coupon usage
-            if ($order->coupon_code) {
-                Coupon::where('code', $order->coupon_code)->increment('used_count');
-            }
-
-            // 4. Clear Cart for this order's products
-            Cart::where('user_id', $order->user_id)
-                ->whereIn('product_id', $order->orderProducts->pluck('product_id'))
-                ->delete();
+            // 4. Clear Cart (Moved to OrderByStore)
 
             $orderUpdated = true;
             return $order;
@@ -162,15 +194,56 @@ class OrderRepository
 
     public function failOrder($order)
     {
-        $orderId = Order::findOrFail($order->id);
-        // if($orderId){
-        //     $orderId->delete();
-        // }
         if ($order->order_status === OrderStatusEnums::PENDING) {
-            $order->update([
-                'order_status' => OrderStatusEnums::FAILED->value,
-                'payment_status' => PaymentStatusEnums::FAILED->value,
-            ]);
+            DB::beginTransaction();
+            try {
+                $order->update([
+                    'order_status' => OrderStatusEnums::CANCELLED->value,
+                    'payment_status' => PaymentStatusEnums::FAILED->value,
+                ]);
+
+                // Restore Stock & Cart
+                foreach ($order->orderProducts as $item) {
+                    $inventory = \App\Models\ProductInventory::where('product_id', $item->product_id)
+                        ->when($item->size_name, fn($q) => $q->whereHas('size', fn($sq) => $sq->where('name', $item->size_name)))
+                        ->when($item->color_name, fn($q) => $q->whereHas('color', fn($cq) => $cq->where('name', $item->color_name)))
+                        ->lockForUpdate()
+                        ->first();
+
+                    if ($inventory) {
+                        $inventory->increment('stock', $item->quantity);
+                    }
+                    
+                    $product = \App\Models\Product::where('id', $item->product_id)->lockForUpdate()->first();
+                    if ($product) {
+                        $product->increment('stock', $item->quantity);
+                    }
+
+                    // Restore Cart
+                    \App\Models\Cart::create([
+                        'user_id' => $order->user_id,
+                        'product_id' => $item->product_id,
+                        'product_inventory_id' => $inventory ? $inventory->id : null,
+                        'size_id' => $inventory ? $inventory->size_id : null,
+                        'color_id' => $inventory ? $inventory->color_id : null,
+                        'quantity' => $item->quantity,
+                    ]);
+                }
+
+                // Restore Coupon Usage
+                if ($order->coupon_code) {
+                    $coupon = \App\Models\Coupon::where('code', $order->coupon_code)->lockForUpdate()->first();
+                    if ($coupon) {
+                        $coupon->decrement('used_count');
+                        \App\Models\CouponUsage::where('order_id', $order->id)->delete();
+                    }
+                }
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                \Illuminate\Support\Facades\Log::error("Failed to restore failed order #{$order->order_number}: " . $e->getMessage());
+            }
         }
     }
 
@@ -260,6 +333,7 @@ class OrderRepository
                     'order_number' => $order->order_number,
                 ],
                 'mode' => 'payment',
+                'expires_at' => time() + (30 * 60), // Forces 30 min expiration
                 'success_url' => route('stripe.success').'?order_number='.urlencode($order->order_number),
                 'cancel_url' => route('stripe.cancel').'?order_number='.urlencode($order->order_number),
             ]);

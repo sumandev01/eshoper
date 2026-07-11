@@ -8,7 +8,7 @@
                     <div class="page-title-box d-flex align-items-center justify-content-between">
                         <h4 class="mb-0">All Sliders</h4>
                         @can(\App\Enums\Permission\SliderPermission::CREATE->value)
-                            <a href="{{ route('slider.add') }}" class="btn btn-primary">
+                            <a href="{{ route('admin.slider.add') }}" class="btn btn-primary">
                                 <i class="mdi mdi-plus btn-icon-prepend me-1"></i>
                                 Add New Slider
                             </a>
@@ -47,12 +47,12 @@
                                     </td>
                                     <td class="text-end">
                                         @can(\App\Enums\Permission\SliderPermission::UPDATE->value)
-                                            <a href="{{ route('slider.edit', $slider?->id) }}" class="btn btn-info btn-sm">
+                                            <a href="{{ route('admin.slider.edit', $slider?->id) }}" class="btn btn-info btn-sm">
                                                 <i class="mdi mdi-square-edit-outline"></i>
                                             </a>
                                         @endcan
                                         @can(\App\Enums\Permission\SliderPermission::DELETE->value)
-                                            <a href="{{ route('slider.destroy', $slider?->id) }}"
+                                            <a href="{{ route('admin.slider.destroy', $slider?->id) }}"
                                                 class="btn btn-danger btn-sm deleteBtn">
                                                 <i class="mdi mdi-delete"></i>
                                             </a>
@@ -102,7 +102,7 @@
                 });
                 // Send the new order to the server via AJAX
                 $.ajax({
-                    url: '{{ route('slider.reorder') }}',
+                    url: '{{ route('admin.slider.reorder') }}',
                     method: 'POST',
                     data: {
                         order: order,

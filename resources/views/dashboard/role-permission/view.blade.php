@@ -12,31 +12,59 @@
                         </button>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-3">
+                        <div class="row mb-4">
                             <div class="col-md-3">
-                                <h5 class="mb-3">Role Name </h5>
+                                <h5>Role Name :</h5>
                             </div>
-                            <div class="col-auto">
-                                :
-                            </div>
-                            <div class="col-md-7">
-                                <p>{{ $role->name }}</p>
+                            <div class="col-md-9">
+                                <h5 class="mb-0 text-primary">{{ $role->name }}</h5>
                             </div>
                         </div>
+                        <hr class="mb-4">
+                        <h4 class="mb-4">Permissions</h4>
+                        
+                        <div class="row mb-3">
+                            @foreach ($adminAccess as $group => $permissions)
+                                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                                    <h4>{{ $group }}</h4>
+                                    <div class="ms-4">
+                                        @foreach ($permissions as $permission)
+                                            <div class="d-flex align-items-center mb-2">
+                                                @if($role->hasPermissionTo($permission))
+                                                    <i class="mdi mdi-check-circle text-primary me-2 fs-5"></i>
+                                                @else
+                                                    <i class="mdi mdi-close-circle text-muted me-2 fs-5 opacity-50"></i>
+                                                @endif
+                                                <span class="{{ $role->hasPermissionTo($permission) ? 'fw-bold text-dark' : 'text-muted opacity-75' }}">
+                                                    {{ $permission->name }}
+                                                </span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
                         <div class="row">
-                            <div class="col-md-3">
-                                <h5 class="mb-3">Permissions </h5>
-                            </div>
-                            <div class="col-auto">
-                                :
-                            </div>
-                            <div class="col-md-7">
-                                <p>
-                                    @foreach ($role?->permissions as $permission)
-                                        <span class="badge bg-info text-white mb-1">{{ $permission?->name }}</span>
-                                    @endforeach
-                                </p>
-                            </div>
+                            @foreach ($groups as $group => $permissions)
+                                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
+                                    <h4>{{ $group }}</h4>
+                                    <div class="ms-4">
+                                        @foreach ($permissions as $permission)
+                                            <div class="d-flex align-items-center mb-2">
+                                                @if($role->hasPermissionTo($permission))
+                                                    <i class="mdi mdi-check-circle text-primary me-2 fs-5"></i>
+                                                @else
+                                                    <i class="mdi mdi-close-circle text-muted me-2 fs-5 opacity-50"></i>
+                                                @endif
+                                                <span class="{{ $role->hasPermissionTo($permission) ? 'fw-bold text-dark' : 'text-muted opacity-75' }}">
+                                                    {{ $permission->name }}
+                                                </span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>

@@ -28,7 +28,7 @@ class SubCategoryController extends Controller
     {
         $subCategory = $this->SubCategoryRepo->storeByRequest($request);
         if ($subCategory) {
-            return redirect()->route('sub-category.index')->with('success', 'SubCategory created successfully');
+            return redirect()->route('admin.sub-category.index')->with('success', 'Sub-Category created successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to create SubCategory');
         }
@@ -44,7 +44,7 @@ class SubCategoryController extends Controller
     {
         $subCategory = $this->SubCategoryRepo->updateByRequest($request, $subCategory);
         if ($subCategory) {
-            return redirect()->route('sub-category.index')->with('success', 'SubCategory updated successfully');
+            return redirect()->route('admin.sub-category.index')->with('success', 'Sub Category updated successfully');
         } else {
             return redirect()->back()->with('error', 'Failed to update SubCategory');
         }
@@ -53,7 +53,7 @@ class SubCategoryController extends Controller
     public function destroy(SubCategory $subCategory)
     {
         $subCategory->delete();
-        return redirect()->route('sub-category.index')->with('success', 'SubCategory deleted successfully');
+        return redirect()->route('admin.sub-category.index')->with('success', 'Sub Category deleted successfully');
     }
 
     public function subCategoryApi()

@@ -13,7 +13,7 @@
                         </button>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('order.update', $order->id) }}" method="POST">
+                        <form action="{{ route('admin.order.update', $order->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="row mb-3">
@@ -44,7 +44,7 @@
                                     :
                                 </div>
                                 <div class="col-md-7">
-                                    <x-select id="type" class="text-capitalize" name="order_status"
+                                    <x-select id="order_status_select" class="text-capitalize" name="order_status"
                                         :required='true'>
                                         <option disabled>Select Type</option>
                                         @foreach ($orderStatusEnums ?? [] as $orderStatus)
@@ -56,6 +56,37 @@
                                     </x-select>
                                 </div>
                             </div>
+
+                            <div id="courier_section" style="display: none;">
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <h5 class="mb-3">Select Courier <span class="text-danger">*</span></h5>
+                                    </div>
+                                    <div class="col-auto">:</div>
+                                    <div class="col-md-7">
+                                        <x-select id="courier_id" class="text-capitalize" name="courier_id">
+                                            <option disabled selected>Select a Courier</option>
+                                            @foreach ($couriers ?? [] as $courier)
+                                                <option class="text-capitalize" value="{{ $courier->id }}"
+                                                    {{ $order->courier_id == $courier->id ? 'selected' : '' }}>
+                                                    {{ $courier->name }}
+                                                </option>
+                                            @endforeach
+                                        </x-select>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-3">
+                                        <h5 class="mb-3">Tracking Number</h5>
+                                    </div>
+                                    <div class="col-auto">:</div>
+                                    <div class="col-md-7">
+                                        <input type="text" name="courier_tracking_id" class="form-control" placeholder="Enter tracking number" value="{{ old('courier_tracking_id', $order->courier_tracking_id) }}">
+                                    </div>
+                                </div>
+                            </div>
+
                             <button type="submit" class="btn btn-primary px-4 py-3">Update</button>
                         </form>
                     </div>
@@ -64,4 +95,25 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const orderStatusSelect = document.getElementById('order_status_select');
+        const courierSection = document.getElementById('courier_section');
+
+        function toggleCourierSection() {
+            const status = orderStatusSelect.value.toLowerCase();
+            if (status === 'shipped' || status === 'delivered') {
+                courierSection.style.display = 'block';
+            } else {
+                courierSection.style.display = 'none';
+            }
+        }
+
+        orderStatusSelect.addEventListener('change', toggleCourierSection);
+        toggleCourierSection(); // Run on page load
+    });
+</script>
+@endpush
 

@@ -37,7 +37,6 @@ class ProductRepository
                 'price' => $request->sale_price,
                 'buy_price' => $request->buy_price ?? 0,
                 'discount' => $request->discount ?? 0,
-                'tax' => $request->tax ?? 0,
                 'stock' => $request->quantity,
                 'rating' => $request->rating ?? 0,
                 'views' => $request->views ?? 0,
@@ -54,6 +53,7 @@ class ProductRepository
                 'description' => clean_html($request->description),
                 'information' => clean_html($request->specifications),
                 'meta_title' => $request->meta_title,
+                'meta_keyword' => $request->meta_keyword,
                 'meta_description' => $request->meta_description,
             ]);
 
@@ -79,7 +79,6 @@ class ProductRepository
                 'price' => $request->sale_price,
                 'buy_price' => $request->buy_price ?? 0,
                 'discount' => $request->discount ?? 0,
-                'tax' => $request->tax ?? 0,
                 'stock' => $request->quantity,
                 'rating' => $request->rating ?? 0,
                 'views' => $request->views ?? 0,
@@ -97,6 +96,7 @@ class ProductRepository
                     'description' => clean_html($request->description),
                     'information' => clean_html($request->specifications),
                     'meta_title' => $request->meta_title,
+                    'meta_keyword' => $request->meta_keyword,
                     'meta_description' => $request->meta_description,
                 ]);
             } else {
@@ -109,6 +109,7 @@ class ProductRepository
                     'description' => clean_html($request->description),
                     'information' => clean_html($request->specifications),
                     'meta_title' => $request->meta_title,
+                    'meta_keyword' => $request->meta_keyword,
                     'meta_description' => $request->meta_description,
                 ]);
             }

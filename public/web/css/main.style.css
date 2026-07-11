@@ -1,0 +1,236 @@
+/********** Custom CSS ************/
+.font-weight-medium {
+  font-weight: 500;
+}
+
+.font-weight-semi-bold {
+  font-weight: 600;
+}
+
+[class^=flaticon-]:before,
+[class*=" flaticon-"]:before,
+[class^=flaticon-]:after,
+[class*=" flaticon-"]:after {
+  font-size: inherit;
+  margin-left: 0;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  padding: 20px 10px;
+  color: var(--dark);
+  outline: none;
+}
+
+.navbar-light .navbar-nav .nav-link:hover,
+.navbar-light .navbar-nav .nav-link.active {
+  color: var(--primary);
+}
+
+@media (max-width: 991.98px) {
+  .navbar-light .navbar-nav .nav-link {
+    padding: 5px 0px;
+  }
+}
+
+.navbar-vertical.navbar-light .navbar-nav .nav-link {
+  padding: 8px 30px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#header-carousel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.carousel-caption {
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.section-title {
+  position: relative;
+  display: inline-block;
+  letter-spacing: 1px;
+  font-weight: bold;
+  color: var(--dark);
+}
+
+.section-title span {
+  position: relative;
+  background: #ffffff;
+  z-index: 1;
+}
+
+.section-title::before {
+  position: absolute;
+  content: "";
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--dark);
+}
+
+.offer img {
+  position: absolute;
+  max-width: 50%;
+  max-height: 100%;
+  bottom: 0;
+}
+
+.offer .text-md-end img {
+  left: 0;
+}
+
+.offer .text-md-start img {
+  right: 0;
+}
+
+.cat-item .cat-img img,
+.product-item .product-img img {
+  transition: .5s !important;
+}
+
+.cat-item:hover .cat-img img,
+.product-item:hover .product-img img {
+  transform: scale(1.2);
+}
+
+.product-item .btn:hover {
+  color: var(--primary);
+}
+
+.contact-form .help-block ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.back-to-top {
+  position: fixed;
+  display: none;
+  right: 30px;
+  bottom: 30px;
+  z-index: 11;
+  animation: action 1s infinite alternate;
+}
+
+@keyframes action {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-15px);
+  }
+}
+
+/* Responsive adjustments for product card footer */
+@media (max-width: 1024px) {
+  .product-item .card-footer {
+    padding: 0.5rem 0.5rem !important;
+  }
+  .product-item .card-footer .btn {
+    font-size: 13px !important;
+  }
+}
+
+/* Sidebar Menu Custom Hover Effects */
+.col-lg-3:hover .categories-main-btn .text-dark,
+.categories-main-btn:hover .text-dark {
+    color: #fff !important;
+}
+
+.custom-sidebar-nav .custom-nav-link:hover,
+.custom-sidebar-nav .nav-item.dropdown:hover > .custom-nav-link {
+    background-color: var(--btn-bg) !important;
+    color: var(--btn-text) !important;
+}
+
+.custom-sidebar-nav .dropdown-menu .custom-sub-link {
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+}
+
+.custom-sidebar-nav .dropdown-menu .custom-sub-link:hover {
+    background-color: transparent !important;
+    color: var(--primary) !important;
+}
+
+/* =========================================================
+   GLOBAL DYNAMIC HOVER STYLES (Added as part of color plan)
+   ========================================================= */
+
+/* Menus and Links */
+.navbar-nav .nav-link:hover, 
+.navbar-nav .dropdown-item:hover, 
+a.text-dark:hover, 
+.dash-sidebar a:hover {
+    color: var(--primary) !important;
+    text-decoration: none !important;
+    transition: 0.3s;
+}
+
+/* Slider Navigation Arrows */
+.carousel-control-prev .btn:hover, 
+.carousel-control-next .btn:hover {
+    background-color: var(--primary) !important;
+    opacity: 1 !important;
+    transition: 0.3s;
+}
+
+/* Global Product & Blog Titles */
+.product-item h6:hover,
+.product-item h6 a:hover,
+.blog-card h5:hover,
+.blog-card h5 a:hover,
+h5.text-truncate:hover,
+h5.text-truncate a:hover,
+a.text-decoration-none h5:hover,
+h5 a.text-dark:hover {
+    color: var(--primary) !important;
+    text-decoration: none !important;
+    transition: color 0.3s;
+}
+
+/* Offer Buttons ("Shop Now") */
+.btn-outline-primary:hover {
+    background-color: var(--primary) !important;
+    border-color: var(--border-color) !important;
+    color: #fff !important;
+    transition: 0.3s;
+}
+
+/* Dashboard Specifics */
+.dash-table.table-hover tbody tr:hover {
+    background-color: var(--primary-soft) !important;
+}
+.dash-table .btn-light:hover {
+    background-color: var(--primary) !important;
+    color: #fff !important;
+    transition: 0.3s;
+}
+.dash-table .btn-light:hover i {
+    color: #fff !important;
+}
+
+/* Bootstrap 5 specific fixes */
+a { text-decoration: none; }
+.navbar-expand-lg.navbar-light { width: 100%; }
+.dropdown-menu-end { right: 0; left: auto; }
+
+
+/* Seamless Input Group & Square Inputs */
+.form-control, .input-group-text { border-radius: 0 !important; }
+.input-group .form-control { border-right: none; }
+.input-group .input-group-text { border-left: none; background: transparent; }
+.input-group .form-control:focus { box-shadow: none; border-color: var(--border-color); }
+.input-group .form-control:focus + .input-group-text { border-color: var(--border-color); }
+
+

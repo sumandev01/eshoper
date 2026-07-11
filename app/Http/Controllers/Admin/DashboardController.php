@@ -40,6 +40,13 @@ class DashboardController extends Controller
 
         // out of stock products
         $outOfStockProducts = $this->productRepo->getOutOfStockProducts();
+        
+        // top selling products
+        $topSellingProducts = $this->orderRepo->getTopSellingProducts(5);
+        
+        // order status stats for pie chart
+        $orderStatusStats = $this->orderRepo->getOrderStatusStats();
+        
         // recent orders
         $orders             = $this->orderRepo->getRecentOrders(5);
 
@@ -54,6 +61,8 @@ class DashboardController extends Controller
                 'thisWeekOrdersCount',
                 'pendingOrders',
                 'outOfStockProducts',
+                'topSellingProducts',
+                'orderStatusStats',
                 'orders'
             ),
             $chartData

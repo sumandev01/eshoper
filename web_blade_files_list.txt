@@ -1,0 +1,64 @@
+views/web/
+│
+├── index.blade.php                 (Main website homepage)
+│
+├── blog/                           (Blog related files)
+│   ├── index.blade.php             (All blogs list page)
+│   ├── show.blade.php              (Single blog details page)
+│   └── sidebar.blade.php           (Blog sidebar widget)
+│
+├── components/                     (Reusable UI components)
+│   ├── breadcrumb.blade.php        (Page breadcrumb navigation)
+│   ├── category_product_list.blade.php (Products by category component)
+│   ├── product_card.blade.php      (Single product card layout)
+│   ├── product_list.blade.php      (Product listing layout)
+│   └── slider.blade.php            (Homepage hero slider)
+│
+├── dashboard/                      (Customer account dashboard)
+│   ├── address.blade.php           (Customer billing & shipping address)
+│   ├── index.blade.php             (Dashboard overview/home)
+│   ├── order-details.blade.php     (Specific order details)
+│   ├── order-products.blade.php    (Products inside a specific order)
+│   ├── orders.blade.php            (List of all customer orders)
+│   ├── product-reviews.blade.php   (Reviews section)
+│   ├── profile.blade.php           (Customer profile settings)
+│   ├── reviews.blade.php           (List of reviews submitted by customer)
+│   └── sidebar.blade.php           (Dashboard navigation sidebar)
+│
+├── layouts/                        (Master layouts)
+│   ├── app.blade.php               (Main application master file)
+│   │
+│   └── partials/                   (Layout partials/includes)
+│       ├── category_menu.blade.php (Dropdown category menu)
+│       ├── footer.blade.php        (Website footer section)
+│       ├── header.blade.php        (Website header/navbar)
+│       └── login_modal.blade.php   (Authentication popup modal)
+│
+├── pages/                          (Static pages)
+│   ├── about.blade.php             (About us page)
+│   ├── contact.blade.php           (Contact us page)
+│   ├── faq.blade.php               (Frequently asked questions)
+│   └── page.blade.php              (Dynamic custom pages)
+│
+├── payment/                        (Payment gateways)
+│   ├── processing.blade.php        (Payment processing screen)
+│   └── success.blade.php           (Payment success confirmation)
+│
+├── shop/                           (E-commerce shop pages)
+│   ├── brand-products.blade.php    (Products filtered by brand)
+│   ├── cart.blade.php              (Shopping cart page)
+│   ├── category-products.blade.php (Products filtered by category)
+│   ├── checkout.blade.php          (Checkout and order placement)
+│   ├── shop.blade.php              (Main shop/store page)
+│   ├── single-product.blade.php    (Single product details page)
+│   ├── subcategory-products.blade.php (Products filtered by subcategory)
+│   ├── wishlist.blade.php          (Customer wishlist page)
+│   │
+│   └── partials/                   (Shop specific partials)
+│       ├── filter_scripts.blade.php (JavaScript for product filtering)
+│       ├── filter_sidebar.blade.php (Left sidebar for filters)
+│       └── shop_toolbar.blade.php  (Top sorting and view toolbar)
+│
+└── tracking/                       (Order tracking module)
+    ├── order-tracking.blade.php    (Order tracking search form)
+    └── order-tracking-result.blade.php (Tracking result details)

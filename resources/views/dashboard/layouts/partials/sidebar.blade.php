@@ -70,38 +70,38 @@
                     <ul class="nav flex-column sub-menu">
                         @can(App\Enums\Permission\CategoryPermission::VIEW->value)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('category.index') ? 'active' : '' }}"
-                                    href="{{ route('category.index') }}">Categories</a>
+                                <a class="nav-link {{ request()->routeIs('admin.category.index') ? 'active' : '' }}"
+                                    href="{{ route('admin.category.index') }}">Categories</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\SubCategoryPermission::VIEW->value)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('sub-category.index') ? 'active' : '' }}"
-                                    href="{{ route('sub-category.index') }}">Sub Categories</a>
+                                <a class="nav-link {{ request()->routeIs('admin.sub-category.index') ? 'active' : '' }}"
+                                    href="{{ route('admin.sub-category.index') }}">Sub Categories</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\BrandPermission::VIEW->value)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('brand.index') ? 'active' : '' }}"
-                                    href="{{ route('brand.index') }}">Brands</a>
+                                <a class="nav-link {{ request()->routeIs('admin.brand.index') ? 'active' : '' }}"
+                                    href="{{ route('admin.brand.index') }}">Brands</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\SizePermission::VIEW->value)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('size.index') ? 'active' : '' }}"
-                                    href="{{ route('size.index') }}">Sizes</a>
+                                <a class="nav-link {{ request()->routeIs('admin.size.index') ? 'active' : '' }}"
+                                    href="{{ route('admin.size.index') }}">Sizes</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\ColorPermission::VIEW->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('color.index') ? 'active' : '' }}"
-                                    href="{{ route('color.index') }}">Colors</a>
+                                    href="{{ route('admin.color.index') }}">Colors</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\TagPermission::VIEW->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('tag.index') ? 'active' : '' }}"
-                                    href="{{ route('tag.index') }}">Tags</a>
+                                    href="{{ route('admin.tag.index') }}">Tags</a>
                             </li>
                         @endcan
                     </ul>
@@ -121,13 +121,13 @@
                         @can(App\Enums\Permission\ProductPermission::VIEW->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('product.index') ? 'active' : '' }}"
-                                    href="{{ route('product.index') }}">All Products</a>
+                                    href="{{ route('admin.product.index') }}">All Products</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\ProductPermission::CREATE->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('product.add') ? 'active' : '' }}"
-                                    href="{{ route('product.add') }}">Add Product</a>
+                                    href="{{ route('admin.product.add') }}">Add Product</a>
                             </li>
                         @endcan
                     </ul>
@@ -136,7 +136,7 @@
         @endcan
         <li class="nav-item {{ request()->routeIs('admin.settings.offers') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.settings.offers') }}">
-                <span class="menu-title">Offers</span>
+                <span class="menu-title">Banner Offers</span>
                 <i class="mdi mdi-gift menu-icon"></i>
             </a>
         </li>
@@ -153,9 +153,31 @@
                         @can(App\Enums\Permission\OrderPermission::VIEW->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('order.index') ? 'active' : '' }}"
-                                    href="{{ route('order.index') }}">All Orders</a>
+                                    href="{{ route('admin.order.index') }}">All Orders</a>
                             </li>
                         @endcan
+                    </ul>
+                </div>
+            </li>
+        @endcan
+        @can(App\Enums\Permission\OrderPermission::VIEW->value)
+            <li class="nav-item {{ request()->routeIs('couriers*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#courier"
+                    aria-expanded="{{ request()->routeIs('couriers*') ? 'true' : 'false' }}" aria-controls="courier">
+                    <span class="menu-title">Couriers</span>
+                    <i class="menu-arrow"></i>
+                    <i class="mdi mdi-truck-delivery menu-icon"></i>
+                </a>
+                <div class="collapse {{ request()->routeIs('couriers*') ? 'show' : '' }}" id="courier">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('couriers.index') ? 'active' : '' }}"
+                                href="{{ route('admin.couriers.index') }}">All Couriers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('couriers.create') ? 'active' : '' }}"
+                                href="{{ route('admin.couriers.create') }}">Add Courier</a>
+                        </li>
                     </ul>
                 </div>
             </li>
@@ -173,13 +195,13 @@
                         @can(App\Enums\Permission\CouponPermission::VIEW->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('coupon.index') ? 'active' : '' }}"
-                                    href="{{ route('coupon.index') }}">All Coupons</a>
+                                    href="{{ route('admin.coupon.index') }}">All Coupons</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\CouponPermission::CREATE->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('coupon.add') ? 'active' : '' }}"
-                                    href="{{ route('coupon.add') }}">Add Coupon</a>
+                                    href="{{ route('admin.coupon.add') }}">Add Coupon</a>
                             </li>
                         @endcan
                     </ul>
@@ -199,13 +221,13 @@
                         @can(App\Enums\Permission\SliderPermission::VIEW->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('slider.index') ? 'active' : '' }}"
-                                    href="{{ route('slider.index') }}">All Sliders</a>
+                                    href="{{ route('admin.slider.index') }}">All Sliders</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\SliderPermission::CREATE->value)
                             <li class="nav-item">
                                 <a class="nav-link {{ request()->routeIs('slider.add') ? 'active' : '' }}"
-                                    href="{{ route('slider.add') }}">Add Slider</a>
+                                    href="{{ route('admin.slider.add') }}">Add Slider</a>
                             </li>
                         @endcan
                     </ul>
@@ -214,25 +236,25 @@
         @endcan
         @php
             use App\Models\ProductReview;
-            $countComments = ProductReview::where('status', 0)->count();
+            $countReviews = ProductReview::where('status', 0)->count();
         @endphp
         @can(App\Enums\Permission\CommentPermission::VIEW->value)
-            <li class="nav-item {{ request()->routeIs('admin.comment*') ? 'active' : '' }}">
-                <a class="nav-link" data-bs-toggle="collapse" href="#comments"
-                    aria-expanded="{{ request()->routeIs('admin.comment*') ? 'true' : 'false' }}"
-                    aria-controls="comments">
-                    <span class="menu-title">Comments</span>
-                    @if ($countComments > 0)
-                        <span class="badge badge-warning badge-pill me-2">{{ $countComments }}</span>
+            <li class="nav-item {{ request()->routeIs('admin.product-review*') ? 'active' : '' }}">
+                <a class="nav-link" data-bs-toggle="collapse" href="#product-reviews"
+                    aria-expanded="{{ request()->routeIs('admin.product-review*') ? 'true' : 'false' }}"
+                    aria-controls="product-reviews">
+                    <span class="menu-title">Product Reviews</span>
+                    @if ($countReviews > 0)
+                        <span class="badge badge-warning badge-pill me-2">{{ $countReviews }}</span>
                     @endif
                     <i class="menu-arrow"></i>
-                    <i class="mdi mdi-comment menu-icon"></i>
+                    <i class="mdi mdi-comment-account-outline menu-icon"></i>
                 </a>
-                <div class="collapse {{ request()->routeIs('admin.comment*') ? 'show' : '' }}" id="comments">
+                <div class="collapse {{ request()->routeIs('admin.product-review*') ? 'show' : '' }}" id="product-reviews">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('admin.comment.index') ? 'active' : '' }}"
-                                href="{{ route('admin.comment.index') }}">All Comments</a>
+                            <a class="nav-link {{ request()->routeIs('admin.product-review.index') ? 'active' : '' }}"
+                                href="{{ route('admin.product-review.index') }}">All Reviews</a>
                         </li>
                     </ul>
                 </div>
@@ -246,11 +268,24 @@
             </a>
         </li>
 
-        <li class="nav-item {{ request()->routeIs('admin.payment-methods*') ? 'active' : '' }}">
-            <a class="nav-link" href="{{ route('admin.payment-methods.index') }}">
-                <span class="menu-title">Payment Methods</span>
+        <li class="nav-item {{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#payments" aria-expanded="{{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'true' : 'false' }}" aria-controls="payments">
+                <span class="menu-title">Payments</span>
+                <i class="menu-arrow"></i>
                 <i class="mdi mdi-credit-card menu-icon"></i>
             </a>
+            <div class="collapse {{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'show' : '' }}" id="payments">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.payment-methods.index') ? 'active' : '' }}" href="{{ route('admin.payment-methods.index') }}">Payment Methods List</a>
+                    </li>
+                    @can(\App\Enums\Permission\SettingPermission::SettingAccess->value)
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.settings.payment-gateways') ? 'active' : '' }}" href="{{ route('admin.settings.payment-gateways') }}">Payment Gateways Settings</a>
+                    </li>
+                    @endcan
+                </ul>
+            </div>
         </li>
 
         <li class="nav-item {{ request()->routeIs('admin.store-features*') ? 'active' : '' }}">
@@ -382,6 +417,15 @@
                 </div>
             </li>
         @endcan
+        @can(\App\Enums\Permission\LocationPermission::VIEW->value)
+            <li class="nav-item {{ request()->routeIs('admin.shipping_cost*') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.shipping_cost.index') }}">
+                    <span class="menu-title">Shipping Costs</span>
+                    <i class="mdi mdi-truck-delivery menu-icon"></i>
+                </a>
+            </li>
+        @endcan
+
         <li class="nav-item {{ request()->routeIs('admin.menus.*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('admin.menus.index') }}">
                 <span class="menu-title">Menu Builder</span>
@@ -394,6 +438,28 @@
                 <span class="menu-title">Pages</span>
                 <i class="mdi mdi-file-document-outline menu-icon"></i>
             </a>
+        </li>
+
+
+        <li class="nav-item {{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#blog" aria-expanded="{{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'true' : 'false' }}" aria-controls="blog">
+                <span class="menu-title">Blog System</span>
+                <i class="menu-arrow"></i>
+                <i class="mdi mdi-post-outline menu-icon"></i>
+            </a>
+            <div class="collapse {{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'show' : '' }}" id="blog">
+                <ul class="nav flex-column sub-menu">
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.blog_categories.*') ? 'active' : '' }}" href="{{ route('admin.blog_categories.index') }}">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}" href="{{ route('admin.blogs.index') }}">All Blogs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.blog-comments.*') ? 'active' : '' }}" href="{{ route('admin.blog-comments.index') }}">Blog Comments</a>
+                    </li>
+                </ul>
+            </div>
         </li>
 
         @can(\App\Enums\Permission\SettingPermission::SettingAccess->value)

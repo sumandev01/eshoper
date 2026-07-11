@@ -31,7 +31,7 @@ class TagController extends Controller
             'name' => $request->name
         ]);
         if ($tags) {
-            return redirect()->route('tag.index')->with('success', 'Tag created successfully');
+            return redirect()->route('admin.tag.index')->with('success', 'Tag created successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to create tag');
         }
@@ -59,7 +59,7 @@ class TagController extends Controller
             'name' => $request->name
         ]);
         if ($tag) {
-            return redirect()->route('tag.index')->with('success', 'Tag updated successfully');
+            return redirect()->route('admin.tag.index')->with('success', 'Tag updated successfully');
         }else {
             return json_encode(['error' => 'Failed to update tag']);
         }
@@ -68,6 +68,6 @@ class TagController extends Controller
     public function destroy(Tag $tag)
     {
         $tag->delete();
-        return redirect()->route('tag.index')->with('success', 'Tag deleted successfully');
+        return redirect()->route('admin.tag.index')->with('success', 'Tag deleted successfully');
     }
 }

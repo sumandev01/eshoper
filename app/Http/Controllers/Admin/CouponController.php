@@ -33,6 +33,7 @@ class CouponController extends Controller
             'amount' => 'required|numeric|min:0',
             'min_order_amount' => 'required|numeric|min:0',
             'usage_limit' => 'required|numeric|min:0',
+            'limit_per_user' => 'required|numeric|min:1',
             'start_date' => 'required|date|before_or_equal:expire_date|after_or_equal:today',
             'expire_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|numeric|in:0,1',
@@ -40,7 +41,7 @@ class CouponController extends Controller
         
         $coupon = $this->CouponRepo->StoreByRequest($request);
 
-        return redirect()->route('coupon.index')->with('success', 'Coupon created successfully');
+        return redirect()->route('admin.coupon.index')->with('success', 'Coupon created successfully');
     }
 
     public function edit($coupon){
@@ -54,18 +55,19 @@ class CouponController extends Controller
             'amount' => 'required|numeric|min:0',
             'min_order_amount' => 'required|numeric|min:0',
             'usage_limit' => 'required|numeric|min:0',
+            'limit_per_user' => 'required|numeric|min:1',
             'start_date' => 'required|date|after_or_equal:exists:coupons,'. $coupon,
             'expire_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|numeric|in:0,1',
         ]);
         $coupon = Coupon::find($coupon);
         $this->CouponRepo->UpdateByRequest($request, $coupon);
-        return redirect()->route('coupon.index')->with('success', 'Coupon updated successfully');
+        return redirect()->route('admin.coupon.index')->with('success', 'Coupon updated successfully');
     }
 
     public function destroy($couponId){
         $coupon = Coupon::find($couponId);
         $coupon->delete();
-        return redirect()->route('coupon.index')->with('success', 'Coupon deleted successfully');
+        return redirect()->route('admin.coupon.index')->with('success', 'Coupon deleted successfully');
     }
 }

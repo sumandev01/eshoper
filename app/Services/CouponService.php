@@ -24,6 +24,11 @@ class CouponService
             return redirect()->back()->with('error', 'Coupon usage limit exceeded');
         }
 
+        $userUsageCount = $coupon->usages()->where('user_id', auth('web')->id())->count();
+        if ($userUsageCount >= $coupon->limit_per_user) {
+            return redirect()->back()->with('error', 'You have already used this coupon the maximum number of times allowed');
+        }
+
         $minAmount = $coupon->min_order_amount;
         if ($subTotalPrice < $minAmount) {
             return redirect()->back()->with('error', 'Coupon is not valid');
@@ -61,6 +66,11 @@ class CouponService
         $hasLimit = ($coupon->usage_limit - $coupon->used_count) > 0;
         if (!$hasLimit) {
             return ['status' => 'error', 'message' => 'Coupon usage limit exceeded'];
+        }
+
+        $userUsageCount = $coupon->usages()->where('user_id', auth('web')->id())->count();
+        if ($userUsageCount >= $coupon->limit_per_user) {
+            return ['status' => 'error', 'message' => 'You have already used this coupon the maximum number of times allowed'];
         }
 
         if ($cartSubTotal < $coupon->min_order_amount) {

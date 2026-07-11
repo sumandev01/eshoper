@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <!-- SEO Meta Tags -->
-    <title>@yield('title', ($siteSettings->site_title ?? null))</title>
-    <meta name="description" content="@yield('meta_description', ($siteSettings->site_description ?? null))">
+    <title>@yield('title', $siteSettings->site_title ?? null)</title>
+    <meta name="description" content="@yield('meta_description', $siteSettings->site_description ?? null)">
     <meta name="robots" content="index, follow">
-    <meta name="keywords" content="@yield('meta_keywords', ($siteSettings->site_keywords ?? null))">
+    <meta name="keywords" content="@yield('meta_keywords', $siteSettings->site_keywords ?? null)">
     <link rel="canonical" href="{{ url()->current() }}">
 
     <!-- Open Graph -->
@@ -22,7 +22,7 @@
 
 
     <script>
-        const siteCurrency = "{{ ($siteSettings->currency_symbol ?? null) ?? '৳' }}";
+        const siteCurrency = "{{ $siteSettings->currency_symbol ?? null ?? '৳' }}";
     </script>
     <!-- Google Tag Manager -->
     <script>
@@ -39,7 +39,7 @@
             j.src =
                 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
             f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', '{{ ($siteSettings->google_analytics ?? null) }}');
+        })(window, document, 'script', 'dataLayer', '{{ $siteSettings->google_analytics ?? null }}');
     </script>
     <!-- End Google Tag Manager -->
 
@@ -63,14 +63,14 @@
             s.parentNode.insertBefore(t, s)
         }(window, document, 'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-        fbq('init', '{{ ($siteSettings->facebook_pixel ?? null) }}');
+        fbq('init', '{{ $siteSettings->facebook_pixel ?? null }}');
         fbq('track', 'PageView');
     </script>
     <!-- End Facebook Pixel Code -->
 
 
     <!-- Favicon -->
-    @if(!empty($siteSettings->site_favicon) && !str_contains($siteSettings->site_favicon, 'default.webp'))
+    @if (!empty($siteSettings->site_favicon) && !str_contains($siteSettings->site_favicon, 'default.webp'))
         <link rel="icon" href="{{ $siteSettings->site_favicon }}">
     @endif
     <!-- Google Web Fonts -->
@@ -84,44 +84,235 @@
     <!-- sweetalert2 -->
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/sweetalert2.min.css') }}">
     <!-- Customized Bootstrap Stylesheet -->
-    <link href="{{ asset('web/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('web/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('web/css/main.style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="{{ asset('dashboard/assets/css/dataTables.min.css') }}">
     @stack('styles')
     <style>
         /* Dynamic Theme Colors */
         :root {
+            /* User Defined Colors */
             --primary: {{ $siteSettings->theme_color_primary ?? '#D19C97' }};
-            --primary-dark: {{ $siteSettings->theme_color_primary_hover ?? '#c17a74' }};
-            --secondary: {{ $siteSettings->theme_color_secondary ?? '#EDF1FF' }};
             --dark: {{ $siteSettings->theme_color_dark ?? '#1C1C1C' }};
             
             --btn-bg: {{ $siteSettings->theme_button_bg ?? '#D19C97' }};
             --btn-text: {{ $siteSettings->theme_button_text ?? '#212529' }};
-            --btn-hover-bg: {{ $siteSettings->theme_button_hover_bg ?? '#c17a74' }};
-            --btn-hover-text: {{ $siteSettings->theme_button_hover_text ?? '#ffffff' }};
+
+            /* Auto-generated Colors */
+            --primary-dark: color-mix(in srgb, var(--primary) 85%, black);
+            --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
+            --secondary: color-mix(in srgb, var(--primary) 10%, white);
+            
+            --btn-hover-bg: color-mix(in srgb, var(--btn-bg) 85%, black);
+            --btn-hover-text: var(--btn-text);
+
+            --border-color: color-mix(in srgb, var(--primary) 30%, white);
+        }
+        
+        .theme-shadow {
+            border: none !important;
+            box-shadow: 0 4px 15px color-mix(in srgb, var(--primary) 10%, transparent) !important;
+            transition: box-shadow 0.3s ease, transform 0.3s ease !important;
         }
 
-        a.btn-primary, button.btn-primary, .btn-primary {
+        .theme-shadow:hover {
+            box-shadow: 0 8px 25px color-mix(in srgb, var(--primary) 15%, transparent) !important;
+            transform: translateY(-2px) !important;
+        }
+
+
+        .bg-secondary {
+            background-color: var(--secondary) !important;
+        }
+
+        .text-secondary {
+            color: var(--secondary) !important;
+        }
+
+        .bg-primary {
+            background-color: var(--primary) !important;
+        }
+
+        .text-primary {
+            color: var(--primary) !important;
+        }
+
+        a.btn-primary,
+        button.btn-primary,
+        .btn-primary {
             background-color: var(--btn-bg) !important;
             border-color: var(--btn-bg) !important;
             color: var(--btn-text) !important;
         }
 
-        a.btn-primary:hover, button.btn-primary:hover, .btn-primary:hover,
-        a.btn-primary:focus, button.btn-primary:focus, .btn-primary:focus,
-        a.btn-primary:active, button.btn-primary:active, .btn-primary:active,
-        a.btn-primary.active, button.btn-primary.active, .btn-primary.active {
+        a.btn-primary:hover,
+        button.btn-primary:hover,
+        .btn-primary:hover,
+        a.btn-primary:focus,
+        button.btn-primary:focus,
+        .btn-primary:focus,
+        a.btn-primary:active,
+        button.btn-primary:active,
+        .btn-primary:active,
+        a.btn-primary.active,
+        button.btn-primary.active,
+        .btn-primary.active {
             background-color: var(--btn-hover-bg) !important;
             border-color: var(--btn-hover-bg) !important;
             color: var(--btn-hover-text) !important;
         }
-        
-        .btn-primary i, .btn-primary span {
+
+        .border,
+        .border-top,
+        .border-bottom,
+        .border-start,
+        .border-end {
+            border-color: var(--border-color) !important;
+        }
+
+        .form-control,
+        .form-control:focus,
+        .form-control:active {
+            border-color: var(--border-color) !important;
+        }
+
+        .btn-primary i,
+        .btn-primary span {
             color: inherit !important;
         }
 
+        a.text-dark:hover,
+        a.text-dark:focus {
+            color: var(--primary) !important;
+            text-decoration: none !important;
+        }
+
         .navbarShadow {
-            box-shadow: 0px 15px 10px -15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0px 15px 15px -10px color-mix(in srgb, var(--primary) 15%, transparent);
+        }
+
+        .custom-navbar-bg {
+            position: relative;
+            background-color: color-mix(in srgb, var(--primary) 15%, white);
+            z-index: 999;
+        }
+        
+        .modern-category-btn {
+            border-top-left-radius: 12px !important;
+            border-top-right-radius: 12px !important;
+            border-bottom-left-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+        }
+        .modern-category-menu {
+            border: none !important;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            background-color: color-mix(in srgb, var(--primary) 15%, white);
+        }
+        .modern-category-menu .dropdown-menu {
+            background-color: color-mix(in srgb, var(--primary) 15%, white);
+        }
+        .modern-category-menu .nav-item {
+            border-bottom: 1px solid rgba(0,0,0,0.03) !important;
+            transition: all 0.3s ease;
+        }
+        .modern-category-menu .nav-item:last-child {
+            border-bottom: none !important;
+        }
+        .modern-category-menu .nav-item:hover,
+        .modern-category-menu .nav-item.dropdown:hover {
+            background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
+        }
+        .modern-category-menu .nav-link, 
+        .modern-category-menu .custom-sub-link {
+            transition: all 0.3s ease;
+        }
+        .modern-category-menu .nav-item:hover > .nav-link,
+        .modern-category-menu .custom-sub-link:hover {
+            color: var(--primary) !important;
+            padding-left: 35px !important;
+            background: transparent !important;
+        }
+        .modern-category-menu .nav-item.dropdown .dropdown-menu .custom-sub-link:hover {
+            background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
+        }
+        .modern-category-menu .nav-link.active,
+        .modern-category-menu .custom-sub-link.active,
+        .modern-category-menu .nav-item.dropdown .nav-link.active {
+            background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
+            color: var(--primary) !important;
+        }
+
+        /* Custom Navbar Links */
+        .navbar-light .navbar-nav .nav-link {
+            color: color-mix(in srgb, var(--primary) 60%, #111) !important;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .navbar-light .navbar-nav .nav-link:hover,
+        .navbar-light .navbar-nav .nav-link.active {
+            color: var(--primary) !important;
+        }
+
+        /* Custom Global Dropdowns */
+        .dropdown-menu:not(.modern-category-menu .dropdown-menu) {
+            border-radius: 12px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+            border: none !important;
+            padding: 10px 0;
+            overflow: hidden;
+            background: white;
+        }
+        .dropdown-menu:not(.modern-category-menu .dropdown-menu) .dropdown-item {
+            transition: all 0.3s ease;
+            color: color-mix(in srgb, var(--primary) 60%, #111);
+            font-weight: 500;
+            padding: 8px 20px;
+        }
+        .dropdown-menu:not(.modern-category-menu .dropdown-menu) .dropdown-item:hover {
+            background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
+            color: var(--primary) !important;
+            padding-left: 25px;
+        }
+
+        /* Custom Checkboxes */
+        input[type="checkbox"] {
+            accent-color: var(--primary);
+        }
+        .custom-control-input:checked ~ .custom-control-label::before {
+            border-color: var(--primary) !important;
+            background-color: var(--primary) !important;
+        }
+
+        /* Custom Pagination */
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: white !important;
+            box-shadow: 0 5px 15px color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+        .pagination .page-link {
+            color: color-mix(in srgb, var(--primary) 60%, #111);
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 0 3px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .pagination .page-link:hover {
+            background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
+            color: var(--primary) !important;
+            border-color: transparent;
+        }
+        
+        .modern-slider {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .modern-slider .carousel-inner {
+            border-radius: 12px;
         }
 
         .wpo-breadcumb-wrap ol li {
@@ -208,12 +399,17 @@
             width: 40px;
             height: 40px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #D19C97;
+            border-top: 4px solid var(--primary);
             /* Primary color */
             border-radius: 50%;
             animation: spin 1s linear infinite;
             z-index: 10;
             /* High z-index to stay on top */
+        }
+
+        .cat-item .cat-img img,
+        .product-item .product-img img {
+            transition: .5s !important;
         }
 
         @keyframes spin {
@@ -231,23 +427,23 @@
 <body>
     <!-- Topbar Start -->
     <div id="main-header-wrapper">
-        @include('web.layouts.partial.header')
+        @include('web.layouts.partials.header')
     </div>
     <!-- Topbar End -->
     <!-- Main Content Start -->
     @yield('content')
     <!-- Main Content End -->
     <!-- Footer Start -->
-    @include('web.layouts.partial.footer')
+    @include('web.layouts.partials.footer')
     <!-- Footer End -->
     <!-- Login Modal Start for use add to cart -->
-    @include('web.layouts.partial.login_modal')
+    @include('web.layouts.partials.login_modal')
     <!-- Login Modal End -->
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary back-to-top"><i class="fa fa-angle-double-up"></i></a>
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('web/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('web/lib/easing/easing.min.js') }}"></script>
     <script src="{{ asset('web/lib/owlcarousel/owl.carousel.min.js') }}"></script>
     <script src="mail/jqBootstrapValidation.min.js"></script>
@@ -257,10 +453,11 @@
     <script src="{{ asset('dashboard/assets/js/sweetalert2.all.min.js') }}"></script>
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="{{ asset('web/js/addCart.js') }}"></script>
+    <script src="{{ asset('dashboard/assets/js/dataTables.min.js') }}"></script>
     <script>
         window.LaravelData = {
-            route_getColorBySize: "{{ route('getColorBySize') }}",
-            route_addToCart: "{{ route('addToCart') }}",
+            route_getColorBySize: "{{ route('product.color.by.size') }}",
+            route_addToCart: "{{ route('cart.add') }}",
             route_wishlistToggle: "{{ route('wishlist.toggle') }}",
             csrf_token: "{{ csrf_token() }}"
         };
@@ -268,11 +465,11 @@
     <!-- Facebook Pixel Code -->
     <noscript>
         <img height="1" width="1" style="display:none"
-            src="https://www.facebook.com/tr?id={{ ($siteSettings->facebook_pixel ?? null) }}&ev=PageView&noscript=1" />
+            src="https://www.facebook.com/tr?id={{ $siteSettings->facebook_pixel ?? null }}&ev=PageView&noscript=1" />
     </noscript>
     <!-- End Facebook Pixel Code -->
     <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ ($siteSettings->google_analytics ?? null) }}"
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $siteSettings->google_analytics ?? null }}"
             height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
 
@@ -311,8 +508,24 @@
             showToast('error', "{{ session('error') }}");
         </script>
     @endif
-    @stack('script')
+
+    @if ($errors->any())
+        <script>
+            showToast('error', "{{ $errors->first() }}");
+        </script>
+    @endif
+    <script>
+        // AJAX Cron System for Background Tasks (No cPanel required)
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                fetch("{{ route('background.tasks') }}").catch(error => console.error('Cron error:', error));
+            }, 5000); // Wait 5 seconds so it doesn't impact page load
+        });
+    </script>
+
+    @stack('scripts')
 </body>
 
 </html>
+
 

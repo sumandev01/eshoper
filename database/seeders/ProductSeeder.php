@@ -73,7 +73,6 @@ class ProductSeeder extends Seeder
                 'price'    => $price,
                 'buy_price'=> $price * 0.7,
                 'discount' => $discount,
-                'tax'      => 5,
                 'stock'    => $faker->numberBetween(10, 100),
                 'status'   => 1, // active
                 'media_id' => $this->seedImage(800, 800, 'image', 'product', 10), 
@@ -90,6 +89,7 @@ class ProductSeeder extends Seeder
                 'information'       => 'Care Instructions: Machine wash cold with like colors. Tumble dry low. Do not bleach. Material: 100% Premium Quality Fabric.',
                 'meta_title'        => $name . ' | Buy Online',
                 'meta_description'  => 'Shop the best ' . strtolower($name) . ' online. Enjoy premium quality, fast shipping, and secure checkout.',
+                'meta_keyword'      => 'clothing, fashion, ' . strtolower($name),
             ]);
 
             // 3. Product Tags (Many-to-Many)

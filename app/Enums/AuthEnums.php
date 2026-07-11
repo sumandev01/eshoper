@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum AuthEnums : string
 {
-    case USER = 'User';
-    case ADMIN = 'Admin';
-    case SUPER_ADMIN = 'Super Admin';
+    case USER = 'user';
+    case ADMIN = 'admin';
+    case SUPER_ADMIN = 'super_admin';
 }

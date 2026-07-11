@@ -31,7 +31,7 @@ class CartController extends Controller
             return $cartItem->cart_price * $cartItem->quantity;
         })->sum();
         $productReviews = ProductReview::whereStatus(1)->get();
-        return view('web.cart', compact('carts', 'subTotalPrice', 'productReviews'));
+        return view('web.shop.cart', compact('carts', 'subTotalPrice', 'productReviews'));
     }
     
     public function addToCart(Request $request)

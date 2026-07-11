@@ -84,33 +84,54 @@
                                         :required="false" />
                                 </div>
                             </div>
-                            <div class="row align-items-center mb-4 gy-3">
+                            <div class="row align-items-center mb-2 gy-3">
                                 <div class="col-md-3 col-10 text-start">
                                     <label class="form-label mb-0">Our Mission</label>
                                 </div>
                                 <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                                <div class="col-md-8">
+                                    <x-input name="mission_header" class="fs-6" type="text" :value="$aboutPage?->mission_header ?? 'Our Mission'" :required="false" placeholder="Header Text" />
+                                </div>
+                            </div>
+                            <div class="row align-items-center mb-4 gy-3">
+                                <div class="col-md-3 col-10 text-start"></div>
+                                <div class="col-auto px-0 fs-5 fw-bold"></div>
                                 <div class="col-md-8">
                                     <x-textarea name="our_mission" :editor="false" :value="$aboutPage?->our_mission ?? ''"
                                         placeholder="Write something..." maxlength="150" :wordcount="true" rows="4"
                                         :required="false" />
                                 </div>
                             </div>
-                            <div class="row align-items-center mb-4 gy-3">
+                            <div class="row align-items-center mb-2 gy-3">
                                 <div class="col-md-3 col-10 text-start">
                                     <label class="form-label mb-0">Our Vision</label>
                                 </div>
                                 <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                                <div class="col-md-8">
+                                    <x-input name="vision_header" class="fs-6" type="text" :value="$aboutPage?->vision_header ?? 'Our Vision'" :required="false" placeholder="Header Text" />
+                                </div>
+                            </div>
+                            <div class="row align-items-center mb-4 gy-3">
+                                <div class="col-md-3 col-10 text-start"></div>
+                                <div class="col-auto px-0 fs-5 fw-bold"></div>
                                 <div class="col-md-8">
                                     <x-textarea name="our_vision" :editor="false" :value="$aboutPage?->our_vision ?? ''"
                                         placeholder="Write something..." maxlength="150" :wordcount="true" rows="4"
                                         :required="false" />
                                 </div>
                             </div>
-                            <div class="row align-items-center mb-4 gy-3">
+                            <div class="row align-items-center mb-2 gy-3">
                                 <div class="col-md-3 col-10 text-start">
                                     <label class="form-label mb-0">Our Values</label>
                                 </div>
                                 <div class="col-auto px-0 fs-5 fw-bold">:</div>
+                                <div class="col-md-8">
+                                    <x-input name="values_header" class="fs-6" type="text" :value="$aboutPage?->values_header ?? 'Our Values'" :required="false" placeholder="Header Text" />
+                                </div>
+                            </div>
+                            <div class="row align-items-center mb-4 gy-3">
+                                <div class="col-md-3 col-10 text-start"></div>
+                                <div class="col-auto px-0 fs-5 fw-bold"></div>
                                 <div class="col-md-8">
                                     <x-textarea name="our_values" :editor="false" :value="$aboutPage?->our_values ?? ''"
                                         placeholder="Write something..." maxlength="150" :wordcount="true" rows="4"

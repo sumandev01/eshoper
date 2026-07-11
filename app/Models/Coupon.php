@@ -12,4 +12,9 @@ class Coupon extends Model
         'start_date' => 'datetime',
         'expire_date' => 'datetime',
     ];
+
+    public function usages()
+    {
+        return $this->hasMany(CouponUsage::class);
+    }
 }

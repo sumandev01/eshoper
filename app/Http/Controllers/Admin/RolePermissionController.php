@@ -2,26 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\Permission\AboutPagePermission;
-use App\Enums\Permission\AdminAccessEnums;
-use App\Enums\Permission\BrandPermission;
-use App\Enums\Permission\CategoryPermission;
-use App\Enums\Permission\ColorPermission;
-use App\Enums\Permission\CommentPermission;
-use App\Enums\Permission\ContactMessagePermission;
-use App\Enums\Permission\CouponPermission;
-use App\Enums\Permission\MediaPermission;
-use App\Enums\Permission\OrderPermission;
-use App\Enums\Permission\ProductInventoryPermission;
-use App\Enums\Permission\ProductPermission;
-use App\Enums\Permission\SettingPermission;
-use App\Enums\Permission\SizePermission;
-use App\Enums\Permission\SliderPermission;
-use App\Enums\Permission\SubCategoryPermission;
-use App\Enums\Permission\TagPermission;
-use App\Enums\Permission\TeamMemberPermission;
-use App\Enums\Permission\UserPermission;
-use App\Enums\Permission\UserRolePermission;
+use App\Services\PermissionScannerService;
 use App\Enums\RoleEnums;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -42,36 +23,20 @@ class RolePermissionController extends Controller
 
     public function add()
     {
-        $adminAccess = [
-            'Admin Access' => AdminAccessEnums::cases(),
-        ];
-        $groups = [
-            'Media' => MediaPermission::cases(),
-            'Brand' => BrandPermission::cases(),
-            'Category' => CategoryPermission::cases(),
-            'SubCategory' => SubCategoryPermission::cases(),
-            'Size' => SizePermission::cases(),
-            'Color' => ColorPermission::cases(),
-            'Slider' => SliderPermission::cases(),
-            'Coupon' => CouponPermission::cases(),
-            'Comments' => CommentPermission::cases(),
-            'Contact' => ContactMessagePermission::cases(),
-            'About Page' => AboutPagePermission::cases(),
-            'Team Member' => TeamMemberPermission::cases(),
-            'Tag' => TagPermission::cases(),
-            'User' => UserPermission::cases(),
-            'Role' => UserRolePermission::cases(),
-            'Order' => OrderPermission::cases(),
-            'Product' => ProductPermission::cases(),
-            'Product Inventory' => ProductInventoryPermission::cases(),
-            'Setting' => SettingPermission::cases(),
-        ];
+        $scanner = new PermissionScannerService();
+        $permissions = $scanner->syncAndGetPermissions();
+        $adminAccess = $permissions['adminAccess'];
+        $groups = $permissions['groups'];
 
         return view('dashboard.role-permission.add', compact('groups', 'adminAccess'));
     }
 
     public function store(Request $request)
     {
+        if ($request->has('name')) {
+            $request->merge(['name' => strtolower($request->name)]);
+        }
+
         $request->validate([
             'name' => 'required|string|unique:roles,name',
             'permissions' => 'required|array',
@@ -106,7 +71,12 @@ class RolePermissionController extends Controller
     {
         $role = Role::with('permissions')->findOrFail($id);
 
-        return view('dashboard.role-permission.view', compact('role'));
+        $scanner = new PermissionScannerService();
+        $permissions = $scanner->syncAndGetPermissions();
+        $adminAccess = $permissions['adminAccess'];
+        $groups = $permissions['groups'];
+
+        return view('dashboard.role-permission.view', compact('role', 'groups', 'adminAccess'));
     }
 
     public function edit($id)
@@ -116,36 +86,20 @@ class RolePermissionController extends Controller
         if ($role->name === RoleEnums::Super_Admin->value || $role->name === RoleEnums::User->value) {
             return back()->with('error', 'This role cannot be edited.');
         }
-        $adminAccess = [
-            'Admin Access' => AdminAccessEnums::cases(),
-        ];
-        $groups = [
-            'Media' => MediaPermission::cases(),
-            'Brand' => BrandPermission::cases(),
-            'Category' => CategoryPermission::cases(),
-            'SubCategory' => SubCategoryPermission::cases(),
-            'Size' => SizePermission::cases(),
-            'Color' => ColorPermission::cases(),
-            'Slider' => SliderPermission::cases(),
-            'Coupon' => CouponPermission::cases(),
-            'Comments' => CommentPermission::cases(),
-            'Contact' => ContactMessagePermission::cases(),
-            'About Page' => AboutPagePermission::cases(),
-            'Team Member' => TeamMemberPermission::cases(),
-            'Tag' => TagPermission::cases(),
-            'User' => UserPermission::cases(),
-            'Role' => UserRolePermission::cases(),
-            'Order' => OrderPermission::cases(),
-            'Product' => ProductPermission::cases(),
-            'Product Inventory' => ProductInventoryPermission::cases(),
-            'Setting' => SettingPermission::cases(),
-        ];
+        $scanner = new PermissionScannerService();
+        $permissions = $scanner->syncAndGetPermissions();
+        $adminAccess = $permissions['adminAccess'];
+        $groups = $permissions['groups'];
 
         return view('dashboard.role-permission.edit', compact('role', 'groups', 'adminAccess'));
     }
 
     public function update(Request $request, $id)
     {
+        if ($request->has('name')) {
+            $request->merge(['name' => strtolower($request->name)]);
+        }
+
         $request->validate([
             'name' => 'required|string|unique:roles,name,'.$id,
         ], [

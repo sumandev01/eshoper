@@ -107,4 +107,39 @@ class AdminDashboardRepository
 
         return compact('ordersData', 'deliveriesData', 'amountData', 'returnsData');
     }
+
+    /**
+     * Get order status statistics for a Pie Chart
+     */
+    public function getOrderStatusStats(): array
+    {
+        $statuses = Order::select('order_status', \Illuminate\Support\Facades\DB::raw('count(*) as total'))
+            ->groupBy('order_status')
+            ->pluck('total', 'order_status')
+            ->toArray();
+
+        // Ensure default keys exist
+        $statusLabels = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'canceled'];
+        $data = [];
+        foreach ($statusLabels as $label) {
+            $data[$label] = $statuses[$label] ?? 0;
+        }
+
+        return $data;
+    }
+
+    /**
+     * Get top selling products
+     */
+    public function getTopSellingProducts(int $limit = 5)
+    {
+        return \App\Models\Product::select('products.*', \Illuminate\Support\Facades\DB::raw('SUM(order_products.quantity) as total_sold'))
+            ->join('order_products', 'products.id', '=', 'order_products.product_id')
+            ->join('orders', 'order_products.order_id', '=', 'orders.id')
+            ->whereNotIn('orders.order_status', ['canceled', 'returned'])
+            ->groupBy('products.id')
+            ->orderBy('total_sold', 'desc')
+            ->take($limit)
+            ->get();
+    }
 }

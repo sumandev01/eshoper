@@ -20,7 +20,7 @@ class SizeController extends Controller
             'name' => $request->name
         ]);
         if ($size) {
-            return redirect()->route('size.index')->with('success', 'Size created successfully');
+            return redirect()->route('admin.size.index')->with('success', 'Size created successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to create size');
         }
@@ -37,7 +37,7 @@ class SizeController extends Controller
             'name' => $request->name
         ]);
         if ($size) {
-            return redirect()->route('size.index')->with('success', 'Size updated successfully');
+            return redirect()->route('admin.size.index')->with('success', 'Size updated successfully');
         }else {
             return redirect()->back()->with('error', 'Failed to update size');
         }
@@ -46,6 +46,6 @@ class SizeController extends Controller
     public function destroy(Size $size)
     {
         $size->delete();
-        return redirect()->route('size.index')->with('success', 'Size deleted successfully');
+        return redirect()->route('admin.size.index')->with('success', 'Size deleted successfully');
     }
 }
