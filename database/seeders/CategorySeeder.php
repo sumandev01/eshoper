@@ -17,22 +17,45 @@ class CategorySeeder extends Seeder
     public function run(): void
     {
         $data = [
-            //Shoes, Jackets, Blazers, Jumpsuits, Sportswear, Sleepwear, Swimwear, 	Jeans, Shirts, 	Dresses - categories
             [
-                'name' => 'Shoes',
-                'slug' => 'shoes'
+                'name' => 'Men\'s Fashion',
+                'slug' => 'mens-fashion'
             ],
             [
-                'name' => 'Jackets',
-                'slug' => 'jackets'
+                'name' => 'Women\'s Fashion',
+                'slug' => 'womens-fashion'
             ],
             [
-                'name' => 'Blazers',
-                'slug' => 'blazers'
+                'name' => 'Kids Fashion',
+                'slug' => 'kids-fashion'
             ],
             [
-                'name' => 'Jumpsuits',
-                'slug' => 'jumpsuits'
+                'name' => 'Footwear',
+                'slug' => 'footwear'
+            ],
+            [
+                'name' => 'Accessories',
+                'slug' => 'accessories'
+            ],
+            [
+                'name' => 'Watches',
+                'slug' => 'watches'
+            ],
+            [
+                'name' => 'Bags & Purses',
+                'slug' => 'bags-purses'
+            ],
+            [
+                'name' => 'Jewelry',
+                'slug' => 'jewelry'
+            ],
+            [
+                'name' => 'Winterwear',
+                'slug' => 'winterwear'
+            ],
+            [
+                'name' => 'Summer Collection',
+                'slug' => 'summer-collection'
             ],
             [
                 'name' => 'Sportswear',
@@ -41,22 +64,6 @@ class CategorySeeder extends Seeder
             [
                 'name' => 'Sleepwear',
                 'slug' => 'sleepwear'
-            ],
-            [
-                'name' => 'Swimwear',
-                'slug' => 'swimwear'
-            ],
-            [
-                'name' => 'Jeans',
-                'slug' => 'jeans'
-            ],
-            [
-                'name' => 'Shirts',
-                'slug' => 'shirts'
-            ],
-            [
-                'name' => 'Dresses',
-                'slug' => 'dresses'
             ]
         ];
         

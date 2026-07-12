@@ -34,11 +34,19 @@ class ShopController extends Controller
         return view('web.shop.shop', compact('products', 'minPrice', 'maxPrice'), $shopSidebarData);
     }
 
-    public function productDetails($slug)
+    public function categories()
+    {
+        return view('web.shop.categories');
+    }
+
+    public function productDetails($slug, \App\Services\RecentlyViewedService $recentlyViewedService)
     {
         $product = Product::with(['sizes', 'colors', 'tags', 'details', 'media', 'inventories.media', 'inventories.color', 'inventories.size'])
             ->where('slug', $slug)
             ->firstOrFail();
+
+        // Add to Recently Viewed
+        $recentlyViewedService->add($product->id);
 
         // Related products by category and random products
         $relatedProducts = $this->webService->getRelatedProductsSinglePage($product);

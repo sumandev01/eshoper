@@ -12,8 +12,8 @@
             ['name' => $product?->name, 'url' => '']
         ]
     ])
-    <div class="container-fluid pt-1 pb-5">
-        <div class="row px-xl-5">
+    <div class="container pt-1 pb-5">
+        <div class="row">
             <!-- Product Gallery Start -->
             <div class="col-lg-5 pb-5">
                 <div id="product-carousel" class="carousel slide" data-bs-ride="carousel">
@@ -69,7 +69,7 @@
             <!-- Product Detail Start -->
             <div class="col-lg-7 pb-5">
                 <h3 class="font-weight-semi-bold">{{ $product?->name }}</h3>
-                <div class="d-flex mb-3">
+                <div class="d-flex">
                     <div class="star-group">
                         <input type="hidden" class="rating-value-active" value="{{ $finalRating }}">
                         <button type="button" class="star-btn-active far fa-star" data-value="1"
@@ -85,7 +85,7 @@
                     </div>
                     <small class="pt-1 ms-2">({{ $productReview?->count() ?? 0 }} Reviews)</small>
                 </div>
-                <div class="d-flex align-items-end mb-4" id="price-container">
+                <div class="d-flex align-items-end" id="price-container">
                     @php
                         $mainPrice = $product?->price;
                         $discountPrice = $product?->discount;
@@ -111,7 +111,7 @@
                     @endif
                 </div>
 
-                <p class="mb-4">{{ $product?->details?->shortDescription }}</p>
+                <p class="mb-3">{{ $product?->details?->shortDescription }}</p>
 
                 @if ($sizes && $sizes->count() > 0)
                     <div class="d-flex mb-3 align-items-center">
@@ -129,7 +129,7 @@
                 @endif
 
                 @if ($colors && $colors->count() > 0)
-                    <div class="d-flex mb-4 align-items-center">
+                    <div class="d-flex mb-3 align-items-center">
                         <p class="text-dark font-weight-medium mb-0 me-3">Colors:</p>
                         <div id="main-color-form" class="d-flex flex-wrap align-items-center">
                             <span id="color-selection-message" class="text-muted small">Please select a size</span>
@@ -138,7 +138,7 @@
                     </div>
                 @endif
 
-                <div class="d-flex pt-2 mb-4">
+                <div class="d-flex mb-3">
                     <p class="text-dark font-weight-medium mb-0 me-2">Quantity:</p>
                     <span id="variant-stock-display">
                         @if ($product?->stock > 0)
@@ -149,7 +149,7 @@
                     </span>
                 </div>
 
-                <div class="d-flex align-items-center mb-4 pt-2">
+                <div class="d-flex align-items-center mb-3">
                     <div class="input-group quantity me-3" style="width: 130px;">
                         <div class="input-group-btn">
                             <button type="button" class="btn btn-primary btn-minus" disabled>
@@ -170,7 +170,7 @@
                     </button>
                 </div>
 
-                <div class="d-flex pt-2">
+                <div class="d-flex">
                     <p class="text-dark font-weight-medium mb-0 me-2">Category:</p>
                     <span>{{ $product?->details?->category?->name ?? 'N/A' }}</span>
                 </div>
@@ -190,15 +190,6 @@
                     <p class="text-dark font-weight-medium mb-0 me-2">Tags:</p>
                     <div class="d-inline-flex">
                         {{ $tags?->pluck('name')->implode(', ') ?? 'N/A' }}
-                    </div>
-                </div>
-                <div class="d-flex pt-2">
-                    <p class="text-dark font-weight-medium mb-0 me-2">Share on:</p>
-                    <div class="d-inline-flex">
-                        <a class="text-dark px-2" href=""><i class="fab fa-facebook-f"></i></a>
-                        <a class="text-dark px-2" href=""><i class="fab fa-twitter"></i></a>
-                        <a class="text-dark px-2" href=""><i class="fab fa-linkedin-in"></i></a>
-                        <a class="text-dark px-2" href=""><i class="fab fa-pinterest"></i></a>
                     </div>
                 </div>
             </div>
@@ -300,28 +291,10 @@
         </div>
         <!-- Product Extra Detail End -->
     </div>
-    <!-- Related Products Start -->
-    <div class="container-fluid py-5">
-        <div class="text-center mb-4">
-            <h2 class="section-title px-5"><span class="px-2">You May Also Like</span></h2>
-        </div>
-        <div class="row px-xl-5">
-            <div class="col">
-                <div class="owl-carousel related-carousel">
-                    @foreach ($relatedProducts ?? [] as $relatedProductItem)
-                        @include('web.components.product_card', ['product' => $relatedProductItem])
-                    @endforeach
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Related Products End -->
+    @include('web.components.product_slider', ['products' => $relatedProducts, 'title' => 'You May Also Like'])
 @endsection
 @push('styles')
     <style>
-        .related-carousel .owl-nav {
-            display: none !important;
-        }
         #product-carousel .carousel-control-prev,
         #product-carousel .carousel-control-next {
             z-index: 999;

@@ -101,6 +101,28 @@
                 <h6 class="ms-2 mb-0 text-primary" style="opacity: 0.6;"><del class="main-price d-none"></del></h6>
             @endif
         </div>
+
+        {{-- Review Stars --}}
+        <div class="d-flex align-items-center justify-content-start mb-3">
+            <div class="text-primary" style="font-size: 12px;">
+                @php
+                    $rating = $product->reviews_avg_rating ?? 0;
+                    $fullStars = floor($rating);
+                    $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
+                    $emptyStars = 5 - ($fullStars + $halfStar);
+                @endphp
+                @for ($i = 0; $i < $fullStars; $i++)
+                    <i class="fas fa-star"></i>
+                @endfor
+                @if ($halfStar)
+                    <i class="fas fa-star-half-alt"></i>
+                @endif
+                @for ($i = 0; $i < $emptyStars; $i++)
+                    <i class="far fa-star"></i>
+                @endfor
+            </div>
+        </div>
+
         @if ($displayStock <= 0)
             <a href="javascript:void(0);"
                 class="btn btn-primary py-2 rounded shadow-sm disabled d-flex justify-content-center align-items-center shop-add-to-cart"
@@ -153,8 +175,8 @@
         }
 
         span.size.active {
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             background: #fff !important;
             color: var(--primary) !important;
             border-color: var(--primary) !important;
@@ -169,8 +191,8 @@
         }
 
         span.color.active {
-            width: 34px;
-            height: 34px;
+            width: 32px;
+            height: 32px;
             border-color: var(--primary);
         }
     </style>

@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        set_time_limit(0); // Prevent maximum execution time error during heavy image resizing
+
         // Clean up media directory to prevent orphaned files during migrate:fresh --seed
         $mediaPath = storage_path('app/public/media');
         if (\Illuminate\Support\Facades\File::exists($mediaPath)) {
@@ -47,6 +49,7 @@ class DatabaseSeeder extends Seeder
             // Products
             ProductSeeder::class,
             ProductReviewSeeder::class,
+            OrderSeeder::class,
 
             // CMS Pages & Info
             SliderSeeder::class,

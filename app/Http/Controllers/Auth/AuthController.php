@@ -49,6 +49,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($request->only('email', 'password'), $remember)) {
             $user = Auth::user();
+            app(\App\Services\RecentlyViewedService::class)->sync();
 
             if ($request->ajax()) {
                 return response()->json([
@@ -94,6 +95,7 @@ class AuthController extends Controller
         $user->assignRole(AuthEnums::USER);
 
         Auth::login($user);
+        app(\App\Services\RecentlyViewedService::class)->sync();
 
         return redirect()->route('root')->with('success', 'User registered successfully');
     }

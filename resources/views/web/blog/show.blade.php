@@ -12,10 +12,10 @@
     ])
 
     <!-- Blog Detail Start -->
-    <div class="container-fluid pt-1 pb-5">
-        <div class="row px-xl-5">
+    <div class="container pt-1 pb-5">
+        <div class="row">
             <!-- Blog Content -->
-            <div class="col-lg-9 col-md-12 mb-5">
+            <div class="col-lg-8 col-md-12 mb-5">
                 <div class="bg-light p-5">
                     @if($blog->thumbnail)
                         <img src="{{ $blog->thumbnail }}" class="img-fluid rounded mb-4" alt="{{ $blog->title }}" style="width: 100%; max-height: 500px; object-fit: cover;">

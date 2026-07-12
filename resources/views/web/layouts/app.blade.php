@@ -89,35 +89,69 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/dataTables.min.css') }}">
     @stack('styles')
+    @php
+        function hexToRgb($hex) {
+            $hex = str_replace('#', '', $hex);
+            if (strlen($hex) == 3) {
+                $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+            }
+            if (strlen($hex) != 6) return [0, 0, 0];
+            $r = hexdec(substr($hex, 0, 2));
+            $g = hexdec(substr($hex, 2, 2));
+            $b = hexdec(substr($hex, 4, 2));
+            return [$r, $g, $b];
+        }
+        
+        function mixColors($rgb1, $rgb2, $weight) {
+            $w1 = $weight / 100;
+            $w2 = 1 - $w1;
+            $r = round($rgb1[0] * $w1 + $rgb2[0] * $w2);
+            $g = round($rgb1[1] * $w1 + $rgb2[1] * $w2);
+            $b = round($rgb1[2] * $w1 + $rgb2[2] * $w2);
+            return "rgb($r, $g, $b)";
+        }
+
+        $primaryHex = $siteSettings->theme_color_primary ?? '#D19C97';
+        $btnBgHex = $siteSettings->theme_button_bg ?? '#D19C97';
+        $primaryRgb = hexToRgb($primaryHex);
+        $btnBgRgb = hexToRgb($btnBgHex);
+
+        $primaryDark = mixColors($primaryRgb, [0,0,0], 85);
+        $primarySoft = "rgba({$primaryRgb[0]}, {$primaryRgb[1]}, {$primaryRgb[2]}, 0.1)";
+        $primaryShadowHover = "rgba({$primaryRgb[0]}, {$primaryRgb[1]}, {$primaryRgb[2]}, 0.15)";
+        $secondaryColor = mixColors($primaryRgb, [255,255,255], 10);
+        $btnHoverBg = mixColors($btnBgRgb, [0,0,0], 85);
+        $borderColor = mixColors($primaryRgb, [255,255,255], 30);
+    @endphp
     <style>
         /* Dynamic Theme Colors */
         :root {
             /* User Defined Colors */
-            --primary: {{ $siteSettings->theme_color_primary ?? '#D19C97' }};
+            --primary: {{ $primaryHex }};
             --dark: {{ $siteSettings->theme_color_dark ?? '#1C1C1C' }};
             
-            --btn-bg: {{ $siteSettings->theme_button_bg ?? '#D19C97' }};
+            --btn-bg: {{ $btnBgHex }};
             --btn-text: {{ $siteSettings->theme_button_text ?? '#212529' }};
 
-            /* Auto-generated Colors */
-            --primary-dark: color-mix(in srgb, var(--primary) 85%, black);
-            --primary-soft: color-mix(in srgb, var(--primary) 10%, transparent);
-            --secondary: color-mix(in srgb, var(--primary) 10%, white);
+            /* PHP Calculated Colors (Cross-Browser Compatible) */
+            --primary-dark: {{ $primaryDark }};
+            --primary-soft: {{ $primarySoft }};
+            --secondary: {{ $secondaryColor }};
             
-            --btn-hover-bg: color-mix(in srgb, var(--btn-bg) 85%, black);
+            --btn-hover-bg: {{ $btnHoverBg }};
             --btn-hover-text: var(--btn-text);
 
-            --border-color: color-mix(in srgb, var(--primary) 30%, white);
+            --border-color: {{ $borderColor }};
         }
         
         .theme-shadow {
             border: none !important;
-            box-shadow: 0 4px 15px color-mix(in srgb, var(--primary) 10%, transparent) !important;
+            box-shadow: 0 4px 15px {{ $primarySoft }} !important;
             transition: box-shadow 0.3s ease, transform 0.3s ease !important;
         }
 
         .theme-shadow:hover {
-            box-shadow: 0 8px 25px color-mix(in srgb, var(--primary) 15%, transparent) !important;
+            box-shadow: 0 8px 25px {{ $primaryShadowHover }} !important;
             transform: translateY(-2px) !important;
         }
 

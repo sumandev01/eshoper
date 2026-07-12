@@ -33,7 +33,8 @@ class Product extends Model
                     $q->select(['id', 'product_id', 'size_id', 'color_id', 'price', 'discount', 'stock', 'media_id', 'use_main_price', 'use_main_discount'])
                         ->with(['color:id,name,color_code', 'size:id,name', 'media:id,src']);
                 }
-            ]);
+            ])
+            ->withAvg('reviews', 'rating');
     }
 
     public function brand()

@@ -157,6 +157,69 @@
         </div>
     </div>
     <!-- Products End -->
+
+    <!-- Blogs Start -->
+    @if(isset($blogs) && $blogs->count() > 0)
+    <div class="container pt-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">Latest News & Blogs</span></h2>
+        </div>
+        <div class="row pb-3">
+            <div class="col">
+                <div class="owl-carousel custom-carousel blog-carousel">
+                    @foreach ($blogs as $blog)
+                        @include('web.components.blog_card', ['blog' => $blog])
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    <!-- Blogs End -->
+
+    <!-- Reviews Start -->
+    @if(isset($reviews) && $reviews->count() > 0)
+    <div class="container pt-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">What Our Customers Say</span></h2>
+        </div>
+        <div class="row pb-3">
+            <div class="col">
+                <div class="owl-carousel custom-carousel review-carousel">
+                    @foreach ($reviews as $review)
+                        <div class="card border-0 mb-4 theme-shadow hover-up transition-all h-100" style="border-radius: 12px; border-bottom: 4px solid var(--primary) !important;">
+                            <div class="card-body bg-white p-4 position-relative">
+                                <i class="fas fa-quote-left position-absolute text-primary" style="opacity: 0.1; font-size: 40px; top: 20px; right: 20px;"></i>
+                                <div class="d-flex align-items-center mb-3">
+                                    <div class="text-primary" style="font-size: 12px;">
+                                        @for ($i = 0; $i < $review->rating; $i++)
+                                            <i class="fas fa-star"></i>
+                                        @endfor
+                                        @for ($i = 0; $i < (5 - $review->rating); $i++)
+                                            <i class="far fa-star"></i>
+                                        @endfor
+                                    </div>
+                                </div>
+                                <p class="mb-4 font-italic text-muted" style="font-size: 14px; line-height: 1.6;">"{{ Str::limit(strip_tags($review->review_text), 120) }}"</p>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white d-flex justify-content-center align-items-center rounded-circle font-weight-bold" style="width: 45px; height: 45px; font-size: 18px;">
+                                        {{ strtoupper(substr($review->user?->name ?? 'Guest', 0, 1)) }}
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-0">{{ $review->user?->name ?? 'Guest' }}</h6>
+                                        <small class="text-muted"><i class="fas fa-check-circle text-success mr-1"></i>Verified Buyer</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+    <!-- Reviews End -->
+
     <!-- Vendor Start -->
     <div class="container py-5">
         <div class="row">
@@ -203,6 +266,22 @@
                         1400: {
                             items: 5
                         }
+                    }
+                });
+            }
+
+            if ($(".custom-carousel").length > 0) {
+                $(".custom-carousel").owlCarousel({
+                    loop: true,
+                    dots: true,
+                    nav: false,
+                    margin: 25,
+                    autoplay: true,
+                    autoplayHoverPause: true,
+                    responsive: {
+                        0: { items: 1 },
+                        768: { items: 2 },
+                        992: { items: 3 }
                     }
                 });
             }

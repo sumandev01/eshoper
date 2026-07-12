@@ -152,6 +152,7 @@
         </div>
     </div>
     <!-- Cart End -->
+    @include('web.components.product_slider', ['products' => $recentProducts, 'title' => 'Recently Viewed Products'])
 @endsection
 @push('scripts')
     <script>

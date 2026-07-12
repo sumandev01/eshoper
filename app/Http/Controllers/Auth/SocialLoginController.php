@@ -45,6 +45,7 @@ class SocialLoginController extends Controller
             }
 
             Auth::login($user);
+            app(\App\Services\RecentlyViewedService::class)->sync();
 
             return redirect()->route('user.dashboard');
             

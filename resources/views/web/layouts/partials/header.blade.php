@@ -3,9 +3,9 @@
     $user = auth('web')->user();
     $wishlistIds = $user ? App\Models\Wishlist::where('user_id', $user->id)->pluck('product_id')->toArray() : [];
 @endphp
-<div class="container bg-white">
+<div class="container bg-white d-sm-block d-none">
     <div class="row py-2">
-        <div class="col-lg-6 d-none d-lg-block">
+        <div class="col-md-6 d-none d-md-block">
             <div class="d-inline-flex align-items-center">
                 @php
                     $headerTopMenu = \App\Models\Menu::with([
@@ -41,7 +41,7 @@
                 @endif
             </div>
         </div>
-        <div class="col-lg-6 text-center text-lg-end">
+        <div class="col-md-6 text-center text-md-end">
             <div class="d-inline-flex align-items-center">
                 @if (!empty($siteSettings->social_facebook) && $siteSettings->social_facebook != '#')
                     <a class="text-dark px-2" href="{{ $siteSettings->social_facebook }}" target="_blank"><i
@@ -67,58 +67,7 @@
         </div>
     </div>
 
-    <div class="row align-items-center py-3">
-        <div class="col-lg-3 d-none d-lg-block">
-            <a href="{{ route('root') }}" class="text-decoration-none">
-                <h1 class="m-0 display-5 font-weight-semi-bold">
-                    <img src="{{ $siteSettings->site_logo ?? null }}" class="img-fluid"
-                        style="width: auto; max-height: 80px;" alt="Logo" loading="lazy">
-                </h1>
-            </a>
-        </div>
-
-        <div class="col-lg-6 col-6 text-start">
-            <div class="input-group search-wrapper position-relative">
-                <input id="header-search" type="text" class="form-control" placeholder="Search for products"
-                    autocomplete="off">
-                <button class="btn btn-primary px-4" type="button">
-                    <i class="fa fa-search"></i>
-                </button>
-                <div id="search-suggestions"
-                    style="
-                    position: absolute;
-                    top: calc(100% + 4px);
-                    left: 0;
-                    right: 0;
-                    background: white;
-                    border: 1px solid #e0e0e0;
-                    border-radius: 8px;
-                    z-index: 9999;
-                    display: none;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-                    overflow: hidden;
-                    max-height: 380px;
-                    overflow-y: auto;
-                ">
-                </div>
-            </div>
-        </div>
-        @php
-            $cartProducts = $user?->cartItems;
-            $wishlistProducts = $user?->wishlists;
-        @endphp
-
-        <div class="col-lg-3 col-6 text-end">
-            <a href="{{ route('wishlist') }}" class="btn border">
-                <i class="fas fa-heart text-primary"></i>
-                <span class="badge text-dark" id="wishlistCount">{{ $wishlistProducts?->count() ?? 0 }}</span>
-            </a>
-            <a href="{{ route('cart') }}" class="btn border">
-                <i class="fas fa-shopping-cart text-primary"></i>
-                <span class="badge text-dark" id="cartCount">{{ $cartProducts?->count() ?? 0 }}</span>
-            </a>
-        </div>
-    </div>
+    @include('web.layouts.partials.header_middle')
 </div>
 <!-- Topbar End -->
 
@@ -241,6 +190,9 @@
                                 {{-- <a href="{{ route('login') }}" class="nav-item nav-link">Login</a> --}}
                                 <a href="{{ route('register') }}" class="nav-item nav-link">Register</a>
                             @endif
+                        </div>
+                        <div class="d-sm-none d-block">
+                            @include('web.layouts.partials.header_middle')
                         </div>
                     </div>
                 </nav>

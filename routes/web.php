@@ -34,6 +34,7 @@ Route::controller(ShopController::class)->group(function () {
     Route::get('/search', 'search')->name('check.stock');
     Route::get('/get-signle-product-variant', 'getSignleProductVariantBySizeId')->name('product.variant.single');
     Route::get('/category/{slug}', 'categoryProducts')->name('category.products');
+    Route::get('/categories', 'categories')->name('categories.index');
     Route::get('/subcategory/{slug}', 'subcategoryProducts')->name('subcategory.products');
     Route::get('/brand/{slug}', 'brandProducts')->name('brand.products');
     Route::get('/search-suggestions', 'searchSuggestions')->name('search.suggestions');

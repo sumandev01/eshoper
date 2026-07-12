@@ -69,6 +69,18 @@ class User extends Authenticatable
         );
     }
 
+    public function comments()
+    {
+        return $this->hasMany(BlogComment::class);
+    }
+
+    public function recentlyViewedProducts()
+    {
+        return $this->belongsToMany(Product::class, 'recently_viewed_products')
+                    ->withTimestamps()
+                    ->orderByPivot('updated_at', 'desc');
+    }
+
     public function cartItems()
     {
         return $this->hasMany(Cart::class);

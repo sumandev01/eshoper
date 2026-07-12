@@ -23,15 +23,19 @@ class CartController extends Controller
         $this->couponService = $couponService;
     }
 
-    public function cart()
+    public function cart(\App\Services\RecentlyViewedService $recentlyViewedService)
     {
         $userId = auth('web')->user()->id;
         $carts = Cart::whereUserId($userId)->latest('id')->get();
         $subTotalPrice = $carts->map(function ($cartItem) {
             return $cartItem->cart_price * $cartItem->quantity;
         })->sum();
+        
+        $cartProductIds = $carts->pluck('product_id')->toArray();
+        $recentProducts = $recentlyViewedService->get($cartProductIds);
+        
         $productReviews = ProductReview::whereStatus(1)->get();
-        return view('web.shop.cart', compact('carts', 'subTotalPrice', 'productReviews'));
+        return view('web.shop.cart', compact('carts', 'subTotalPrice', 'productReviews', 'recentProducts'));
     }
     
     public function addToCart(Request $request)

@@ -9,12 +9,16 @@ use Illuminate\Http\Request;
 
 class WishlistController extends Controller
 {
-    public function index()
+    public function index(\App\Services\RecentlyViewedService $recentlyViewedService)
     {
         $user = auth('web')->user();
         $wishlists = $user->wishlists()->with('product')->orderBy('id', 'desc')->paginate(10);
+        
+        $wishlistProductIds = $user->wishlists()->pluck('product_id')->toArray();
+        $recentProducts = $recentlyViewedService->get($wishlistProductIds);
+        
         $productReviews = ProductReview::whereStatus(1)->get();
-        return view('web.shop.wishlist', compact('wishlists', 'productReviews'));
+        return view('web.shop.wishlist', compact('wishlists', 'productReviews', 'recentProducts'));
     }
 
     public function wishlistToggle(Request $request)

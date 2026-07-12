@@ -1,5 +1,5 @@
             <!-- Sidebar (Right Side) -->
-            <div class="col-lg-3 col-md-12 mt-5 mt-lg-0">
+            <div class="col-lg-4 col-md-12 mt-5 mt-lg-0">
                 <!-- Search -->
                 <div class="bg-white p-4 theme-shadow mb-5" style="border-radius: 12px;">
                     <h5 class="font-weight-semi-bold mb-4" style="color: color-mix(in srgb, var(--primary) 60%, #111);">Search</h5>

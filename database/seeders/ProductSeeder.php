@@ -50,10 +50,20 @@ class ProductSeeder extends Seeder
             'Athletic Moisture-Wicking Performance Shorts',
             'Minimalist Quartz Stainless Steel Watch',
             'Heavy-Duty Canvas Weekend Duffle Bag',
+            'Luxury Designer Handbag Limited Edition',
+            'Men\'s Slim Fit Navy Blue Suit',
+            'Women\'s Elegant Silk Scarf',
+            'Classic White Canvas Sneakers',
+            'Vintage Brown Leather Belt',
+            'Rose Gold Plated Necklace',
+            'Waterproof Sports Smartwatch',
+            'Chic Bohemian Summer Skirt',
+            'Men\'s Casual Linen Shirt',
+            'High Heel Stiletto Ankle Boots'
         ];
 
-        // Creating 20 sample products with details, galleries, tags, and inventory
-        for ($i = 1; $i <= 20; $i++) {
+        // Creating 30 sample products with details, galleries, tags, and inventory
+        for ($i = 1; $i <= 30; $i++) {
             
             $name = $productNames[$i - 1] ?? ucwords($faker->words(3, true));
             $price = $faker->randomElement([49.99, 89.99, 129.50, 150.00, 200.00, 25.99, 39.95, 45.00, 59.99]);
