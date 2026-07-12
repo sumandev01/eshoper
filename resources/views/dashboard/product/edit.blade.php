@@ -23,12 +23,12 @@
                                 @if ($product?->inventories->isNotEmpty())
                                     This product has {{ $product?->inventories->count() }} variants. You can edit the product
                                     information here, but to edit variant-specific details like price, stock, etc., please go to
-                                    the <a href="{{ route('inventory.index', $product?->id) }}"
+                                    the <a href="{{ route('admin.inventory.index', $product?->id) }}"
                                         class="text-decoration-none">Product Variants</a> section.
                                 @else
                                     This product does not have any variants. You can edit all product details here, including
                                     price, stock, etc or you can add variants in the <a
-                                        href="{{ route('inventory.index', $product?->id) }}"
+                                        href="{{ route('admin.inventory.index', $product?->id) }}"
                                         class="text-decoration-none">Product Variants</a> section.
                                 @endif
                             </p>

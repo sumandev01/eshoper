@@ -101,7 +101,7 @@
                                             <td class="text-center">
                                                 <div class="d-flex justify-content-center">
                                                     @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value)
-                                                        <a href="{{ route('inventory.index', $product?->id) }}"
+                                                        <a href="{{ route('admin.inventory.index', $product?->id) }}"
                                                             class="btn btn-sm btn-outline-secondary me-1" title="View">
                                                             <i class="mdi mdi-cog-outline me-1"></i>
                                                         </a>

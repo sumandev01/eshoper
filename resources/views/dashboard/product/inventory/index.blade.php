@@ -8,7 +8,7 @@
                     <div class="card-header py-4">
                         <div class="d-flex justify-content-between align-items-center">
                             <h4 class="mb-0">Product Inventory Management</h4>
-                            <a href="{{ route('product.index') }}" class="btn btn-primary">
+                            <a href="{{ route('admin.product.index') }}" class="btn btn-primary">
                                 <i class="mdi mdi-arrow-left btn-icon-prepend me-2"></i>
                                 Back to Products
                             </a>

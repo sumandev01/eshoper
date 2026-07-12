@@ -184,7 +184,7 @@
                         <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">Inventory & Variations</h5>
                             @can(\App\Enums\Permission\ProductInventoryPermission::UPDATE->value)
-                                <a href="{{ route('inventory.index', $product?->id) }}" class="btn btn-sm btn-soft-primary">
+                                <a href="{{ route('admin.inventory.index', $product?->id) }}" class="btn btn-sm btn-soft-primary">
                                     <i class="mdi mdi-cog-outline me-1"></i> Manage Inventory
                                 </a>
                             @endcan

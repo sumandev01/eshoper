@@ -12,6 +12,7 @@
         placeholder="{{ $placeholder ?? '' }}"
         value="{{ old($name, $value ?? '') }}"
         maxlength="{{ $maxlength ?? '' }}"
+        @if (isset($step)) step="{{ $step }}" @elseif (($type ?? 'text') === 'number') step="any" @endif
         @if (!empty($required)) required="{{ $required ? 'required' : false }}" @endif
         @if (!empty($disabled)) disabled="{{ $disabled ? 'disabled' : false }}" @endif
         @if (!empty($readonly)) readonly="{{ $readonly ? 'readonly' : false }}" @endif
@@ -34,6 +35,7 @@
     placeholder="{{ $placeholder ?? '' }}"
     value="{{ old($name, $value ?? '') }}"
     maxlength="{{ $maxlength ?? '' }}"
+    @if (isset($step)) step="{{ $step }}" @elseif (($type ?? 'text') === 'number') step="any" @endif
     @if (!empty($required)) required="{{ $required ? 'required' : false }}" @endif
     @if (!empty($disabled)) disabled="{{ $disabled ? 'disabled' : false }}" @endif
     @if (!empty($readonly)) readonly="{{ $readonly ? 'readonly' : false }}" @endif

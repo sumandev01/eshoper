@@ -36,22 +36,39 @@
 
         @push('scripts')
         <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
         <script>
             $(document).ready(function() {
                 const toolbarOptions = [
                     [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline'],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
                     [{ 'color': [] }, { 'background': [] }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
                     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
                     [{ 'align': [] }], 
-                    ['link'], 
+                    ['link', 'image', 'video'], 
                     ['clean']
                 ];
 
                 const quill = new Quill('#editor-{{ $name }}', {
-                    modules: { toolbar: toolbarOptions },
+                    modules: { 
+                        toolbar: toolbarOptions,
+                        imageResize: {
+                            displaySize: true
+                        }
+                    },
                     theme: 'snow',
                     placeholder: '{{ $placeholder }}'
+                });
+
+                const toolbar = quill.getModule('toolbar');
+                toolbar.addHandler('image', function() {
+                    // Create a temporary hidden button to trigger the media modal safely
+                    let tempBtn = $('<button type="button" class="d-none open-media-picker" data-target-id="{{ $name }}" data-limit="1" data-multiple="false" data-is-quill="true"></button>');
+                    $('body').append(tempBtn);
+                    tempBtn.click();
+                    tempBtn.remove();
                 });
 
                 const limit = {{ $maxlength ?? 0 }};
@@ -85,8 +102,10 @@
 
                 window.insertImageToQuill_{{ str_replace('-', '_', $name) }} = function(imageUrl) {
                     const range = quill.getSelection(true);
-                    quill.insertEmbed(range.index, 'image', imageUrl, Quill.Sources.USER);
-                    quill.setSelection(range.index + 1);
+                    if (range) {
+                        quill.insertEmbed(range.index, 'image', imageUrl, 'user');
+                        quill.setSelection(range.index + 1);
+                    }
                 };
             });
         </script>

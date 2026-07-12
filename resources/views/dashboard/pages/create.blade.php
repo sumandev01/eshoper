@@ -13,7 +13,7 @@
                     <div class="card-body px-4 pb-0">
                         <x-input label="Page Title" name="title" type="text" placeholder="Enter page title (e.g. Terms & Conditions)" :required='true' />
                         
-                        <x-textarea label="Page Content" name="content" :editor="true" />
+                        <x-textarea label="Page Content" name="content" :editor="true" :rows="15" />
 
                         <div class="mb-3 form-check form-switch">
                             <input class="form-check-input ms-0 me-2" type="checkbox" role="switch" id="status" name="status" checked value="1">

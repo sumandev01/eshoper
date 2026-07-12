@@ -151,6 +151,7 @@
             $(document).on('click', '.open-media-picker', function(e) {
                 e.preventDefault();
                 currentTargetId = $(this).data('target-id');
+                window.isForQuill = $(this).data('is-quill') === true;
 
                 const limit = parseInt($(this).data('limit')) || 5;
                 const currentImagesCount = $(`#media-preview-${currentTargetId}`).find('.gallery-item')
@@ -372,10 +373,36 @@
             $('.confirm-selection-btn').on('click', function() {
                 if (tempSelectedMedia.length === 0) return alert('Please select an image!');
 
+                // Check if the modal was opened for Quill editor
+                if (window.isForQuill) {
+                    const media = tempSelectedMedia[0];
+                    let relativePath = media.src;
+                    try {
+                        let parsedUrl = new URL(media.src, window.location.origin);
+                        relativePath = parsedUrl.pathname;
+                    } catch (e) {
+                        // fallback to media.src
+                    }
+                    
+                    let functionName = `insertImageToQuill_${currentTargetId.replace(/-/g, '_')}`;
+                    if (typeof window[functionName] === 'function') {
+                        window[functionName](relativePath);
+                    }
+                    
+                    let modalEl = document.getElementById('mediaPickerModal');
+                    if (modalEl) {
+                        let modal = bootstrap.Modal.getInstance(modalEl);
+                        if (modal) modal.hide();
+                        else $('#mediaPickerModal').modal('hide');
+                    }
+                    
+                    window.isForQuill = false;
+                    return;
+                }
+
                 let previewContainer = $(`#media-preview-${currentTargetId}`);
                 let baseInputName = currentTargetId.replace(/-/g, '_');
-                const limit = parseInt($(`.open-media-picker[data-target-id="${currentTargetId}"]`).data(
-                    'limit')) || 5;
+                const limit = parseInt($(`.open-media-picker[data-target-id="${currentTargetId}"]`).data('limit')) || 5;
 
                 if (!isMultiple) {
                     const media = tempSelectedMedia[0];
