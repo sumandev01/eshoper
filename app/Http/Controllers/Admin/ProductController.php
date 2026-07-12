@@ -37,7 +37,9 @@ class ProductController extends Controller
         $categories = Category::latest('id')->get();
         $brands = Brand::latest('id')->get();
         $tags = Tag::latest('id')->get();
-        return view('dashboard.product.add', compact('categories', 'brands', 'tags'));
+        $sizes = \App\Models\Size::orderBy('name', 'desc')->get();
+        $colors = \App\Models\Color::orderBy('name', 'asc')->get();
+        return view('dashboard.product.add', compact('categories', 'brands', 'tags', 'sizes', 'colors'));
     }
 
     public function store(ProductRequest $request, ProductRepository $productRepository)
@@ -65,13 +67,30 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $product->load('galleries');
+        $product->load(['galleries', 'inventories.media']);
         $categories = Category::latest('id')->get();
         $subCategories = Category::latest('id')->get();
         $brands = Brand::latest('id')->get();
         $tags = Tag::latest('id')->get();
         $media = Media::latest('id')->get();
-        return view('dashboard.product.edit', compact('product', 'categories', 'brands', 'tags', 'media'));
+        $sizes = \App\Models\Size::orderBy('name', 'desc')->get();
+        $colors = \App\Models\Color::orderBy('name', 'asc')->get();
+        
+        $existingVariants = $product->inventories->map(function ($inv) {
+            return [
+                'size_id' => $inv->size_id,
+                'color_id' => $inv->color_id,
+                'stock' => $inv->stock,
+                'price' => $inv->price,
+                'discount' => $inv->discount,
+                'use_main_price' => $inv->use_main_price,
+                'use_main_discount' => $inv->use_main_discount,
+                'media_id' => $inv->media_id,
+                'image' => $inv->media ? \Illuminate\Support\Facades\Storage::url($inv->media->src) : null,
+            ];
+        })->values()->toArray();
+
+        return view('dashboard.product.edit', compact('product', 'categories', 'brands', 'tags', 'media', 'sizes', 'colors', 'existingVariants'));
     }
 
     public function update(ProductRequest $request, Product $product, ProductRepository $productRepository)

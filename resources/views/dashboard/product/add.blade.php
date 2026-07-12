@@ -34,8 +34,8 @@
                             <x-input name="name" label="Product Name" type="text" placeholder="Enter product name"
                                 :required="false" :maxlength="100" :value="$item->name ?? ''" />
 
-                            <x-input name="slug" type="hidden" placeholder="enter-product-slug"
-                                :required="false" :maxlength="100" :value="$item->slug ?? ''" />
+                            <x-input name="slug" type="hidden" placeholder="enter-product-slug" :required="false"
+                                :maxlength="100" :value="$item->slug ?? ''" />
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -43,8 +43,8 @@
                                         :value="$item->sku ?? ''" />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <x-input name="quantity" type="number" placeholder="0" label="Product Quantity"
-                                        :value="$item->quantity ?? ''" />
+                                    <x-input name="quantity" id="main_quantity" type="number" placeholder="0"
+                                        label="Product Quantity" :value="$item->quantity ?? ''" />
                                 </div>
                             </div>
 
@@ -70,19 +70,23 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sale_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ ($siteSettings->currency_symbol ?? null) }}" label="Sale Price" />
+                                        inputGroupText="{{ $siteSettings->currency_symbol ?? null }}" label="Sale Price" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="discount" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ ($siteSettings->currency_symbol ?? null) }}" label="Discount Price" />
+                                        inputGroupText="{{ $siteSettings->currency_symbol ?? null }}"
+                                        label="Discount Price" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="buy_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ ($siteSettings->currency_symbol ?? null) }}" label="Buy Price" />
+                                        inputGroupText="{{ $siteSettings->currency_symbol ?? null }}" label="Buy Price" />
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Variants Section -->
+                    @include('dashboard.product.partials.variants')
 
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header pt-3">
@@ -99,9 +103,12 @@
                             <h5 class="card-title">SEO</h5>
                         </div>
                         <div class="card-body">
-                            <x-textarea name="meta_title" label="Meta Title" :value="$item->meta_title ?? ''" :maxlength="60" :wordcount="true" :rows="1" />
-                            <x-textarea name="meta_keyword" label="Meta Keywords (Comma separated)" :value="$item->meta_keyword ?? ''" :rows="2" />
-                            <x-textarea name="meta_description" label="Meta Description" :value="$item->meta_description ?? ''" :maxlength="160" :wordcount="true" :rows="2" />
+                            <x-textarea name="meta_title" label="Meta Title" :value="$item->meta_title ?? ''" :maxlength="60"
+                                :wordcount="true" :rows="1" />
+                            <x-textarea name="meta_keyword" label="Meta Keywords (Comma separated)" :value="$item->meta_keyword ?? ''"
+                                :rows="2" />
+                            <x-textarea name="meta_description" label="Meta Description" :value="$item->meta_description ?? ''"
+                                :maxlength="160" :wordcount="true" :rows="2" />
                         </div>
                     </div>
                 </div>
@@ -155,9 +162,9 @@
                     <div class="card shadow-sm">
                         <div class="card-body">
                             @can(\App\Enums\Permission\ProductPermission::CREATE->value)
-                                <button type="submit" class="btn btn-primary w-100 mb-2">
-                                <i class="mdi mdi-content-save me-1"></i> Add Product
-                            </button>
+                                <button type="submit" id="product_submit_btn" class="btn btn-primary w-100 mb-2">
+                                    <i class="mdi mdi-content-save me-1"></i> Add Product
+                                </button>
                             @endcan
                         </div>
                     </div>
@@ -197,9 +204,11 @@
         .product_thumbnail .noImagesSelected {
             font-size: 14px !important;
         }
+
         textarea {
             resize: none !important;
         }
+
         textarea:focus {
             box-shadow: none !important;
         }

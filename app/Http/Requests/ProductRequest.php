@@ -54,7 +54,43 @@ class ProductRequest extends FormRequest
             'meta_title' => 'nullable|string|max:60',
             'meta_keyword' => 'nullable|string',
             'meta_description' => 'nullable|string|max:160',
+
+            // Variants validation
+            'variants' => 'nullable|array',
+            'variants.*.size_id' => 'nullable|exists:sizes,id',
+            'variants.*.color_id' => 'nullable|exists:colors,id',
+            'variants.*.price' => 'nullable|numeric|min:0',
+            'variants.*.use_main_price' => 'nullable|in:1',
+            'variants.*.discount' => 'nullable|numeric|min:0',
+            'variants.*.use_main_discount' => 'nullable|in:1',
+            'variants.*.stock' => 'required_with:variants|numeric|min:0',
+            'variants.*.media_id' => 'required_with:variants|exists:media,id',
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $variants = $this->input('variants', []);
+            if (is_array($variants) && count($variants) > 0) {
+                $combinations = [];
+                foreach ($variants as $index => $variant) {
+                    $sizeId = $variant['size_id'] ?? null;
+                    $colorId = $variant['color_id'] ?? null;
+                    
+                    if (!$sizeId && !$colorId) {
+                        $validator->errors()->add("variants.{$index}.size_id", 'Either size or color must be selected.');
+                    }
+                    
+                    $comboKey = ($sizeId ?? 'none') . '-' . ($colorId ?? 'none');
+                    if (in_array($comboKey, $combinations)) {
+                        $validator->errors()->add("variants.{$index}.size_id", 'Duplicate size and color combination.');
+                    } else {
+                        $combinations[] = $comboKey;
+                    }
+                }
+            }
+        });
     }
 
     public function messages(): array

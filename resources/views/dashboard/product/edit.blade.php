@@ -110,6 +110,9 @@
                         </div>
                     </div>
 
+                    <!-- Variants Section -->
+                    @include('dashboard.product.partials.variants')
+
                     <div class="card mb-4 shadow-sm">
                         <div class="card-header bg-white pt-3">
                             <h5 class="card-title">Gallery</h5>

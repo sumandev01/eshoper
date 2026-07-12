@@ -65,6 +65,34 @@ class ProductRepository
                 $product->tags()->sync($request->tag_id);
             }
 
+            if ($request->has('variants') && is_array($request->variants)) {
+                $totalStock = 0;
+                foreach ($request->variants as $variant) {
+                    $useMainPrice = isset($variant['use_main_price']) && $variant['use_main_price'] == '1' ? 1 : 0;
+                    $useMainDiscount = isset($variant['use_main_discount']) && $variant['use_main_discount'] == '1' ? 1 : 0;
+
+                    $finalPrice = ($useMainPrice === 1) ? null : ($variant['price'] ?? null);
+                    $finalDiscount = ($useMainDiscount === 1) ? null : ($variant['discount'] ?? null);
+                    $stock = $variant['stock'] ?? 0;
+                    $totalStock += $stock;
+
+                    ProductInventory::create([
+                        'product_id' => $product->id,
+                        'size_id' => $variant['size_id'] ?? null,
+                        'color_id' => $variant['color_id'] ?? null,
+                        'price' => $finalPrice,
+                        'discount' => $finalDiscount,
+                        'use_main_price' => $useMainPrice,
+                        'use_main_discount' => $useMainDiscount,
+                        'stock' => $stock,
+                        'media_id' => $variant['media_id'] ?? null,
+                    ]);
+                }
+                
+                // Update main product stock with the total stock from variants
+                $product->update(['stock' => $totalStock]);
+            }
+
             return $product;
         });
     }
@@ -119,6 +147,67 @@ class ProductRepository
 
             // Tags update logic
             $product->tags()->sync($request->tag_id ?? []);
+
+            // Variants update logic
+            if ($request->has('variants') && is_array($request->variants) && count($request->variants) > 0) {
+                $submittedVariantCombos = [];
+                $totalStock = 0;
+                
+                foreach ($request->variants as $variant) {
+                    $submittedVariantCombos[] = [
+                        'size_id' => $variant['size_id'] ?? null,
+                        'color_id' => $variant['color_id'] ?? null,
+                    ];
+                    
+                    $stock = intval($variant['stock'] ?? 0);
+                    $totalStock += $stock;
+                    
+                    $useMainPrice = isset($variant['use_main_price']) && $variant['use_main_price'] == 1 ? 1 : 0;
+                    $useMainDiscount = isset($variant['use_main_discount']) && $variant['use_main_discount'] == 1 ? 1 : 0;
+                    
+                    $finalPrice = $useMainPrice ? $request->sale_price : ($variant['price'] ?? 0);
+                    $finalDiscount = $useMainDiscount ? $request->discount : ($variant['discount'] ?? 0);
+                    
+                    ProductInventory::updateOrCreate(
+                        [
+                            'product_id' => $product->id,
+                            'size_id' => $variant['size_id'] ?? null,
+                            'color_id' => $variant['color_id'] ?? null,
+                        ],
+                        [
+                            'price' => $finalPrice,
+                            'discount' => $finalDiscount,
+                            'use_main_price' => $useMainPrice,
+                            'use_main_discount' => $useMainDiscount,
+                            'stock' => $stock,
+                            'media_id' => $variant['media_id'] ?? null,
+                        ]
+                    );
+                }
+                
+                // Delete missing variants
+                $existingInventories = ProductInventory::where('product_id', $product->id)->get();
+                foreach ($existingInventories as $existing) {
+                    $found = false;
+                    foreach ($submittedVariantCombos as $combo) {
+                        if ($existing->size_id == $combo['size_id'] && $existing->color_id == $combo['color_id']) {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    if (!$found) {
+                        $existing->delete();
+                    }
+                }
+                
+                // Update main product stock with the total stock from variants
+                $product->update(['stock' => $totalStock]);
+            } else {
+                // If no variants submitted, delete all variants for this product
+                ProductInventory::where('product_id', $product->id)->delete();
+                // Ensure stock matches the manual quantity
+                $product->update(['stock' => $request->quantity]);
+            }
 
             return $product;
         });
