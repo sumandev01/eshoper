@@ -20,16 +20,4 @@ class Setting extends Model
     {
         return $this->belongsTo(Media::class);
     }
-
-
-    public function image(): Attribute
-    {
-        $url = asset('default.webp');
-        if ($this->media && $this->media->src) {
-            $url = Storage::url($this->media->src);
-        }
-        return Attribute::make(
-            get: fn() => $url,
-        );
-    }
 }

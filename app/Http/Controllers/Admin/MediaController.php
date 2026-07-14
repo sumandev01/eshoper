@@ -3,22 +3,26 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Media;
 use App\Repositories\MediaRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Media;
-use Illuminate\Support\Facades\Storage;
 
 class MediaController extends Controller
 {
     protected $mediaRepo;
+
     public function __construct(MediaRepository $mediaRepository)
     {
         $this->mediaRepo = $mediaRepository;
     }
-    public function index()
+
+    public function index(Request $request)
     {
-        $medias = Media::latest('id')->paginate(12);
+        $medias = Media::latest('id')->paginate(96);
+        if ($request->has('view')) {
+            $medias->appends(['view' => $request->query('view')]);
+        }
+
         return view('dashboard.media.index', compact('medias'));
     }
 
@@ -43,7 +47,7 @@ class MediaController extends Controller
             }
 
             if ($uploadCount > 0) {
-                return redirect()->route('admin.media')->with('success', $uploadCount . ' media uploaded successfully.');
+                return redirect()->route('admin.media')->with('success', $uploadCount.' media uploaded successfully.');
             }
         }
 
@@ -53,6 +57,7 @@ class MediaController extends Controller
     public function edit($id)
     {
         $media = Media::findOrFail($id);
+
         return view('dashboard.media.edit', compact('media'));
     }
 
@@ -87,7 +92,8 @@ class MediaController extends Controller
 
     public function getGalleryAjax()
     {
-        $allMedia = Media::latest('id')->paginate(24);
+        $allMedia = Media::latest('id')->paginate(96);
+
         return view('dashboard.media.partials.gallery_list', compact('allMedia'))->render();
         // return response()->json($allMedia);
     }
@@ -107,7 +113,7 @@ class MediaController extends Controller
             }
 
             if ($uploadCount > 0) {
-                return response()->json(['success' => true, 'message' => $uploadCount . ' media uploaded successfully.']);
+                return response()->json(['success' => true, 'message' => $uploadCount.' media uploaded successfully.']);
             }
         }
 

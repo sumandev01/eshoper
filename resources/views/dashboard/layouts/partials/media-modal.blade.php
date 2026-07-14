@@ -128,6 +128,23 @@
         let tempSelectedMedia = [];
         let uploadFilesContainer = new DataTransfer();
 
+        // Helper function to reset modal state for a specific target
+        // This ensures that when the modal is reopened, it's clean.
+        function resetModalState(targetId) {
+            // Remove 'selected-media-border' class from all gallery items for the target.
+            // We target items within the specific gallery container for cleanliness.
+            $('#ajax-media-container .select-this-media').removeClass('selected-media-border');
+
+            // Empty the temporary selected media array.
+            tempSelectedMedia = [];
+
+            // If there's a single-select preview in the modal, hide it.
+            if (!isMultiple) {
+                 $('#no-preview-text').show();
+                 $('#modal-selection-preview').attr('src', '').hide();
+            }
+        }
+
         function adjustGridSystem() {
             if (isMultiple === true) {
                 $('.media-col').removeClass('col-xl-3').addClass('col-xl-2');
@@ -182,6 +199,11 @@
 
                 var myModal = new bootstrap.Modal(document.getElementById('mediaPickerModal'));
                 myModal.show();
+                
+                // --- ENHANCEMENT: Reset state when opening ---
+                // This is good practice to ensure a clean slate each time.
+                resetModalState(currentTargetId);
+                
                 refreshGallery();
             });
 
@@ -219,7 +241,7 @@
                 const dt = e.dataTransfer;
                 const files = dt.files;
                 if (files.length > 0) {
-                    // এটি ইনপুটে ফাইল সেট করবে এবং চেইঞ্জ ইভেন্ট ট্রিগার করবে
+                    // Set the files to the file input and trigger change event
                     document.getElementById('file-input').files = files;
                     $('#file-input').trigger('change');
                 }
@@ -397,6 +419,8 @@
                     }
                     
                     window.isForQuill = false;
+                    // --- ENHANCEMENT: Reset state after insert (Quill) ---
+                    resetModalState(currentTargetId);
                     return;
                 }
 
@@ -432,6 +456,8 @@
                     });
                 }
                 bootstrap.Modal.getInstance(document.getElementById('mediaPickerModal')).hide();
+                // --- ENHANCEMENT: Reset state after insert (Standard) ---
+                resetModalState(currentTargetId);
             });
 
             // 9. Remove image from main page preview
@@ -469,6 +495,18 @@
                     );
                 }
             });
+            
+            // --- ENHANCEMENT: Event Listener for Modal Hidden ---
+            // This is the most robust way to handle state reset regardless of how the modal is closed.
+            const myModalEl = document.getElementById('mediaPickerModal');
+            if (myModalEl) {
+                myModalEl.addEventListener('hidden.bs.modal', function(event) {
+                    // Use the global currentTargetId to reset the correct state.
+                    if (currentTargetId) {
+                        resetModalState(currentTargetId);
+                    }
+                });
+            }
         });
     </script>
 @endpush

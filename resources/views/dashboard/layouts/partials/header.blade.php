@@ -3,7 +3,7 @@
         <a class="navbar-brand brand-logo" href="{{ route('admin.dashboard') }}"><img src="{{ ($siteSettings->site_logo ?? null) }}"
                 alt="logo" /></a>
         <a class="navbar-brand brand-logo-mini" href="{{ route('admin.dashboard') }}"><img
-                src="{{ ($siteSettings->site_logo ?? null) }}" alt="logo" /></a>
+                src="{{ ($siteSettings->site_mobile_logo ?? null) }}" alt="logo" /></a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">

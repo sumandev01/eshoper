@@ -23,6 +23,26 @@ class ProductFilterService
     }
 
     /**
+     * Effective price SQL for inventory rows.
+     * Correctly resolves use_main_price and use_main_discount flags.
+     * Requires 'products as products_p' to be joined in the query.
+     */
+    protected function getInventoryEffectivePriceSql()
+    {
+        // Step 1: resolve the actual price (own or main)
+        $resolvedPrice    = "(CASE WHEN product_inventories.use_main_price = 1 THEN products_p.price ELSE product_inventories.price END)";
+        // Step 2: resolve the actual discount (own or main)
+        $resolvedDiscount = "(CASE WHEN product_inventories.use_main_discount = 1 THEN products_p.discount ELSE product_inventories.discount END)";
+
+        // Step 3: if resolved discount is valid (> 0 and < price), use discount; else use price
+        return "(CASE 
+            WHEN {$resolvedDiscount} IS NOT NULL AND {$resolvedDiscount} > 0 AND {$resolvedDiscount} < {$resolvedPrice}
+            THEN {$resolvedDiscount}
+            ELSE {$resolvedPrice}
+        END)";
+    }
+
+    /**
      * Unified filter method for all product listing pages.
      */
     public function filter($request, $category = null, $subcategory = null)
@@ -41,16 +61,23 @@ class ProductFilterService
             });
         }
 
-        // Price Filter (Checks both main product and variants)
+        // Price Filter
         if ($request->filled('min_price') && $request->filled('max_price')) {
             $min = (float) preg_replace('/[^\d.]/', '', $request->min_price);
             $max = (float) preg_replace('/[^\d.]/', '', $request->max_price);
 
             $productsQuery->where(function ($query) use ($min, $max) {
-                $query->whereRaw("{$this->getEffectivePriceSql()} BETWEEN ? AND ?", [$min, $max])
-                    ->orWhereHas('inventories', function ($q) use ($min, $max) {
-                        $q->whereRaw("{$this->getEffectivePriceSql('product_inventories')} BETWEEN ? AND ?", [$min, $max]);
-                    });
+                // Case 1: Products WITHOUT variants → filter by main product price
+                $query->where(function ($q) use ($min, $max) {
+                    $q->doesntHave('inventories')
+                      ->whereRaw("{$this->getEffectivePriceSql()} BETWEEN ? AND ?", [$min, $max]);
+                })
+                // Case 2: Products WITH variants → filter by inventory effective price
+                // (respects use_main_price & use_main_discount flags)
+                ->orWhereHas('inventories', function ($q) use ($min, $max) {
+                    $q->join('products as products_p', 'products_p.id', '=', 'product_inventories.product_id')
+                      ->whereRaw($this->getInventoryEffectivePriceSql() . " BETWEEN ? AND ?", [$min, $max]);
+                });
             });
         }
 

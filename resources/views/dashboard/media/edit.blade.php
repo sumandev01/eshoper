@@ -1,12 +1,27 @@
+{{-- resources/views/admin/media/edit.blade.php --}}
+
 @extends('dashboard.layouts.app')
 @section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Edit Media - ' . $media->file_name)
 @section('content')
+
+    {{-- --- IMPORTANT CHANGE HERE: Prepare the return URL --- --}}
+    {{-- Get the current 'view' query parameter from the URL, default to 'grid' if not present --}}
+    @php
+        $returnView = request()->query('view', 'grid');
+        // Build the base back/cancel URL
+        $backUrl = route('admin.media');
+        // Append the view parameter to maintain state (list or grid) when returning
+        $backUrlWithView = $backUrl . '?view=' . $returnView;
+    @endphp
+    {{--------------------------------------------------------}}
+
     <div class="content-wrapper">
         <div class="page-header">
             <h3 class="page-title"> Edit Media Details</h3>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <a class="btn btn-primary mr-2 btn-icon-text" href="{{ route('admin.media') }}">
+                    {{-- --- CHANGE: Use the dynamic URL with view param --- --}}
+                    <a class="btn btn-primary mr-2 btn-icon-text" href="{{ $backUrlWithView }}">
                         <i class="mdi mdi-arrow-left btn-icon-prepend"></i> Back to All Gallery
                     </a>
                 </ol>
@@ -34,6 +49,9 @@
                                     @endif
                                 </span>
                             </p>
+                            <p class="mb-2"><strong>Uploaded At:</strong>
+                                <span class="text-muted">{{ $media->created_at->format('d M, Y h:i A') }}</span>
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -48,6 +66,10 @@
                             @csrf
                             @method('PUT')
                             <input type="hidden" class="d-none" name="id" value="{{ $media->id }}" hidden />
+                            
+                            {{-- Optional: Include the view parameter as a hidden input to maintain state after form submission --}}
+                            <input type="hidden" name="view" value="{{ $returnView }}" />
+
                             <x-input label="Name" name="name" type="text" value="{{ $media->name }}"
                                 placeholder="Enter media name" required="true" :maxlength="50" />
 
@@ -69,7 +91,8 @@
                                         <i class="mdi mdi-content-save btn-icon-prepend"></i> Update Media
                                     </button>
                                 @endcan
-                                <a href="{{ route('admin.media') }}" class="btn btn-danger mr-2 btn-icon-text">
+                                {{-- --- CHANGE: Use the dynamic URL with view param for Cancel --- --}}
+                                <a href="{{ $backUrlWithView }}" class="btn btn-danger mr-2 btn-icon-text">
                                     <i class="mdi mdi-cancel btn-icon-prepend"></i> Cancel
                                 </a>
                             </div>
@@ -80,4 +103,3 @@
         </div>
     </div>
 @endsection
-

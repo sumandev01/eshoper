@@ -23,7 +23,7 @@ use App\Enums\Permission\FaqPermission;
 use App\Enums\Permission\LocationPermission;
 use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
-use App\Enums\Permission\ProductInventoryPermission;
+
 use App\Enums\Permission\SettingPermission;
 use App\Enums\Permission\TeamMemberPermission;
 use App\Enums\RoleEnums;
@@ -54,7 +54,7 @@ class PermissionSeeder extends Seeder
             ...array_column(SizePermission::cases(), 'value'),
             ...array_column(ColorPermission::cases(), 'value'),
             ...array_column(ProductPermission::cases(), 'value'),
-            ...array_column(ProductInventoryPermission::cases(), 'value'),
+
             ...array_column(SliderPermission::cases(), 'value'),
             ...array_column(TagPermission::cases(), 'value'),
             ...array_column(CouponPermission::cases(), 'value'),

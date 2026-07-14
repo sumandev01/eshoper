@@ -12,7 +12,7 @@ use App\Enums\Permission\FaqPermission;
 use App\Enums\Permission\LocationPermission;
 use App\Enums\Permission\MediaPermission;
 use App\Enums\Permission\OrderPermission;
-use App\Enums\Permission\ProductInventoryPermission;
+
 use App\Enums\Permission\ProductPermission;
 use App\Enums\Permission\SettingPermission;
 use App\Enums\Permission\SizePermission;
@@ -34,7 +34,7 @@ use App\Http\Controllers\Admin\LocationController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ProductInventoryController;
+
 use App\Http\Controllers\Admin\RolePermissionController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SizeController;
@@ -127,13 +127,6 @@ Route::middleware(['is_admin', 'auth:web', 'can:'.AdminAccessEnums::AdminAccess-
         Route::put('/products/{product}', 'update')->name('admin.product.update')->middleware('permission:'.ProductPermission::UPDATE->value);
         Route::put('/products/{product}/trendy', 'updateTrendy')->name('admin.product.update.trendy')->middleware('permission:'.ProductPermission::UPDATE->value);
         Route::delete('/products/{product}', 'destroy')->name('admin.product.destroy')->middleware('permission:'.ProductPermission::DELETE->value);
-    });
-
-    Route::controller(ProductInventoryController::class)->group(function () {
-        Route::get('/products/{product}/inventories', 'index')->name('admin.inventory.index')->middleware('permission:'.ProductInventoryPermission::VIEW->value);
-        Route::post('/products/inventories', 'store')->name('admin.inventory.store')->middleware('permission:'.ProductInventoryPermission::CREATE->value);
-        Route::put('/products/inventories/{inventory}', 'update')->name('admin.inventory.update')->middleware('permission:'.ProductInventoryPermission::UPDATE->value);
-        Route::delete('/products/inventories/{productInventory}', 'destroy')->name('admin.inventory.destroy')->middleware('permission:'.ProductInventoryPermission::DELETE->value);
     });
 
     Route::controller(OrderController::class)->group(function () {

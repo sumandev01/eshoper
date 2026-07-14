@@ -6,26 +6,21 @@ use App\Http\Controllers\Controller;
 use App\Models\Media;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class SettingController extends Controller
 {
     public function index()
     {
-        $logoId = get_setting('site_logo');
-        $mobileLogoId = get_setting('site_mobile_logo');
-        $faviconId = get_setting('site_favicon');
-        
-        $siteLogo = Storage::url(optional(Media::find($logoId, ['*']))->src ?? asset('default.webp'));
-        
-        $siteMobileLogo = null;
-        if($mobileLogoId){
-            $siteMobileLogo = Storage::url(optional(Media::find($mobileLogoId, ['*']))->src ?? asset('default.webp'));
-        }
-        
-        $siteFavicon = Storage::url(optional(Media::find($faviconId, ['*']))->src ?? asset('default.webp'));
+        $logoId = Setting::whereKeyName('site_logo')->value('key_value');
+        $mobileLogoId = Setting::whereKeyName('site_mobile_logo')->value('key_value');
+        $faviconId = Setting::whereKeyName('site_favicon')->value('key_value');
+        $logoImage = Storage::url(Media::find($logoId)->src);
+        $mobileLogoImage = Storage::url(Media::find($mobileLogoId)->src);
+        $faviconImage = Storage::url(Media::find($faviconId)->src);
 
-        return view('dashboard.settings.index', compact('siteLogo', 'siteMobileLogo', 'siteFavicon'));
+        return view('dashboard.settings.index', compact('logoId', 'mobileLogoId', 'faviconId', 'logoImage', 'mobileLogoImage', 'faviconImage'));
     }
 
     public function update(Request $request)
@@ -70,7 +65,7 @@ class SettingController extends Controller
         } else {
             unset($inputs['site_logo']);
         }
-        
+
         if (! empty($inputs['mobile_logo'])) {
             $inputs['site_mobile_logo'] = $inputs['mobile_logo'];
         } else {
@@ -97,83 +92,12 @@ class SettingController extends Controller
                     ['key_value' => $value]
                 );
             }
-            
-            \Illuminate\Support\Facades\Cache::forget('site_settings');
+
+            Cache::forget('site_settings');
 
             return redirect()->route('admin.settings.index')->with('success', 'Updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to update settings.');
-        }
-    }
-
-    public function offers()
-    {
-        $offer1Id = Setting::whereKeyName('offer1_image')->value('key_value');
-        $offer2Id = Setting::whereKeyName('offer2_image')->value('key_value');
-
-        $offer1Image = asset('default.webp');
-        if (is_numeric($offer1Id)) {
-            $media = Media::find($offer1Id);
-            $offer1Image = $media ? Storage::url($media->src) : asset('default.webp');
-        } elseif ($offer1Id) {
-            $offer1Image = asset($offer1Id);
-        }
-
-        $offer2Image = asset('default.webp');
-        if (is_numeric($offer2Id)) {
-            $media = Media::find($offer2Id);
-            $offer2Image = $media ? Storage::url($media->src) : asset('default.webp');
-        } elseif ($offer2Id) {
-            $offer2Image = asset($offer2Id);
-        }
-
-        return view('dashboard.offers.index', compact('offer1Image', 'offer2Image'));
-    }
-
-    public function updateOffers(Request $request)
-    {
-        $inputs = $request->validate([
-            'offer1_status' => 'nullable',
-            'offer1_title' => 'required',
-            'offer1_subtitle' => 'nullable',
-            'offer1_link' => 'nullable',
-            'offer1_image' => 'nullable',
-            'offer1_image_id' => 'nullable',
-
-            'offer2_status' => 'nullable',
-            'offer2_title' => 'required',
-            'offer2_subtitle' => 'nullable',
-            'offer2_link' => 'nullable',
-            'offer2_image' => 'nullable',
-            'offer2_image_id' => 'nullable',
-        ]);
-
-        if (!empty($inputs['offer1_image_id'])) {
-            $inputs['offer1_image'] = $inputs['offer1_image_id'];
-        } else {
-            unset($inputs['offer1_image']);
-        }
-
-        if (!empty($inputs['offer2_image_id'])) {
-            $inputs['offer2_image'] = $inputs['offer2_image_id'];
-        } else {
-            unset($inputs['offer2_image']);
-        }
-
-        unset($inputs['offer1_image_id']);
-        unset($inputs['offer2_image_id']);
-
-        try {
-            foreach ($inputs as $key => $value) {
-                Setting::updateOrCreate(
-                    ['key_name' => $key],
-                    ['key_value' => $value]
-                );
-            }
-
-            return redirect()->back()->with('success', 'Offers updated successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Failed to update offers.');
         }
     }
 
@@ -207,6 +131,9 @@ class SettingController extends Controller
                     ['key_value' => $value]
                 );
             }
+
+            \Illuminate\Support\Facades\Cache::forget('payment_gateways');
+            \Illuminate\Support\Facades\Cache::forget('site_settings');
 
             return redirect()->back()->with('success', 'Payment gateways updated successfully.');
         } catch (\Exception $e) {

@@ -88,6 +88,7 @@
     <link href="{{ asset('web/css/main.style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/dataTables.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
     @stack('styles')
     @php
         function hexToRgb($hex) {
@@ -488,6 +489,7 @@
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="{{ asset('web/js/addCart.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/dataTables.min.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <script>
         window.LaravelData = {
             route_getColorBySize: "{{ route('product.color.by.size') }}",

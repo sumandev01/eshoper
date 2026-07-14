@@ -179,15 +179,9 @@
                 </div>
 
                 <!-- Product Inventory Card -->
-                @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value)
                     <div class="card mb-4 shadow-sm border-0">
                         <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">Inventory & Variations</h5>
-                            @can(\App\Enums\Permission\ProductInventoryPermission::UPDATE->value)
-                                <a href="{{ route('admin.inventory.index', $product?->id) }}" class="btn btn-sm btn-soft-primary">
-                                    <i class="mdi mdi-cog-outline me-1"></i> Manage Inventory
-                                </a>
-                            @endcan
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -269,9 +263,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
                     </div>
-                @endcan
             </div>
 
             <!-- Right Side: Organization, Image & Tags -->

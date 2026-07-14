@@ -97,8 +97,17 @@
                                 <img src="{{ $siteSettings->site_mobile_logo }}" class="img-fluid"
                                     style="width: auto; max-height: 50px;" alt="Logo" loading="lazy">
                             @elseif(!empty($siteSettings->site_logo))
-                                <img src="{{ $siteSettings->site_logo }}" class="img-fluid"
-                                    style="width: auto; max-height: 50px;" alt="Logo" loading="lazy">
+                                {{-- <img src="{{ $siteSettings->site_logo }}" class="img-fluid"
+                                    style="width: auto; max-height: 50px;" alt="Logo" loading="lazy"> --}}
+                                    <img
+  src="{{ $siteSettings->site_logo }}"
+  class="img-fluid"
+  width="160"
+  height="80"
+  style="width: auto; max-height: 80px;"
+  alt="MartX Premium E-commerce Logo"
+  fetchpriority="high"
+>
                             @else
                                 <span class="text-primary fw-bold border px-3 me-1">E</span>Shopper
                             @endif

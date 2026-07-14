@@ -14,26 +14,6 @@
                             </a>
                         </div>
                     </div>
-                    @can(\App\Enums\Permission\ProductInventoryPermission::VIEW->value,
-                        \App\Enums\Permission\ProductInventoryPermission::CREATE->value,
-                        \App\Enums\Permission\ProductInventoryPermission::UPDATE->value,
-                        \App\Enums\Permission\ProductInventoryPermission::DELETE->value)
-                        <div class="card-body py-3">
-                            <p class="text-muted fw-bold">
-                                @if ($product?->inventories->isNotEmpty())
-                                    This product has {{ $product?->inventories->count() }} variants. You can edit the product
-                                    information here, but to edit variant-specific details like price, stock, etc., please go to
-                                    the <a href="{{ route('admin.inventory.index', $product?->id) }}"
-                                        class="text-decoration-none">Product Variants</a> section.
-                                @else
-                                    This product does not have any variants. You can edit all product details here, including
-                                    price, stock, etc or you can add variants in the <a
-                                        href="{{ route('admin.inventory.index', $product?->id) }}"
-                                        class="text-decoration-none">Product Variants</a> section.
-                                @endif
-                            </p>
-                        </div>
-                    @endcan
                 </div>
             </div>
         </div>

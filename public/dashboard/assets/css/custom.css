@@ -31,3 +31,6 @@
 .gallery-item{
     padding: 10px !important;
 }
+.navbar-brand img{
+    object-fit: cover !important;
+}

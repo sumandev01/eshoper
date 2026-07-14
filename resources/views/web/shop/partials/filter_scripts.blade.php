@@ -1,5 +1,72 @@
 @push('styles')
     <style>
+        /* === Premium Price Range Slider === */
+        #price-range-slider .noUi-target {
+            background: #f0f0f0;
+            border-radius: 10px;
+            border: none;
+            box-shadow: none;
+            height: 5px;
+        }
+
+        #price-range-slider .noUi-connect {
+            background: #b8727d;
+            border-radius: 10px;
+        }
+
+        #price-range-slider .noUi-handle {
+            width: 20px !important;
+            height: 20px !important;
+            border-radius: 50% !important;
+            background: #fff !important;
+            border: 2px solid #b8727d !important;
+            box-shadow: 0 2px 8px rgba(184, 114, 125, 0.35) !important;
+            top: -3px !important;
+            cursor: pointer;
+        }
+
+        #price-range-slider .noUi-handle:before,
+        #price-range-slider .noUi-handle:after {
+            display: none !important;
+        }
+
+        #price-range-slider .noUi-tooltip {
+            background: #b8727d;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            padding: 2px 7px;
+            bottom: 130%;
+        }
+
+        .price-badge {
+            background: #b8727d;
+            color: white;
+            font-size: 13px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .price-range-dash {
+            color: #999;
+            font-weight: bold;
+        }
+
+        .noUi-horizontal .noUi-handle {
+            right: -10px !important;
+        }
+
+        #price-range-slider .noUi-tooltip,
+        #price-range-slider .noUi-connect {
+            background: var(--btn-bg);
+        }
+
+        #price-range-slider .noUi-handle {
+            border: 2px solid var(--btn-bg) !important;
+        }
+
         .ui-widget-header {
             background: var(--primary) !important;
         }
@@ -16,7 +83,7 @@
             color: #ffffff;
         }
 
-        .color-checkbox:checked + .color-swatch-label {
+        .color-checkbox:checked+.color-swatch-label {
             border-color: var(--primary) !important;
             transform: scale(1.2);
             box-shadow: 0 0 5px var(--primary);
@@ -32,25 +99,42 @@
         let maxVal = {{ request('max_price', $maxPrice ?? 1000) }};
 
         $(document).ready(function() {
-            // Price Range Slider initialization
-            $("#price-range-slider").slider({
-                range: true,
-                min: 0,
-                max: maxPriceLimit,
-                values: [minVal, maxVal],
-                slide: function(event, ui) {
-                    $("#min-price").val(siteCurrency + ui.values[0]);
-                    $("#max-price").val(siteCurrency + ui.values[1]);
-                    minVal = ui.values[0];
-                    maxVal = ui.values[1];
-                },
-                stop: function(event, ui) {
-                    filterProducts();
-                }
-            });
 
-            $("#min-price").val(siteCurrency + minVal);
-            $("#max-price").val(siteCurrency + maxVal);
+            var sliderEl = document.getElementById('price-range-slider');
+            if (sliderEl) {
+                noUiSlider.create(sliderEl, {
+                    start: [minVal, maxVal],
+                    connect: true,
+                    tooltips: [{
+                            to: v => siteCurrency + Math.round(v)
+                        },
+                        {
+                            to: v => siteCurrency + Math.round(v)
+                        }
+                    ],
+                    range: {
+                        'min': 0,
+                        'max': maxPriceLimit > 0 ? maxPriceLimit : 1000
+                    }
+                });
+                sliderEl.noUiSlider.on('update', function(values) {
+                    minVal = Math.round(values[0]);
+                    maxVal = Math.round(values[1]);
+                    var minInput = document.getElementById('min-price');
+                    var maxInput = document.getElementById('max-price');
+                    var minDisplay = document.getElementById('min-price-display');
+                    var maxDisplay = document.getElementById('max-price-display');
+                    if (minInput) minInput.value = minVal;
+                    if (maxInput) maxInput.value = maxVal;
+                    if (minDisplay) minDisplay.innerText = siteCurrency + minVal;
+                    if (maxDisplay) maxDisplay.innerText = siteCurrency + maxVal;
+                });
+                sliderEl.noUiSlider.on('change', function() {
+                    filterProducts();
+                });
+            }
+
+
 
             // Filter function
             function filterProducts(page = 1) {
@@ -127,7 +211,8 @@
                         if (searchInput !== '') activeParams.search = searchInput;
                         if (currentSort !== 'latest') activeParams.sort = currentSort;
 
-                        let newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                        let newUrl = window.location.protocol + "//" + window.location.host + window
+                            .location.pathname;
 
                         if (Object.keys(activeParams).length > 0) {
                             newUrl += '?' + $.param(activeParams);
@@ -183,9 +268,7 @@
                 let maxLimit = {{ $maxPrice ?? 1000 }};
                 let minLimit = 0;
 
-                $("#price-range-slider").slider("option", "values", [minLimit, maxLimit]);
-                $("#min-price").val(siteCurrency + minLimit);
-                $("#max-price").val(siteCurrency + maxLimit);
+                document.getElementById('price-range-slider').noUiSlider.set([0, maxPriceLimit]);
 
                 minVal = minLimit;
                 maxVal = maxLimit;
@@ -193,7 +276,8 @@
                 $('#triggerId').text('Sort by');
 
                 filterProducts(1);
-                let cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                let cleanUrl = window.location.protocol + "//" + window.location.host + window.location
+                    .pathname;
                 window.history.pushState({
                     path: cleanUrl
                 }, '', cleanUrl);
@@ -201,5 +285,3 @@
         });
     </script>
 @endpush
-
-
