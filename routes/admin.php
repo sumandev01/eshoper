@@ -211,6 +211,7 @@ Route::middleware(['is_admin', 'auth:web', 'can:'.AdminAccessEnums::AdminAccess-
         Route::get('/users/{user}/edit', 'edit')->name('admin.user.edit')->middleware('permission:'.UserPermission::UPDATE->value);
         Route::put('/users/{user}', 'update')->name('admin.user.update')->middleware('permission:'.UserPermission::UPDATE->value);
         Route::delete('/users/{user}', 'destroy')->name('admin.user.destroy')->middleware('permission:'.UserPermission::DELETE->value);
+        Route::post('/users/toggle-status/{id}', 'toggleStatus')->name('admin.user.toggleStatus')->middleware('permission:'.UserPermission::UPDATE->value);
     });
 
     Route::controller(RolePermissionController::class)->group(function () {

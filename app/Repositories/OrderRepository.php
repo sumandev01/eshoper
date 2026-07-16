@@ -26,6 +26,15 @@ class OrderRepository
         $this->couponService = $couponService;
     }
 
+    public function getUserOrders($userId, $limit = null)
+    {
+        $query = Order::whereUserId($userId)->orderBy('id', 'desc');
+        if ($limit) {
+            $query->take($limit);
+        }
+        return $query->get();
+    }
+
     public function OrderByStore($user, $request)
     {
         $userName = $user->name;

@@ -4,26 +4,32 @@
             <div class="modal-body p-0">
                 <div class="text-start mb-4">
                     <h2 style="color: #2c4a63; font-weight: 700; margin-bottom: 5px;">Login</h2>
-                    <p style="color: #6c757d; font-size: 16px;">Sign into your pages account</p>
+                    <p style="color: #6c757d; font-size: 16px;">Login to your account</p>
                 </div>
-
+                <style>
+                    .material-floating { position: relative; background: transparent; }
+                    .material-floating input.form-control { height: 50px; padding-left: 15px; border-radius: 5px; border: 1px solid #e0e0e0; background-color: #fff; }
+                    .material-floating input.form-control:focus { background-color: white; border-color: var(--primary); box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent) !important; outline: none; }
+                    .material-floating label { position: absolute; top: 50%; left: 15px; transform: translateY(-50%); background: #fff; padding: 0 5px; transition: all 0.2s ease; pointer-events: none; color: #6c757d; border-radius: 4px; z-index: 5; margin: 0; }
+                    .material-floating input:focus + label, .material-floating input:not(:placeholder-shown) + label { top: 0; font-size: 0.8rem; color: var(--primary); background: white; }
+                </style>
                 <form id="ajaxLoginForm">
                     @csrf
-                    <div class="mb-3 mb-4">
-                        <input type="email" name="email" class="form-control" placeholder="Your email here.."
-                            style="height: 55px; border: 1px solid #e0e0e0; border-radius: 5px; background: #fff;">
+                    <div class="mb-3 material-floating">
+                        <input type="email" name="email" id="modalEmail" class="form-control" placeholder=" ">
+                        <label for="modalEmail">Email</label>
                     </div>
 
-                    <div class="mb-3 mb-2">
-                        <div class="position-relative">
+                    <div class="mb-3 position-relative">
+                        <div class="material-floating">
                             <input type="password" name="password" id="modal_password" class="form-control"
-                                placeholder="Your password here.."
-                                style="height: 55px; border: 1px solid #e0e0e0; border-radius: 5px; background: #fff;">
-                            <span class="position-absolute"
-                                style="top: 18px; right: 15px; cursor: pointer; color: #6c757d;">
-                                <i class="fas fa-eye" id="togglePassword"></i>
-                            </span>
+                                placeholder=" " style="padding-right: 40px;">
+                            <label for="modal_password">Password</label>
                         </div>
+                        <span class="position-absolute"
+                            style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; color: #6c757d; z-index: 10;">
+                            <i class="fas fa-eye" id="togglePassword"></i>
+                        </span>
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center mb-4 text-start">
@@ -31,7 +37,7 @@
                             <input type="checkbox" class="custom-control-input" id="rememberMe" name="remember">
                             <label class="custom-control-label" for="rememberMe" style="color: #6c757d; font-weight: 500; cursor: pointer;">Keep me signed in</label>
                         </div>
-                        <a href="#" class="text-primary"
+                        <a href="{{ route('password.request') }}" class="text-primary"
                             style="font-weight: 500; text-decoration: none;">Forgot Password?</a>
                     </div>
 

@@ -57,42 +57,48 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-6 mb-4">
-                                    <label for="name" class="modern-label">Your Name</label>
-                                    <input type="text" class="form-control modern-input" name="name" id="name"
-                                        value="{{ old('name') }}" required>
+                                    <div class="material-floating">
+                                        <input type="text" class="form-control modern-input" name="name" id="name" placeholder=" " value="{{ old('name') }}" required>
+                                        <label for="name">Your Name</label>
+                                    </div>
                                     @error('name')
                                         <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-4">
-                                    <label for="email" class="modern-label">Your Email</label>
-                                    <input type="email" class="form-control modern-input" name="email" id="email"
-                                        value="{{ old('email') }}" required>
+                                    <div class="material-floating">
+                                        <input type="email" class="form-control modern-input" name="email" id="email" placeholder=" " value="{{ old('email') }}" required>
+                                        <label for="email">Your Email</label>
+                                    </div>
                                     @error('email')
                                         <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-4">
-                                    <label for="phone" class="modern-label d-block">Your Phone</label>
-                                    <input type="tel" id="phone" name="phone_input" class="form-control modern-input w-100"
-                                        value="{{ old('phone_input') }}" required>
-                                    <input type="hidden" id="full_phone" name="phone" value="{{ old('phone') }}">
+                                    <div class="material-floating">
+                                        <input type="tel" id="phone" name="phone_input" class="form-control modern-input w-100" value="{{ old('phone_input') }}" required>
+                                        <label for="phone" class="always-float">Your Phone</label>
+                                        <input type="hidden" id="full_phone" name="phone" value="{{ old('phone') }}">
+                                    </div>
                                     @error('phone')
                                         <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                     @enderror
                                 </div>
                                 <div class="col-md-6 mb-4">
-                                    <label for="subject" class="modern-label">Subject</label>
-                                    <input type="text" class="form-control modern-input" name="subject" id="subject"
-                                        value="{{ old('subject') }}" required>
+                                    <div class="material-floating">
+                                        <input type="text" class="form-control modern-input" name="subject" id="subject" placeholder=" " value="{{ old('subject') }}" required>
+                                        <label for="subject">Subject</label>
+                                    </div>
                                     @error('subject')
                                         <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                     @enderror
                                 </div>
                             </div>
                             <div class="mb-4">
-                                <label for="message" class="modern-label">Message</label>
-                                <textarea class="form-control modern-input" name="message" id="message" rows="5" required>{{ old('message') }}</textarea>
+                                <div class="material-floating">
+                                    <textarea class="form-control modern-input pt-3" name="message" id="message" placeholder=" " style="height: 150px" required>{{ old('message') }}</textarea>
+                                    <label for="message">Message</label>
+                                </div>
                                 @error('message')
                                     <span class="text-danger mt-2 d-block">{{ $message }}</span>
                                 @enderror
@@ -146,10 +152,15 @@
 
         .modern-input {
             border-radius: 12px !important;
-            padding: 12px 20px;
             border: 1px solid rgba(0,0,0,0.1);
             background-color: #f8f9fa;
             transition: all 0.3s ease;
+        }
+        
+        .iti input.modern-input {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            padding-left: 95px !important; /* Ensure flag room */
         }
 
         .modern-input:focus {
@@ -157,6 +168,42 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 20%, transparent) !important;
             outline: none;
+        }
+
+        /* Material Floating Labels */
+        .material-floating {
+            position: relative;
+            background: transparent;
+        }
+        .material-floating input.modern-input {
+            height: 50px;
+            padding-left: 15px;
+        }
+        .material-floating label {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            background: #f8f9fa;
+            padding: 0 5px;
+            transition: all 0.2s ease;
+            pointer-events: none;
+            color: #6c757d;
+            border-radius: 4px;
+            z-index: 5;
+        }
+        .material-floating input:focus + label,
+        .material-floating input:not(:placeholder-shown) + label,
+        .material-floating textarea:focus + label,
+        .material-floating textarea:not(:placeholder-shown) + label,
+        .material-floating label.always-float {
+            top: 0;
+            font-size: 0.8rem;
+            color: var(--primary);
+            background: white;
+        }
+        .material-floating input:focus, .material-floating textarea:focus {
+            background-color: white;
         }
     </style>
 @endpush

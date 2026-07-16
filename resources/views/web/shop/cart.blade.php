@@ -72,7 +72,21 @@
                                                   title="Color: {{ $cart?->color?->name ?? '' }}" data-bs-toggle="tooltip"></span>
                                         @endif
                                     </div>
-                                    {{-- Star ratings removed for cleaner UI --}}
+                                    <div class="d-flex align-items-center mt-1">
+                                        @php
+                                            $rating = round($cart?->product?->reviews_avg_rating ?? 0);
+                                        @endphp
+                                        <div class="text-primary mr-2" style="font-size: 12px;">
+                                            @for($i = 1; $i <= 5; $i++)
+                                                @if($i <= $rating)
+                                                    <i class="fas fa-star"></i>
+                                                @else
+                                                    <i class="far fa-star"></i>
+                                                @endif
+                                            @endfor
+                                        </div>
+                                        <small class="text-muted ms-1" style="font-size: 11px;">({{ $cart?->product?->reviews_count ?? 0 }})</small>
+                                    </div>
                                 </td>
                                 <td class="align-middle">
                                     @if ($productStock > 0)

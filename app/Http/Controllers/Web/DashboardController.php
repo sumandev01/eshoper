@@ -14,14 +14,22 @@ use App\Models\Wishlist;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
 {
+    protected $orderRepository;
+
+    public function __construct(\App\Repositories\OrderRepository $orderRepository)
+    {
+        $this->orderRepository = $orderRepository;
+    }
+
     public function index()
     {
         $user = auth('web')->user();
-        $orders = Order::whereUserId($user->id)->orderBy('id', 'desc')->get()->take(5);
+        $orders = $this->orderRepository->getUserOrders($user->id, 5);
         $wishlists = Wishlist::where('user_id', $user->id)->get();
         return view('web.dashboard.index', compact('orders', 'wishlists'));
     }
@@ -29,12 +37,13 @@ class DashboardController extends Controller
     public function orders()
     {
         $user = auth('web')->user();
-        $orders = Order::whereUserId($user->id)->orderBy('id', 'desc')->get();
+        $orders = $this->orderRepository->getUserOrders($user->id);
         return view('web.dashboard.orders', compact('orders'));
     }
 
     public function orderDetails(Order $order)
     {
+        Gate::authorize('view', $order);
         $orderProducts = OrderProduct::whereOrderId($order->id)->get();
         $billingAddress = BillingAddress::whereOrderId($order->id)->first();
         $shippingAddress = ShippingAddress::whereOrderId($order->id)->first();

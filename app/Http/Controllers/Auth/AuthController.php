@@ -49,18 +49,37 @@ class AuthController extends Controller
 
         if (Auth::attempt($request->only('email', 'password'), $remember)) {
             $user = Auth::user();
-            app(\App\Services\RecentlyViewedService::class)->sync();
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Logged in successfully',
-                    'csrf_token' => csrf_token(),
-                    'header_html' => view('web.layouts.partials.header')->render()
-                ], 200);
+            if ($user->status === 'inactive') {
+                Auth::logout();
+                
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Your account has been deactivated.'
+                    ], 403);
+                }
+
+                return redirect()->route('login')->with('error', 'Your account has been deactivated.');
             }
 
-            return redirect()->route('root')->with('success', 'Logged in successfully');
+            if ($user->hasRole(AuthEnums::USER->value)) {
+                // Logout other devices for security
+                Auth::logoutOtherDevices($request->password);
+                
+                app(\App\Services\RecentlyViewedService::class)->sync();
+
+                if ($request->ajax()) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Logged in successfully',
+                        'csrf_token' => csrf_token(),
+                        'header_html' => view('web.layouts.partials.header')->render()
+                    ], 200);
+                }
+
+                return redirect()->route('root')->with('success', 'Logged in successfully');
+            }
 
             Auth::logout();
 

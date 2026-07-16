@@ -37,12 +37,15 @@ class AppServiceProvider extends ServiceProvider
         // pagination view for Bootstrap 5
         Paginator::useBootstrapFive();
 
-        View::composer('*', function ($view) {
-            $wishlistIds = auth('web')->check()
-                ? Wishlist::whereUserId(auth('web')->user()->id)
-                    ->pluck('product_id')
-                    ->toArray()
-                : [];
+        View::composer(['web.components.product_card'], function ($view) {
+            static $wishlistIds = null;
+            if ($wishlistIds === null) {
+                $wishlistIds = auth('web')->check()
+                    ? Wishlist::whereUserId(auth('web')->user()->id)
+                        ->pluck('product_id')
+                        ->toArray()
+                    : [];
+            }
 
             $view->with('wishlistIds', $wishlistIds);
         });
@@ -71,10 +74,36 @@ class AppServiceProvider extends ServiceProvider
                     'payment_cod_status' => '0',
                     'payment_manual_status' => '0',
                     'payment_manual_instruction' => '',
+                    'mail_host' => 'smtp.gmail.com',
+                    'mail_port' => '465',
+                    'mail_username' => '',
+                    'mail_password' => '',
+                    'mail_encryption' => 'ssl',
+                    'mail_from_address' => 'noreply@eshopper.com',
                 ];
 
                 foreach ($defaults as $key => $default) {
                     get_setting($key, $default);
+                }
+
+                // Professionally override the global App Name
+                $siteTitle = get_setting('site_title');
+                if (!empty($siteTitle)) {
+                    config(['app.name' => $siteTitle]);
+                }
+                
+                // Override Mail Config
+                if (!empty(get_setting('mail_host'))) {
+                    config([
+                        'mail.default' => 'smtp',
+                        'mail.mailers.smtp.host' => get_setting('mail_host'),
+                        'mail.mailers.smtp.port' => get_setting('mail_port'),
+                        'mail.mailers.smtp.username' => get_setting('mail_username'),
+                        'mail.mailers.smtp.password' => get_setting('mail_password'),
+                        'mail.mailers.smtp.encryption' => strtolower(get_setting('mail_encryption')),
+                        'mail.from.address' => get_setting('mail_from_address'),
+                        'mail.from.name' => get_setting('site_title', config('app.name')),
+                    ]);
                 }
 
                 $siteSettings = new \SiteSettingsProxy;

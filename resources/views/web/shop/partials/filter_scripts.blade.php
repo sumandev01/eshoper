@@ -1,4 +1,5 @@
 @push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
     <style>
         /* === Premium Price Range Slider === */
         #price-range-slider .noUi-target {
@@ -92,6 +93,7 @@
 @endpush
 
 @push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <script>
         let currentSort = '{{ request('sort', 'latest') }}';
         let maxPriceLimit = {{ $maxPrice ?? 1000 }};

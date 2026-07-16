@@ -1,7 +1,7 @@
 <div class="row pb-3">
     @forelse ($products as $product)
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 pb-1">
-            @include('web.components.product_card', ['product' => $product])
+            @include('web.components.product_card', ['product' => $product, 'isFirst' => $loop->iteration <= 4])
         </div>
     @empty
         <div class="col-md-12">

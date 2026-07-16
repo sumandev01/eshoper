@@ -14,7 +14,7 @@
     <div class="container pt-1">
         <div class="row">
             @include('web.dashboard.sidebar')
-            <div class="col-lg-9 mb-2">
+            <div class="col-12 col-lg-9 mb-2">
                 <div class="dash-card">
                     <div class="card-body p-4">
                         <div class="table-responsive">

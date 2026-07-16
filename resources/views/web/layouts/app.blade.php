@@ -80,15 +80,11 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <!-- Libraries Stylesheet -->
-    <link href="{{ asset('web/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
     <!-- sweetalert2 -->
     <link rel="stylesheet" href="{{ asset('dashboard/assets/css/sweetalert2.min.css') }}">
     <!-- Customized Bootstrap Stylesheet -->
     <link href="{{ asset('web/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('web/css/main.style.css') }}" rel="stylesheet">
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="{{ asset('dashboard/assets/css/dataTables.min.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
     @stack('styles')
     @php
         function hexToRgb($hex) {
@@ -198,6 +194,26 @@
             color: var(--btn-hover-text) !important;
         }
 
+        /* Outline Button Database Colors */
+        a.btn-outline-primary,
+        button.btn-outline-primary,
+        .btn-outline-primary {
+            color: var(--btn-bg) !important;
+            border-color: var(--btn-bg) !important;
+            background-color: transparent !important;
+        }
+
+        a.btn-outline-primary:hover,
+        button.btn-outline-primary:hover,
+        .btn-outline-primary:hover,
+        a.btn-outline-primary:focus,
+        button.btn-outline-primary:focus,
+        .btn-outline-primary:focus {
+            color: var(--btn-text) !important;
+            background-color: var(--btn-bg) !important;
+            border-color: var(--btn-bg) !important;
+        }
+
         .border,
         .border-top,
         .border-bottom,
@@ -210,6 +226,11 @@
         .form-control:focus,
         .form-control:active {
             border-color: var(--border-color) !important;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--primary) !important;
+            border-color: var(--primary) !important;
         }
 
         .btn-primary i,
@@ -480,16 +501,11 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="{{ asset('web/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('web/lib/easing/easing.min.js') }}"></script>
-    <script src="{{ asset('web/lib/owlcarousel/owl.carousel.min.js') }}"></script>
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+    @stack('vendor-scripts')
     <!-- Template Javascript -->
     <script src="{{ asset('web/js/main.js') }}"></script>
     <script src="{{ asset('dashboard/assets/js/sweetalert2.all.min.js') }}"></script>
-    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
     <script src="{{ asset('web/js/addCart.js') }}"></script>
-    <script src="{{ asset('dashboard/assets/js/dataTables.min.js') }}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <script>
         window.LaravelData = {
             route_getColorBySize: "{{ route('product.color.by.size') }}",

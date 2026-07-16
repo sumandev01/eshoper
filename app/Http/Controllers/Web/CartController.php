@@ -26,7 +26,9 @@ class CartController extends Controller
     public function cart(\App\Services\RecentlyViewedService $recentlyViewedService)
     {
         $userId = auth('web')->user()->id;
-        $carts = Cart::whereUserId($userId)->latest('id')->get();
+        $carts = Cart::whereUserId($userId)->with(['product' => function ($query) {
+            $query->withAvg('reviews', 'rating')->withCount('reviews');
+        }])->latest('id')->get();
         $subTotalPrice = $carts->map(function ($cartItem) {
             return $cartItem->cart_price * $cartItem->quantity;
         })->sum();
@@ -34,8 +36,7 @@ class CartController extends Controller
         $cartProductIds = $carts->pluck('product_id')->toArray();
         $recentProducts = $recentlyViewedService->get($cartProductIds);
         
-        $productReviews = ProductReview::whereStatus(1)->get();
-        return view('web.shop.cart', compact('carts', 'subTotalPrice', 'productReviews', 'recentProducts'));
+        return view('web.shop.cart', compact('carts', 'subTotalPrice', 'recentProducts'));
     }
     
     public function addToCart(Request $request)
@@ -66,21 +67,21 @@ class CartController extends Controller
 
     public function removeFromCart(Cart $cart)
     {
-        $cartItem = Cart::findOrFail($cart->id);
-        $cartItem->delete();
+        $this->authorize('delete', $cart);
+        $cart->delete();
 
         return redirect()->route('cart')->with('success', 'Product removed from cart successfully.');
     }
 
-    public function applyCoupon(Request $request)
+    public function applyCoupon(\App\Http\Requests\ApplyCouponRequest $request)
     {
-        $request->validate([
-            'cartSubTotal' => 'required|numeric|min:0',
-            'couponCode' => 'required|string',
-        ]);
-
         $couponCode = $request->couponCode;
-        $cartSubTotal = $request->cartSubTotal;
+        
+        $userId = auth('web')->id();
+        $carts = Cart::whereUserId($userId)->get();
+        $cartSubTotal = $carts->map(function ($cartItem) {
+            return $cartItem->cart_price * $cartItem->quantity;
+        })->sum();
 
         $couponResult = $this->couponService->getAjaxCouponPrice($couponCode, $cartSubTotal);
 

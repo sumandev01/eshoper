@@ -24,10 +24,9 @@ class OrderController extends Controller
         $this->orderRepository = $orderRepository;
     }
 
-    public function index($order)
+    public function index(Order $order)
     {
-        $orderId = Order::findOrFail($order->id);
-
+        $this->authorize('view', $order);
         return view('web.dashboard.order-details', compact('order'));
     }
 
@@ -65,6 +64,7 @@ class OrderController extends Controller
 
     public function orderDetails(Order $order)
     {
+        $this->authorize('view', $order);
         // One-time view security: Prevent direct URL access to the success page
         if (session('checkout_success_order_id') != $order->id) {
             return redirect()->route('user.orders');

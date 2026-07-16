@@ -1,82 +1,68 @@
 @extends('auth.layouts.app')
+@section('title', 'Login')
 @section('content')
-    <div class="wpo-login-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <form class="wpo-accountWrapper" action="{{ route('login.submit') }}" method="POST">
+    <div class="row w-100 justify-content-center align-items-center min-vh-100">
+        <div class="col-md-6 col-lg-5 col-xl-4">
+            <div class="card auth-card border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <a href="{{ route('root') }}" class="d-inline-block mb-3">
+                            <img src="{{ $siteSettings->site_logo ?? asset('auth/images/logo-2.svg') }}" alt="Logo" style="max-height: 40px;">
+                        </a>
+                        <h2>Login</h2>
+                        <p>Sign into your account</p>
+                    </div>
+            
+                    <form action="{{ route('login.submit') }}" method="POST">
                         @csrf
-                        <div class="wpo-accountInfo">
-                            <div class="wpo-accountInfoHeader">
-                                <a href="index.html"><img src="{{ asset('auth/images/logo-2.svg') }}"
-                                        alt=""></a>
-                                <a class="wpo-accountBtn" href="{{ route('register') }}">
-                                    <span class="">Create Account</span>
-                                </a>
-                            </div>
-                            <div class="image">
-                                <img src="{{ asset('auth/images/login.svg') }}" alt="">
-                            </div>
-                            <div class="back-home">
-                                <a class="wpo-accountBtn" href="{{ route('root') }}">
-                                    <span class="">Back To Home</span>
-                                </a>
-                            </div>
+                        
+                        <div class="mb-3 material-floating">
+                            <input type="email" id="email" name="email" class="form-control" placeholder=" " value="{{ old('email') }}">
+                            <label for="email" class="text-muted">Email</label>
+                            @error('email')
+                                <span class="text-danger small mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
-                        <div class="wpo-accountForm form-style">
-                            <div class="fromTitle">
-                                <h2>Login</h2>
-                                <p>Sign into your pages account</p>
+                        
+                        <div class="mb-3 position-relative">
+                            <div class="material-floating">
+                                <input class="form-control" type="password" placeholder=" " name="password" id="loginPassword" style="padding-right: 40px;">
+                                <label for="loginPassword" class="text-muted">Password</label>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-12 mb-2">
-                                    <label>Email</label>
-                                    <input type="text" id="email" name="email" placeholder="Your email here.." value="{{ old('email') }}">
-                                    @error('email')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-12 mb-2">
-                                    <div class="form-group">
-                                        <label>Password</label>
-                                        <input class="pwd6" type="password" placeholder="Your password here.." name="password">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default reveal6" type="button"><i
-                                                    class="ti-eye"></i></button>
-                                        </span>
-                                    </div>
-                                    @error('password')
-                                        <span class="text-danger mb-2">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-12">
-                                    <div class="check-box-wrap">
-
-                                        <div class="forget-btn">
-                                            <a href="forgot.html">Forgot Password?</a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-12">
-                                    <button type="submit" class="wpo-accountBtn">Login</button>
-                                </div>
-                            </div>
-                            <h4 class="or"><span>OR</span></h4>
-                            <ul class="wpo-socialLoginBtn">
-                                <li>
-                                    <a href="{{ route('social.login', 'google') }}" class="bg-danger d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px; border-radius: 5px;">
-                                        <span><i class="ti-google"></i></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('social.login', 'facebook') }}" class="bg-primary d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px; border-radius: 5px;">
-                                        <span><i class="ti-facebook"></i></span>
-                                    </a>
-                                </li>
-                            </ul>
-                            <p class="subText">Don't have an account? <a href="{{ route('register') }}">Create free
-                                    account</a></p>
+                            <span class="position-absolute" style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; z-index: 10;" onclick="const p=document.getElementById('loginPassword'); p.type = p.type==='password'?'text':'password';">
+                                <i class="ti-eye text-muted"></i>
+                            </span>
+                            @error('password')
+                                <span class="text-danger small mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div class="form-check position-relative">
+                                <input class="form-check-input" type="checkbox" name="remember" id="rememberMe">
+                                <label class="form-check-label text-muted" for="rememberMe">
+                                    Keep me signed in
+                                </label>
+                            </div>
+                            <a href="{{ route('password.request') }}" class="text-primary text-decoration-none">Forgot Password?</a>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Login</button>
+                        
+                        <div class="text-center mb-3">
+                            <span class="text-muted small">OR</span>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mb-4">
+                            <a href="{{ route('social.login', 'google') }}" class="btn btn-danger w-50 d-flex justify-content-center align-items-center">
+                                <i class="ti-google me-2"></i> Google
+                            </a>
+                            <a href="{{ route('social.login', 'facebook') }}" class="btn btn-primary text-white w-50 d-flex justify-content-center align-items-center" style="background-color: #1877f2 !important; border-color: #1877f2 !important;">
+                                <i class="ti-facebook me-2"></i> Facebook
+                            </a>
+                        </div>
+                        
+                        <p class="text-center text-muted m-0">Don't have an account? <a href="{{ route('register') }}" class="text-primary text-decoration-none fw-bold">Create free account</a></p>
                     </form>
                 </div>
             </div>

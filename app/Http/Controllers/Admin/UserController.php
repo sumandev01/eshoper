@@ -83,4 +83,13 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('admin.user.index')->with('success', 'User deleted successfully.');
     }
+
+    public function toggleStatus($id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = $user->status === 'active' ? 'inactive' : 'active';
+        $user->save();
+        
+        return back()->with('success', 'User status updated to ' . ucfirst($user->status) . '.');
+    }
 }

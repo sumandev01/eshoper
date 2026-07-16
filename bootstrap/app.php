@@ -23,6 +23,14 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return route('login');
         });
+
+        $middleware->redirectUsersTo(function (Request $request) {
+            if ($request->user() && $request->user()->hasPermissionTo(\App\Enums\Permission\AdminAccessEnums::AdminAccess->value)) {
+                return route('admin.dashboard');
+            }
+            return route('root');
+        });
+
         $middleware->alias([
             'permission' => PermissionMiddleware::class,
             'role' => RoleMiddleware::class,
@@ -35,6 +43,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->validateCsrfTokens(except: [
             '/payment/stripe/webhook',
+        ]);
+
+        $middleware->web(append: [
+            \Illuminate\Session\Middleware\AuthenticateSession::class,
         ]);
     })
 

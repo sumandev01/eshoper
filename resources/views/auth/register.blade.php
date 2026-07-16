@@ -1,95 +1,79 @@
 @extends('auth.layouts.app')
+@section('title', 'Signup')
 @section('content')
-    <div class="wpo-login-area">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <form class="wpo-accountWrapper" action="{{ route('register.submit') }}" method="POST">
+    <div class="row w-100 justify-content-center align-items-center min-vh-100 py-5">
+        <div class="col-md-6 col-lg-5 col-xl-4">
+            <div class="card auth-card border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <a href="{{ route('root') }}" class="d-inline-block mb-3">
+                            <img src="{{ $siteSettings->site_logo ?? asset('auth/images/logo-2.svg') }}" alt="Logo" style="max-height: 40px;">
+                        </a>
+                        <h2>Signup</h2>
+                        <p>Create your free account</p>
+                    </div>
+                    
+                    <form action="{{ route('register.submit') }}" method="POST">
                         @csrf
-                        <div class="wpo-accountInfo">
-                            <div class="wpo-accountInfoHeader">
-                                <a href="index.html"><img src="{{ asset('auth/images/logo-2.svg') }}"
-                                        alt=""></a>
-                                <a class="wpo-accountBtn" href="{{ route('login') }}">
-                                    <span class="">Log in</span>
-                                </a>
-                            </div>
-                            <div class="image">
-                                <img src="{{ asset('auth/images/login.svg') }}" alt="">
-                            </div>
-                            <div class="back-home">
-                                <a class="wpo-accountBtn" href="{{ route('root') }}">
-                                    <span class="">Back To Home</span>
-                                </a>
-                            </div>
+                        
+                        <div class="mb-3 material-floating">
+                            <input type="text" id="name" name="name" class="form-control" placeholder=" " value="{{ old('name') }}">
+                            <label for="name" class="text-muted">Full Name</label>
+                            @error('name')
+                                <span class="text-danger small mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
-                        <div class="wpo-accountForm form-style">
-                            <div class="fromTitle">
-                                <h2>Signup</h2>
-                                <p>Sign into your pages account</p>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-12 mb-3">
-                                    <label for="name">Full Name</label>
-                                    <input type="text" id="name" name="name" placeholder="Your name here.." value="{{ old('name') }}">
-                                    @error('name')
-                                        <span class="text-danger mb-2">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-12 mb-3">
-                                    <label>Email</label>
-                                    <input type="text" id="email" name="email" placeholder="Your email here.." value="{{ old('email') }}">
-                                    @error('email')
-                                        <span class="text-danger mb-2">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-12 mb-3">
-                                    <div class="form-group">
-                                        <label>Password</label>
-                                        <input class="pwd2" type="password" placeholder="Your password here.." name="password">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default reveal3" type="button"><i
-                                                    class="ti-eye"></i></button>
-                                        </span>
-                                    </div>
-                                    @error('password')
-                                        <span class="text-danger mb-2">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-12 mb-3">
-                                    <div class="form-group">
-                                        <label>Confirm Password</label>
-                                        <input class="pwd3" type="password" placeholder="Your password here.." name="password_confirmation">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default reveal2" type="button"><i
-                                                    class="ti-eye"></i></button>
-                                        </span>
-                                    </div>
-                                    @error('password_confirmation')
-                                        <span class="text-danger mb-2">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                                <div class="col-lg-12 col-md-12 col-12">
-                                    <button type="submit" class="wpo-accountBtn">Signup</button>
-                                </div>
-                            </div>
-                            
-                            <h4 class="or"><span>OR</span></h4>
-                            <ul class="wpo-socialLoginBtn">
-                                <li>
-                                    <a href="{{ route('social.login', 'google') }}" class="bg-danger d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px; border-radius: 5px;">
-                                        <span><i class="ti-google"></i></span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('social.login', 'facebook') }}" class="bg-primary d-flex align-items-center justify-content-center text-white" style="width: 50px; height: 50px; border-radius: 5px;">
-                                        <span><i class="ti-facebook"></i></span>
-                                    </a>
-                                </li>
-                            </ul>
-
-                            <p class="subText">Sign into your pages account <a href="{{ route('login') }}">Login</a></p>
+                        
+                        <div class="mb-3 material-floating">
+                            <input type="email" id="email" name="email" class="form-control" placeholder=" " value="{{ old('email') }}">
+                            <label for="email" class="text-muted">Email</label>
+                            @error('email')
+                                <span class="text-danger small mt-1">{{ $message }}</span>
+                            @enderror
                         </div>
+                        
+                        <div class="mb-3 position-relative">
+                            <div class="material-floating">
+                                <input class="form-control" type="password" placeholder=" " name="password" id="regPassword" style="padding-right: 40px;">
+                                <label for="regPassword" class="text-muted">Password</label>
+                            </div>
+                            <span class="position-absolute" style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; z-index: 10;" onclick="const p=document.getElementById('regPassword'); p.type = p.type==='password'?'text':'password';">
+                                <i class="ti-eye text-muted"></i>
+                            </span>
+                            @error('password')
+                                <span class="text-danger small mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        
+                        <div class="mb-4 position-relative">
+                            <div class="material-floating">
+                                <input class="form-control" type="password" placeholder=" " name="password_confirmation" id="regPasswordConf" style="padding-right: 40px;">
+                                <label for="regPasswordConf" class="text-muted">Confirm Password</label>
+                            </div>
+                            <span class="position-absolute" style="top: 50%; right: 15px; transform: translateY(-50%); cursor: pointer; z-index: 10;" onclick="const p=document.getElementById('regPasswordConf'); p.type = p.type==='password'?'text':'password';">
+                                <i class="ti-eye text-muted"></i>
+                            </span>
+                            @error('password_confirmation')
+                                <span class="text-danger small mt-1">{{ $message }}</span>
+                            @enderror
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-3">Signup</button>
+                        
+                        <div class="text-center mb-3">
+                            <span class="text-muted small">OR</span>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mb-4">
+                            <a href="{{ route('social.login', 'google') }}" class="btn btn-danger w-50 d-flex justify-content-center align-items-center">
+                                <i class="ti-google me-2"></i> Google
+                            </a>
+                            <a href="{{ route('social.login', 'facebook') }}" class="btn btn-primary text-white w-50 d-flex justify-content-center align-items-center" style="background-color: #1877f2 !important; border-color: #1877f2 !important;">
+                                <i class="ti-facebook me-2"></i> Facebook
+                            </a>
+                        </div>
+                        
+                        <p class="text-center text-muted m-0">Already have an account? <a href="{{ route('login') }}" class="text-primary text-decoration-none fw-bold">Login</a></p>
                     </form>
                 </div>
             </div>

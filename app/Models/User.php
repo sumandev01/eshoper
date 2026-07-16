@@ -28,6 +28,12 @@ class User extends Authenticatable
         'role',
         'provider',
         'provider_id',
+        'profile_image',
+        'phone',
+        'date_of_birth',
+        'gender',
+        'is_subscribed',
+        'status',
     ];
 
     /**

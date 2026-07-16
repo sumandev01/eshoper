@@ -104,7 +104,7 @@
         <div class="row pb-3">
             @forelse ($trendingProducts ?? [] as $product)
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                    @include('web.components.product_card', ['product' => $product])
+                    @include('web.components.product_card', ['product' => $product, 'isFirst' => $loop->iteration <= 4])
                 </div>
             @empty
                 <div class="col-md-12">
@@ -147,7 +147,7 @@
         <div class="row pb-3">
             @forelse ($latestProducts ?? [] as $product)
                 <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
-                    @include('web.components.product_card', ['product' => $product])
+                    @include('web.components.product_card', ['product' => $product, 'isFirst' => $loop->iteration <= 4])
                 </div>
             @empty
                 <div class="col-md-12">
@@ -237,7 +237,12 @@
     </div>
     <!-- Vendor End -->
 @endsection
+@push('styles')
+    <link href="{{ asset('web/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+@endpush
+
 @push('scripts')
+    <script src="{{ asset('web/lib/owlcarousel/owl.carousel.min.js') }}"></script>
     <script>
         $(document).ready(function() {
             if ($(".category-carousel").length > 0) {

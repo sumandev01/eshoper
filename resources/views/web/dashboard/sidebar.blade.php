@@ -1,8 +1,8 @@
-<div class="col-md-3 mb-5">
+<div class="col-12 col-lg-3 mb-5">
     <!-- User Welcome Block -->
     <div class="dash-card mb-4 text-center p-4">
         <div class="mb-3">
-            <img src="{{ auth()->user()->profile ?? asset('default-avatar.png') }}" alt="Profile" class="rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #fff;">
+            <img src="{{ auth('web')->user()?->profile_image ? asset('storage/' . auth('web')->user()->profile_image) : asset('user.webp') }}" alt="Profile" class="rounded-circle shadow-sm" style="width: 80px; height: 80px; object-fit: cover; border: 3px solid #fff;">
         </div>
         <h5 class="mb-1 font-weight-semi-bold">Hello, {{ auth()->user()->name ?? 'User' }}!</h5>
         <p class="text-muted small mb-0">Welcome back to your dashboard</p>

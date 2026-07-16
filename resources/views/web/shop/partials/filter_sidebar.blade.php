@@ -15,7 +15,7 @@
         <form id="category-filter-form">
             @foreach ($categoryQuery ?? [] as $category)
                 <div class="custom-control custom-checkbox d-flex align-items-center mb-2">
-                    <input type="checkbox" class="custom-control-input category-checkbox me-2" name="categories[]"
+                    <input type="checkbox" class="form-check-input category-checkbox me-2 mt-0" name="categories[]"
                         id="category-{{ $category?->id }}" value="{{ $category?->id }}"
                         {{ in_array($category?->id, (array) request('categories')) ? 'checked' : '' }}>
                     <label class="custom-control-label"
@@ -44,7 +44,7 @@
                 @endforeach
             </div>
         @else
-            <p>No colors variants available.</p>
+            <p class="text-muted small">No colors variants available.</p>
         @endif
     </form>
 </div>
@@ -56,20 +56,20 @@
         @if (isset($sizeQuery) && count($sizeQuery) > 0)
             @foreach ($sizeQuery as $size)
                 <div class="custom-control custom-checkbox d-flex align-items-center mb-2">
-                    <input type="checkbox" class="custom-control-input size-checkbox me-2" name="sizes[]"
+                    <input type="checkbox" class="form-check-input size-checkbox me-2 mt-0" name="sizes[]"
                         id="size-{{ $size?->id }}" value="{{ $size?->id }}"
                         {{ in_array($size?->id, (array) request('sizes')) ? 'checked' : '' }}>
                     <label class="custom-control-label" for="size-{{ $size?->id }}">{{ $size?->name }}</label>
                 </div>
             @endforeach
         @else
-            <p>No sizes variants available.</p>
+            <p class="text-muted small">No sizes variants available.</p>
         @endif
     </form>
 </div>
 
 <div class="pt-3">
-    <button type="button" id="clear-filters" class="btn btn-primary btn-block">
+    <button type="button" id="clear-filters" class="btn btn-outline-primary btn-block rounded shadow-sm w-100" style="font-weight: 500;">
         <i class="fas fa-times-circle me-2"></i>
         Clear Filters
     </button>

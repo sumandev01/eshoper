@@ -15,7 +15,7 @@
     <div class="container pt-1">
         <div class="row">
             @include('web.dashboard.sidebar')
-            <div class="col-lg-9 mb-2">
+            <div class="col-12 col-lg-9 mb-2">
                 <div class="dash-card p-4">
                     <div class="table-responsive">
                         <h5 class="font-weight-semi-bold mb-4" style="color: color-mix(in srgb, var(--primary) 60%, #111); font-size: 1.2rem;">All Orders</h5>
@@ -38,12 +38,12 @@
                                         <td class="font-weight-medium">{{ $order?->order_number }}</td>
                                         <td class="text-center text-muted">{{ $order?->created_at?->format('d-M-Y') }}</td>
                                         <td class="text-center">
-                                            <span class="badge rounded-pill dash-badge badge-soft-{{ $order?->payment_status?->color() === 'success' ? 'success' : ($order?->payment_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2">
+                                            <span class="badge rounded-pill dash-badge bg-{{ $order?->payment_status?->color() === 'success' ? 'success' : ($order?->payment_status?->color() === 'warning' ? 'warning' : 'info') }} bg-opacity-10 text-{{ $order?->payment_status?->color() === 'success' ? 'success' : ($order?->payment_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2 fw-bold border border-{{ $order?->payment_status?->color() === 'success' ? 'success' : ($order?->payment_status?->color() === 'warning' ? 'warning' : 'info') }} border-opacity-25">
                                                 {{ ucfirst($order?->payment_status?->value) }}
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge rounded-pill dash-badge badge-soft-{{ $order?->order_status?->color() === 'success' ? 'success' : ($order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2">
+                                            <span class="badge rounded-pill dash-badge bg-{{ $order?->order_status?->color() === 'success' ? 'success' : ($order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} bg-opacity-10 text-{{ $order?->order_status?->color() === 'success' ? 'success' : ($order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2 fw-bold border border-{{ $order?->order_status?->color() === 'success' ? 'success' : ($order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} border-opacity-25">
                                                 {{ ucfirst($order?->order_status?->value) }}
                                             </span>
                                         </td>

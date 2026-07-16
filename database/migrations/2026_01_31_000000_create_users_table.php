@@ -16,8 +16,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone')->nullable();
+            $table->date('date_of_birth')->nullable();
+            $table->enum('gender', ['Male', 'Female', 'Other'])->nullable();
+            $table->boolean('is_subscribed')->default(false);
+            $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile_image')->nullable();
             $table->foreignIdFor(Media::class)->nullable()->constrained()->onDelete('set null');
             $table->rememberToken();
             $table->timestamps();

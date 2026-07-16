@@ -58,6 +58,12 @@ class SettingController extends Controller
             'theme_color_dark' => 'nullable|string',
             'theme_button_bg' => 'required|string',
             'theme_button_text' => 'nullable|string',
+            'mail_host' => 'nullable|string',
+            'mail_port' => 'nullable|string',
+            'mail_username' => 'nullable|string',
+            'mail_password' => 'nullable|string',
+            'mail_encryption' => 'nullable|in:ssl,tls',
+            'mail_from_address' => 'nullable|email',
         ]);
 
         if (! empty($inputs['logo'])) {

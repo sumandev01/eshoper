@@ -13,16 +13,16 @@
     <div class="container pt-1">
         <div class="row">
             @include('web.dashboard.sidebar')
-            <div class="col-lg-9 mb-5">
+            <div class="col-12 col-lg-9 mb-5">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="dash-card dash-stat-card p-4 mb-4">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.5px;">Total Orders</h6>
-                                    <h3 class="mb-0 fw-bold text-dark">{{ $orders->count() }}</h3>
+                                    <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Total Orders</h6>
+                                    <h3 class="mb-0 fw-bold text-dark" style="font-size: 2rem;">{{ $orders->count() }}</h3>
                                 </div>
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: color-mix(in srgb, var(--primary) 12%, white);">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 55px; height: 55px; background-color: color-mix(in srgb, var(--primary) 12%, white);">
                                     <i class="fas fa-shopping-cart fa-lg" style="color: var(--primary);"></i>
                                 </div>
                             </div>
@@ -32,10 +32,10 @@
                         <div class="dash-card dash-stat-card p-4 mb-4">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.5px;">Pending</h6>
-                                    <h3 class="mb-0 fw-bold text-dark">{{ $orders->where('order_status', 'pending')->count() }}</h3>
+                                    <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Pending</h6>
+                                    <h3 class="mb-0 fw-bold text-dark" style="font-size: 2rem;">{{ $orders->where('order_status', 'pending')->count() }}</h3>
                                 </div>
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: rgba(255, 193, 7, 0.12);">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 55px; height: 55px; background-color: rgba(255, 193, 7, 0.12);">
                                     <i class="fas fa-clock fa-lg text-warning"></i>
                                 </div>
                             </div>
@@ -45,10 +45,10 @@
                         <div class="dash-card dash-stat-card p-4 mb-4">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.5px;">Delivered</h6>
-                                    <h3 class="mb-0 fw-bold text-dark">{{ $orders->where('order_status', 'delivered')->count() }}</h3>
+                                    <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Delivered</h6>
+                                    <h3 class="mb-0 fw-bold text-dark" style="font-size: 2rem;">{{ $orders->where('order_status', 'delivered')->count() }}</h3>
                                 </div>
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: rgba(40, 167, 69, 0.12);">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 55px; height: 55px; background-color: rgba(40, 167, 69, 0.12);">
                                     <i class="fas fa-check-circle fa-lg text-success"></i>
                                 </div>
                             </div>
@@ -58,10 +58,10 @@
                         <div class="dash-card dash-stat-card p-4 mb-4">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.8rem; letter-spacing: 0.5px;">Wishlist</h6>
-                                    <h3 class="mb-0 fw-bold text-dark">{{ $wishlists->count() }}</h3>
+                                    <h6 class="text-muted mb-1 text-uppercase" style="font-size: 0.75rem; letter-spacing: 1px;">Wishlist</h6>
+                                    <h3 class="mb-0 fw-bold text-dark" style="font-size: 2rem;">{{ $wishlists->count() }}</h3>
                                 </div>
-                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px; background-color: rgba(23, 162, 184, 0.12);">
+                                <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 55px; height: 55px; background-color: rgba(23, 162, 184, 0.12);">
                                     <i class="fas fa-heart fa-lg text-info"></i>
                                 </div>
                             </div>
@@ -94,12 +94,12 @@
                                         <td class="font-weight-medium">{{ $order?->order_number }}</td>
                                         <td class="text-center text-muted">{{ $order?->created_at?->format('d-M-Y') }}</td>
                                         <td class="text-center">
-                                            <span class="badge rounded-pill dash-badge badge-soft-{{ $order?->payment_status?->color() === 'success' ? 'success' : ($order?->payment_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2">
+                                            <span class="badge rounded-pill dash-badge bg-{{ $order?->payment_status?->color() === 'success' ? 'success' : ($order?->payment_status?->color() === 'warning' ? 'warning' : 'info') }} bg-opacity-10 text-{{ $order?->payment_status?->color() === 'success' ? 'success' : ($order?->payment_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2 fw-bold border border-{{ $order?->payment_status?->color() === 'success' ? 'success' : ($order?->payment_status?->color() === 'warning' ? 'warning' : 'info') }} border-opacity-25">
                                                 {{ ucfirst($order?->payment_status?->value) }}
                                             </span>
                                         </td>
                                         <td class="text-center">
-                                            <span class="badge rounded-pill dash-badge badge-soft-{{ $order?->order_status?->color() === 'success' ? 'success' : ($order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2">
+                                            <span class="badge rounded-pill dash-badge bg-{{ $order?->order_status?->color() === 'success' ? 'success' : ($order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} bg-opacity-10 text-{{ $order?->order_status?->color() === 'success' ? 'success' : ($order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} px-3 py-2 fw-bold border border-{{ $order?->order_status?->color() === 'success' ? 'success' : ($order?->order_status?->color() === 'warning' ? 'warning' : 'info') }} border-opacity-25">
                                                 {{ ucfirst($order?->order_status?->value) }}
                                             </span>
                                         </td>

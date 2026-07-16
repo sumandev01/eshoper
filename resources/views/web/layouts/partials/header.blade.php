@@ -97,17 +97,9 @@
                                 <img src="{{ $siteSettings->site_mobile_logo }}" class="img-fluid"
                                     style="width: auto; max-height: 50px;" alt="Logo" loading="lazy">
                             @elseif(!empty($siteSettings->site_logo))
-                                {{-- <img src="{{ $siteSettings->site_logo }}" class="img-fluid"
-                                    style="width: auto; max-height: 50px;" alt="Logo" loading="lazy"> --}}
-                                    <img
-  src="{{ $siteSettings->site_logo }}"
-  class="img-fluid"
-  width="160"
-  height="80"
-  style="width: auto; max-height: 80px;"
-  alt="MartX Premium E-commerce Logo"
-  fetchpriority="high"
->
+                                <img src="{{ $siteSettings->site_logo }}" class="img-fluid" width="160"
+                                    height="80" style="width: auto; max-height: 80px;"
+                                    alt="MartX Premium E-commerce Logo" fetchpriority="high">
                             @else
                                 <span class="text-primary fw-bold border px-3 me-1">E</span>Shopper
                             @endif
@@ -158,15 +150,9 @@
                         <div class="navbar-nav ms-auto py-0">
                             @if ($user)
                                 <div class="nav-item dropdown user-dropdown d-flex align-items-center">
-                                    @if ($user->media_id > 0)
-                                        <img src="{{ $user?->profile }}"
-                                            style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; padding: 2px; object-fit: cover; margin-right: 2px;"
-                                            alt="{{ $user?->name }}" loading="lazy">
-                                    @else
-                                        <img src="{{ asset('user.png') }}"
-                                            style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; padding: 2px; object-fit: cover; margin-right: 2px;"
-                                            alt="{{ $user?->name }}" loading="lazy">
-                                    @endif
+                                    <img src="{{ $user?->profile_image ? asset('storage/' . $user->profile_image) : asset('user.webp') }}"
+                                        style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid #ddd; padding: 2px; object-fit: cover; margin-right: 2px;"
+                                        alt="{{ $user?->name }}" loading="lazy">
                                     <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                                         data-bs-display="static" style="padding-left: 5px; padding-right: 0;">
                                         <span
@@ -277,25 +263,31 @@
             // =====================
             // Search Suggestions
             // =====================
+            let searchTimeout;
             $('#header-search').on('keyup', function() {
                 let search = $(this).val().trim();
+
+                clearTimeout(searchTimeout);
 
                 if (search.length < 2) {
                     $('#search-suggestions').hide();
                     return;
                 }
 
-                $.ajax({
-                    url: "{{ route('search.suggestions') }}",
-                    method: "GET",
-                    data: {
-                        search: search
-                    },
-                    success: function(products) {
-                        if (products.length === 0) {
-                            $('#search-suggestions').hide();
-                            return;
-                        }
+                $('#search-suggestions').html('<div style="padding: 15px; text-align: center; color: #666;"><i class="fa fa-spinner fa-spin" style="margin-right: 5px;"></i> Searching...</div>').show();
+
+                searchTimeout = setTimeout(function() {
+                    $.ajax({
+                        url: "{{ route('search.suggestions') }}",
+                        method: "GET",
+                        data: {
+                            search: search
+                        },
+                        success: function(products) {
+                            if (products.length === 0) {
+                                $('#search-suggestions').html('<div style="padding: 15px; text-align: center; color: #666;">No products found for "'+search+'"</div>').show();
+                                return;
+                            }
 
                         let html = '';
 
@@ -339,11 +331,11 @@
                                         ">${product.name}</div>
                                         <div style="margin-top: 3px;">
                                             ${product.discount > 0 ? `
-                                                                <span style="color: #000; font-weight: 600; font-size: 13px;">${siteCurrency}${product.discount}</span>
-                                                                <span style="color: #e74c3c; font-size: 12px; text-decoration: line-through; margin-left: 5px;">${siteCurrency}${product.price}</span>
-                                                            ` : `
-                                                                <span style="color: #000; font-weight: 600; font-size: 13px;">${siteCurrency}${product.price}</span>
-                                                            `}
+                                                                    <span style="color: #000; font-weight: 600; font-size: 13px;">${siteCurrency}${product.discount}</span>
+                                                                    <span style="color: #e74c3c; font-size: 12px; text-decoration: line-through; margin-left: 5px;">${siteCurrency}${product.price}</span>
+                                                                ` : `
+                                                                    <span style="color: #000; font-weight: 600; font-size: 13px;">${siteCurrency}${product.price}</span>
+                                                                `}
                                         </div>
                                     </div>
                                 </a>
@@ -371,6 +363,7 @@
                         $('#search-suggestions').html(html).show();
                     }
                 });
+                }, 300); // 300ms debounce
             });
 
             // =====================

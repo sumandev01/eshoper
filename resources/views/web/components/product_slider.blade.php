@@ -16,11 +16,17 @@
     </div>
     <!-- Product Slider End -->
     
-    @push('styles')
-        <style>
-            .related-carousel .owl-nav {
-                display: none !important;
-            }
-        </style>
-    @endpush
+    @once
+        @push('styles')
+            <link href="{{ asset('web/lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+            <style>
+                .related-carousel .owl-nav {
+                    display: none !important;
+                }
+            </style>
+        @endpush
+        @push('vendor-scripts')
+            <script src="{{ asset('web/lib/owlcarousel/owl.carousel.min.js') }}"></script>
+        @endpush
+    @endonce
 @endif

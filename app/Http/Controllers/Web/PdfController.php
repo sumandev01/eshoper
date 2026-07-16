@@ -34,6 +34,7 @@ class PdfController extends Controller
         }
         
         $order = Order::findOrFail($orderId);
+        $this->authorize('view', $order);
         $orderProducts = OrderProduct::whereOrderId($order->id)->get();
         $billingAddress = BillingAddress::whereOrderId($order->id)->first();
         $shippingAddress = ShippingAddress::whereOrderId($order->id)->first();

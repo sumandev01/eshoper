@@ -40,6 +40,7 @@
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th class="text-center">Role</th>
+                                        <th class="text-center">Status</th>
                                         <th class="text-center">Image</th>
                                         <th class="text-center">Action</th>
                                     </tr>
@@ -53,12 +54,23 @@
                                             <td class="text-center"> <span
                                                     class="badge bg-success">{{ $user?->getRoleNames()->first() }}</span> </td>
                                             <td class="text-center">
-                                                <img class="img-fluid"
-                                                    style=" border-radius: 100%; padding: 2px; object-fit: contain; aspect-ratio: 4 / 4; background-color: #fff; border: 1px solid #ccc;"
-                                                    src="{{ $user?->profile }}" alt="{{ $user?->name }}">
+                                                <span class="badge bg-{{ $user->status === 'active' ? 'primary' : 'danger' }}">{{ ucfirst($user->status ?? 'active') }}</span>
                                             </td>
                                             <td class="text-center">
-                                                <div class="d-flex justify-content-center">
+                                                <img class="img-fluid"
+                                                    style=" border-radius: 100%; padding: 2px; object-fit: contain; aspect-ratio: 4 / 4; background-color: #fff; border: 1px solid #ccc; width: 40px;"
+                                                    src="{{ $user?->profile_image ? asset('storage/' . $user->profile_image) : asset('default.webp') }}" alt="{{ $user?->name }}">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    @can(\App\Enums\Permission\UserPermission::UPDATE->value)
+                                                        <form action="{{ route('admin.user.toggleStatus', $user->id) }}" method="POST" class="me-1 m-0 p-0">
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-sm btn-outline-{{ $user->status === 'active' ? 'warning' : 'success' }}" title="{{ $user->status === 'active' ? 'Deactivate' : 'Activate' }}">
+                                                                <i class="mdi mdi-{{ $user->status === 'active' ? 'account-off' : 'account-check' }}"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endcan
                                                     <a href="{{ route('admin.user.view', $user?->id) }}"
                                                         class="btn btn-sm btn-outline-secondary me-1" title="View">
                                                         <i class="mdi mdi-eye"></i>

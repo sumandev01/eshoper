@@ -44,11 +44,11 @@ class Media extends Model
                 $filename = pathinfo($this->src, PATHINFO_FILENAME);
                 $thumbPath = "{$directory}/{$filename}-thumb.webp";
 
-                if (Storage::disk('public')->exists($thumbPath)) {
+                if (file_exists(public_path('storage/' . $thumbPath))) {
                     return Storage::url($thumbPath);
                 }
 
-                return $this->src && Storage::disk('public')->exists($this->src) 
+                return $this->src && file_exists(public_path('storage/' . $this->src)) 
                     ? Storage::url($this->src) 
                     : asset('default.webp');
             }
@@ -63,7 +63,7 @@ class Media extends Model
                 $filename = pathinfo($this->src, PATHINFO_FILENAME);
                 $path = "{$directory}/{$filename}-medium.webp";
 
-                return Storage::disk('public')->exists($path) 
+                return file_exists(public_path('storage/' . $path)) 
                     ? Storage::url($path) 
                     : $this->thumbnail;
             }
@@ -78,7 +78,7 @@ class Media extends Model
                 $filename = pathinfo($this->src, PATHINFO_FILENAME);
                 $path = "{$directory}/{$filename}-large.webp";
 
-                return Storage::disk('public')->exists($path) 
+                return file_exists(public_path('storage/' . $path)) 
                     ? Storage::url($path) 
                     : $this->medium_url;
             }

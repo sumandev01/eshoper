@@ -14,7 +14,7 @@
     <div class="container pt-1">
         <div class="row">
             @include('web.dashboard.sidebar')
-            <div class="col-lg-9 mb-2">
+            <div class="col-12 col-lg-9 mb-2">
                 <div class="dash-card p-4">
                     <div class="card-header bg-transparent d-flex justify-content-between align-items-center py-3 border-bottom-0 rounded-top" style="border-radius: 12px 12px 0 0;">
                         <div class="d-flex align-items-center">

@@ -75,6 +75,10 @@ Route::controller(AuthController::class)->group(function () {
         Route::post('/login', 'loginRequest')->name('login.submit');
         Route::get('/register', 'register')->name('register');
         Route::post('/register', 'registerRequest')->name('register.submit');
+        Route::get('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'create'])->name('password.request');
+        Route::post('/forgot-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'store'])->name('password.email');
+        Route::get('/reset-password/{token}', [\App\Http\Controllers\Auth\PasswordResetController::class, 'edit'])->name('password.reset');
+        Route::post('/reset-password', [\App\Http\Controllers\Auth\PasswordResetController::class, 'update'])->name('password.update');
     });
     // Logout Route
     Route::get('/logout', 'logout')->name('logout')->middleware('auth');
@@ -92,6 +96,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(ProfileController::class)->group(function () {
         Route::get('user/profile', 'profile')->name('user.profile');
         Route::post('user/profile', 'updateProfile')->name('user.profile.update');
+        Route::post('user/profile/deactivate', 'deactivateAccount')->name('user.profile.deactivate');
         Route::get('user/change-password', 'changePasswordForm')->name('user.password.change');
     });
 

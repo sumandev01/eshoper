@@ -32,7 +32,8 @@
             <div class="img-spinner"></div>
             <img onclick="window.location.href='{{ route('product.details', $product->slug) }}'" style="cursor: pointer;"
                 class="img-fluid w-100 product-main-image optimized-image" src="{{ $product->thumbnail }}"
-                alt="{{ $product->name }} - {{ $siteSettings->site_title ?? (null ?? '') }}" loading="lazy"
+                alt="{{ $product->name }} - {{ $siteSettings->site_title ?? (null ?? '') }}" 
+                @if(isset($isFirst) && $isFirst) loading="eager" fetchpriority="high" @else loading="lazy" @endif
                 onload="this.style.opacity='1'; this.previousElementSibling.style.display='none';"
                 onerror="this.style.opacity='1'; this.previousElementSibling.style.display='none';">
             <script>
@@ -125,15 +126,15 @@
 
         @if ($displayStock <= 0)
             <a href="javascript:void(0);"
-                class="btn btn-primary py-2 rounded shadow-sm disabled d-flex justify-content-center align-items-center shop-add-to-cart"
-                style="pointer-events: none;" data-product-id="{{ $product->id }}">
+                class="btn btn-outline-secondary py-2 rounded disabled d-flex justify-content-center align-items-center shop-add-to-cart"
+                style="pointer-events: none; border-width: 2px;" data-product-id="{{ $product->id }}">
                 <i class="fas fa-shopping-cart me-2"></i>
                 Out of Stock
             </a>
         @else
-            <a href=""
-                class="btn btn-primary py-2 rounded shadow-sm shop-add-to-cart d-flex justify-content-center align-items-center"
-                data-product-id="{{ $product->id }}">
+            <a href="javascript:void(0);"
+                class="btn btn-outline-primary py-2 rounded shop-add-to-cart d-flex justify-content-center align-items-center product-add-btn"
+                style="border-width: 2px; font-weight: 500; transition: all 0.3s;" data-product-id="{{ $product->id }}">
                 <i class="fas fa-shopping-cart me-2"></i>
                 Add to Cart
             </a>
@@ -194,6 +195,12 @@
             width: 32px;
             height: 32px;
             border-color: var(--primary);
+        }
+
+        .product-add-btn:hover {
+            background-color: var(--primary) !important;
+            color: #fff !important;
+            border-color: var(--primary) !important;
         }
     </style>
 @endpush

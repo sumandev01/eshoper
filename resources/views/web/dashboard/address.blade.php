@@ -14,7 +14,7 @@
     <div class="container pt-1">
         <div class="row">
             @include('web.dashboard.sidebar')
-            <div class="col-lg-9 mb-2">
+            <div class="col-12 col-lg-9 mb-2">
                 <div class="dash-card p-4">
                     <div class="card-header bg-transparent py-3 border-bottom-0 rounded-top" style="border-radius: 12px 12px 0 0;">
                         <h5 class="mb-0 font-weight-semi-bold" style="color: color-mix(in srgb, var(--primary) 60%, #111); font-size: 1.2rem;">Address Book</h5>
@@ -23,9 +23,11 @@
                         <form action="{{ route('user.address.update') }}" method="POST">
                             @csrf
                             <div class="row">
-                                <div class="col-md-12">
-                                    <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">Shipping Address</h6>
-                                    <div class="row">
+                                <div class="col-md-12 mb-4">
+                                    <div class="card border-0 shadow-sm rounded" style="border-radius: 12px !important;">
+                                        <div class="card-body p-4">
+                                            <h6 class="text-uppercase text-muted mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px; font-weight: 600;"><i class="fas fa-truck text-primary mr-2"></i>Shipping Address</h6>
+                                            <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <x-input label="Name" name="shipping_name" :value="old('shipping_name') ?? $shippingAddress?->name" />
                                         </div>
@@ -57,13 +59,16 @@
                                                     different address</label>
                                             </div>
                                         </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-12">
                                     <div class="collapse" id="shipping-address">
-                                        <hr class="my-4">
-                                        <h6 class="text-uppercase text-muted mb-3" style="font-size: 0.85rem; letter-spacing: 0.5px;">Billing Address</h6>
-                                        <div class="row">
+                                        <div class="card border-0 shadow-sm rounded" style="border-radius: 12px !important;">
+                                            <div class="card-body p-4">
+                                                <h6 class="text-uppercase text-muted mb-4" style="font-size: 0.85rem; letter-spacing: 0.5px; font-weight: 600;"><i class="fas fa-file-invoice-dollar text-primary mr-2"></i>Billing Address</h6>
+                                                <div class="row">
                                             <div class="col-md-6 mb-3">
                                                 <x-input label="Name" name="billing_name" :value="old('billing_name') ?? $billingAddress?->name" />
                                             </div>
@@ -85,10 +90,12 @@
                                             <div class="col-md-12 mb-3">
                                                 <x-input label="Address" name="billing_address" :value="old('billing_address') ?? $billingAddress?->address" />
                                             </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12 mt-4">
+                                <div class="col-md-12 mt-3">
                                     <button type="submit" class="btn btn-primary theme-shadow transition-all hover-up px-4 py-2" style="border-radius: 8px; font-weight: 500;">Save Changes</button>
                                 </div>
                             </div>
