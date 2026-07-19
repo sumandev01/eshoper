@@ -11,13 +11,13 @@
                                 <h4 class="mb-1 fw-semibold">Edit Courier</h4>
                                 <p class="text-muted small mb-0">Update courier information</p>
                             </div>
-                            <a href="{{ route('couriers.index') }}" class="btn btn-secondary btn-sm">
+                            <a href="{{ route('admin.couriers.index') }}" class="btn btn-secondary btn-sm">
                                 <i class="mdi mdi-arrow-left"></i> Back
                             </a>
                         </div>
                     </div>
                     <div class="card-body p-4">
-                        <form action="{{ route('couriers.update', $courier->id) }}" method="POST">
+                        <form action="{{ route('admin.couriers.update', $courier->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="mb-3">

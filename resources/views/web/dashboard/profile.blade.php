@@ -23,7 +23,7 @@
                                 <div class="col-12 col-lg-4 mb-4">
                                     <div class="dash-card p-3 p-md-4 text-center h-100">
                                         <div class="position-relative d-inline-block mb-3 mt-lg-3">
-                                            <img src="{{ $userProfileImage }}" alt="Avatar" class="rounded-circle shadow-sm" style="width: 140px; height: 140px; object-fit: cover; border: 3px solid color-mix(in srgb, var(--primary) 20%, white);">
+                                            <img src="{{ $userProfileImage }}" alt="Avatar" class="rounded-circle shadow-sm" style="width: 140px; height: 140px; object-fit: cover; border: 3px solid #fff;">
                                             <label for="avatar" class="position-absolute bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow" style="width: 36px; height: 36px; bottom: 8px; right: 8px; cursor: pointer; transition: all 0.3s ease;">
                                                 <i class="fas fa-camera"></i>
                                             </label>

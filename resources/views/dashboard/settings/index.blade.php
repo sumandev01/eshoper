@@ -87,17 +87,21 @@
                                             <label class="form-label fw-bold text-muted mb-2">Site Description</label>
                                             <x-input name="site_description" class="fs-6" type="text" :value="$siteSettings->site_description ?? null" :required="false" :rows="3" />
                                         </div>
-                                        <div class="col-md-4 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label fw-bold text-muted mb-2">Logo</label>
                                             <x-media-thumbnail button_label="Select Logo" input_name="site_logo" :existing_image="$logoImage" :existing_id="$logoId" :target_id="'logo'"/>
                                         </div>
-                                        <div class="col-md-4 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label fw-bold text-muted mb-2">Mobile Logo</label>
                                             <x-media-thumbnail button_label="Select Mobile Logo" input_name="site_mobile_logo" :existing_image="$mobileLogoImage" :existing_id="$mobileLogoId" :target_id="'mobile_logo'"/>
                                         </div>
-                                        <div class="col-md-4 mb-3">
+                                        <div class="col-md-3 mb-3">
                                             <label class="form-label fw-bold text-muted mb-2">Favicon</label>
                                             <x-media-thumbnail button_label="Select Favicon" input_name="site_favicon" :existing_image="$faviconImage" :existing_id="$faviconId" :target_id="'favicon'"/>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <label class="form-label fw-bold text-muted mb-2">Footer Logo</label>
+                                            <x-media-thumbnail button_label="Select Footer Logo" input_name="site_footer_logo" :existing_image="$footerLogoImage" :existing_id="$footerLogoId" :target_id="'footer_logo'"/>
                                         </div>
                                     </div>
                                 </div>

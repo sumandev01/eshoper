@@ -56,10 +56,10 @@ class CleanUnusedMediaRecords extends Command
             }
         }
 
-        // Special case: Settings table (site_logo, site_favicon)
+        // Special case: Settings table (site_logo, site_mobile_logo, site_favicon, site_footer_logo)
         if (Schema::hasTable('settings')) {
             $settingIds = DB::table('settings')
-                ->whereIn('key_name', ['site_logo', 'site_favicon'])
+                ->whereIn('key_name', ['site_logo', 'site_mobile_logo', 'site_favicon', 'site_footer_logo'])
                 ->whereNotNull('key_value')
                 ->where('key_value', '!=', '')
                 ->pluck('key_value')

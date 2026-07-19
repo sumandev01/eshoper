@@ -16,6 +16,16 @@ class SubCategory extends Model
         return $this->belongsTo(Media::class);
     }
 
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'sub_category_id');
+    }
+
+    public function details()
+    {
+        return $this->hasMany(ProductDetails::class, 'sub_category_id');
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);

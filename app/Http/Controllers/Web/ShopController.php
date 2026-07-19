@@ -119,11 +119,18 @@ class ShopController extends Controller
             return response()->json([]);
         }
 
-        $products = Product::active()
+        $query = Product::active()
             ->where('name', 'like', '%' . $request->search . '%')
             ->select('id', 'name', 'slug', 'price', 'discount', 'media_id')
-            ->with('media:id,src')
-            ->limit(6)
+            ->with('media:id,src');
+
+        if ($request->filled('category_id') && $request->category_id !== 'all') {
+            $query->whereHas('details', function ($q) use ($request) {
+                $q->where('category_id', $request->category_id);
+            });
+        }
+
+        $products = $query->limit(6)
             ->get()
             ->map(function ($product) {
                 return [

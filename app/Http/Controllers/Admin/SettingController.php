@@ -16,11 +16,14 @@ class SettingController extends Controller
         $logoId = Setting::whereKeyName('site_logo')->value('key_value');
         $mobileLogoId = Setting::whereKeyName('site_mobile_logo')->value('key_value');
         $faviconId = Setting::whereKeyName('site_favicon')->value('key_value');
-        $logoImage = Storage::url(Media::find($logoId)->src);
-        $mobileLogoImage = Storage::url(Media::find($mobileLogoId)->src);
-        $faviconImage = Storage::url(Media::find($faviconId)->src);
+        $footerLogoId = Setting::whereKeyName('site_footer_logo')->value('key_value');
+        
+        $logoImage = $logoId ? Storage::url(Media::find($logoId)?->src) : null;
+        $mobileLogoImage = $mobileLogoId ? Storage::url(Media::find($mobileLogoId)?->src) : null;
+        $faviconImage = $faviconId ? Storage::url(Media::find($faviconId)?->src) : null;
+        $footerLogoImage = $footerLogoId ? Storage::url(Media::find($footerLogoId)?->src) : null;
 
-        return view('dashboard.settings.index', compact('logoId', 'mobileLogoId', 'faviconId', 'logoImage', 'mobileLogoImage', 'faviconImage'));
+        return view('dashboard.settings.index', compact('logoId', 'mobileLogoId', 'faviconId', 'footerLogoId', 'logoImage', 'mobileLogoImage', 'faviconImage', 'footerLogoImage'));
     }
 
     public function update(Request $request)
@@ -34,6 +37,8 @@ class SettingController extends Controller
             'mobile_logo' => 'nullable',
             'site_favicon' => 'nullable|exists:media,id',
             'favicon' => 'nullable',
+            'site_footer_logo' => 'nullable|exists:media,id',
+            'footer_logo' => 'nullable',
             'site_description' => 'required|max:1500',
             'site_keywords' => 'required|max:255',
             'contact_email' => 'required|email',
@@ -84,12 +89,19 @@ class SettingController extends Controller
             unset($inputs['site_favicon']);
         }
 
+        if (! empty($inputs['footer_logo'])) {
+            $inputs['site_footer_logo'] = $inputs['footer_logo'];
+        } else {
+            unset($inputs['site_footer_logo']);
+        }
+
         unset($inputs['logo']);
         unset($inputs['mobile_logo']);
         unset($inputs['favicon']);
+        unset($inputs['footer_logo']);
 
         try {
-            $allInputs = $request->except(['_token', '_method', 'logo', 'mobile_logo', 'favicon']);
+            $allInputs = $request->except(['_token', '_method', 'logo', 'mobile_logo', 'favicon', 'footer_logo']);
             $allInputs = array_merge($allInputs, $inputs);
 
             foreach ($allInputs as $key => $value) {
@@ -144,6 +156,35 @@ class SettingController extends Controller
             return redirect()->back()->with('success', 'Payment gateways updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Failed to update payment gateways.');
+        }
+    }
+
+    public function themeLayouts()
+    {
+        return view('dashboard.settings.theme-layouts');
+    }
+
+    public function updateThemeLayouts(Request $request)
+    {
+        $inputs = $request->validate([
+            'header_layout' => 'required|string',
+            'home_layout' => 'required|string',
+            'shop_layout' => 'required|string',
+        ]);
+
+        try {
+            foreach ($inputs as $key => $value) {
+                Setting::updateOrCreate(
+                    ['key_name' => $key],
+                    ['key_value' => $value]
+                );
+            }
+
+            \Illuminate\Support\Facades\Cache::forget('site_settings');
+
+            return redirect()->back()->with('success', 'Theme layouts updated successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Failed to update theme layouts.');
         }
     }
 }

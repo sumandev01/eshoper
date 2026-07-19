@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Category;
+use App\Models\Brand;
 use App\Models\Color;
 use App\Models\Product;
 use App\Models\Size;
@@ -81,19 +82,29 @@ class ProductFilterService
             });
         }
 
-        // Color filter
-        if ($request->filled('colors')) {
-            $productsQuery->whereHas('colors', fn($q) => $q->whereIn('color_id', (array) $request->colors));
-        }
+        $hasColors = $request->filled('colors');
+        $hasSizes = $request->filled('sizes');
 
-        // Size filter
-        if ($request->filled('sizes')) {
+        if ($hasColors && $hasSizes) {
+            // Strict matching: Product must have BOTH requested size and color in the SAME inventory variant.
+            $productsQuery->whereHas('inventories', function($q) use ($request) {
+                $q->whereIn('color_id', (array) $request->colors)
+                  ->whereIn('size_id', (array) $request->sizes);
+            });
+        } elseif ($hasColors) {
+            $productsQuery->whereHas('colors', fn($q) => $q->whereIn('color_id', (array) $request->colors));
+        } elseif ($hasSizes) {
             $productsQuery->whereHas('sizes', fn($q) => $q->whereIn('size_id', (array) $request->sizes));
         }
 
         // Dynamic Category filter (from sidebar checkboxes)
         if ($request->filled('categories')) {
             $productsQuery->whereHas('details', fn($q) => $q->whereIn('category_id', (array) $request->categories));
+        }
+
+        // Brand filter
+        if ($request->filled('brands')) {
+            $productsQuery->whereHas('details', fn($q) => $q->whereIn('brand_id', (array) $request->brands));
         }
 
         // Search filter
@@ -181,6 +192,13 @@ class ProductFilterService
             ->withCount(['categories' => fn($q) => $q->where('status', 1)])
             ->orderByDesc('categories_count')->get();
 
-        return compact('colorQuery', 'sizeQuery', 'categoryQuery');
+        // Fetch brands
+        $brandQuery = Brand::whereIn('id', function($q) use ($activeProductsSubquery) {
+            $q->select('brand_id')->from('product_details')
+              ->whereIn('product_id', $activeProductsSubquery)
+              ->whereNotNull('brand_id');
+        })->latest('id')->get();
+
+        return compact('colorQuery', 'sizeQuery', 'categoryQuery', 'brandQuery');
     }
 }

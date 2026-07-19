@@ -256,6 +256,9 @@ Route::middleware(['is_admin', 'auth:web', 'can:'.AdminAccessEnums::AdminAccess-
 
         Route::get('/settings/payment-gateways', 'paymentGateways')->name('admin.settings.payment-gateways');
         Route::post('/settings/payment-gateways', 'updatePaymentGateways')->name('admin.settings.payment-gateways.update');
+
+        Route::get('/settings/theme-layouts', 'themeLayouts')->name('admin.settings.theme-layouts');
+        Route::post('/settings/theme-layouts', 'updateThemeLayouts')->name('admin.settings.theme-layouts.update');
     });
 
     // Blog routes

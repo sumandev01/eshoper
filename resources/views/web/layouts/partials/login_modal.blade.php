@@ -46,7 +46,7 @@
                         <span class="btn-text">Login</span>
                     </button>
 
-                    <p class="pt-3 text-center">Don't have an account? <a href="{{ route('register') }}">Create free account</a></p>
+                    <p class="pt-3 text-center">Don't have an account? <a class="text-primary" href="{{ route('register') }}">Create free account</a></p>
 
                     <div class="text-center mt-3 mb-2">
                         <span class="text-muted">OR</span>

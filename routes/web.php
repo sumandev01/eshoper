@@ -35,7 +35,7 @@ Route::controller(ShopController::class)->group(function () {
     Route::get('/get-signle-product-variant', 'getSignleProductVariantBySizeId')->name('product.variant.single');
     Route::get('/category/{slug}', 'categoryProducts')->name('category.products');
     Route::get('/categories', 'categories')->name('categories.index');
-    Route::get('/subcategory/{slug}', 'subcategoryProducts')->name('subcategory.products');
+    Route::get('/sub-category/{slug}', 'subcategoryProducts')->name('subcategory.products');
     Route::get('/brand/{slug}', 'brandProducts')->name('brand.products');
     Route::get('/search-suggestions', 'searchSuggestions')->name('search.suggestions');
 });
@@ -111,6 +111,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(CartController::class)->group(function () {
         Route::get('/cart', 'cart')->name('cart');
+        Route::get('/cart/minicart', 'minicart')->name('cart.minicart');
         Route::post('/add-to-cart', 'addToCart')->name('cart.add');
         Route::post('/update-cart', 'updateCart')->name('cart.update');
         Route::get('/delete-from-cart/{cart}', 'removeFromCart')->name('cart.remove');

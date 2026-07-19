@@ -58,6 +58,7 @@ class AppServiceProvider extends ServiceProvider
                     'site_logo' => null,
                     'site_mobile_logo' => null,
                     'site_favicon' => null,
+                    'site_footer_logo' => null,
                     'site_description' => 'Best e-commerce platform',
                     'site_keywords' => 'ecommerce, shop, online store',
                     'social_facebook' => '',
@@ -137,9 +138,21 @@ class AppServiceProvider extends ServiceProvider
                     $favicon = asset($faviconId);
                 }
 
+                $footerLogoId = get_setting('site_footer_logo');
+                $footerLogo = null;
+                if (is_numeric($footerLogoId)) {
+                    $media = Media::find($footerLogoId);
+                    if ($media) {
+                        $footerLogo = Storage::url($media->src);
+                    }
+                } elseif ($footerLogoId) {
+                    $footerLogo = asset($footerLogoId);
+                }
+
                 $siteSettings->site_logo = $logo;
                 $siteSettings->site_mobile_logo = $mobileLogo;
                 $siteSettings->site_favicon = $favicon;
+                $siteSettings->site_footer_logo = $footerLogo;
 
                 View::share('siteSettings', $siteSettings);
             }

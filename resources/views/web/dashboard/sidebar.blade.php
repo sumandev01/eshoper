@@ -9,7 +9,7 @@
     </div>
 
     <!-- Sidebar Menu -->
-    <div class="dash-sidebar list-group" style="background-color: color-mix(in srgb, var(--primary) 4%, white);">
+    <div class="dash-sidebar list-group">
         <a href="{{ route('user.dashboard') }}" class="list-group-item list-group-item-action {{ request()->routeIs('user.dashboard') ? 'active' : '' }}">
             <i class="fas fa-tachometer-alt fa-fw me-2"></i> Dashboard
         </a>
@@ -40,7 +40,6 @@
 
     /* Dashboard Cards */
     .dash-card {
-        background-color: color-mix(in srgb, var(--primary) 4%, white) !important;
         border-radius: 12px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
         border: none;
@@ -57,6 +56,7 @@
         border-radius: 12px;
         overflow: hidden;
         border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
     }
     .dash-sidebar .list-group-item {
         border: none;

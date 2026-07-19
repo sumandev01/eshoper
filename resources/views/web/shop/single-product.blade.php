@@ -196,7 +196,7 @@
             <!-- Product Detail End -->
         </div>
         <!-- Product Extra Detail End -->
-        <div class="row px-xl-5">
+        <div class="row">
             <div class="col">
                 <div class="nav nav-tabs custom-tabs justify-content-center mb-4">
                     <a class="nav-item nav-link active" data-bs-toggle="tab" href="#tab-pane-1">Description</a>
@@ -466,13 +466,9 @@
                 let stockDisplay = $('#variant-stock-display');
                 let qtyInput = $('#product-quantity');
 
-                console.log("Selected Size:", sizeId, "Selected Color:", colorId);
-
                 if (sizeId && colorId) {
                     // Find specific inventory from local JSON
                     let variant = productInventories.find(inv => parseInt(inv.size_id) === parseInt(sizeId) && parseInt(inv.color_id) === parseInt(colorId));
-
-                    console.log("Variant Found:", variant);
 
                     if (variant) {
                         currentStock = parseInt(variant.stock) || 0;
@@ -481,12 +477,10 @@
 
                         // Update variant image
                         if (variant.image) {
-                            console.log("Updating image to:", variant.image);
                             const img = $('#main-image-preview');
                             img.css('opacity', '0').prev('.img-spinner').show();
                             img.attr('src', variant.image);
                         } else {
-                            console.log("No variant image, using original:", OriginalThumbnail);
                             const img = $('#main-image-preview');
                             img.css('opacity', '0').prev('.img-spinner').show();
                             img.attr('src', OriginalThumbnail);
@@ -601,6 +595,12 @@
                         if (response.status == 'success') {
                             showToast('success', response.message);
                             $("#cartCount").text(response.cartCount);
+                            $(".global-cart-count").text(response.cartCount);
+                            
+                            // Fetch and update the mini-cart dropdown
+                            $.get('{{ route("cart.minicart") }}', function(html) {
+                                $('#minicart').replaceWith(html);
+                            });
                         }
                     },
                     error: function(xhr) {

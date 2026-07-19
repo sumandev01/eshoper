@@ -469,6 +469,13 @@
                     <i class="mdi mdi-cog menu-icon"></i>
                 </a>
             </li>
+            
+            <li class="nav-item {{ request()->routeIs('admin.settings.theme-layouts') ? 'active' : '' }}">
+                <a class="nav-link" href="{{ route('admin.settings.theme-layouts') }}">
+                    <span class="menu-title">Theme Layouts</span>
+                    <i class="mdi mdi-view-dashboard-variant menu-icon"></i>
+                </a>
+            </li>
         @endcan
     </ul>
 </nav>

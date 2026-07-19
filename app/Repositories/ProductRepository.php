@@ -215,7 +215,7 @@ class ProductRepository
 
     public function getOutOfStockProducts()
     {
-        return Product::with(['inventories' => function ($query) {
+        return Product::with(['media', 'inventories' => function ($query) {
             $query->where('stock', 0)->with(['color', 'size', 'media']);
         }])
         ->where(function ($query) {

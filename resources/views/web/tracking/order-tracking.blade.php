@@ -17,7 +17,7 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6">
-                    <div class="card shadow-sm border-0 shadow p-5">
+                    <div class="card border-0 card-shadow p-5">
                         <p class="text-muted small text-center mb-4">
                             Enter your Order ID to track your order
                         </p>

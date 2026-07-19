@@ -11,13 +11,13 @@
                                 <h4 class="mb-1 fw-semibold">Add New Courier</h4>
                                 <p class="text-muted small mb-0">Add a new courier service</p>
                             </div>
-                            <a href="{{ route('couriers.index') }}" class="btn btn-secondary btn-sm">
+                            <a href="{{ route('admin.couriers.index') }}" class="btn btn-secondary btn-sm">
                                 <i class="mdi mdi-arrow-left"></i> Back
                             </a>
                         </div>
                     </div>
                     <div class="card-body p-4">
-                        <form action="{{ route('couriers.store') }}" method="POST">
+                        <form action="{{ route('admin.couriers.store') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label fw-bold">Courier Name <span class="text-danger">*</span></label>

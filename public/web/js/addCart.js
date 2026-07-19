@@ -150,7 +150,7 @@ $(document).ready(function () {
                 } else if (response.action === "removed") {
                     $icon.css("color", "#ccc"); // grey
                 }
-                $("#wishlistCount").text(response.wishlistCount);
+                $(".global-wishlist-count").text(response.wishlistCount);
             },
             error: function (xhr) {
                 showToast(
@@ -180,6 +180,7 @@ function fetchColors(element) {
     let sizeId = element.data("value");
     let colorContainer = card.find(".shop-color-container");
     let variants = card.data("variants");
+    let requestedColorId = card.data("active-color");
 
     if (!variants || !sizeId) return;
 
@@ -189,7 +190,12 @@ function fetchColors(element) {
 
     if (availableVariants.length > 0) {
         availableVariants.forEach(function (variant, index) {
-            let activeClass = index === 0 ? "active" : "";
+            let activeClass = "";
+            if (requestedColorId && availableVariants.some(v => v.color_id == requestedColorId)) {
+                activeClass = (variant.color_id == requestedColorId) ? "active" : "";
+            } else {
+                activeClass = index === 0 ? "active" : "";
+            }
             let colorCode = variant.color_code || '#000';
             html += `<div><span class="color shop-color-selector ${activeClass}" data-value="${variant.color_id}" style="background-color: ${colorCode}; cursor: pointer;" title="${variant.color_name}"></span></div>`;
         });
@@ -268,7 +274,7 @@ function updateProductUI(element) {
         addToCartBtn
             .removeClass("disabled")
             .html('<i class="fas fa-shopping-cart me-2"></i> Add to Cart')
-            .attr("title", "Add To Cart")
+            .removeAttr("title")
             .css("pointer-events", "auto");
     }
 }
@@ -287,7 +293,12 @@ function addToCart(productId, sizeId, colorId, price) {
         },
         success: function (response) {
             showToast("success", response.message);
-            $("#cartCount").text(response.cartCount);
+            $(".global-cart-count").text(response.cartCount);
+            
+            // Fetch and update the mini-cart dropdown globally
+            $.get(window.LaravelData.route_minicart, function(html) {
+                $('#minicart').replaceWith(html);
+            });
         },
         error: function (xhr) {
             if (xhr.status === 401) {

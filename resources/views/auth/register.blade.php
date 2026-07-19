@@ -4,13 +4,13 @@
     <div class="row w-100 justify-content-center align-items-center min-vh-100 py-5">
         <div class="col-md-6 col-lg-5 col-xl-4">
             <div class="card auth-card border-0">
-                <div class="card-body p-5">
+                <div class="card-body">
                     <div class="text-center mb-4">
                         <a href="{{ route('root') }}" class="d-inline-block mb-3">
-                            <img src="{{ $siteSettings->site_logo ?? asset('auth/images/logo-2.svg') }}" alt="Logo" style="max-height: 40px;">
+                            <img src="{{ $siteSettings->site_logo ?? asset('auth/images/logo-2.svg') }}" alt="Logo" style="max-height: 60px;">
                         </a>
                         <h2>Signup</h2>
-                        <p>Create your free account</p>
+                        <p class="mb-0">Create your free account</p>
                     </div>
                     
                     <form action="{{ route('register.submit') }}" method="POST">

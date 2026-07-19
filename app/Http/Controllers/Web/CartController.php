@@ -39,6 +39,14 @@ class CartController extends Controller
         return view('web.shop.cart', compact('carts', 'subTotalPrice', 'recentProducts'));
     }
     
+    public function minicart()
+    {
+        $user = auth('web')->user();
+        $cartProducts = $user ? $user->cartItems : collect();
+        
+        return view('web.layouts.headers.header_1_partials.minicart_dropdown', compact('cartProducts'))->render();
+    }
+
     public function addToCart(Request $request)
     {
         $inventoryId = $this->cartRepository->checkInventory($request);

@@ -5,7 +5,7 @@
     $displayStock = $firstVariant ? $firstVariant['stock'] : $product->stock;
 @endphp
 <div class="card product-item theme-shadow mb-4 product-card position-relative" data-product-id="{{ $product->id }}"
-    data-variants="{{ json_encode($product->formatted_variants) }}">
+    data-variants="{{ json_encode($product->formatted_variants) }}" data-active-color="{{ request('colors')[0] ?? '' }}">
     <div class="card-header product-img position-relative overflow-hidden bg-transparent border-0 p-0">
         <div class="position-absolute" style="top: 8px; left: 8px; z-index: 99;">
             <button class="btn btn-sm bg-white rounded-circle shadow-lg wishlist-btn p-1"
@@ -47,15 +47,17 @@
             </script>
             @if ($product->inventories->count() > 0)
                 @php
-                    $firstSizeId = $product->inventories->unique('size_id')->sortBy('size.name')->first()?->size_id;
-                    $firstSizeColors = $product->inventories->where('size_id', $firstSizeId)->unique('color_id');
+                    $requestedSizes = (array) request('sizes', []);
+                    $activeSizeId = collect($requestedSizes)->first(fn($id) => $product->inventories->contains('size_id', $id)) 
+                        ?? $product->inventories->unique('size_id')->sortBy('size.name')->first()?->size_id;
+                    $sizeColors = $product->inventories->where('size_id', $activeSizeId)->unique('color_id');
                 @endphp
                 {{-- Dynamic size --}}
                 <div class="position-absolute shop-size-container"
                     style="bottom: 8px; left: -50px; display: flex; flex-direction: column; gap: 5px; z-index: 999;">
-                    @foreach ($product->inventories->unique('size_id')->sortBy('size.name') as $index => $inv)
+                    @foreach ($product->inventories->unique('size_id')->sortBy('size.name') as $inv)
                         <div>
-                            <span class="size shop-size-selector {{ $index == 0 ? 'active' : '' }}"
+                            <span class="size shop-size-selector {{ $inv->size_id == $activeSizeId ? 'active' : '' }}"
                                 data-value="{{ $inv->size_id }}" style="cursor: pointer;"
                                 title="{{ $inv->size?->name ?? 'N/A' }}">
                                 {{ $inv->size?->name ?? 'N/A' }}
@@ -66,9 +68,13 @@
                 {{-- Dynamic color --}}
                 <div class="position-absolute shop-color-container"
                     style="bottom: 8px; right: -50px; display: flex; flex-direction: column; gap: 5px; z-index: 999;">
-                    @foreach ($firstSizeColors as $index => $inv)
+                    @foreach ($sizeColors as $index => $inv)
+                        @php
+                            $requestedColors = (array) request('colors', []);
+                            $isActiveColor = in_array($inv->color_id, $requestedColors) || (empty($requestedColors) && $index == 0);
+                        @endphp
                         <div>
-                            <span class="color shop-color-selector {{ $index == 0 ? 'active' : '' }}"
+                            <span class="color shop-color-selector {{ $isActiveColor ? 'active' : '' }}"
                                 data-value="{{ $inv->color_id }}"
                                 style="background-color: {{ $inv->color?->color_code ?? '#000' }}; cursor: pointer;"
                                 title="{{ $inv->color?->name ?? 'N/A' }}"></span>

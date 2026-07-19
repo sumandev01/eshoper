@@ -19,7 +19,8 @@ class CheckoutController extends Controller
 
         $userId = auth('web')->id();
 
-        $cartItems = auth('web')->user()->cartItems;
+        // Eager load related product and productInventory to prevent N+1 queries
+        $cartItems = auth('web')->user()->cartItems()->with(['product', 'productInventory'])->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart')->with('error', 'Your cart is completely empty! Please add some products to checkout.');
@@ -27,11 +28,11 @@ class CheckoutController extends Controller
 
         $validItems = $cartItems->filter(function ($item) {
             if ($item->product_inventory_id) {
-                $inventory = ProductInventory::find($item->product_inventory_id);
+                $inventory = $item->productInventory;
                 return $inventory && $inventory->stock > 0;
             }
 
-            $product = Product::find($item->product_id);
+            $product = $item->product;
             return $product && $product->stock > 0;
         });
 

@@ -155,6 +155,11 @@
                     sizes.push($(this).val());
                 });
 
+                let brands = [];
+                $('.brand-checkbox:checked').each(function() {
+                    brands.push($(this).val());
+                });
+
                 let search = $('#search-product').val();
 
                 // queryData object
@@ -169,6 +174,7 @@
                 if (categories.length > 0) queryData.categories = categories;
                 if (colors.length > 0) queryData.colors = colors;
                 if (sizes.length > 0) queryData.sizes = sizes;
+                if (brands.length > 0) queryData.brands = brands;
 
                 $.ajax({
                     url: "{!! $filterUrl !!}",
@@ -209,6 +215,12 @@
                         });
                         if (sizesList.length > 0) activeParams.sizes = sizesList;
 
+                        let brandsList = [];
+                        $('.brand-checkbox:checked').each(function() {
+                            brandsList.push($(this).val());
+                        });
+                        if (brandsList.length > 0) activeParams.brands = brandsList;
+
                         let searchInput = $('#search-product').val();
                         if (searchInput !== '') activeParams.search = searchInput;
                         if (currentSort !== 'latest') activeParams.sort = currentSort;
@@ -246,7 +258,7 @@
                 filterProducts(page);
             });
 
-            $('.category-checkbox, .color-checkbox, .size-checkbox').on('change', function() {
+            $('.category-checkbox, .brand-checkbox, .color-checkbox, .size-checkbox').on('change', function() {
                 if ($(this).is(':checked')) {
                     if ($(this).hasClass('category-checkbox')) {
                         $('.category-checkbox').not(this).prop('checked', false);

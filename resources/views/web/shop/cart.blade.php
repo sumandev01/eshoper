@@ -13,8 +13,8 @@
                 <h4 class="font-weight-semi-bold mb-2">Your Cart</h4>
                 <p>There are {{ count($carts) }} products in this list</p>
             </div>
-            <div class="col-lg-8 table-responsive mb-5">
-                <table class="table table-borderless table-hover text-center mb-0 theme-shadow rounded" style="border-collapse: separate; border-spacing: 0;">
+            <div class="col-lg-8 table-responsive mb-5 card-shadow rounded">
+                <table class="table table-borderless table-hover text-center mb-0 p-4" style="border-collapse: separate; border-spacing: 0;">
                     <thead class="bg-secondary text-primary">
                         <tr>
                             <th>Image</th>
@@ -97,7 +97,7 @@
                                 </td>
                                 <td class="align-middle">{{ ($siteSettings->currency_symbol ?? null) }}{{ formatBDT($price) }}</td>
                                 <td class="align-middle">
-                                    <div class="input-group quantity mx-auto theme-shadow rounded" style="width: 100px;">
+                                    <div class="input-group quantity mx-auto card-shadow rounded" style="width: 100px;">
                                         <div class="input-group-btn">
                                             <button class="btn btn-sm btn-minus quantity-btn bg-secondary text-primary border-0">
                                                 <i class="fa fa-minus"></i>
@@ -131,14 +131,14 @@
             </div>
             <div class="col-lg-4">
                 <form id="coupon-form" class="mb-4">
-                    <div class="input-group theme-shadow rounded" style="overflow: hidden;">
+                    <div class="input-group card-shadow rounded" style="overflow: hidden;">
                         <input type="text" class="form-control p-3 border-0 bg-light" id="couponCode" placeholder="Coupon Code" style="box-shadow: none;">
                         <button type="button" id="couponBtn" class="btn btn-primary fw-bold px-4 border-0">Apply Coupon</button>
                     </div>
                 </form>
-                <div class="card border-0 theme-shadow mb-5 rounded">
-                    <div class="card-header border-0 rounded-top bg-secondary text-primary">
-                        <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
+                <div class="card border-0 card-shadow mb-5 rounded">
+                    <div class="card-header border-0 rounded-top text-dark py-3">
+                        <h5 class="font-weight-semi-bold m-0">Cart Summary</h5>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">

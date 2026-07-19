@@ -11,18 +11,13 @@
     <div class="container pt-1">
         <form action="{{ route('web.orders.store') }}" method="POST">
             @csrf
-            
-            <div id="payment-timeout-warning" class="alert alert-warning d-none" style="display: none; border-left: 4px solid #ffc107;">
-                <strong><i class="fas fa-exclamation-triangle mr-1"></i> Attention:</strong> Please complete your payment within 30 minutes of placing the order. Otherwise, your order will be automatically canceled.
-            </div>
-
             <div class="row">
                 <div class="col-xl-8 col-lg-12 address_section">
                     <div class="row">
                         <!-- Billing Address -->
                         <div class="col-md-12 mb-4">
                             <div class="card p-0 border-0 rounded checkout-shadow">
-                                <div class="card-header bg-secondary text-primary border-0 mb-2">
+                                <div class="card-header text-dark rounded-top border-0 mb-2 py-3">
                                     <h5 class="font-weight-semi-bold mb-0">Billing Address</h5>
                                 </div>
                                 <div class="card-body p-4">
@@ -73,7 +68,7 @@
                         <!-- Shipping Address -->
                         <div class="col-md-12 mb-4">
                             <div class="card p-0 border-0 rounded checkout-shadow">
-                                <div class="card-header bg-secondary text-primary border-0 mb-2">
+                                <div class="card-header text-dark border-0 rounded-top mb-2 py-3">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <h5 class="font-weight-semi-bold mb-0">Shipping Address</h5>
                                         <div>
@@ -132,8 +127,8 @@
                 </div>
                 <div class="col-xl-4 col-lg-12">
                     <div class="card border-0 checkout-shadow mb-5 rounded">
-                        <div class="card-header border-0 rounded-top bg-secondary text-primary">
-                            <h4 class="font-weight-semi-bold m-0">Order Total</h4>
+                        <div class="card-header border-0 rounded-top text-dark py-3">
+                            <h5 class="font-weight-semi-bold m-0">Order Total</h5>
                         </div>
                         <div class="card-body">
                             <h5 class="font-weight-medium mb-3">Products</h5>
@@ -205,104 +200,80 @@
                         </div>
                     </div>
                     <input type="hidden" name="shipping_charge" id="hidden_shipping_charge" value="">
-                    {{-- <div class="card border-secondary mb-5">
-                        <div class="card-header bg-secondary border-0">
-                            <h4 class="font-weight-semi-bold m-0">Payment</h4>
-                        </div>
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" value="paypal"
-                                        id="paypal">
-                                    <label class="custom-control-label" for="paypal">Paypal</label>
-                                </div>
-                            </div>
-                            <div class="mb-3">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" value="stripe"
-                                        id="stripe">
-                                    <label class="custom-control-label" for="stripe">Stripe</label>
-                                </div>
-                            </div>
-                            <div class="">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment"
-                                        value="cashOnDelivery" id="cashOnDelivery">
-                                    <label class="custom-control-label" for="cashOnDelivery">Cash on Delivery</label>
-                                </div>
-                            </div>
-                            @error('payment')
-                                <span class="text-danger mt-2 d-block">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="card-footer border-secondary bg-transparent">
-                            <button type="submit"
-                                class="btn btn-lg btn-block btn-primary fw-bold my-3 py-3">Place
-                                Order</button>
-                        </div>
-                    </div> --}}
+
+                    <div id="payment-timeout-warning" class="alert alert-warning d-none"
+                        style="display: none; border-left: 4px solid #ffc107;">
+                        <strong><i class="fas fa-exclamation-triangle mr-1"></i> Attention:</strong> Please complete your
+                        payment within 30 minutes of placing the order. Otherwise, your order will be automatically
+                        canceled.
+                    </div>
 
                     <div class="card border-0 checkout-shadow mb-5 rounded">
-                        <div class="card-header border-0 rounded-top bg-secondary text-primary">
-                            <h4 class="font-weight-semi-bold m-0">Payment</h4>
+                        <div class="card-header border-0 rounded-top text-dark py-3">
+                            <h5 class="font-weight-semi-bold m-0">Payment</h5>
                         </div>
                         <div class="card-body">
 
-                            @if(isset($siteSettings->payment_sslcommerz_status) && $siteSettings->payment_sslcommerz_status == '1')
-                            <div class="mb-3">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" value="sslcommerz"
-                                        id="sslcommerz">
-                                    <label class="custom-control-label" for="sslcommerz">SSLCommerz (Mobile Banking / Cards)</label>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if(isset($siteSettings->payment_stripe_status) && $siteSettings->payment_stripe_status == '1')
-                            <div class="mb-3">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment" value="stripe"
-                                        id="stripe">
-                                    <label class="custom-control-label" for="stripe">Stripe</label>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if(isset($siteSettings->payment_cod_status) && $siteSettings->payment_cod_status == '1')
-                            <div class="mb-3">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment"
-                                        value="cashOnDelivery" id="cashOnDelivery">
-                                    <label class="custom-control-label" for="cashOnDelivery">Cash on Delivery</label>
-                                </div>
-                            </div>
-                            @endif
-
-                            @if(isset($siteSettings->payment_manual_status) && $siteSettings->payment_manual_status == '1')
-                            <div class="mb-3">
-                                <div class="custom-control custom-radio">
-                                    <input type="radio" class="custom-control-input" name="payment"
-                                        value="manual" id="manualPayment">
-                                    <label class="custom-control-label" for="manualPayment">Manual Payment</label>
-                                </div>
-                                <div class="manual-payment-info mt-3 p-3 bg-light border rounded" style="display: none;">
-                                    <p class="mb-2 text-dark fw-bold">{!! nl2br(e($siteSettings->payment_manual_instruction ?? '')) !!}</p>
-                                    
-                                    <div class="mb-2">
-                                        <input type="text" name="sender_number" id="sender_number" class="form-control" placeholder="Sender Account Number (e.g. 017XXXXXXXX)">
-                                        @error('sender_number')
-                                            <span class="text-danger mt-1 d-block">{{ $message }}</span>
-                                        @enderror
-                                    </div>
-                                    
-                                    <div>
-                                        <input type="text" name="transaction_id" id="transaction_id" class="form-control" placeholder="Enter Transaction ID (TrxID)">
-                                        @error('transaction_id')
-                                            <span class="text-danger mt-1 d-block">{{ $message }}</span>
-                                        @enderror
+                            @if (isset($siteSettings->payment_sslcommerz_status) && $siteSettings->payment_sslcommerz_status == '1')
+                                <div class="mb-3">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="payment"
+                                            value="sslcommerz" id="sslcommerz">
+                                        <label class="custom-control-label" for="sslcommerz">SSLCommerz (Mobile Banking /
+                                            Cards)</label>
                                     </div>
                                 </div>
-                            </div>
+                            @endif
+
+                            @if (isset($siteSettings->payment_stripe_status) && $siteSettings->payment_stripe_status == '1')
+                                <div class="mb-3">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="payment" value="stripe"
+                                            id="stripe">
+                                        <label class="custom-control-label" for="stripe">Stripe</label>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if (isset($siteSettings->payment_cod_status) && $siteSettings->payment_cod_status == '1')
+                                <div class="mb-3">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="payment"
+                                            value="cashOnDelivery" id="cashOnDelivery">
+                                        <label class="custom-control-label" for="cashOnDelivery">Cash on Delivery</label>
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if (isset($siteSettings->payment_manual_status) && $siteSettings->payment_manual_status == '1')
+                                <div class="mb-3">
+                                    <div class="custom-control custom-radio">
+                                        <input type="radio" class="custom-control-input" name="payment" value="manual"
+                                            id="manualPayment">
+                                        <label class="custom-control-label" for="manualPayment">Manual Payment</label>
+                                    </div>
+                                    <div class="manual-payment-info mt-3 p-3 bg-light border rounded"
+                                        style="display: none;">
+                                        <p class="mb-2 text-dark fw-bold">{!! nl2br(e($siteSettings->payment_manual_instruction ?? '')) !!}</p>
+
+                                        <div class="mb-2">
+                                            <input type="text" name="sender_number" id="sender_number"
+                                                class="form-control"
+                                                placeholder="Sender Account Number (e.g. 017XXXXXXXX)">
+                                            @error('sender_number')
+                                                <span class="text-danger mt-1 d-block">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+
+                                        <div>
+                                            <input type="text" name="transaction_id" id="transaction_id"
+                                                class="form-control" placeholder="Enter Transaction ID (TrxID)">
+                                            @error('transaction_id')
+                                                <span class="text-danger mt-1 d-block">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
                             @endif
 
                             @error('payment')
@@ -310,7 +281,9 @@
                             @enderror
                         </div>
                         <div class="card-footer border-0 bg-transparent pt-3 pb-4">
-                            <button type="submit" class="btn btn-md btn-block btn-primary checkout-shadow rounded my-3 py-3 w-100 fw-bold fs-5">Place Order</button>
+                            <button type="submit"
+                                class="btn btn-md btn-block btn-primary checkout-shadow rounded my-3 py-3 w-100 fw-bold fs-5">Place
+                                Order</button>
                         </div>
                     </div>
 
@@ -319,37 +292,36 @@
         </form>
     </div>
     <!-- Checkout End -->
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const paymentRadios = document.querySelectorAll('input[name="payment"]');
-            const timeoutWarning = document.getElementById('payment-timeout-warning');
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const paymentRadios = document.querySelectorAll('input[name="payment"]');
+                const timeoutWarning = document.getElementById('payment-timeout-warning');
 
-            function toggleWarning() {
-                const selectedPayment = document.querySelector('input[name="payment"]:checked');
-                if (selectedPayment && (selectedPayment.value === 'stripe' || selectedPayment.value === 'sslcommerz')) {
-                    timeoutWarning.classList.remove('d-none');
-                    timeoutWarning.style.display = 'block';
-                } else {
-                    timeoutWarning.classList.add('d-none');
-                    timeoutWarning.style.display = 'none';
+                function toggleWarning() {
+                    const selectedPayment = document.querySelector('input[name="payment"]:checked');
+                    
+                    if (selectedPayment && (selectedPayment.value === 'stripe' || selectedPayment.value === 'sslcommerz')) {
+                        $(timeoutWarning).removeClass('d-none').slideDown(300);
+                    } else {
+                        $(timeoutWarning).slideUp(300, function() {
+                            $(this).addClass('d-none');
+                        });
+                    }
                 }
-            }
 
-            paymentRadios.forEach(radio => {
-                radio.addEventListener('change', toggleWarning);
+                paymentRadios.forEach(radio => {
+                    radio.addEventListener('change', toggleWarning);
+                });
+
+                // Initial check on load
+                toggleWarning();
             });
-
-            // Initial check on load
-            toggleWarning();
-        });
-    </script>
-@endpush
+        </script>
+    @endpush
 @endsection
 @push('styles')
     <style>
-        /* Removed bad flex styling that broke the grid layout */
-
         /* Modern Input Styling for Checkout Forms */
         .card-body .form-label {
             font-size: 0.9rem;
@@ -358,7 +330,9 @@
             margin-bottom: 8px;
         }
 
-        .card-body .form-control, .card-body .custom-select, .card-body .form-select {
+        .card-body .form-control,
+        .card-body .custom-select,
+        .card-body .form-select {
             border-radius: 12px !important;
             padding: 12px 20px !important;
             border: 1px solid color-mix(in srgb, var(--primary) 20%, #ccc) !important;
@@ -366,7 +340,9 @@
             transition: all 0.3s ease;
         }
 
-        .card-body .form-control:focus, .card-body .custom-select:focus, .card-body .form-select:focus {
+        .card-body .form-control:focus,
+        .card-body .custom-select:focus,
+        .card-body .form-select:focus {
             background-color: white !important;
             border-color: var(--primary) !important;
             box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 15%, transparent) !important;
@@ -534,5 +510,3 @@
         });
     </script>
 @endpush
-
-

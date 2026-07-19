@@ -26,8 +26,8 @@ class HomeController extends Controller
         $products = Product::active()->withListingDefaults()->latest('id')->take(20)->get();
         $latestProducts = $products->take(8);
         $trendingProducts = $this->webService->getTrendingProducts();
-        $categories = Category::latest('id')->withCount('products')->get();
-        $brands = Brand::latest('id')->get();
+        $categories = Category::has('products')->latest('id')->withCount('products')->get();
+        $brands = Brand::with('media')->latest('id')->get();
         $storeFeatures = StoreFeature::orderBy('order')->get();
         $offer1 = Banner::where('position', 1)->where('status', 1)->first();
         $offer2 = Banner::where('position', 2)->where('status', 1)->first();

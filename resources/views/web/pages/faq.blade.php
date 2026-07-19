@@ -6,7 +6,7 @@
     ])
     <div class="container pt-1">
         <div class="row">
-            <div class="col-12 text-center mb-4">
+            <div class="col-12 text-center">
                 <h2 class="font-weight-light">FAQ</h2>
                 <p class="lead text-muted">Frequently Asked Questions</p>
             </div>
@@ -14,7 +14,7 @@
 
         <div class="row justify-content-center py-5">
             <div class="col-md-7 mb-5 mb-md-0">
-                <div class="accordion custom-bs5-accordion" id="accordionExample">
+                <div class="accordion custom-bs5-accordion card-shadow" id="accordionExample">
                     @foreach ($faqs ?? [] as $key => $faq)
                         <div class="card">
                             <div class="card-header" id="heading-{{ $faq?->id }}">
@@ -29,8 +29,8 @@
                                 </h2>
                             </div>
 
-                            <div id="collapse-{{ $faq?->id }}" class="collapse {{ $key == 0 ? 'show' : '' }}"
-                                aria-labelledby="heading-{{ $faq?->id }}" data-parent="#accordionExample">
+                            <div id="collapse-{{ $faq?->id }}" class="accordion-collapse collapse {{ $key == 0 ? 'show' : '' }}"
+                                aria-labelledby="heading-{{ $faq?->id }}" data-bs-parent="#accordionExample">
                                 <div class="card-body">
                                     {!! $faq?->answer !!}
                                 </div>
@@ -41,9 +41,7 @@
             </div>
         </div>
     </div>
-
 @endsection
-
 @push('styles')
     <style>
         .custom-bs5-accordion .card {
@@ -96,7 +94,7 @@
         }
 
         .custom-bs5-accordion .btn-link[aria-expanded="true"] {
-            color: #e7f1ff !important;
+            color: #ffffff !important;
             background-color: var(--primary);
             box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .125);
         }
@@ -114,7 +112,7 @@
         }
 
         .custom-bs5-accordion .btn-link[aria-expanded="true"]::after {
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%230c63e4'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
             transform: rotate(-180deg);
         }
 

@@ -22,7 +22,7 @@
 
 
     <script>
-        const siteCurrency = "{{ $siteSettings->currency_symbol ?? null ?? '৳' }}";
+        const siteCurrency = "{{ $siteSettings->currency_symbol ?? (null ?? '৳') }}";
     </script>
     <!-- Google Tag Manager -->
     <script>
@@ -87,19 +87,23 @@
     <link href="{{ asset('web/css/main.style.css') }}" rel="stylesheet">
     @stack('styles')
     @php
-        function hexToRgb($hex) {
+        function hexToRgb($hex)
+        {
             $hex = str_replace('#', '', $hex);
             if (strlen($hex) == 3) {
-                $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+                $hex = $hex[0] . $hex[0] . $hex[1] . $hex[1] . $hex[2] . $hex[2];
             }
-            if (strlen($hex) != 6) return [0, 0, 0];
+            if (strlen($hex) != 6) {
+                return [0, 0, 0];
+            }
             $r = hexdec(substr($hex, 0, 2));
             $g = hexdec(substr($hex, 2, 2));
             $b = hexdec(substr($hex, 4, 2));
             return [$r, $g, $b];
         }
-        
-        function mixColors($rgb1, $rgb2, $weight) {
+
+        function mixColors($rgb1, $rgb2, $weight)
+        {
             $w1 = $weight / 100;
             $w2 = 1 - $w1;
             $r = round($rgb1[0] * $w1 + $rgb2[0] * $w2);
@@ -113,12 +117,12 @@
         $primaryRgb = hexToRgb($primaryHex);
         $btnBgRgb = hexToRgb($btnBgHex);
 
-        $primaryDark = mixColors($primaryRgb, [0,0,0], 85);
+        $primaryDark = mixColors($primaryRgb, [0, 0, 0], 85);
         $primarySoft = "rgba({$primaryRgb[0]}, {$primaryRgb[1]}, {$primaryRgb[2]}, 0.1)";
         $primaryShadowHover = "rgba({$primaryRgb[0]}, {$primaryRgb[1]}, {$primaryRgb[2]}, 0.15)";
-        $secondaryColor = mixColors($primaryRgb, [255,255,255], 10);
-        $btnHoverBg = mixColors($btnBgRgb, [0,0,0], 85);
-        $borderColor = mixColors($primaryRgb, [255,255,255], 30);
+        $secondaryColor = mixColors($primaryRgb, [255, 255, 255], 10);
+        $btnHoverBg = mixColors($btnBgRgb, [0, 0, 0], 85);
+        $borderColor = mixColors($primaryRgb, [255, 255, 255], 30);
     @endphp
     <style>
         /* Dynamic Theme Colors */
@@ -126,7 +130,7 @@
             /* User Defined Colors */
             --primary: {{ $primaryHex }};
             --dark: {{ $siteSettings->theme_color_dark ?? '#1C1C1C' }};
-            
+
             --btn-bg: {{ $btnBgHex }};
             --btn-text: {{ $siteSettings->theme_button_text ?? '#212529' }};
 
@@ -134,27 +138,35 @@
             --primary-dark: {{ $primaryDark }};
             --primary-soft: {{ $primarySoft }};
             --secondary: {{ $secondaryColor }};
-            
+
             --btn-hover-bg: {{ $btnHoverBg }};
             --btn-hover-text: var(--btn-text);
 
             --border-color: {{ $borderColor }};
         }
-        
+
+        .card-shadow {
+            border: none !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12) !important;
+        }
         .theme-shadow {
             border: none !important;
-            box-shadow: 0 4px 15px {{ $primarySoft }} !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04) !important;
             transition: box-shadow 0.3s ease, transform 0.3s ease !important;
         }
 
         .theme-shadow:hover {
-            box-shadow: 0 8px 25px {{ $primaryShadowHover }} !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08) !important;
             transform: translateY(-2px) !important;
         }
 
 
-        .bg-secondary {
+        .bg-secondary2 {
             background-color: var(--secondary) !important;
+        }
+
+        body {
+            overflow-x: hidden;
         }
 
         .text-secondary {
@@ -233,6 +245,10 @@
             border-color: var(--primary) !important;
         }
 
+        input[type="radio"]:checked {
+            accent-color: var(--primary) !important;
+        }
+
         .btn-primary i,
         .btn-primary span {
             color: inherit !important;
@@ -253,47 +269,56 @@
             background-color: color-mix(in srgb, var(--primary) 15%, white);
             z-index: 999;
         }
-        
+
         .modern-category-btn {
             border-top-left-radius: 12px !important;
             border-top-right-radius: 12px !important;
             border-bottom-left-radius: 0 !important;
             border-bottom-right-radius: 0 !important;
         }
+
         .modern-category-menu {
             border: none !important;
             border-bottom-left-radius: 12px;
             border-bottom-right-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
             background-color: color-mix(in srgb, var(--primary) 15%, white);
         }
+
         .modern-category-menu .dropdown-menu {
             background-color: color-mix(in srgb, var(--primary) 15%, white);
         }
+
         .modern-category-menu .nav-item {
-            border-bottom: 1px solid rgba(0,0,0,0.03) !important;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important;
             transition: all 0.3s ease;
         }
+
         .modern-category-menu .nav-item:last-child {
             border-bottom: none !important;
         }
+
         .modern-category-menu .nav-item:hover,
         .modern-category-menu .nav-item.dropdown:hover {
             background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
         }
-        .modern-category-menu .nav-link, 
+
+        .modern-category-menu .nav-link,
         .modern-category-menu .custom-sub-link {
             transition: all 0.3s ease;
         }
-        .modern-category-menu .nav-item:hover > .nav-link,
+
+        .modern-category-menu .nav-item:hover>.nav-link,
         .modern-category-menu .custom-sub-link:hover {
             color: var(--primary) !important;
             padding-left: 35px !important;
             background: transparent !important;
         }
+
         .modern-category-menu .nav-item.dropdown .dropdown-menu .custom-sub-link:hover {
             background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
         }
+
         .modern-category-menu .nav-link.active,
         .modern-category-menu .custom-sub-link.active,
         .modern-category-menu .nav-item.dropdown .nav-link.active {
@@ -307,6 +332,7 @@
             font-weight: 500;
             transition: all 0.3s ease;
         }
+
         .navbar-light .navbar-nav .nav-link:hover,
         .navbar-light .navbar-nav .nav-link.active {
             color: var(--primary) !important;
@@ -315,18 +341,20 @@
         /* Custom Global Dropdowns */
         .dropdown-menu:not(.modern-category-menu .dropdown-menu) {
             border-radius: 12px !important;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
             border: none !important;
             padding: 10px 0;
             overflow: hidden;
             background: white;
         }
+
         .dropdown-menu:not(.modern-category-menu .dropdown-menu) .dropdown-item {
             transition: all 0.3s ease;
             color: color-mix(in srgb, var(--primary) 60%, #111);
             font-weight: 500;
             padding: 8px 20px;
         }
+
         .dropdown-menu:not(.modern-category-menu .dropdown-menu) .dropdown-item:hover {
             background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
             color: var(--primary) !important;
@@ -337,7 +365,8 @@
         input[type="checkbox"] {
             accent-color: var(--primary);
         }
-        .custom-control-input:checked ~ .custom-control-label::before {
+
+        .custom-control-input:checked~.custom-control-label::before {
             border-color: var(--primary) !important;
             background-color: var(--primary) !important;
         }
@@ -349,24 +378,27 @@
             color: white !important;
             box-shadow: 0 5px 15px color-mix(in srgb, var(--primary) 30%, transparent);
         }
+
         .pagination .page-link {
             color: color-mix(in srgb, var(--primary) 60%, #111);
             transition: all 0.3s ease;
             border-radius: 8px;
             margin: 0 3px;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
+
         .pagination .page-link:hover {
             background-color: color-mix(in srgb, var(--primary) 12%, white) !important;
             color: var(--primary) !important;
             border-color: transparent;
         }
-        
+
         .modern-slider {
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
+
         .modern-slider .carousel-inner {
             border-radius: 12px;
         }
@@ -483,7 +515,10 @@
 <body>
     <!-- Topbar Start -->
     <div id="main-header-wrapper">
-        @include('web.layouts.partials.header')
+        @php
+            $headerStyle = $siteSettings->header_layout ?? \App\Enums\Layouts\HeaderLayoutEnum::HEADER_1->value;
+        @endphp
+        @includeIf("web.layouts.headers.{$headerStyle}")
     </div>
     <!-- Topbar End -->
     <!-- Main Content Start -->
@@ -510,6 +545,7 @@
         window.LaravelData = {
             route_getColorBySize: "{{ route('product.color.by.size') }}",
             route_addToCart: "{{ route('cart.add') }}",
+            route_minicart: "{{ route('cart.minicart') }}",
             route_wishlistToggle: "{{ route('wishlist.toggle') }}",
             csrf_token: "{{ csrf_token() }}"
         };
@@ -570,7 +606,8 @@
         // AJAX Cron System for Background Tasks (No cPanel required)
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(function() {
-                fetch("{{ route('background.tasks') }}").catch(error => console.error('Cron error:', error));
+                fetch("{{ route('background.tasks') }}").catch(error => console.error('Cron error:',
+                    error));
             }, 5000); // Wait 5 seconds so it doesn't impact page load
         });
     </script>
@@ -579,5 +616,3 @@
 </body>
 
 </html>
-
-

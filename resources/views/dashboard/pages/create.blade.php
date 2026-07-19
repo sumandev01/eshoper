@@ -31,6 +31,3 @@
         </div>
     </div>
 @endsection
-@push('scripts')
-    <!-- Summernote init would go here if not already in app.blade.php -->
-@endpush
