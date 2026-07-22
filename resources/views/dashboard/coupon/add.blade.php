@@ -8,7 +8,7 @@
                     <div class="card-header border-bottom py-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h5 class="mb-1 fw-semibold">Add New Coupon</h5>
+                                <h5 class="card-title">Add New Coupon</h5>
                                 <p class="text-muted small mb-0">Fill in the details to create a new coupon</p>
                             </div>
                             <a href="{{ route('admin.coupon.index') }}"
@@ -33,14 +33,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <x-select label="Type" id="type" class="text-capitalize" name="type"
-                                            :required='true'>
-                                            <option disabled selected>Select Type</option>
-                                            @foreach ($couponTypeEnums ?? [] as $couponType)
-                                                <option class="text-capitalize" value="{{ $couponType }}">
-                                                    {{ $couponType }}
-                                                </option>
-                                            @endforeach
-                                        </x-select>
+                                            :required="true" :options="$couponTypeEnums" placeholder="Select Type" />
                                     </div>
                                 </div>
                             </div>
@@ -80,10 +73,10 @@
                                 </h6>
                                 <div class="row g-3">
                                     <div class="col-lg-6">
-                                        <x-input label="Start Date" name="start_date" type="datetime-local" :required='false' />
+                                        <x-input label="Start Date" name="start_date" type="datetime-local" :required='true' />
                                     </div>
                                     <div class="col-lg-6">
-                                        <x-input label="Expire Date" name="expire_date" type="datetime-local" :required='false' />
+                                        <x-input label="Expire Date" name="expire_date" type="datetime-local" :required='true' />
                                     </div>
                                 </div>
                             </div>
@@ -94,18 +87,15 @@
                                 </h6>
                                 <div class="row g-3">
                                     <div class="col-lg-6">
-                                        <x-select label="Status" name="status" :required='true'>
-                                            <option value="0">Inactive</option>
-                                            <option value="1" selected>Active</option>
-                                        </x-select>
+                                        <x-select label="Status" name="status" :required="true"
+                                            :options="['0' => 'Inactive', '1' => 'Active']" value="1" />
                                     </div>
                                 </div>
                             </div>
                             <div class="border-top pt-3 d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.coupon.index') }}" class="btn btn-light px-4">Cancel</a>
                                 @can(\App\Enums\Permission\CouponPermission::CREATE->value)
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="mdi mdi-content-save me-1"></i> Create Coupon
+                                    <button type="submit" class="btn btn-sm btn-primary px-4">
+                                        <i class="mdi mdi-content-save me-1"></i> Add Coupon
                                     </button>
                                 @endcan
                             </div>
@@ -124,24 +114,5 @@
     </style>
 @endpush
 @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('#type').on('change', function() {
-                let selectedType = $(this).val();
-                let typeInfo = $('.type_info');
-                
-                if (selectedType === 'percentage') {
-                    $('#max_discount').prop('disabled', false);
-                    $('#max_discount').prop('required', true);
-                    typeInfo.text('Note: Amount should be in percentage only.');
-                } else {
-                    $('#max_discount').prop('disabled', true);
-                    $('#max_discount').prop('required', false);
-                    $('#max_discount').val('');
-                    typeInfo.text('Note: Amount should be in taka only.');
-                }
-            });
-        })
-    </script>
+    @include('dashboard.coupon.script')
 @endpush
-

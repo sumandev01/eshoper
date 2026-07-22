@@ -35,7 +35,7 @@ class ProductRepository
                 'slug' => $request->slug,
                 'sku' => $request->sku,
                 'price' => $request->sale_price,
-                'buy_price' => $request->buy_price ?? 0,
+                'buy_price' => $request->buy_price ?? null,
                 'discount' => $request->discount ?? 0,
                 'stock' => $request->quantity,
                 'rating' => $request->rating ?? 0,

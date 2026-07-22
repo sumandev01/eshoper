@@ -25,7 +25,7 @@
                             <table class="table table-bordered table-hover table-striped" id="couponTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>#</th>
+                                        <th>Sl</th>
                                         <th>Code</th>
                                         <th>Amount</th>
                                         <th>Min Order Amount</th>

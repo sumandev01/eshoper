@@ -433,9 +433,10 @@
                     previewContainer.html(`
                         <div class="preview-image-wrapper position-relative gallery-item" data-media-id="${media.id}" data-target="${currentTargetId}">
                             <img src="${media.src}" class="img-thumbnail imagePreviewSingle">
-                            <input type="hidden" name="${baseInputName}" value="${media.id}">
                         </div>
                     `);
+                    // Update the existing hidden input correctly!
+                    $(`#media-input-${currentTargetId}`).val(media.id);
                 } else {
                     previewContainer.find('.text-muted, .no-data-msg, .no-image-placeholder').remove();
 

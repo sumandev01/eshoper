@@ -21,9 +21,18 @@ class ProductController extends Controller
     {
         $this->productRepository = $productRepository;
     }
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::latest('id')->get();
+        $query = Product::query()->latest('id');
+        
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
+        }
+        
+        $products = $query->paginate(10);
+        
         $categories = Category::latest('id')->get();
         $subCategories = Category::latest('id')->get();
         $brands = Brand::latest('id')->get();
@@ -122,5 +131,15 @@ class ProductController extends Controller
             return redirect()->back()->with('success', 'Product deleted successfully.');
         }
         return redirect()->back()->with('error', 'Failed to delete product. Please try again.');
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->ids;
+        if (!empty($ids)) {
+            Product::whereIn('id', $ids)->delete();
+            return redirect()->back()->with('success', count($ids) . ' products deleted successfully.');
+        }
+        return redirect()->back()->with('error', 'No products selected.');
     }
 }

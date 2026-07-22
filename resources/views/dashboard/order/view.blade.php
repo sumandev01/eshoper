@@ -2,13 +2,13 @@
 @section('title', ($siteSettings->site_title ?? null) . ' - ' . 'Order Details - ' . $order->order_number)
 @section('content')
     <!-- Main Content Area -->
-    <div id="printableArea">
+    <div>
         <div class="container-fluid">
 
             <!-- Header Section -->
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
                 <div>
-                    <h2 class="fw-bold text-dark mb-1 order-title">Order Details</h2>
+                    <h4 class="fw-bold text-dark mb-1 card-title">Order Details</h4>
                     <p class="text-muted mb-0">Order ID: <strong class="text-primary">#ORD-2026-9910</strong></p>
                 </div>
                 <div class="d-flex gap-2">
@@ -16,7 +16,7 @@
                         <i class="fa fa-arrow-left me-2" aria-hidden="true"></i>
                         Back to Orders
                     </button>
-                    <button onclick="window.print()" class="btn btn-outline-secondary btn-sm no-print">
+                    <button onclick="window.print()" class="btn btn-info btn-sm no-print">
                         <i class="fa fa-print" aria-hidden="true"></i> Print Invoice
                     </button>
                 </div>
@@ -186,23 +186,24 @@
                                 </span>
                             </div>
                             <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Shipping:</span>
+                                <span class="text-muted">Discount @if ($order?->coupon_code) ({{ $order?->coupon_code }}) @endif :</span>
+                                <span class="fw-bold {{ $order?->coupon_discount > 0 ? 'text-danger' : '' }}">
+                                    @if ($order?->coupon_discount > 0) - @endif
+                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
+                                    <span>{{ formatBDT($order?->coupon_discount) }}</span>
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Delivery Charge:</span>
                                 <span class="fw-bold">
                                     <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span>{{ formatBDT($order?->shipping_charge) }}</span>
                                 </span>
                             </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="text-muted">Discount(-):</span>
-                                <span class="fw-bold">
-                                    <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
-                                    <span>{{ formatBDT($order?->coupon_discount) }}</span>
-                                </span>
-                            </div>
                             <hr>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="h6 fw-bold mb-0 text-dark">Grand Total:</span>
-                                <span class="h5 fw-bold mb-0 text-primary">
+                                <span class="h6 fw-bold mb-0 text-dark">Total:</span>
+                                <span class="h5 fw-bold mb-0 text-dark">
                                     <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>
                                     <span>{{ formatBDT($order?->grand_total) }}</span>
                                 </span>
@@ -212,102 +213,13 @@
                 </div>
             </div>
         </div>
-        <div class="print-footer no-print-screen">
-            Website: {{ url('/') }}
-        </div>
     </div>
+    
+    <!-- Include Clean Print Invoice Template -->
+    @include('pdf.print')
+    
 @endsection
-@push('styles')
-    <style>
-        @media screen {
-            .no-print-screen {
-                display: none;
-            }
-        }
 
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-
-            #printableArea,
-            #printableArea * {
-                visibility: visible;
-            }
-
-            #printableArea {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 99%;
-                margin: 0;
-                padding: 0;
-                padding-top: 5px;
-                padding-bottom: 5px;
-            }
-
-            .order-title {
-                font-size: 20px !important;
-            }
-
-            .row.g-4.mb-4>div:nth-child(1),
-            .row.g-4.mb-4>div:nth-child(2) {
-                width: 50% !important;
-                float: left;
-            }
-
-            .row.g-4.mb-4>div:nth-child(1) .card-body,
-            .row.g-4.mb-4>div:nth-child(2) .card-body {
-                padding: 10px !important;
-            }
-
-            .row.g-4.mb-4>div:nth-child(3) {
-                width: 100% !important;
-                clear: both;
-                margin-top: 20px;
-            }
-
-            .row.g-4.mb-4>div:nth-child(3) .card-body {
-                padding: 10px !important;
-            }
-
-            .card {
-                border: 1px solid #dee2e6 !important;
-                box-shadow: none !important;
-                margin-bottom: 10px !important;
-            }
-
-            html,
-            body {
-                height: auto !important;
-                background-color: #fff !important;
-            }
-
-            .btn,
-            .no-print {
-                display: none !important;
-            }
-
-            @page {
-                size: A4 portrait;
-                margin: 10mm;
-            }
-
-            .print-footer {
-                display: block !important;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                text-align: center;
-                font-size: 10px;
-                color: #555;
-                border-top: 1px solid #ccc;
-                padding-top: 5px;
-            }
-        }
-    </style>
-@endpush
 @push('scripts')
     <script>
         function printOrder() {

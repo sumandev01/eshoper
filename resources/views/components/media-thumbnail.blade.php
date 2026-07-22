@@ -15,6 +15,36 @@
     'height' => '100px',
 ])
 
+@php
+    $final_existing_id = $existing_id;
+    $final_existing_image = $existing_image;
+
+    // Handle old() value for validation failure (robust check)
+    $possibleNames = [
+        str_replace('[]', '', $input_name),
+        $attributes->get('name') ? str_replace('[]', '', $attributes->get('name')) : null,
+        'media_id',
+        'image',
+        'main_thumb'
+    ];
+    
+    $oldId = null;
+    foreach ($possibleNames as $pName) {
+        if ($pName && old($pName)) {
+            $oldId = old($pName);
+            break;
+        }
+    }
+    
+    if ($oldId && $oldId != $existing_id) {
+        $final_existing_id = $oldId;
+        $media = \App\Models\Media::find($oldId);
+        if ($media) {
+            $final_existing_image = $media->thumbnail;
+        }
+    }
+@endphp
+
 <div class="form-group">
     @if ($label)
         <label for="{{ $id ?? $name }}" class="form-label fw-bold">
@@ -28,9 +58,9 @@
         style="min-height: 100px; width: {{ $fit_content ?? '' }};">
 
         {{-- English: Check if the image is not the default placeholder --}}
-        @if ($existing_image && !str_contains($existing_image, 'default.webp'))
+        @if ($final_existing_image && !str_contains($final_existing_image, 'default.webp'))
             <div class="preview-image-wrapper position-relative gallery-item" id="item-{{ $target_id }}-preview">
-                <img src="{{ $existing_image }}" class="rounded bg-white imagePreviewSingle">
+                <img src="{{ $final_existing_image }}" class="rounded bg-white imagePreviewSingle">
             </div>
         @else
             {{-- English: Default design when no image is selected --}}
@@ -44,7 +74,7 @@
     </div>
 
     {{-- This input will now carry the 'media_id' or whatever you pass as input_name --}}
-    <input type="hidden" name="{{ $input_name }}" id="media-input-{{ $target_id }}" value="{{ $existing_id }}">
+    <input type="hidden" name="{{ $input_name }}" id="media-input-{{ $target_id }}" value="{{ $final_existing_id }}">
 
     <div class="d-flex gap-2">
         <button type="button" class="btn btn-primary btn-sm open-media-picker" data-target-id="{{ $target_id }}"

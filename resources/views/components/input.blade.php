@@ -7,7 +7,7 @@
         <span class="input-group-text">{{ $inputGroupText ?? '' }}</span>
         <input type="{{ $type ?? 'text' }}"
         name="{{ $name }}"
-        class="form-control {{ $class ?? '' }}"
+        class="form-control rounded-end {{ $class ?? '' }}"
         id="{{ $id ?? $name }}"
         placeholder="{{ $placeholder ?? '' }}"
         value="{{ old($name, $value ?? '') }}"
@@ -30,7 +30,7 @@
 
     <input type="{{ $type ?? 'text' }}"
     name="{{ $name }}"
-    class="form-control {{ $class ?? '' }}"
+    class="form-control rounded {{ $class ?? '' }}"
     id="{{ $id ?? $name }}"
     placeholder="{{ $placeholder ?? '' }}"
     value="{{ old($name, $value ?? '') }}"

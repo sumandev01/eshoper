@@ -132,7 +132,7 @@
 
         @if ($displayStock <= 0)
             <a href="javascript:void(0);"
-                class="btn btn-outline-secondary py-2 rounded disabled d-flex justify-content-center align-items-center shop-add-to-cart"
+                class="btn btn-outline-primary py-2 rounded disabled d-flex justify-content-center align-items-center shop-add-to-cart"
                 style="pointer-events: none; border-width: 2px;" data-product-id="{{ $product->id }}">
                 <i class="fas fa-shopping-cart me-2"></i>
                 Out of Stock

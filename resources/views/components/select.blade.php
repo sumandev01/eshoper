@@ -1,5 +1,6 @@
 @php
     $id = $id ?? $name;
+    $currentValue = old($name, $value);
 @endphp
 
 <div class="form-group mb-3">
@@ -16,18 +17,30 @@
         {{ $required ? 'required' : '' }}
         {{ $multiple ? 'multiple' : '' }}
         {{ $disabled ? 'disabled' : '' }}
-        data-selected-value="{{ $value }}"
+        data-selected-value="{{ $currentValue }}"
+        style="padding: 0.64rem 1.375rem !important;"
     >
         @if ($placeholder)
-            <option value="" selected disabled>{{ $placeholder }}</option>
+            <option value="" {{ $required ? 'disabled' : '' }} {{ (string) $currentValue === '' || $currentValue === null ? 'selected' : '' }}>{{ $placeholder }}</option>
         @endif
 
         @if(!empty($options))
             @foreach($options as $key => $option)
                 @php
-                    $optValue = is_object($option) ? $option->id : (is_array($option) ? $option['id'] : $key);
-                    $optLabel = is_object($option) ? $option->name : (is_array($option) ? $option['name'] : $option);
-                    $isSelected = (string) $optValue === (string) $value;
+                    if ($option instanceof \BackedEnum) {
+                        $optValue = $option->value;
+                        $optLabel = $option->value;
+                    } elseif (is_object($option)) {
+                        $optValue = $option->id ?? $key;
+                        $optLabel = $option->name ?? (method_exists($option, '__toString') ? (string) $option : $key);
+                    } elseif (is_array($option)) {
+                        $optValue = $option['id'] ?? $key;
+                        $optLabel = $option['name'] ?? $key;
+                    } else {
+                        $optValue = $key;
+                        $optLabel = $option;
+                    }
+                    $isSelected = (string) $optValue === (string) $currentValue;
                 @endphp
                 <option value="{{ $optValue }}" {{ $isSelected ? 'selected' : '' }}>
                     {{ $optLabel }}

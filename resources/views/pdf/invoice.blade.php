@@ -198,14 +198,6 @@
                         </tr>
                         <tr>
                             <td style="text-align: right;">
-                                Delivery Charge:
-                            </td>
-                            <td style="text-align: right;">
-                                <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($order?->shipping_charge) }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: right;">
                                 Discount @if ($order?->coupon_code) ({{ $order?->coupon_code }}) @endif :
                             </td>
                             <td style="text-align: right;">
@@ -213,6 +205,14 @@
                                     - 
                                 @endif
                                 <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($order?->coupon_discount) }}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                Delivery Charge:
+                            </td>
+                            <td style="text-align: right;">
+                                <span class="currency">{{ ($siteSettings->currency_symbol ?? null) }}</span>{{ formatBDT($order?->shipping_charge) }}
                             </td>
                         </tr>
                         <tr style="border-top: 2px solid #eee;">

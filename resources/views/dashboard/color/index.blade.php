@@ -4,8 +4,8 @@
     <div class="row">
         <div class="col-lg-7">
             <div class="card">
-                <div class="card-header pt-4">
-                    <h5>All Colors</h5>
+                <div class="card-header py-4">
+                    <h5 class="card-title">All Colors</h5>
                 </div>
                 <div class="card-body p-4">
                     <table class="table table-bordered table-hover table-striped" id="colorTable">
@@ -58,8 +58,8 @@
                 <div class="card">
                     <form action="{{ route('admin.color.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
-                        <div class="card-header pt-4">
-                            <h4 class="card-title">Add New Color</h4>
+                        <div class="card-header py-4">
+                            <h5 class="card-title">Add New Color</h5>
                         </div>
                         <div class="card-body px-4 pb-0">
                             <x-input label="Name" name="name" type="text" placeholder="Enter color name"
@@ -67,8 +67,8 @@
                             <x-colorpicker name="color_code" label="Color Code" palaceholder="Select Color" :required='true' />
                         </div>
                         <div class="card-footer py-4">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="mdi mdi-plus-circle btn-icon-prepend me-2"></i>
                                 <span>Add Color</span>
                             </button>
                         </div>

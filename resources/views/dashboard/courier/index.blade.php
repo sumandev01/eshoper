@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white border-bottom py-3">
+                    <div class="card-header border-bottom py-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <h4 class="mb-1 fw-semibold">Couriers</h4>
@@ -22,7 +22,7 @@
                             <table class="table table-bordered table-hover table-striped" id="courierTable">
                                 <thead class="table-light">
                                     <tr>
-                                        <th>#</th>
+                                        <th>Sl</th>
                                         <th>Name</th>
                                         <th>Tracking URL</th>
                                         <th>Status</th>
@@ -34,7 +34,7 @@
                                         <tr>
                                             <td class="text-muted small">{{ $couriers->firstItem() + $index }}</td>
                                             <td>
-                                                <p class="fs-6 mb-0 fw-semibold">{{ $courier?->name }}</p>
+                                                {{ $courier?->name }}
                                             </td>
                                             <td>
                                                 <a href="{{ $courier?->tracking_url }}" target="_blank" class="text-decoration-none">
@@ -80,3 +80,10 @@
         </div>
     </div>
 @endsection
+@push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('#courierTable').DataTable();
+        })
+    </script>
+@endpush

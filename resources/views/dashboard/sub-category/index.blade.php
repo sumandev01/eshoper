@@ -4,8 +4,8 @@
     <div class="row">
         <div class="col-lg-7">
             <div class="card">
-                <div class="card-header pt-4">
-                    <h5>All Sub Categories</h5>
+                <div class="card-header py-4">
+                    <h5 class="card-title">All Sub Categories</h5>
                 </div>
                 <div class="card-body p-4">
                     <div class="table-responsive">
@@ -67,7 +67,7 @@
             <div class="card">
                 <form action="{{ route('admin.sub-category.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <div class="card-header pt-4">
+                    <div class="card-header py-4">
                         <h4 class="card-title">Add New Sub Category</h4>
                     </div>
                     <div class="card-body px-4 pb-0">
@@ -76,12 +76,12 @@
                         <x-input label="Slug" name="slug" type="text"
                             placeholder="Enter sub category slug" :required='false' />
                         <x-select label="Category" name="category_id" id="category_id" :options="$categories"
-                            placeholder="Select Category" />
-                        <x-media-thumbnail label="Image" target_id="main-thumb" input_name="media_id" />
+                            placeholder="Select Category" :required="true" />
+                        <x-media-thumbnail label="Image" target_id="main-thumb" input_name="media_id" :required="true" />
                     </div>
                     <div class="card-footer py-4">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="mdi mdi-plus-circle btn-icon-prepend me-2"></i>
                             <span>Add Sub Category</span>
                         </button>
                     </div>

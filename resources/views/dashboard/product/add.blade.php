@@ -7,15 +7,12 @@
                 <div class="card">
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
-                            <h4 class="mb-0">Add New Product</h4>
+                            <h4 class="card-title">Add New Product</h4>
                             <a href="{{ route('admin.product.index') }}" class="btn btn-primary btn-sm">
                                 <i class="mdi mdi-arrow-left me-1"></i>
                                 <span>Back to List</span>
                             </a>
                         </div>
-                    </div>
-                    <div class="card-body py-3">
-                        <p class="text-muted fw-bold">After adding the product, you can proceed to add product variants.</p>
                     </div>
                 </div>
             </div>
@@ -26,13 +23,14 @@
             <div class="row mt-3">
                 <!-- Left Side: Basic Info & Description -->
                 <div class="col-lg-8">
+                    <!-- Product Information section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Product Information</h5>
                         </div>
                         <div class="card-body">
                             <x-input name="name" label="Product Name" type="text" placeholder="Enter product name"
-                                :required="false" :maxlength="100" :value="$item->name ?? ''" />
+                                :required="true" :maxlength="100" :value="$item->name ?? ''" />
 
                             <x-input name="slug" type="hidden" placeholder="enter-product-slug" :required="false"
                                 :maxlength="100" :value="$item->slug ?? ''" />
@@ -40,46 +38,36 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sku" type="text" placeholder="12345" label="Product SKU"
-                                        :value="$item->sku ?? ''" />
+                                        :value="$item->sku ?? ''" :required="true" />
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="quantity" id="main_quantity" type="number" placeholder="0"
-                                        label="Product Quantity" :value="$item->quantity ?? ''" />
+                                        label="Product Quantity" :value="$item->quantity ?? ''" :required="true" />
                                 </div>
                             </div>
 
                             <x-textarea name="short_description" label="Short Description" :editor="false"
                                 :value="old('short_description')" placeholder="Write something..." maxlength="500" :wordcount="true"
-                                rows="5" :required="false" />
+                                rows="5" :required="true" />
 
-                            <x-textarea name="description" label="Description" :editor="true" :value="old('description')"
-                                placeholder="Write something..." maxlength="1500" :wordcount="true" rows="5"
-                                :required="false" />
-
-                            <x-textarea name="specifications" label="Specifications" :editor="true" :value="old('specifications')"
-                                placeholder="Write something..." maxlength="1500" :wordcount="true" rows="5"
-                                :required="false" />
                         </div>
                     </div>
 
+                    <!-- Pricing section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Pricing</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
-                                    <x-input name="sale_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ $siteSettings->currency_symbol ?? null }}" label="Sale Price" />
+                                    <x-input name="sale_price" type="number" placeholder="00" :inputGroup="true"
+                                        inputGroupText="{{ $siteSettings->currency_symbol ?? null }}" label="Price" :required="true" />
                                 </div>
                                 <div class="col-md-6 mb-3">
-                                    <x-input name="discount" type="number" placeholder="0.00" :inputGroup="true"
+                                    <x-input name="discount" type="number" placeholder="00" :inputGroup="true"
                                         inputGroupText="{{ $siteSettings->currency_symbol ?? null }}"
                                         label="Discount Price" />
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <x-input name="buy_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ $siteSettings->currency_symbol ?? null }}" label="Buy Price" />
                                 </div>
                             </div>
                         </div>
@@ -88,8 +76,26 @@
                     <!-- Variants Section -->
                     @include('dashboard.product.partials.variants')
 
+                    <!-- Content & Specifications Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header pt-3">
+                        <div class="card-header py-3">
+                            <h5 class="card-title">Content & Specifications</h5>
+                        </div>
+                        <div class="card-body">                           
+
+                            <x-textarea name="description" label="Description" :editor="true" :value="old('description')"
+                                placeholder="Write something..." maxlength="1500" :wordcount="true" rows="7"
+                                :required="false" />
+
+                            <x-textarea name="specifications" label="Specifications" :editor="true" :value="old('specifications')"
+                                placeholder="Write something..." maxlength="1500" :wordcount="true" rows="7"
+                                :required="false" />
+                        </div>
+                    </div>
+
+                    <!-- Gallery Section -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Gallery</h5>
                         </div>
                         <div class="card-body">
@@ -98,16 +104,17 @@
                         </div>
                     </div>
 
+                    <!-- SEO Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">SEO</h5>
                         </div>
                         <div class="card-body">
-                            <x-textarea name="meta_title" label="Meta Title" :value="$item->meta_title ?? ''" :maxlength="60"
+                            <x-textarea name="meta_title" label="Meta Title" :value="old('meta_title')" :maxlength="60"
                                 :wordcount="true" :rows="1" />
-                            <x-textarea name="meta_keyword" label="Meta Keywords (Comma separated)" :value="$item->meta_keyword ?? ''"
+                            <x-textarea name="meta_keyword" label="Meta Keywords (Comma separated)" :value="old('meta_keyword')"
                                 :rows="2" />
-                            <x-textarea name="meta_description" label="Meta Description" :value="$item->meta_description ?? ''"
+                            <x-textarea name="meta_description" label="Meta Description" :value="old('meta_description')"
                                 :maxlength="160" :wordcount="true" :rows="2" />
                         </div>
                     </div>
@@ -115,28 +122,31 @@
 
                 <!-- Right Side: Category, Brand & Image -->
                 <div class="col-lg-4">
+                    <!-- Organization Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Organization</h5>
                         </div>
                         <div class="card-body">
                             <x-select name="category_id" id="category_id" label="Category" :options="$categories"
-                                placeholder="Select Category" :required="false" />
+                                placeholder="Select Category" :required="true" :value="old('category_id')" />
+
                             <x-select name="sub_category_id" id="sub_category_id" label="Subcategory" :options="$subCategories ?? []"
-                                placeholder="Select Subcategory" />
+                                placeholder="Select Subcategory" :value="old('sub_category_id')" />
 
                             <x-select name="brand_id" id="brand_id" label="Brand" :options="$brands ?? []"
-                                placeholder="Select Brand" />
+                                placeholder="Select Brand" :value="old('brand_id')" />
 
                             <x-select name="status" label="Status">
-                                <option value="1">Active</option>
-                                <option value="0" selected>Inactive</option>
+                                <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ old('status', '0') == '0' ? 'selected' : '' }}>Inactive</option>
                             </x-select>
                         </div>
                     </div>
 
+                    <!-- Tags Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Tags</h5>
                         </div>
                         <div class="card-body">
@@ -149,21 +159,24 @@
                         </div>
                     </div>
 
+                    <!-- Image Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Product Image</h5>
                         </div>
                         <div class="card-body text-center">
                             <x-media-thumbnail name="image" image_preview_class="product_thumbnail" fit_content="100%"
-                                :required="false" />
+                                :required="true" />
                         </div>
                     </div>
 
+                    <!-- Submit Section -->
                     <div class="card shadow-sm">
                         <div class="card-body">
                             @can(\App\Enums\Permission\ProductPermission::CREATE->value)
-                                <button type="submit" id="product_submit_btn" class="btn btn-primary w-100 mb-2">
-                                    <i class="mdi mdi-content-save me-1"></i> Add Product
+                                <button type="submit" id="product_submit_btn" class="btn btn-primary w-100">
+                                    <i class="mdi mdi-plus-circle btn-icon-prepend me-2"></i>
+                                    Add Product
                                 </button>
                             @endcan
                         </div>
@@ -296,32 +309,48 @@
             const hiddenContainer = document.getElementById('hidden-tags-inputs');
             let selectedTagIds = [];
 
-            if (tagSelect && badgeContainer) {
-                tagSelect.addEventListener('change', function() {
-                    const id = this.value;
-                    const name = this.options[this.selectedIndex].text;
+            // Function to add tag
+            function addTag(id, name) {
+                if (id && !selectedTagIds.includes(String(id))) {
+                    selectedTagIds.push(String(id));
 
-                    if (id && !selectedTagIds.includes(id)) {
-                        selectedTagIds.push(id);
-
-                        // Create Badge UI
-                        const badge = document.createElement('span');
-                        badge.className = 'badge bg-primary p-2 me-2 mb-2 d-inline-flex align-items-center';
-                        badge.setAttribute('data-id', id);
-                        badge.innerHTML = `
+                    // Create Badge UI
+                    const badge = document.createElement('span');
+                    badge.className = 'badge bg-primary p-2 me-2 mb-2 d-inline-flex align-items-center';
+                    badge.setAttribute('data-id', id);
+                    badge.innerHTML = `
                         ${name} 
                         <span class="ms-2 btn-close btn-close-white remove-tag" style="cursor:pointer; font-size: 10px;"></span>
                     `;
-                        badgeContainer.appendChild(badge);
+                    badgeContainer.appendChild(badge);
 
-                        // Create Hidden Input for Form Submission
-                        const hiddenInput = document.createElement('input');
-                        hiddenInput.type = 'hidden';
-                        hiddenInput.name = 'tag_id[]';
-                        hiddenInput.value = id;
-                        hiddenInput.setAttribute('id', 'input-tag-' + id);
-                        hiddenContainer.appendChild(hiddenInput);
-                    }
+                    // Create Hidden Input for Form Submission
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'tag_id[]';
+                    hiddenInput.value = id;
+                    hiddenInput.setAttribute('id', 'input-tag-' + id);
+                    hiddenContainer.appendChild(hiddenInput);
+                }
+            }
+
+            if (tagSelect && badgeContainer) {
+                // Pre-fill old tags if validation failed
+                const oldTags = @json(old('tag_id', []));
+                if (oldTags.length > 0) {
+                    oldTags.forEach(oldId => {
+                        // Find the name of the tag from the select options
+                        const option = Array.from(tagSelect.options).find(opt => opt.value == oldId);
+                        if (option) {
+                            addTag(option.value, option.text);
+                        }
+                    });
+                }
+
+                tagSelect.addEventListener('change', function() {
+                    const id = this.value;
+                    const name = this.options[this.selectedIndex].text;
+                    addTag(id, name);
                     this.value = "";
                 });
 
@@ -331,7 +360,7 @@
                         const badge = e.target.parentElement;
                         const idToRemove = badge.getAttribute('data-id');
 
-                        selectedTagIds = selectedTagIds.filter(id => id !== idToRemove);
+                        selectedTagIds = selectedTagIds.filter(id => id !== String(idToRemove));
                         badge.remove();
 
                         const inputToRemove = document.getElementById('input-tag-' + idToRemove);
@@ -349,9 +378,15 @@
                 const initialCat = categorySelect.value;
                 const initialSub = subCategorySelect.getAttribute('data-selected-value');
 
-                // Handle Page Load / Edit Mode
-                if (initialCat) {
-                    handleCategoryChange(initialCat, 'sub_category_id', initialSub);
+                // Handle Page Load / Edit Mode / Old Value
+                const oldCategory = "{{ old('category_id') }}";
+                const oldSubCategory = "{{ old('sub_category_id') }}";
+
+                const categoryToLoad = oldCategory || initialCat;
+                const subCategoryToLoad = oldSubCategory || initialSub;
+
+                if (categoryToLoad) {
+                    handleCategoryChange(categoryToLoad, 'sub_category_id', subCategoryToLoad);
                 } else {
                     subCategorySelect.disabled = true;
                 }

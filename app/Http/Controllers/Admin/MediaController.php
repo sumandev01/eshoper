@@ -119,4 +119,23 @@ class MediaController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Failed to upload media. Ensure files are under 2MB.']);
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $request->validate([
+            'media_ids' => 'required|array',
+            'media_ids.*' => 'integer|exists:media,id',
+        ]);
+
+        $ids = $request->input('media_ids');
+        
+        $medias = Media::whereIn('id', $ids)->get();
+        $count = $medias->count();
+
+        foreach ($medias as $media) {
+            $media->delete(); // This will trigger any model events for file cleanup if they exist
+        }
+
+        return redirect()->back()->with('success', $count . ' items deleted successfully.');
+    }
 }

@@ -7,7 +7,7 @@
                 <div class="card">
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
-                            <h4 class="mb-0">Edit Product</h4>
+                            <h5 class="card-title">Edit Product</h5>
                             <a href="{{ route('admin.product.index') }}" class="btn btn-primary btn-sm">
                                 <i class="mdi mdi-arrow-left me-1"></i>
                                 <span>Back to List</span>
@@ -24,25 +24,26 @@
             <div class="row mt-3">
                 <!-- Left Side: Basic Info & Description -->
                 <div class="col-lg-8">
+                    <!-- Product Information -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-white pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Product Information</h5>
                         </div>
                         <div class="card-body">
                             <x-input name="name" label="Product Name" type="text" placeholder="Enter product name"
-                                :required="false" :maxlength="100" :value="$product?->name ?? ''" />
+                                :required="true" :maxlength="100" :value="$product?->name ?? ''" />
 
                             <x-input name="slug" label="Product Slug" type="text" placeholder="enter-product-slug"
-                                :required="false" :maxlength="100" :value="$product?->slug ?? ''" />
+                                :required="true" :maxlength="100" :value="$product?->slug ?? ''" />
 
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sku" type="text" placeholder="SKU-12345" label="Product SKU"
-                                        :value="$product?->sku ?? ''" />
+                                        :value="$product?->sku ?? ''" :required="true" />
                                 </div>
                                 <div class="col-md-6 mb-3 @if ($product?->inventories->isNotEmpty()) product-quantity @endif" @if ($product?->inventories->isNotEmpty()) style="pointer-events: none" @endif>
                                     <x-input name="quantity" type="number" placeholder="0" label="Product Quantity"
-                                        :value="$product?->stock ?? ''" :readonly="$product?->inventories->isNotEmpty() ? true : false" />
+                                        :value="$product?->stock ?? ''" :readonly="$product?->inventories->isNotEmpty() ? true : false" :required="true" />
                                     @if ($product?->inventories->isNotEmpty())
                                         <span class="small text-primary fw-bold">
                                             Quantity is managed through variants.
@@ -53,38 +54,26 @@
 
                             <x-textarea name="short_description" label="Short Description" :editor="false"
                                 :value="$product?->details?->shortDescription ?? ''" placeholder="Write something..." maxlength="500" :wordcount="true"
-                                rows="5" :required="false" />
-
-                            <x-textarea name="description" label="Description" :editor="true" :value="$product?->details?->description ?? ''"
-                                placeholder="Write something..." maxlength="1500" :wordcount="true" rows="5"
-                                :required="false" />
-
-                            <x-textarea name="specifications" label="Specifications" :editor="true" :value="$product?->details?->information ?? ''"
-                                placeholder="Write something..." maxlength="1500" :wordcount="true" rows="5"
-                                :required="false" />
+                                rows="5" :required="true" />
                         </div>
                     </div>
 
+                    <!-- Pricing Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-white pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Pricing</h5>
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <x-input name="sale_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ ($siteSettings->currency_symbol ?? null) }}" label="Sale Price"
-                                        :value="$product?->price ?? ''" step="1"/>
+                                        inputGroupText="{{ ($siteSettings->currency_symbol ?? null) }}" label="Price"
+                                        :value="$product?->price ?? ''" step="1" :required="true"/>
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <x-input name="discount" type="number" placeholder="0.00" :inputGroup="true"
                                         inputGroupText="{{ ($siteSettings->currency_symbol ?? null) }}" label="Discount Price"
-                                        :value="$product?->discount ?? ''" />
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <x-input name="buy_price" type="number" placeholder="0.00" :inputGroup="true"
-                                        inputGroupText="{{ ($siteSettings->currency_symbol ?? null) }}" label="Buy Price"
-                                        :value="$product?->buy_price ?? ''" />
+                                        :value="$product?->discount ?? ''" :required="true" />
                                 </div>
                             </div>
                         </div>
@@ -93,8 +82,26 @@
                     <!-- Variants Section -->
                     @include('dashboard.product.partials.variants')
 
+                    <!-- Content & Specifications Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-white pt-3">
+                        <div class="card-header py-3">
+                            <h5 class="card-title">Content & Specifications</h5>
+                        </div>
+                        <div class="card-body">                            
+
+                            <x-textarea name="description" label="Description" :editor="true" :value="$product?->details?->description ?? ''"
+                                placeholder="Write something..." maxlength="1500" :wordcount="true" rows="7"
+                                :required="false" />
+
+                            <x-textarea name="specifications" label="Specifications" :editor="true" :value="$product?->details?->information ?? ''"
+                                placeholder="Write something..." maxlength="1500" :wordcount="true" rows="7"
+                                :required="false" />
+                        </div>
+                    </div>
+
+                    <!-- Gallery Section -->
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Gallery</h5>
                         </div>
                         <div class="card-body">
@@ -103,8 +110,9 @@
                         </div>
                     </div>
 
+                    <!-- SEO Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-white pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">SEO</h5>
                         </div>
                         <div class="card-body">
@@ -119,13 +127,14 @@
 
                 <!-- Right Side: Category, Brand & Image -->
                 <div class="col-lg-4">
+                    <!-- Organization Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-white pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Organization</h5>
                         </div>
                         <div class="card-body">
                             <x-select name="category_id" id="category_id" label="Category" :options="$categories"
-                                placeholder="Select Category" :required="false" :value="$product?->details?->category_id ?? ''" />
+                                placeholder="Select Category" :required="true" :value="$product?->details?->category_id ?? ''" />
                             <x-select name="sub_category_id" id="sub_category_id" label="Subcategory" :options="$subCategories ?? []"
                                 placeholder="Select Subcategory" :value="$product?->details?->sub_category_id ?? ''" />
 
@@ -141,8 +150,9 @@
                         </div>
                     </div>
 
+                    <!-- Tags Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-white pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Tags</h5>
                         </div>
                         <div class="card-body">
@@ -177,8 +187,9 @@
                         </div>
                     </div>
 
+                    <!-- Image Section -->
                     <div class="card mb-4 shadow-sm">
-                        <div class="card-header bg-white pt-3">
+                        <div class="card-header py-3">
                             <h5 class="card-title">Product Image</h5>
                         </div>
                         <div class="card-body text-center">
@@ -187,11 +198,13 @@
                         </div>
                     </div>
 
+                    <!-- Submit Section -->
                     <div class="card shadow-sm">
                         <div class="card-body">
                             @can(\App\Enums\Permission\ProductPermission::UPDATE->value)
                                 <button type="submit" class="btn btn-primary w-100 mb-2">
-                                    <i class="mdi mdi-content-save me-1"></i> Update Product
+                                    <i class="mdi mdi-update btn-icon-prepend me-2"></i>
+                                    Update Product
                                 </button>
                             @endcan
                         </div>
@@ -208,9 +221,7 @@
         }
 
         .product_thumbnail {
-            /* border: 2px solid #dee2e6 !important; */
             padding: 10px !important;
-            /* margin-bottom: 25px !important; */
             padding: 0 !important;
         }
 

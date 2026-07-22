@@ -35,6 +35,7 @@ class SliderController extends Controller
             'link_type' => 'required|string',
             'link_ref_id' => 'required|string',
             'media_id' => 'required|exists:media,id',
+            'is_active' => 'required|boolean',
         ]);
 
         $OrderList = (Slider::max('order') ?? 0) + 1;
@@ -46,7 +47,7 @@ class SliderController extends Controller
             'link_type' => $request->link_type,
             'link_ref_id' => $request->link_ref_id,
             'media_id' => $request->media_id,
-            'status' => 1,
+            'is_active' => $request->is_active,
             'order' => $OrderList,
         ]);
 

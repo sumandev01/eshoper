@@ -5,10 +5,10 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white border-bottom py-3">
+                    <div class="card-header border-bottom py-3">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h4 class="mb-1 fw-semibold">Add New Courier</h4>
+                                <h5 class="card-title">Add New Courier</h5>
                                 <p class="text-muted small mb-0">Add a new courier service</p>
                             </div>
                             <a href="{{ route('admin.couriers.index') }}" class="btn btn-secondary btn-sm">
@@ -48,7 +48,9 @@
                             </div>
 
                             <div class="d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary px-4">Save Courier</button>
+                                <button type="submit" class="btn btn-sm btn-primary px-4">
+                                    <i class="mdi mdi-content-save me-2"></i> Save Courier
+                                </button>
                             </div>
                         </form>
                     </div>

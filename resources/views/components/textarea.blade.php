@@ -119,7 +119,7 @@
             placeholder="{{ $placeholder }}" 
             maxlength="{{ $maxlength }}" 
             @if($required) required @endif 
-            class="form-control {{ $class ?? '' }} @error($name) is-invalid @enderror"
+            class="form-control rounded {{ $class ?? '' }} @error($name) is-invalid @enderror"
         >{{ $value }}</textarea>
 
         @if($wordcount || $maxlength)

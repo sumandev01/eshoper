@@ -70,6 +70,9 @@
         .imagePreviewSingle {
             margin-bottom: 0 !important;
         }
+        .card .card-title{
+            margin-bottom: 0 !important;
+        }
     </style>
 </head>
 
@@ -174,6 +177,7 @@
     </script>
 
     @stack('scripts')
+    @include('dashboard.layouts.partials.bulk-action-script')
 </body>
 
 </html>

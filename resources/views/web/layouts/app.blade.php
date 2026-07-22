@@ -161,6 +161,7 @@
         }
 
 
+        .bg-secondary,
         .bg-secondary2 {
             background-color: var(--secondary) !important;
         }

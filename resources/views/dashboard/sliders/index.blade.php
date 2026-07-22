@@ -8,8 +8,8 @@
                     <div class="page-title-box d-flex align-items-center justify-content-between">
                         <h4 class="mb-0">All Sliders</h4>
                         @can(\App\Enums\Permission\SliderPermission::CREATE->value)
-                            <a href="{{ route('admin.slider.add') }}" class="btn btn-primary">
-                                <i class="mdi mdi-plus btn-icon-prepend me-1"></i>
+                            <a href="{{ route('admin.slider.add') }}" class="btn btn-sm btn-primary">
+                                <i class="mdi mdi-plus-circle btn-icon-prepend me-2"></i>
                                 Add New Slider
                             </a>
                         @endcan

@@ -94,13 +94,13 @@
                         @endcan
                         @can(App\Enums\Permission\ColorPermission::VIEW->value)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('color.index') ? 'active' : '' }}"
+                                <a class="nav-link {{ request()->routeIs('admin.color.index') ? 'active' : '' }}"
                                     href="{{ route('admin.color.index') }}">Colors</a>
                             </li>
                         @endcan
                         @can(App\Enums\Permission\TagPermission::VIEW->value)
                             <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('tag.index') ? 'active' : '' }}"
+                                <a class="nav-link {{ request()->routeIs('admin.tag.index') ? 'active' : '' }}"
                                     href="{{ route('admin.tag.index') }}">Tags</a>
                             </li>
                         @endcan
@@ -109,14 +109,15 @@
             </li>
         @endcan
         @can(App\Enums\Permission\ProductPermission::VIEW->value)
-            <li class="nav-item {{ request()->routeIs('admin.product*') ? 'active' : '' }}">
+            <li class="nav-item {{ request()->routeIs('admin.product.*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#products"
-                    aria-expanded="{{ request()->routeIs('admin.product*') ? 'true' : 'false' }}" aria-controls="ui-products">
+                    aria-expanded="{{ request()->routeIs('admin.product.*') ? 'true' : 'false' }}"
+                    aria-controls="ui-products">
                     <span class="menu-title">Products</span>
                     <i class="menu-arrow"></i>
                     <i class="mdi mdi-package-variant-closed menu-icon"></i>
                 </a>
-                <div class="collapse {{ request()->routeIs('admin.product*') ? 'show' : '' }}" id="products">
+                <div class="collapse {{ request()->routeIs('admin.product.*') ? 'show' : '' }}" id="products">
                     <ul class="nav flex-column sub-menu">
                         @can(App\Enums\Permission\ProductPermission::VIEW->value)
                             <li class="nav-item">
@@ -163,7 +164,8 @@
         @can(App\Enums\Permission\OrderPermission::VIEW->value)
             <li class="nav-item {{ request()->routeIs('admin.couriers*') ? 'active' : '' }}">
                 <a class="nav-link" data-bs-toggle="collapse" href="#courier"
-                    aria-expanded="{{ request()->routeIs('admin.couriers*') ? 'true' : 'false' }}" aria-controls="courier">
+                    aria-expanded="{{ request()->routeIs('admin.couriers*') ? 'true' : 'false' }}"
+                    aria-controls="courier">
                     <span class="menu-title">Couriers</span>
                     <i class="menu-arrow"></i>
                     <i class="mdi mdi-truck-delivery menu-icon"></i>
@@ -250,7 +252,8 @@
                     <i class="menu-arrow"></i>
                     <i class="mdi mdi-comment-account-outline menu-icon"></i>
                 </a>
-                <div class="collapse {{ request()->routeIs('admin.product-review*') ? 'show' : '' }}" id="product-reviews">
+                <div class="collapse {{ request()->routeIs('admin.product-review*') ? 'show' : '' }}"
+                    id="product-reviews">
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.product-review.index') ? 'active' : '' }}"
@@ -268,21 +271,27 @@
             </a>
         </li>
 
-        <li class="nav-item {{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#payments" aria-expanded="{{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'true' : 'false' }}" aria-controls="payments">
+        <li
+            class="nav-item {{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#payments"
+                aria-expanded="{{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'true' : 'false' }}"
+                aria-controls="payments">
                 <span class="menu-title">Payments</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-credit-card menu-icon"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'show' : '' }}" id="payments">
+            <div class="collapse {{ request()->routeIs('admin.payment-methods*') || request()->routeIs('admin.settings.payment-gateways*') ? 'show' : '' }}"
+                id="payments">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.payment-methods.index') ? 'active' : '' }}" href="{{ route('admin.payment-methods.index') }}">Payment Methods List</a>
+                        <a class="nav-link {{ request()->routeIs('admin.payment-methods.index') ? 'active' : '' }}"
+                            href="{{ route('admin.payment-methods.index') }}">Payment Methods List</a>
                     </li>
                     @can(\App\Enums\Permission\SettingPermission::SettingAccess->value)
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.settings.payment-gateways') ? 'active' : '' }}" href="{{ route('admin.settings.payment-gateways') }}">Payment Gateways Settings</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.settings.payment-gateways') ? 'active' : '' }}"
+                                href="{{ route('admin.settings.payment-gateways') }}">Payment Gateways Settings</a>
+                        </li>
                     @endcan
                 </ul>
             </div>
@@ -441,22 +450,29 @@
         </li>
 
 
-        <li class="nav-item {{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'active' : '' }}">
-            <a class="nav-link" data-bs-toggle="collapse" href="#blog" aria-expanded="{{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'true' : 'false' }}" aria-controls="blog">
+        <li
+            class="nav-item {{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'active' : '' }}">
+            <a class="nav-link" data-bs-toggle="collapse" href="#blog"
+                aria-expanded="{{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'true' : 'false' }}"
+                aria-controls="blog">
                 <span class="menu-title">Blog System</span>
                 <i class="menu-arrow"></i>
                 <i class="mdi mdi-post-outline menu-icon"></i>
             </a>
-            <div class="collapse {{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'show' : '' }}" id="blog">
+            <div class="collapse {{ request()->routeIs('admin.blogs.*') || request()->routeIs('admin.blog_categories.*') || request()->routeIs('admin.blog-comments.*') ? 'show' : '' }}"
+                id="blog">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.blog_categories.*') ? 'active' : '' }}" href="{{ route('admin.blog_categories.index') }}">Categories</a>
+                        <a class="nav-link {{ request()->routeIs('admin.blog_categories.*') ? 'active' : '' }}"
+                            href="{{ route('admin.blog_categories.index') }}">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}" href="{{ route('admin.blogs.index') }}">All Blogs</a>
+                        <a class="nav-link {{ request()->routeIs('admin.blogs.*') ? 'active' : '' }}"
+                            href="{{ route('admin.blogs.index') }}">All Blogs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.blog-comments.*') ? 'active' : '' }}" href="{{ route('admin.blog-comments.index') }}">Blog Comments</a>
+                        <a class="nav-link {{ request()->routeIs('admin.blog-comments.*') ? 'active' : '' }}"
+                            href="{{ route('admin.blog-comments.index') }}">Blog Comments</a>
                     </li>
                 </ul>
             </div>
@@ -469,7 +485,7 @@
                     <i class="mdi mdi-cog menu-icon"></i>
                 </a>
             </li>
-            
+
             <li class="nav-item {{ request()->routeIs('admin.settings.theme-layouts') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('admin.settings.theme-layouts') }}">
                     <span class="menu-title">Theme Layouts</span>
@@ -484,7 +500,7 @@
         margin-bottom: 0 !important;
     }
 
-    #sidebar ul.nav>li.nav-item:last-child {
+    #sidebar ul.nav:not(.sub-menu)>li.nav-item:last-child {
         margin-bottom: 25px !important;
     }
 </style>

@@ -66,6 +66,7 @@ Route::middleware(['is_admin', 'auth:web', 'can:'.AdminAccessEnums::AdminAccess-
         Route::delete('/media/{media}', 'destroy')->name('admin.media.destroy')->middleware('permission:'.MediaPermission::DELETE->value);
         Route::get('/media/get-gallery-ajax', 'getGalleryAjax')->name('admin.media.getGalleryAjax');
         Route::post('/media/ajax-store', 'ajaxStore')->name('admin.media.ajaxStore')->middleware('permission:'.MediaPermission::CREATE->value);
+        Route::post('/media/bulk-delete', 'bulkDelete')->name('admin.media.bulk-delete')->middleware('permission:'.MediaPermission::DELETE->value);
     });
 
     Route::controller(CategoryController::class)->group(function () {
@@ -127,6 +128,7 @@ Route::middleware(['is_admin', 'auth:web', 'can:'.AdminAccessEnums::AdminAccess-
         Route::put('/products/{product}', 'update')->name('admin.product.update')->middleware('permission:'.ProductPermission::UPDATE->value);
         Route::put('/products/{product}/trendy', 'updateTrendy')->name('admin.product.update.trendy')->middleware('permission:'.ProductPermission::UPDATE->value);
         Route::delete('/products/{product}', 'destroy')->name('admin.product.destroy')->middleware('permission:'.ProductPermission::DELETE->value);
+        Route::post('/products/bulk-delete', 'bulkDelete')->name('admin.product.bulk-delete')->middleware('permission:'.ProductPermission::DELETE->value);
     });
 
     Route::controller(OrderController::class)->group(function () {

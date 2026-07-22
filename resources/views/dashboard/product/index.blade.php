@@ -8,22 +8,44 @@
                 <div class="card shadow-sm border-0">
                     <div class="card-header py-4">
                         <div class="page-title-box d-flex align-items-center justify-content-between">
-                            <h4 class="mb-0">Product List</h4>
+                            <div class="d-flex align-items-center justify-content-start">
+                                <h5 class="card-title mb-0 me-4">Product List</h5>
+                            </div>
                             @can(\App\Enums\Permission\ProductPermission::CREATE->value)
-                                <a href="{{ route('admin.product.add') }}" class="btn btn-primary">
-                                    <i class="mdi mdi-plus me-1"></i>
+                                <a href="{{ route('admin.product.add') }}" class="btn btn-sm btn-primary">
+                                    <i class="mdi mdi-plus-circle btn-icon-prepend me-2"></i>
                                     <span>Add New Product</span>
                                 </a>
                             @endcan
                         </div>
                     </div>
                     <div class="card-body pt-3">
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center">
+                                <!-- Bulk Actions -->
+                                <x-bulk-action url="{{ route('admin.product.bulk-delete') }}" />
+                            </div>
+                            <form action="{{ route('admin.product.index') }}" method="GET"
+                                class="d-flex align-items-center mb-0">
+                                <div class="input-group input-group-sm">
+                                    <input type="text" name="search" class="form-control form-control-sm border"
+                                        placeholder="Search products..." value="{{ request('search') }}">
+                                    <button class="btn btn-sm btn-primary border-0" type="submit">
+                                        <i class="mdi mdi-magnify"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                         <div class="table-responsive">
                             <table id="productTable"
                                 class="table table-hover table-bordered table-centered align-middle table-nowrap mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th style="width: 50px;">Sl</th>
+                                        <th style="max-width: 10px;">
+                                            <input class="form-check-input m-0 me-1 select-all-checkbox" id="productSearch"
+                                                type="checkbox">
+                                        </th>
+                                        <th style="max-width: 20px;">Sl</th>
                                         <th>Product</th>
                                         <th>
                                             <p class="mb-1">Category /</p> Brand
@@ -37,7 +59,15 @@
                                 <tbody>
                                     @forelse($products ?? [] as $key => $product)
                                         <tr>
-                                            <td>{{ $key + 1 }}</td>
+                                            <td style="max-width: 20px;">
+                                                <div class="d-flex align-items-center">
+                                                    <input class="form-check-input bulk-item-checkbox m-0 me-3"
+                                                        type="checkbox" value="{{ $product?->id }}">
+                                                </div>
+                                            </td>
+                                            <td style="max-width: 20px">
+                                                {{ $products->firstItem() + $key }}
+                                            </td>
                                             <td>
                                                 <div class="d-flex align-items-center">
                                                     <img src="{{ asset($product?->thumbnail) }}" alt="product-img"
@@ -46,8 +76,8 @@
                                                     <div class="flex-grow-1">
                                                         <h6 class="mb-0 fs-14">{{ Str::limit($product?->name, 30) }}</h6>
                                                         <small class="text-muted">SKU: {{ $product?->sku ?? 'N/A' }}</small>
-                                                        <hr class="my-1">
-                                                        <div class="d-inline-block mt-0 bg-light p-2">
+                                                        <br>
+                                                        <div class="d-inline-block mt-2 text-white bg-primary p-2">
                                                             <label for="">Trandy</label>
                                                             <input type="checkbox" data-id="{{ $product?->id }}"
                                                                 class="toggle-trendy form-check-input mt-0"
@@ -66,14 +96,14 @@
                                             <td class="text-end">
                                                 @if ($product?->discount > 0)
                                                     <div class="fw-bold text-dark">
-                                                        {{ ($siteSettings->currency_symbol ?? null) }}
+                                                        {{ $siteSettings->currency_symbol ?? null }}
                                                         {{ number_format($product?->discount, 2) }}</div>
                                                     <del class="text-muted small">
-                                                        {{ ($siteSettings->currency_symbol ?? null) }}
+                                                        {{ $siteSettings->currency_symbol ?? null }}
                                                         {{ number_format($product?->price, 2) }}</del>
                                                 @else
                                                     <div class="fw-bold text-dark">
-                                                        {{ ($siteSettings->currency_symbol ?? null) }}
+                                                        {{ $siteSettings->currency_symbol ?? null }}
                                                         {{ number_format($product?->price, 2) }}
                                                     </div>
                                                 @endif
@@ -124,7 +154,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center py-5">
+                                            <td colspan="8" class="text-center py-5">
                                                 <div class="text-muted">
                                                     <i class="mdi mdi-database-off fs-1"></i>
                                                     <p class="mt-2">No Products Found</p>
@@ -134,6 +164,9 @@
                                     @endforelse
                                 </tbody>
                             </table>
+                        </div>
+                        <div class="mt-4">
+                            {{ $products->withQueryString()->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                 </div>
@@ -177,14 +210,6 @@
 @push('scripts')
     <script>
         $(document).ready(function() {
-            // Initialize DataTables
-            $('#productTable').DataTable({
-                responsive: true,
-                language: {
-                    searchPlaceholder: "Search products...",
-                    sSearch: "",
-                }
-            });
 
             // Handle trendy toggle
             $(document).on('change', '.toggle-trendy', function() {
@@ -192,7 +217,8 @@
                 let isChecked = $(this).is(':checked');
 
                 $.ajax({
-                    url: '{{ route('admin.product.update.trendy', ':id') }}'.replace(':id', productId),
+                    url: '{{ route('admin.product.update.trendy', ':id') }}'.replace(':id',
+                        productId),
                     method: 'PUT',
                     data: {
                         _token: '{{ csrf_token() }}',
@@ -210,4 +236,3 @@
         });
     </script>
 @endpush
-

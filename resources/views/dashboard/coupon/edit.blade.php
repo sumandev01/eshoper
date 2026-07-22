@@ -35,15 +35,8 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <x-select label="Type" id="type" class="text-capitalize" name="type"
-                                            :required='true' :readonly='true' :disabled='true'>
-                                            <option disabled>Select Type</option>
-                                            @foreach ($couponTypeEnums ?? [] as $couponType)
-                                                <option class="text-capitalize" value="{{ $couponType->value }}"
-                                                    {{ $coupon?->type == $couponType->value ? 'selected' : '' }}>
-                                                    {{ $couponType->value }}
-                                                </option>
-                                            @endforeach
-                                        </x-select>
+                                            :required="true" :readonly="true" :disabled="true"
+                                            :options="$couponTypeEnums" :value="$coupon?->type" placeholder="Select Type" />
                                     </div>
                                 </div>
                             </div>
@@ -101,21 +94,17 @@
                                 </h6>
                                 <div class="row g-3">
                                     <div class="col-lg-6">
-                                        <x-select label="Status" name="status" :required='true'>
-                                            <option value="0" {{ $coupon?->status == 0 ? 'selected' : '' }}>Inactive
-                                            </option>
-                                            <option value="1" {{ $coupon?->status == 1 ? 'selected' : '' }}>Active
-                                            </option>
-                                        </x-select>
+                                        <x-select label="Status" name="status" :required="true"
+                                            :options="['0' => 'Inactive', '1' => 'Active']" :value="$coupon?->status" />
                                     </div>
                                 </div>
                             </div>
 
                             <div class="border-top pt-3 d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.coupon.index') }}" class="btn btn-light px-4">Cancel</a>
+                                <a href="{{ route('admin.coupon.index') }}" class="btn btn-sm btn-secondary px-4">Cancel</a>
                                 @can(\App\Enums\Permission\CouponPermission::UPDATE->value)
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="mdi mdi-content-save me-1"></i> Update Coupon
+                                    <button type="submit" class="btn btn-sm btn-primary px-4">
+                                        <i class="mdi mdi-update btn-icon-prepend me-2"></i> Update Coupon
                                     </button>
                                 @endcan
                             </div>
@@ -127,31 +116,6 @@
     </div>
 @endsection
 @push('scripts')
-    <script>
-        $(document).ready(function() {
-            let defaultType = $('#type').val();
-            if (defaultType === 'percentage') {
-                $('#max_discount').prop('disabled', false);
-                $('#max_discount').prop('required', true);
-            } else {
-                $('#max_discount').prop('disabled', true);
-                $('#max_discount').prop('required', false);
-                $('#max_discount').val('');
-            }
-
-            $('#type').on('change', function() {
-                let selectedType = $(this).val();
-
-                if (selectedType === 'percentage') {
-                    $('#max_discount').prop('disabled', false);
-                    $('#max_discount').prop('required', true);
-                } else {
-                    $('#max_discount').prop('disabled', true);
-                    $('#max_discount').prop('required', false);
-                    $('#max_discount').val('');
-                }
-            });
-        })
-    </script>
+    @include('dashboard.coupon.script')
 @endpush
 

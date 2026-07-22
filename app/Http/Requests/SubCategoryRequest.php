@@ -36,7 +36,7 @@ class SubCategoryRequest extends FormRequest
         $name = $this->method() === 'PUT' ? 'required|string|max:255|unique:sub_categories,name,' . $this->subCategory->id : 'required|string|max:255|unique:sub_categories,name';
         $slug = $this->method() === 'PUT' ? 'required|string|max:255|unique:sub_categories,slug,' . $this->subCategory->id : 'nullable|string|max:255|unique:sub_categories,slug';
         $category_id = $this->method() === 'PUT' ? 'required|exists:categories,id' : 'required|exists:categories,id';
-        $media_id = $this->method() === 'PUT' ? 'nullable' : 'nullable|exists:media,id';
+        $media_id = $this->method() === 'PUT' ? 'required|exists:media,id' : 'required|exists:media,id';
         return [
             'name' => $name,
             'slug' => $slug,

@@ -20,7 +20,17 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body p-3 d-flex justify-content-between align-items-center">
-                    <p class="card-description m-0"> Showing all uploaded files </p>
+                    <div class="d-flex align-items-center">
+                        <div class="form-check me-3 m-0">
+                            <input class="form-check-input ms-0 select-all-checkbox" type="checkbox" id="selectAllMedia">
+                            <label class="form-check-label mb-0" for="selectAllMedia" style="cursor: pointer;">
+                                Select All
+                            </label>
+                        </div>
+                        @can(\App\Enums\Permission\MediaPermission::DELETE->value)
+                            <x-bulk-action url="{{ route('admin.media.bulk-delete') }}" param="media_ids[]" />
+                        @endcan
+                    </div>
                     <div class="view-icons">
                         {{-- Buttons with IDs for JS selection --}}
                         <button id="grid-view-btn" class="btn btn-outline-secondary btn-sm" title="Grid View">
@@ -45,9 +55,15 @@
         @foreach ($medias as $media)
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 grid-margin stretch-card media-item">
                 <div class="card shadow-sm border-0 w-100">
+                    <div class="form-check position-absolute mt-0 mb-0 delete-checkbox" style="top: 8px; left: 30px; z-index: 10;">
+                        <input class="form-check-input media-checkbox bulk-item-checkbox" type="checkbox" value="{{ $media->id }}"
+                            id="media_{{ $media->id }}"
+                            style="width: 18px; height: 18px; cursor: pointer; border: 1px solid rgba(0,0,0,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                    </div>
                     <div class="card-body p-2 text-center">
                         <div class="media-thumb position-relative"
                             style="height: 180px; overflow: hidden; background: #f8f9fa; border-radius: 8px;">
+
                             <img src="{{ asset($media->thumbnail) }}" alt="media" class="img-fluid w-100 h-100"
                                 style="object-fit: contain;">
                             {{-- Grid view specific actions overlay --}}
@@ -80,7 +96,7 @@
                                 @endif
                             </small>
                         </div>
-                        
+
                         {{-- --- NEW: Action buttons for List View (visible on hover) --- --}}
                         {{-- These buttons also need the redirectToEdit function --}}
                         <div class="media-actions list-actions">
@@ -147,10 +163,16 @@
 
         .list-view .card-body {
             padding: 0 !important;
+            padding-left: 50px !important;
             display: flex !important;
             flex-direction: row !important;
             align-items: center !important;
             width: 100%;
+        }
+
+        .list-view .delete-checkbox{
+            left: 50px !important;
+            transform: translate(0, 100%) !important;
         }
 
         /* Style for content wrapper in list view */
@@ -184,22 +206,24 @@
 
         /* Show list specific actions in list view on row hover */
         .list-view .media-item:hover .list-actions {
-             display: flex !important;
-             opacity: 1 !important;
+            display: flex !important;
+            opacity: 1 !important;
         }
-        
+
         .list-view .list-actions {
-            display: none !important; /* Hidden by default, shown on hover */
+            display: none !important;
+            /* Hidden by default, shown on hover */
             opacity: 0;
             transition: opacity 0.2s;
-             justify-content: flex-end;
-             flex-shrink: 0;
-             margin-left: 15px;
+            justify-content: flex-end;
+            flex-shrink: 0;
+            margin-left: 15px;
         }
-        
+
         /* Hide original size text in list view to make space for actions */
         .list-view .media-content small {
-            visibility: hidden; /* Keeps layout */
+            visibility: hidden;
+            /* Keeps layout */
         }
 
         /* Active state styling for view buttons */
@@ -260,5 +284,7 @@
             window.location.href = url.toString();
         }
         // --------------------------------------------------------------------------------------
+
+        // Bulk Delete Logic handled by global script
     </script>
 @endsection

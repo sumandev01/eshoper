@@ -21,11 +21,11 @@
 <div class="row gy-2 link-selector-wrapper mb-3">
     @if ($label)
         <div class="col-md-12">
-            <label class="form-label">{{ $label }}</label>
+            <label class="form-label font-weight-bold mb-0" style="font-size: 14px;">{{ $label }}</label>
         </div>
     @endif
     <div class="col-md-5">
-        <select name="{{ $prefix }}_type" class="form-select link-type-select">
+        <select name="{{ $prefix }}_type" class="form-select link-type-select py-2 px-3">
             <option value="">-- Select Type --</option>
             @foreach (\App\Enums\LinkTypeEnum::cases() as $case)
                 <option value="{{ $case->value }}" {{ $selectedType == $case->value ? 'selected' : '' }}>
@@ -40,7 +40,7 @@
         <input type="hidden" name="{{ $prefix }}_ref_id" class="final-ref-input" value="{{ $selectedRef }}">
 
         <!-- System Pages -->
-        <select class="form-select ref-select" data-type="system" style="display: none;">
+        <select class="form-select ref-select py-2 px-3" data-type="system" style="display: none;">
             <option value="">-- Select Page --</option>
             @foreach ($systemPages as $key => $val)
                 <option value="{{ $key }}"
@@ -50,7 +50,7 @@
         </select>
 
         <!-- Categories -->
-        <select class="form-select ref-select" data-type="category" style="display: none;">
+        <select class="form-select ref-select py-2 px-3" data-type="category" style="display: none;">
             <option value="">-- Select Category --</option>
             @foreach ($categories as $category)
                 <option value="{{ $category->id }}"
@@ -60,7 +60,7 @@
         </select>
 
         <!-- Products -->
-        <select class="form-select ref-select" data-type="product" style="display: none;">
+        <select class="form-select ref-select py-2 px-3" data-type="product" style="display: none;">
             <option value="">-- Select Product --</option>
             @foreach ($products as $product)
                 <option value="{{ $product->id }}"
@@ -70,7 +70,7 @@
         </select>
 
         <!-- Pages -->
-        <select class="form-select ref-select" data-type="page" style="display: none;">
+        <select class="form-select ref-select py-2 px-3" data-type="page" style="display: none;">
             <option value="">-- Select Dynamic Page --</option>
             @foreach ($pages as $page)
                 <option value="{{ $page->id }}"
@@ -80,7 +80,7 @@
         </select>
 
         <!-- Blogs -->
-        <select class="form-select ref-select" data-type="blog" style="display: none;">
+        <select class="form-select ref-select py-2 px-3" data-type="blog" style="display: none;">
             <option value="">-- Select Blog --</option>
             @foreach ($blogs as $blog)
                 <option value="{{ $blog->id }}"
@@ -90,7 +90,7 @@
         </select>
 
         <!-- Custom Link -->
-        <input type="text" class="form-control ref-input" data-type="custom" style="display: none;"
+        <input type="text" class="form-control ref-input rounded" data-type="custom" style="display: none;"
             placeholder="https://..." value="{{ $selectedType == 'custom' ? $selectedRef : '' }}">
     </div>
 </div>

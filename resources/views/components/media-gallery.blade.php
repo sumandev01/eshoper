@@ -10,6 +10,14 @@
     'button_class' => '',
 ])
 
+@php
+    // Handle old() array values for validation failure
+    $oldIds = old(str_replace('[]', '', $input_name));
+    if (is_array($oldIds) && count($oldIds) > 0) {
+        $existing_media = \App\Models\Media::whereIn('id', $oldIds)->get();
+    }
+@endphp
+
 <div class="form-group">
     @if($label)
         <label class="form-label font-weight-bold">{{ $label }}@if($required) <span class="text-danger">*</span> @endif</label>

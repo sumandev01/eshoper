@@ -4,8 +4,8 @@
     <div class="row">
         <div class="col-lg-7">
             <div class="card">
-                <div class="card-header pt-4">
-                    <h5>All Tags</h5>
+                <div class="card-header py-4">
+                    <h5 class="card-title">All Tags</h5>
                 </div>
                 <div class="card-body p-4">
                     <table class="table table-bordered table-hover table-striped" id="tagTable">
@@ -52,16 +52,16 @@
                 <div class="card">
                     <form action="{{ route('admin.tag.store') }}" method="post" enctype="multipart/form-data">
                         @csrf
-                        <div class="card-header pt-4">
-                            <h4 class="card-title">Add New Tag</h4>
+                        <div class="card-header py-4">
+                            <h5 class="card-title">Add New Tag</h5>
                         </div>
                         <div class="card-body px-4 pb-0">
                             <x-input label="Name" name="name" type="text" placeholder="Enter tag name"
                                 :required='true' />
                         </div>
                         <div class="card-footer py-4">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="mdi mdi-plus-circle btn-icon-prepend me-2"></i>
                                 <span>Add Tag</span>
                             </button>
                         </div>
@@ -88,14 +88,14 @@
                             <input type="text" name="name" id="edit_name" class="form-control" required>
                         </div>
                     </div>
-                    <div class="modal-footer text-start">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
-                            <span>Save</span>
-                        </button>
-                        <button type="button" class="btn btn-danger btn-icon-text" data-bs-dismiss="modal">
+                    <div class="modal-footer text-end">                        
+                        <button type="button" class="btn btn-sm btn-secondary btn-icon-text" data-bs-dismiss="modal">
                             <i class="mdi mdi-close btn-icon-prepend me-2"></i>
                             <span>Close</span>
+                        </button>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="mdi mdi-content-save btn-icon-prepend me-2"></i>
+                            <span>Save</span>
                         </button>
                     </div>
                 </form>
